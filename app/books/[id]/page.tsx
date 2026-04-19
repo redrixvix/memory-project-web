@@ -3,6 +3,9 @@
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface Memory {
   id: number;
@@ -63,8 +66,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-muted">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--off-white)" }}>
+        <div style={{ color: "var(--charcoal)" }}>Loading...</div>
       </div>
     );
   }
@@ -74,121 +77,122 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="py-4 px-6 md:px-8 flex justify-between items-center bg-card border-b border-border">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--off-white)" }}>
+      <header className="py-4 px-6 md:px-8 flex justify-between items-center border-b" style={{ backgroundColor: "var(--white)", borderColor: "var(--olive)" }}>
         <div>
-          <Link href="/dashboard" className="text-sm text-muted hover:text-accent transition-colors flex items-center gap-1">
+          <Link href="/dashboard" className="text-sm transition-colors flex items-center gap-1" style={{ color: "var(--charcoal)" }}>
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
             Dashboard
           </Link>
-          <h1 className="text-xl md:text-2xl font-bold mt-1">{book.title}</h1>
+          <h1 className="text-xl md:text-2xl font-bold mt-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>{book.title}</h1>
         </div>
-        <Link
-          href={`/books/${id}/edit`}
-          className="bg-accent text-white px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-accent-light transition-colors flex items-center gap-1.5 shadow-sm"
-        >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-          Add Memory
-        </Link>
+        <Button asChild>
+          <Link href={`/books/${id}/edit`}>
+            <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Add Memory
+          </Link>
+        </Button>
       </header>
 
       <main className="flex-1 px-6 md:px-8 py-8 max-w-2xl mx-auto w-full">
         {book.description && (
-          <p className="text-muted mb-8 text-base leading-relaxed">{book.description}</p>
+          <p className="mb-8 text-base leading-relaxed" style={{ color: "var(--charcoal)" }}>{book.description}</p>
         )}
 
         {memories.length === 0 ? (
           <div className="text-center py-20">
             <div className="inline-block mb-6">
-              <div className="w-24 h-24 rounded-full bg-amber-50 flex items-center justify-center mx-auto">
-                <svg className="w-12 h-12 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: "rgba(224,176,255,0.3)" }}>
+                <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: "var(--amber)" }}>
                   <path d="M12 2L2 7l10 5 10-5-10-5z"/>
                   <path d="M2 17l10 5 10-5"/>
                   <path d="M2 12l10 5 10-5"/>
                 </svg>
               </div>
             </div>
-            <h2 className="text-xl font-semibold mb-2">Start your memory book</h2>
-            <p className="text-muted mb-8 text-sm max-w-xs mx-auto leading-relaxed">
+            <h2 className="text-xl font-semibold mb-2" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>Start your memory book</h2>
+            <p className="mb-8 text-sm max-w-xs mx-auto leading-relaxed" style={{ color: "var(--charcoal)" }}>
               Every great story starts with a single memory. Add your first one — you can use a prompt or write freely.
             </p>
-            <Link
-              href={`/books/${id}/edit`}
-              className="bg-accent text-white px-6 py-3 rounded-full font-semibold hover:bg-accent-light transition-colors inline-flex items-center gap-2 shadow-sm"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-              Add your first memory
-            </Link>
+            <Button asChild>
+              <Link href={`/books/${id}/edit`}>
+                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                Add your first memory
+              </Link>
+            </Button>
           </div>
         ) : (
           <div className="space-y-5">
             {memories.map((memory, index) => (
-              <article key={memory.id} className="bg-card rounded-2xl border border-border p-5 hover:shadow-sm transition-shadow">
-                {/* Memory number badge */}
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-semibold text-muted/60 bg-background px-2 py-0.5 rounded-full">
-                    #{index + 1}
-                  </span>
-                  {memory.prompt_question && (
-                    <span className="text-xs text-accent font-medium italic">"{memory.prompt_question}"</span>
+              <Card key={memory.id} className="p-5">
+                <CardContent className="pt-0">
+                  {/* Memory number badge */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: "var(--olive)", color: "var(--charcoal)" }}>
+                      #{index + 1}
+                    </span>
+                    {memory.prompt_question && (
+                      <span className="text-xs font-medium italic" style={{ color: "var(--amber-muted)" }}>"{memory.prompt_question}"</span>
+                    )}
+                  </div>
+
+                  <p className="text-base leading-relaxed whitespace-pre-wrap" style={{ color: "var(--charcoal)" }}>{memory.answer_text}</p>
+
+                  {memory.photo_urls && memory.photo_urls.length > 0 && (
+                    <div className="flex gap-2 mt-4 overflow-x-auto pb-1">
+                      {memory.photo_urls.map((url, i) => (
+                        <img
+                          key={i}
+                          src={url}
+                          alt=""
+                          className="w-20 h-20 object-cover rounded-xl shrink-0"
+                        />
+                      ))}
+                    </div>
                   )}
-                </div>
 
-                <p className="text-base leading-relaxed whitespace-pre-wrap">{memory.answer_text}</p>
+                  {memory.audio_url && (
+                    <audio src={memory.audio_url} controls className="mt-4 w-full h-10" />
+                  )}
 
-                {memory.photo_urls && memory.photo_urls.length > 0 && (
-                  <div className="flex gap-2 mt-4 overflow-x-auto pb-1">
-                    {memory.photo_urls.map((url, i) => (
-                      <img
-                        key={i}
-                        src={url}
-                        alt=""
-                        className="w-20 h-20 object-cover rounded-xl shrink-0"
-                      />
-                    ))}
+                  <div className="flex justify-between items-center mt-4 pt-3 border-t" style={{ borderColor: "var(--olive)" }}>
+                    <p className="text-xs" style={{ color: "var(--charcoal)", opacity: 0.6 }}>
+                      {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    </p>
+                    <div className="flex gap-4">
+                      <Link
+                        href={`/books/${id}/edit?memory=${memory.id}`}
+                        className="text-xs font-medium transition-colors"
+                        style={{ color: "var(--amber-muted)" }}
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => handleDeleteMemory(memory.id)}
+                        className="text-xs transition-colors"
+                        style={{ color: "#dc2626" }}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                )}
-
-                {memory.audio_url && (
-                  <audio src={memory.audio_url} controls className="mt-4 w-full h-10" />
-                )}
-
-                <div className="flex justify-between items-center mt-4 pt-3 border-t border-border/50">
-                  <p className="text-xs text-muted/60">
-                    {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                  </p>
-                  <div className="flex gap-4">
-                    <Link
-                      href={`/books/${id}/edit?memory=${memory.id}`}
-                      className="text-xs text-accent hover:underline font-medium"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDeleteMemory(memory.id)}
-                      className="text-xs text-red-400 hover:text-red-600 transition-colors"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </article>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
 
         {memories.length > 0 && (
           <div className="mt-10 text-center">
-            <Link
-              href={`/books/${id}/preview`}
-              className="border-2 border-accent text-accent px-8 py-3 rounded-full font-semibold hover:bg-accent hover:text-white transition-colors inline-flex items-center gap-2"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-              </svg>
-              Preview your book
-            </Link>
+            <Button asChild variant="outline">
+              <Link href={`/books/${id}/preview`}>
+                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+                Preview your book
+              </Link>
+            </Button>
           </div>
         )}
       </main>

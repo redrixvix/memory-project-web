@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import { Lora, Geist } from "next/font/google";
+import { Inter, Lora } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 const lora = Lora({
   subsets: ["latin"],
@@ -24,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className={`min-h-screen antialiased ${lora.variable}`} style={{ fontFamily: "var(--font-lora), 'Lora', Georgia, serif" }}>{children}</body>
+    <html lang="en" className={cn("font-sans", inter.variable, lora.variable)}>
+      <body className="min-h-screen antialiased">{children}</body>
     </html>
   );
 }

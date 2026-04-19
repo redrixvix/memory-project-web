@@ -3,6 +3,10 @@
 import { useEffect, useState, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
 
 const PROMPTS = [
   { category: "Family & Roots", prompts: [
@@ -93,16 +97,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
   if (fetchingMemory) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-muted">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--off-white)" }}>
+        <div style={{ color: "var(--charcoal)" }}>Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="py-4 px-6 border-b border-border bg-card">
-        <Link href={`/books/${id}`} className="text-sm text-muted hover:text-accent transition-colors flex items-center gap-1">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--off-white)" }}>
+      <header className="py-4 px-6 border-b" style={{ backgroundColor: "var(--white)", borderColor: "var(--olive)" }}>
+        <Link href={`/books/${id}`} className="text-sm transition-colors flex items-center gap-1" style={{ color: "var(--charcoal)" }}>
           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
           Back to book
         </Link>
@@ -110,35 +114,32 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
       <main className="flex-1 px-6 py-8 max-w-xl mx-auto w-full">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-1">
+          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>
             {memoryId ? 'Edit Memory' : 'Add a Memory'}
           </h1>
-          <p className="text-muted text-sm">Write about a moment that matters to you. Take your time.</p>
+          <p className="text-sm" style={{ color: "var(--charcoal)" }}>Write about a moment that matters to you. Take your time.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Prompt selector */}
           <div>
-            <label className="block text-sm font-medium mb-3">Writing prompt <span className="text-muted font-normal">(optional)</span></label>
+            <Label className="mb-3 block">Writing prompt <span className="font-normal opacity-60">(optional)</span></Label>
 
             <div className="space-y-4">
               {PROMPTS.map((group) => (
                 <div key={group.category}>
-                  <p className="text-xs font-semibold text-muted/60 uppercase tracking-wider mb-2">{group.category}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--charcoal)", opacity: 0.6 }}>{group.category}</p>
                   <div className="flex flex-wrap gap-2">
                     {group.prompts.slice(0, 3).map((p) => (
-                      <button
+                      <Button
                         key={p}
                         type="button"
+                        variant={prompt === p ? "default" : "outline"}
+                        size="sm"
                         onClick={() => setPrompt(p)}
-                        className={`text-xs px-3 py-1.5 rounded-full border transition-all ${
-                          prompt === p
-                            ? 'bg-accent text-white border-accent'
-                            : 'bg-card text-muted border-border hover:border-accent/50 hover:text-accent'
-                        }`}
                       >
                         {p.length > 40 ? p.slice(0, 40) + '…' : p}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>
@@ -147,47 +148,47 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               <button
                 type="button"
                 onClick={() => setShowAllPrompts(!showAllPrompts)}
-                className="text-xs text-accent hover:underline flex items-center gap-1"
+                className="text-xs flex items-center gap-1 transition-colors"
+                style={{ color: "var(--amber-muted)" }}
               >
                 {showAllPrompts ? 'Show fewer prompts' : 'See all prompts'}
                 <svg className={`w-3 h-3 transition-transform ${showAllPrompts ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
               </button>
 
               {showAllPrompts && (
-                <div className="bg-background rounded-xl p-4 border border-border">
-                  {PROMPTS.map((group) => (
-                    <div key={group.category} className="mb-4 last:mb-0">
-                      <p className="text-xs font-semibold text-muted/60 uppercase tracking-wider mb-2">{group.category}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {group.prompts.map((p) => (
-                          <button
-                            key={p}
-                            type="button"
-                            onClick={() => setPrompt(p)}
-                            className={`text-xs px-3 py-1.5 rounded-full border transition-all ${
-                              prompt === p
-                                ? 'bg-accent text-white border-accent'
-                                : 'bg-card text-muted border-border hover:border-accent/50 hover:text-accent'
-                            }`}
-                          >
-                            {p}
-                          </button>
-                        ))}
+                <Card className="p-4">
+                  <CardContent className="pt-0">
+                    {PROMPTS.map((group) => (
+                      <div key={group.category} className="mb-4 last:mb-0">
+                        <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--charcoal)", opacity: 0.6 }}>{group.category}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {group.prompts.map((p) => (
+                            <Button
+                              key={p}
+                              type="button"
+                              variant={prompt === p ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setPrompt(p)}
+                            >
+                              {p}
+                            </Button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </CardContent>
+                </Card>
               )}
             </div>
 
             {prompt && (
-              <div className="mt-3 flex items-start gap-2 bg-accent/5 border border-accent/20 rounded-xl p-3">
-                <svg className="w-4 h-4 text-accent mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <div className="mt-3 flex items-start gap-2 rounded-xl p-3" style={{ backgroundColor: "rgba(207,181,59,0.1)", border: "1px solid rgba(207,181,59,0.2)" }}>
+                <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--amber-muted)" }}>
                   <path d="M12 2L2 7l10 5 10-5-10-5z"/>
                   <path d="M2 17l10 5 10-5"/>
                   <path d="M2 12l10 5 10-5"/>
                 </svg>
-                <p className="text-sm text-accent font-medium italic">{prompt}</p>
+                <p className="text-sm font-medium italic" style={{ color: "var(--amber-muted)" }}>{prompt}</p>
               </div>
             )}
           </div>
@@ -195,33 +196,26 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           {/* Writing area */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="block text-sm font-medium">Your memory</label>
-              <span className="text-xs text-muted/60">{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+              <Label>Your memory</Label>
+              <span className="text-xs" style={{ color: "var(--charcoal)", opacity: 0.6 }}>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
             </div>
-            <textarea
+            <Textarea
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               required
-              className="w-full px-4 py-4 rounded-2xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-accent text-base leading-relaxed resize-none"
+              className="text-base leading-relaxed"
               rows={14}
               placeholder="Take your time. There's no right or wrong way to write a memory — just tell it like it was..."
             />
           </div>
 
           <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={loading || !answer.trim()}
-              className="bg-accent text-white px-8 py-3 rounded-full font-semibold hover:bg-accent-light transition-colors disabled:opacity-50 shadow-sm"
-            >
+            <Button type="submit" disabled={loading || !answer.trim()}>
               {loading ? 'Saving...' : memoryId ? 'Update Memory' : 'Save Memory'}
-            </button>
-            <Link
-              href={`/books/${id}`}
-              className="border border-border px-8 py-3 rounded-full font-semibold hover:bg-card transition-colors"
-            >
-              Cancel
-            </Link>
+            </Button>
+            <Button type="button" variant="outline" asChild>
+              <Link href={`/books/${id}`}>Cancel</Link>
+            </Button>
           </div>
         </form>
       </main>

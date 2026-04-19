@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function Signup() {
   const router = useRouter();
@@ -40,9 +44,9 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--off-white)" }}>
       <header className="py-5 px-6">
-        <Link href="/" className="text-xl font-bold text-accent">Memory Project</Link>
+        <Link href="/" className="text-xl font-bold" style={{ color: "var(--amber)" }}>Memory Project</Link>
       </header>
 
       <main className="flex-1 flex items-center justify-center px-6 py-12">
@@ -50,72 +54,69 @@ export default function Signup() {
           {/* Warm greeting */}
           <div className="text-center mb-8">
             <div className="text-4xl mb-3">📖</div>
-            <h1 className="text-2xl font-bold mb-1">Start your memory book</h1>
-            <p className="text-muted text-sm">Free to begin — no credit card needed</p>
+            <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>Start your memory book</h1>
+            <p className="text-sm" style={{ color: "var(--charcoal)" }}>Free to begin — no credit card needed</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>
-            )}
+          <Card className="p-6">
+            <CardContent className="pt-0">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {error && (
+                  <div className="p-3 rounded-lg text-sm" style={{ backgroundColor: "#fef2f2", color: "#dc2626" }}>{error}</div>
+                )}
 
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-1.5">Your name</label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-accent transition-shadow"
-                placeholder="Ruth Johnson"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="name">Your name</Label>
+                  <Input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    placeholder="Ruth Johnson"
+                  />
+                </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1.5">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-accent transition-shadow"
-                placeholder="ruth@example.com"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="ruth@example.com"
+                  />
+                </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-1.5">Password</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-accent transition-shadow"
-                placeholder="At least 6 characters"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    placeholder="At least 6 characters"
+                  />
+                </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-accent text-white py-3 rounded-full font-semibold hover:bg-accent-light transition-colors disabled:opacity-50 shadow-sm"
-            >
-              {loading ? 'Creating your book...' : 'Create my memory book'}
-            </button>
-          </form>
+                <Button type="submit" disabled={loading} className="w-full">
+                  {loading ? 'Creating your book...' : 'Create my memory book'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
 
           {/* Warm reassurance */}
-          <p className="text-center mt-5 text-xs text-muted">
+          <p className="text-center mt-5 text-xs" style={{ color: "var(--charcoal)" }}>
             By creating an account, you agree to our Terms of Service and Privacy Policy.
           </p>
 
-          <p className="text-center mt-6 text-muted text-sm">
+          <p className="text-center mt-6 text-sm" style={{ color: "var(--charcoal)" }}>
             Already have an account?{' '}
-            <Link href="/login" className="text-accent font-semibold hover:underline">Sign in</Link>
+            <Link href="/login" className="font-semibold" style={{ color: "var(--amber)" }}>Sign in</Link>
           </p>
         </div>
       </main>

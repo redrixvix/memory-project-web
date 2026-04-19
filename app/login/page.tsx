@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function Login() {
   const router = useRouter();
@@ -39,9 +43,9 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--off-white)" }}>
       <header className="py-5 px-6">
-        <Link href="/" className="text-xl font-bold text-accent">Memory Project</Link>
+        <Link href="/" className="text-xl font-bold" style={{ color: "var(--amber)" }}>Memory Project</Link>
       </header>
 
       <main className="flex-1 flex items-center justify-center px-6 py-12">
@@ -49,53 +53,51 @@ export default function Login() {
           {/* Warm greeting */}
           <div className="text-center mb-8">
             <div className="text-4xl mb-3">👋</div>
-            <h1 className="text-2xl font-bold mb-1">Welcome back</h1>
-            <p className="text-muted text-sm">Sign in to continue your memory book</p>
+            <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>Welcome back</h1>
+            <p className="text-sm" style={{ color: "var(--charcoal)" }}>Sign in to continue your memory book</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>
-            )}
+          <Card className="p-6">
+            <CardContent className="pt-0">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {error && (
+                  <div className="p-3 rounded-lg text-sm" style={{ backgroundColor: "#fef2f2", color: "#dc2626" }}>{error}</div>
+                )}
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1.5">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-accent transition-shadow"
-                placeholder="ruth@example.com"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="ruth@example.com"
+                  />
+                </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-1.5">Password</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-accent transition-shadow"
-                placeholder="Your password"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="Your password"
+                  />
+                </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-accent text-white py-3 rounded-full font-semibold hover:bg-accent-light transition-colors disabled:opacity-50 shadow-sm"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </form>
+                <Button type="submit" disabled={loading} className="w-full">
+                  {loading ? 'Signing in...' : 'Sign in'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
 
-          <p className="text-center mt-8 text-muted text-sm">
+          <p className="text-center mt-8 text-sm" style={{ color: "var(--charcoal)" }}>
             Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-accent font-semibold hover:underline">Create one — it&apos;s free</Link>
+            <Link href="/signup" className="font-semibold" style={{ color: "var(--amber)" }}>Create one — it&apos;s free</Link>
           </p>
         </div>
       </main>
