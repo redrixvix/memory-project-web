@@ -43,24 +43,24 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--cream)" }}>
-      <header className="py-5 px-6" style={{ backgroundColor: "var(--cream)" }}>
-        <Link href="/" className="text-xl font-bold tracking-tight" style={{ color: "var(--midnight)" }}>Memory Project</Link>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--cornsilk)" }}>
+      <header className="py-5 px-6" style={{ backgroundColor: "var(--cornsilk)" }}>
+        <Link href="/" className="text-xl font-medium tracking-tight" style={{ color: "var(--charcoal)" }}>Memory Project</Link>
       </header>
 
       <main className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm">
           {/* Greeting */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--midnight)" }}>Welcome back</h1>
-            <p className="text-sm" style={{ color: "var(--rosy)" }}>Sign in to continue your memory book</p>
+            <h1 className="text-2xl font-medium mb-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>Welcome back</h1>
+            <p className="text-sm" style={{ color: "#6A6A5A" }}>Sign in to continue your memory book</p>
           </div>
 
-          <Card className="p-6" style={{ backgroundColor: "var(--white)", border: "1px solid var(--thistle)" }}>
+          <Card className="p-6" style={{ backgroundColor: "#FDFCF5", border: "1px solid rgba(212,163,115,0.2)", boxShadow: "0 4px 20px rgba(212,163,115,0.08)" }}>
             <CardContent className="pt-0">
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                  <div className="p-3 rounded-lg text-sm" style={{ backgroundColor: "rgba(185,28,28,0.08)", color: "#B91C1C" }}>{error}</div>
+                  <div className="p-3 rounded-xl text-sm" style={{ backgroundColor: "rgba(185,28,28,0.06)", color: "#B91C1C" }}>{error}</div>
                 )}
 
                 <div className="space-y-2">
@@ -72,8 +72,8 @@ export default function Login() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="ruth@example.com"
-                    className="text-sm"
-                    style={{ borderColor: "var(--thistle)", backgroundColor: "var(--cream)" }}
+                    className="text-sm rounded-xl"
+                    style={{ borderColor: "rgba(212,163,115,0.3)", backgroundColor: "var(--papaya)" }}
                   />
                 </div>
 
@@ -86,21 +86,21 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="Your password"
-                    className="text-sm"
-                    style={{ borderColor: "var(--thistle)", backgroundColor: "var(--cream)" }}
+                    className="text-sm rounded-xl"
+                    style={{ borderColor: "rgba(212,163,115,0.3)", backgroundColor: "var(--papaya)" }}
                   />
                 </div>
 
-                <Button type="submit" disabled={loading} className="w-full text-sm" style={{ backgroundColor: "var(--midnight)", color: "var(--cream)" }}>
+                <Button type="submit" disabled={loading} className="w-full text-sm rounded-xl" style={{ backgroundColor: "var(--bronze)", color: "var(--charcoal)" }}>
                   {loading ? 'Signing in...' : 'Sign in'}
                 </Button>
               </form>
             </CardContent>
           </Card>
 
-          <p className="text-center mt-8 text-sm" style={{ color: "var(--rosy)" }}>
+          <p className="text-center mt-8 text-sm" style={{ color: "#6A6A5A" }}>
             Don&apos;t have an account?{' '}
-            <Link href="/signup" className="font-semibold" style={{ color: "var(--olive)" }}>Create one — it&apos;s free</Link>
+            <Link href="/signup" className="font-medium" style={{ color: "var(--bronze)" }}>Create one — it&apos;s free</Link>
           </p>
         </div>
       </main>
