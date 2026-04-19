@@ -54,6 +54,12 @@ export async function POST(request: NextRequest) {
       VALUES (${user.id}, ${sessionId}, ${expiresAt})
     `;
 
+    // CORS for Expo app
+    response.headers.set('Access-Control-Allow-Origin', 'https://web-redrixvixs-projects.vercel.app');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Cookie');
+    response.headers.set('Access-Control-Allow-Credentials', 'true');
+
     const response = NextResponse.json({
       user: { id: user.id, email: user.email, name: user.name }
     });
