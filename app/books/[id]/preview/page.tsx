@@ -3,7 +3,6 @@
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 
 interface Memory {
   id: number;
@@ -88,9 +87,14 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
           <span style={{ color: "var(--olive)" }}>·</span>
           <span className="text-sm" style={{ color: "var(--charcoal)" }}>{book.title}</span>
         </div>
-        <Button onClick={handleOrderPrint} disabled={ordering || memories.length === 0}>
+        <button
+          onClick={handleOrderPrint}
+          disabled={ordering || memories.length === 0}
+          className="inline-flex h-8 shrink-0 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors disabled:opacity-50 shadow-sm"
+          style={{ backgroundColor: "var(--amber)", color: "var(--charcoal)" }}
+        >
           {ordering ? 'Ordering...' : 'Order Print Copy'}
-        </Button>
+        </button>
       </header>
 
       {/* Book preview */}
@@ -207,9 +211,13 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
                 </div>
                 <h2 className="text-lg font-semibold mb-2" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>Nothing to preview yet</h2>
                 <p className="text-sm mb-6" style={{ color: "var(--charcoal)", opacity: 0.6 }}>Add some memories to your book before previewing.</p>
-                <Button asChild>
-                  <Link href={`/books/${id}/edit`}>Add memories</Link>
-                </Button>
+                <Link
+                  href={`/books/${id}/edit`}
+                  className="inline-flex h-10 shrink-0 items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold transition-colors shadow-sm"
+                  style={{ backgroundColor: "var(--amber)", color: "var(--charcoal)" }}
+                >
+                  Add memories
+                </Link>
               </div>
             </div>
           )}

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -15,9 +14,13 @@ export default function Home() {
           <Link href="/login" className="text-sm transition-colors" style={{ color: "var(--charcoal)" }}>
             Sign in
           </Link>
-          <Button asChild variant="default" size="sm">
-            <Link href="/signup">Get Started</Link>
-          </Button>
+          <Link
+            href="/signup"
+            className="inline-flex h-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors"
+            style={{ backgroundColor: "var(--amber)", color: "var(--charcoal)" }}
+          >
+            Get Started
+          </Link>
         </nav>
       </header>
 
@@ -42,12 +45,20 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-            <Button asChild size="lg">
-              <Link href="/signup">Start your book — free</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="#pricing">See pricing</Link>
-            </Button>
+            <Link
+              href="/signup"
+              className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg px-5 py-3 text-base font-semibold whitespace-nowrap transition-colors shadow-sm"
+              style={{ backgroundColor: "var(--amber)", color: "var(--charcoal)" }}
+            >
+              Start your book — free
+            </Link>
+            <Link
+              href="#pricing"
+              className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg border border-border px-5 py-3 text-base font-semibold whitespace-nowrap transition-colors"
+              style={{ borderColor: "var(--amber)", color: "var(--amber)" }}
+            >
+              See pricing
+            </Link>
           </div>
         </div>
 
@@ -180,9 +191,13 @@ export default function Home() {
                     Printed books
                   </li>
                 </ul>
-                <Button asChild variant="outline" className="w-full">
-                  <Link href="/signup">Get started</Link>
-                </Button>
+                <Link
+                  href="/signup"
+                  className="mt-auto block text-center border-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors"
+                  style={{ borderColor: "var(--amber)", color: "var(--amber)" }}
+                >
+                  Get started
+                </Link>
               </CardContent>
             </Card>
 
@@ -213,9 +228,13 @@ export default function Home() {
                     Family collaboration
                   </li>
                 </ul>
-                <Button asChild className="w-full">
-                  <Link href="/signup">Upgrade</Link>
-                </Button>
+                <Link
+                  href="/signup"
+                  className="mt-auto block text-center rounded-full px-4 py-2.5 text-sm font-semibold transition-colors shadow-sm"
+                  style={{ backgroundColor: "var(--amber)", color: "var(--charcoal)" }}
+                >
+                  Upgrade
+                </Link>
               </CardContent>
             </Card>
 
@@ -239,9 +258,13 @@ export default function Home() {
                     Priority support
                   </li>
                 </ul>
-                <Button asChild variant="outline" className="w-full">
-                  <Link href="/signup">Upgrade</Link>
-                </Button>
+                <Link
+                  href="/signup"
+                  className="mt-auto block text-center border-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors"
+                  style={{ borderColor: "var(--amber)", color: "var(--amber)" }}
+                >
+                  Upgrade
+                </Link>
               </CardContent>
             </Card>
           </div>
@@ -254,9 +277,13 @@ export default function Home() {
           <div className="text-4xl mb-2">📖</div>
           <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>Every family has stories worth keeping</h2>
           <p className="text-sm" style={{ color: "var(--charcoal)" }}>Start writing yours today. It&apos;s free to begin, and your memories grow more valuable with every year.</p>
-          <Button asChild size="lg">
-            <Link href="/signup">Create your memory book</Link>
-          </Button>
+          <Link
+            href="/signup"
+            className="inline-block rounded-full px-6 py-3.5 text-sm font-semibold transition-colors shadow-sm"
+            style={{ backgroundColor: "var(--amber)", color: "var(--charcoal)" }}
+          >
+            Create your memory book
+          </Link>
         </div>
       </section>
 

@@ -213,9 +213,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             <Button type="submit" disabled={loading || !answer.trim()}>
               {loading ? 'Saving...' : memoryId ? 'Update Memory' : 'Save Memory'}
             </Button>
-            <Button type="button" variant="outline" asChild>
-              <Link href={`/books/${id}`}>Cancel</Link>
-            </Button>
+            <Link
+              href={`/books/${id}`}
+              className="inline-flex h-9 px-4 py-2 rounded-lg border border-border bg-background hover:bg-muted text-sm font-medium transition-colors"
+            >
+              Cancel
+            </Link>
           </div>
         </form>
       </main>

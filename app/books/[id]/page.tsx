@@ -3,9 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 interface Memory {
   id: number;
@@ -86,12 +84,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </Link>
           <h1 className="text-xl md:text-2xl font-bold mt-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>{book.title}</h1>
         </div>
-        <Button asChild>
-          <Link href={`/books/${id}/edit`}>
-            <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-            Add Memory
-          </Link>
-        </Button>
+        <Link
+          href={`/books/${id}/edit`}
+          className="inline-flex h-8 shrink-0 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors shadow-sm"
+          style={{ backgroundColor: "var(--amber)", color: "var(--charcoal)" }}
+        >
+          <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          Add Memory
+        </Link>
       </header>
 
       <main className="flex-1 px-6 md:px-8 py-8 max-w-2xl mx-auto w-full">
@@ -114,12 +114,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             <p className="mb-8 text-sm max-w-xs mx-auto leading-relaxed" style={{ color: "var(--charcoal)" }}>
               Every great story starts with a single memory. Add your first one — you can use a prompt or write freely.
             </p>
-            <Button asChild>
-              <Link href={`/books/${id}/edit`}>
-                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                Add your first memory
-              </Link>
-            </Button>
+            <Link
+              href={`/books/${id}/edit`}
+              className="inline-flex h-10 shrink-0 items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold transition-colors shadow-sm"
+              style={{ backgroundColor: "var(--amber)", color: "var(--charcoal)" }}
+            >
+              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              Add your first memory
+            </Link>
           </div>
         ) : (
           <div className="space-y-5">
@@ -184,15 +186,17 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {memories.length > 0 && (
           <div className="mt-10 text-center">
-            <Button asChild variant="outline">
-              <Link href={`/books/${id}/preview`}>
-                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-                </svg>
-                Preview your book
-              </Link>
-            </Button>
+            <Link
+              href={`/books/${id}/preview`}
+              className="inline-flex h-10 shrink-0 items-center justify-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors"
+              style={{ borderColor: "var(--amber)", color: "var(--amber)" }}
+            >
+              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              Preview your book
+            </Link>
           </div>
         )}
       </main>
