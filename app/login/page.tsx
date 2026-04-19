@@ -43,29 +43,28 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--off-white)" }}>
-      <header className="py-5 px-6">
-        <Link href="/" className="text-xl font-bold" style={{ color: "var(--amber)" }}>Memory Project</Link>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--cream)" }}>
+      <header className="py-5 px-6" style={{ backgroundColor: "var(--cream)" }}>
+        <Link href="/" className="text-xl font-bold tracking-tight" style={{ color: "var(--midnight)" }}>Memory Project</Link>
       </header>
 
       <main className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm">
-          {/* Warm greeting */}
+          {/* Greeting */}
           <div className="text-center mb-8">
-            <div className="text-4xl mb-3">👋</div>
-            <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>Welcome back</h1>
-            <p className="text-sm" style={{ color: "var(--charcoal)" }}>Sign in to continue your memory book</p>
+            <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--midnight)" }}>Welcome back</h1>
+            <p className="text-sm" style={{ color: "var(--rosy)" }}>Sign in to continue your memory book</p>
           </div>
 
-          <Card className="p-6">
+          <Card className="p-6" style={{ backgroundColor: "var(--white)", border: "1px solid var(--thistle)" }}>
             <CardContent className="pt-0">
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                  <div className="p-3 rounded-lg text-sm" style={{ backgroundColor: "#fef2f2", color: "#dc2626" }}>{error}</div>
+                  <div className="p-3 rounded-lg text-sm" style={{ backgroundColor: "rgba(185,28,28,0.08)", color: "#B91C1C" }}>{error}</div>
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-sm" style={{ color: "var(--charcoal)" }}>Email</Label>
                   <Input
                     type="email"
                     id="email"
@@ -73,11 +72,13 @@ export default function Login() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="ruth@example.com"
+                    className="text-sm"
+                    style={{ borderColor: "var(--thistle)", backgroundColor: "var(--cream)" }}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-sm" style={{ color: "var(--charcoal)" }}>Password</Label>
                   <Input
                     type="password"
                     id="password"
@@ -85,19 +86,21 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="Your password"
+                    className="text-sm"
+                    style={{ borderColor: "var(--thistle)", backgroundColor: "var(--cream)" }}
                   />
                 </div>
 
-                <Button type="submit" disabled={loading} className="w-full">
+                <Button type="submit" disabled={loading} className="w-full text-sm" style={{ backgroundColor: "var(--midnight)", color: "var(--cream)" }}>
                   {loading ? 'Signing in...' : 'Sign in'}
                 </Button>
               </form>
             </CardContent>
           </Card>
 
-          <p className="text-center mt-8 text-sm" style={{ color: "var(--charcoal)" }}>
+          <p className="text-center mt-8 text-sm" style={{ color: "var(--rosy)" }}>
             Don&apos;t have an account?{' '}
-            <Link href="/signup" className="font-semibold" style={{ color: "var(--amber)" }}>Create one — it&apos;s free</Link>
+            <Link href="/signup" className="font-semibold" style={{ color: "var(--olive)" }}>Create one — it&apos;s free</Link>
           </p>
         </div>
       </main>

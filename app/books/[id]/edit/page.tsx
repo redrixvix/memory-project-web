@@ -97,16 +97,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
   if (fetchingMemory) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--off-white)" }}>
-        <div style={{ color: "var(--charcoal)" }}>Loading...</div>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--cream)" }}>
+        <div style={{ color: "var(--rosy)" }}>Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--off-white)" }}>
-      <header className="py-4 px-6 border-b" style={{ backgroundColor: "var(--white)", borderColor: "var(--olive)" }}>
-        <Link href={`/books/${id}`} className="text-sm transition-colors flex items-center gap-1" style={{ color: "var(--charcoal)" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--cream)" }}>
+      <header className="py-4 px-6 border-b" style={{ backgroundColor: "var(--white)", borderColor: "var(--thistle)" }}>
+        <Link href={`/books/${id}`} className="text-sm transition-colors flex items-center gap-1" style={{ color: "var(--rosy)" }}>
           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
           Back to book
         </Link>
@@ -114,21 +114,21 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
       <main className="flex-1 px-6 py-8 max-w-xl mx-auto w-full">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>
+          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--midnight)" }}>
             {memoryId ? 'Edit Memory' : 'Add a Memory'}
           </h1>
-          <p className="text-sm" style={{ color: "var(--charcoal)" }}>Write about a moment that matters to you. Take your time.</p>
+          <p className="text-sm" style={{ color: "var(--rosy)" }}>Write about a moment that matters to you. Take your time.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Prompt selector */}
           <div>
-            <Label className="mb-3 block">Writing prompt <span className="font-normal opacity-60">(optional)</span></Label>
+            <Label className="mb-3 block text-sm" style={{ color: "var(--charcoal)" }}>Writing prompt <span className="font-normal opacity-60">(optional)</span></Label>
 
             <div className="space-y-4">
               {PROMPTS.map((group) => (
                 <div key={group.category}>
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--charcoal)", opacity: 0.6 }}>{group.category}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--rosy)" }}>{group.category}</p>
                   <div className="flex flex-wrap gap-2">
                     {group.prompts.slice(0, 3).map((p) => (
                       <Button
@@ -137,6 +137,10 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         variant={prompt === p ? "default" : "outline"}
                         size="sm"
                         onClick={() => setPrompt(p)}
+                        style={prompt === p
+                          ? { backgroundColor: "var(--midnight)", color: "var(--cream)" }
+                          : { borderColor: "var(--thistle)", color: "var(--midnight)" }
+                        }
                       >
                         {p.length > 40 ? p.slice(0, 40) + '…' : p}
                       </Button>
@@ -149,18 +153,18 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 type="button"
                 onClick={() => setShowAllPrompts(!showAllPrompts)}
                 className="text-xs flex items-center gap-1 transition-colors"
-                style={{ color: "var(--amber-muted)" }}
+                style={{ color: "var(--olive)" }}
               >
                 {showAllPrompts ? 'Show fewer prompts' : 'See all prompts'}
                 <svg className={`w-3 h-3 transition-transform ${showAllPrompts ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
               </button>
 
               {showAllPrompts && (
-                <Card className="p-4">
+                <Card className="p-4" style={{ backgroundColor: "var(--white)", border: "1px solid var(--thistle)" }}>
                   <CardContent className="pt-0">
                     {PROMPTS.map((group) => (
                       <div key={group.category} className="mb-4 last:mb-0">
-                        <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--charcoal)", opacity: 0.6 }}>{group.category}</p>
+                        <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--rosy)" }}>{group.category}</p>
                         <div className="flex flex-wrap gap-2">
                           {group.prompts.map((p) => (
                             <Button
@@ -169,6 +173,10 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               variant={prompt === p ? "default" : "outline"}
                               size="sm"
                               onClick={() => setPrompt(p)}
+                              style={prompt === p
+                                ? { backgroundColor: "var(--midnight)", color: "var(--cream)" }
+                                : { borderColor: "var(--thistle)", color: "var(--midnight)" }
+                              }
                             >
                               {p}
                             </Button>
@@ -182,13 +190,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             </div>
 
             {prompt && (
-              <div className="mt-3 flex items-start gap-2 rounded-xl p-3" style={{ backgroundColor: "rgba(207,181,59,0.1)", border: "1px solid rgba(207,181,59,0.2)" }}>
-                <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--amber-muted)" }}>
+              <div className="mt-3 flex items-start gap-2 rounded-xl p-3" style={{ backgroundColor: "rgba(71,75,36,0.08)", border: "1px solid var(--olive)" }}>
+                <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--olive)" }}>
                   <path d="M12 2L2 7l10 5 10-5-10-5z"/>
                   <path d="M2 17l10 5 10-5"/>
                   <path d="M2 12l10 5 10-5"/>
                 </svg>
-                <p className="text-sm font-medium italic" style={{ color: "var(--amber-muted)" }}>{prompt}</p>
+                <p className="text-sm font-medium italic" style={{ color: "var(--olive)" }}>{prompt}</p>
               </div>
             )}
           </div>
@@ -196,8 +204,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           {/* Writing area */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <Label>Your memory</Label>
-              <span className="text-xs" style={{ color: "var(--charcoal)", opacity: 0.6 }}>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+              <Label className="text-sm" style={{ color: "var(--charcoal)" }}>Your memory</Label>
+              <span className="text-xs" style={{ color: "var(--rosy)" }}>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
             </div>
             <Textarea
               value={answer}
@@ -206,16 +214,18 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               className="text-base leading-relaxed"
               rows={14}
               placeholder="Take your time. There's no right or wrong way to write a memory — just tell it like it was..."
+              style={{ borderColor: "var(--thistle)", backgroundColor: "var(--white)" }}
             />
           </div>
 
           <div className="flex gap-3">
-            <Button type="submit" disabled={loading || !answer.trim()}>
+            <Button type="submit" disabled={loading || !answer.trim()} style={{ backgroundColor: "var(--midnight)", color: "var(--cream)" }}>
               {loading ? 'Saving...' : memoryId ? 'Update Memory' : 'Save Memory'}
             </Button>
             <Link
               href={`/books/${id}`}
-              className="inline-flex h-9 px-4 py-2 rounded-lg border border-border bg-background hover:bg-muted text-sm font-medium transition-colors"
+              className="inline-flex h-9 px-4 py-2 rounded-lg border text-sm font-medium transition-colors"
+              style={{ borderColor: "var(--thistle)", color: "var(--midnight)", backgroundColor: "var(--white)" }}
             >
               Cancel
             </Link>
