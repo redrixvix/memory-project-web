@@ -106,14 +106,14 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
 
             {/* Book spine — left side decoration */}
             <div className="flex">
-              <div className="w-6 shrink-0" style={{ background: "linear-gradient(to right, var(--olive), var(--rosy))" }} />
+              <div className="w-6 shrink-0" style={{ background: "linear-gradient(to right, var(--rosy), var(--rosy))" }} />
               <div className="flex-1">
 
                 {/* Cover page */}
-                <div className="px-12 py-16 text-center border-b-4" style={{ background: "linear-gradient(to bottom, rgba(196,183,203,0.15), rgba(192,201,153,0.1), var(--white))", borderColor: "var(--olive)" }}>
+                <div className="px-12 py-16 text-center border-b-4" style={{ background: "linear-gradient(to bottom, rgba(196,183,203,0.15), rgba(196,183,203,0.05), var(--white))", borderColor: "var(--rosy)" }}>
                   {/* Decorative elements */}
                   <div className="flex justify-center mb-6">
-                    <svg width="60" height="30" viewBox="0 0 60 30" fill="none" style={{ color: "var(--olive)" }}>
+                    <svg width="60" height="30" viewBox="0 0 60 30" fill="none" style={{ color: "var(--rosy)" }}>
                       <path d="M30 15C30 15 10 5 5 15C5 25 30 25 30 15Z" fill="currentColor" fillOpacity="0.4"/>
                       <path d="M30 15C30 15 50 5 55 15C55 25 30 25 30 15Z" fill="currentColor" fillOpacity="0.4"/>
                       <circle cx="30" cy="15" r="4" fill="currentColor"/>
@@ -123,7 +123,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
                     <h2 className="text-4xl font-bold mb-3" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", letterSpacing: "-0.01em", color: "var(--midnight)" }}>
                       {book.title}
                     </h2>
-                    <p className="text-sm italic" style={{ color: "var(--olive)" }}>A Memory Book</p>
+                    <p className="text-sm italic" style={{ color: "var(--rosy)" }}>A Memory Book</p>
                   </div>
                   <p className="font-medium" style={{ color: "var(--midnight)" }}>{book.owner_name}</p>
                   <p className="text-xs mt-1" style={{ color: "var(--rosy)" }}>{memories.length} {memories.length === 1 ? 'memory' : 'memories'}</p>
@@ -136,7 +136,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
                     <ol className="space-y-3">
                       {memories.map((m, i) => (
                         <li key={m.id} className="flex items-baseline gap-3">
-                          <span className="text-xs w-4 shrink-0" style={{ color: "var(--olive)" }}>{i + 1}.</span>
+                          <span className="text-xs w-4 shrink-0" style={{ color: "var(--rosy)" }}>{i + 1}.</span>
                           <span className="text-sm leading-snug" style={{ color: "var(--midnight)" }}>
                             {m.prompt_question
                               ? <span className="italic">"{m.prompt_question.slice(0, 45)}{m.prompt_question.length > 45 ? '…' : ''}"</span>
@@ -158,9 +158,9 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
                         <p className="text-sm italic mb-2 leading-relaxed" style={{ color: "var(--rosy)" }}>"{memory.prompt_question}"</p>
                       )}
                       <div className="flex items-center gap-2">
-                        <div className="h-px flex-1" style={{ background: "linear-gradient(to right, var(--olive), transparent)" }} />
-                        <span className="text-xs font-medium" style={{ color: "var(--olive)" }}>Page {i + 1}</span>
-                        <div className="h-px flex-1" style={{ background: "linear-gradient(to left, var(--olive), transparent)" }} />
+                        <div className="h-px flex-1" style={{ background: "linear-gradient(to right, var(--rosy), transparent)" }} />
+                        <span className="text-xs font-medium" style={{ color: "var(--rosy)" }}>Page {i + 1}</span>
+                        <div className="h-px flex-1" style={{ background: "linear-gradient(to left, var(--rosy), transparent)" }} />
                       </div>
                     </div>
 
@@ -187,12 +187,12 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
 
                 {/* Back cover */}
                 {memories.length > 0 && (
-                  <div className="px-12 py-16 text-center border-t-4" style={{ background: "linear-gradient(to top, rgba(196,183,203,0.1), var(--white))", borderColor: "var(--olive)" }}>
+                  <div className="px-12 py-16 text-center border-t-4" style={{ background: "linear-gradient(to top, rgba(196,183,203,0.1), var(--white))", borderColor: "var(--rosy)" }}>
                     <div className="border-t border-b py-6 mb-6" style={{ borderColor: "rgba(71,75,36,0.25)" }}>
                       <p className="text-sm italic mb-2" style={{ color: "var(--midnight)" }}>"The stories we keep become the legacy we leave."</p>
                     </div>
                     <p className="text-xs" style={{ color: "var(--rosy)" }}>Printed with love by Memory Project</p>
-                    <p className="text-xs mt-1" style={{ color: "var(--olive)" }}>memoryproject.com</p>
+                    <p className="text-xs mt-1" style={{ color: "var(--rosy)" }}>memoryproject.com</p>
                   </div>
                 )}
               </div>

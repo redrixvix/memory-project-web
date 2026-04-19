@@ -1,26 +1,41 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 export default function Home() {
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setLoggedIn(document.cookie.includes('session='));
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif" }}>
       {/* Header */}
       <header className="py-5 px-6 md:px-10 flex justify-between items-center" style={{ backgroundColor: "var(--cream)" }}>
         <div className="text-xl font-bold tracking-tight" style={{ color: "var(--midnight)" }}>Memory Project</div>
         <nav className="flex gap-6 items-center">
-          <Link href="/login" className="text-sm transition-colors" style={{ color: "var(--rosy)" }}>
-            Sign in
-          </Link>
-          <Link
-            href="/signup"
-            className="inline-flex h-9 shrink-0 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors"
-            style={{ backgroundColor: "var(--midnight)", color: "var(--cream)" }}
-          >
-            Get Started
-          </Link>
+          {loggedIn ? (
+            <Link href="/dashboard" className="text-sm font-medium transition-colors" style={{ color: "var(--midnight)" }}>
+              Dashboard
+            </Link>
+          ) : (
+            <Link href="/login" className="text-sm transition-colors" style={{ color: "var(--rosy)" }}>
+              Sign in
+            </Link>
+          )}
+          {!loggedIn && (
+            <Link
+              href="/signup"
+              className="inline-flex h-9 shrink-0 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors"
+              style={{ backgroundColor: "var(--midnight)", color: "var(--cream)" }}
+            >
+              Get Started
+            </Link>
+          )}
         </nav>
       </header>
 
