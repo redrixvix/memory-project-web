@@ -346,7 +346,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     setCustomPrompt(defaultPrompt);
                     setPrompt(defaultPrompt);
                   }
-                  setShowAllPrompts(false);
+                  // Don't close — show input below in same modal
                 }}
                 className="w-full text-left rounded-xl px-4 py-3 text-sm transition-colors"
                 style={useCustomPrompt
@@ -354,8 +354,35 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   : { backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.2)', color: 'var(--charcoal)' }
                 }
               >
-                Write your own…
+                {useCustomPrompt ? 'Writing custom prompt…' : 'Write your own…'}
               </button>
+              {useCustomPrompt && (
+                <Input
+                  value={customPrompt}
+                  onChange={(e) => { setCustomPrompt(e.target.value); setPrompt(e.target.value); }}
+                  placeholder="What's a memory you'll never forget?"
+                  className="rounded-xl text-sm"
+                  style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }}
+                />
+              )}
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAllPrompts(false)}
+                  className="text-sm px-4 py-2 rounded-full"
+                  style={{ color: '#6A6A5A' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAllPrompts(false)}
+                  className="text-sm px-4 py-2 rounded-full"
+                  style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+                >
+                  Done
+                </button>
+              </div>
             </div>
           </div>
         </div>

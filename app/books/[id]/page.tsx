@@ -83,17 +83,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             </h1>
           </div>
           <div className="flex flex-row flex-wrap gap-2 items-center shrink-0">
-            <Link
-              href={`/books/${id}/edit`}
-              className="inline-flex h-8 md:h-9 items-center justify-center rounded-full px-3 md:px-4 text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
-            >
-              <svg className="w-3 h-3 md:w-3.5 md:h-3.5 md:mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              <span className="hidden sm:inline">Add Memory</span>
-              <span className="sm:hidden">+ Add</span>
-            </Link>
+            {memories.length === 0 && (
+              <Link
+                href={`/books/${id}/edit`}
+                className="inline-flex h-8 md:h-9 items-center justify-center rounded-full px-3 md:px-5 text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
+                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+              >
+                <svg className="w-3 h-3 md:w-3.5 md:h-3.5 md:mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                <span className="hidden sm:inline">Add Memory</span>
+              </Link>
+            )}
             <button
               type="button"
               onClick={() => {
