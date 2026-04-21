@@ -32,9 +32,10 @@ export async function GET(request: NextRequest) {
 
     // Get books owned by user and books where user is collaborator
     const books = await sql`
-      SELECT DISTINCT b.id, b.title, b.description, b.storage_tier, b.storage_used_bytes, b.created_at,
+      SELECT DISTINCT b.id, b.title, b.description, b.storage_tier, b.storage_used_bytes, b.created_at, b.updated_at,
              u.name as owner_name,
-             COALESCE(bc.role, 'owner') as role
+             COALESCE(bc.role, 'owner') as role,
+             (SELECT COUNT(*) FROM memories m WHERE m.book_id = b.id) as memory_count
       FROM books b
       JOIN users u ON b.owner_id = u.id
       LEFT JOIN book_collaborators bc ON b.id = bc.book_id AND bc.user_id = ${user.id}
@@ -42,7 +43,12 @@ export async function GET(request: NextRequest) {
       ORDER BY b.created_at DESC
     `;
 
-    return NextResponse.json({ books });
+    const booksWithCount = books.map((b: Record<string, unknown>) => ({
+      ...b,
+      _count: { memories: Number(b.memory_count) },
+      updated_at: b.updated_at ?? b.created_at,
+    }));
+    return NextResponse.json({ books: booksWithCount });
   } catch (error) {
     console.error('List books error:', error);
     return NextResponse.json(

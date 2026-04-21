@@ -16,8 +16,10 @@ interface Book {
   description: string | null;
   storage_tier: string;
   created_at: string;
+  updated_at: string;
   role: string;
   owner_name: string;
+  _count?: { memories: number };
 }
 
 export default function Dashboard() {
@@ -118,6 +120,7 @@ export default function Dashboard() {
             </div>
             <Button
               onClick={() => setShowCreate(true)}
+              type="button"
               className="rounded-full shrink-0 h-11 px-6 text-sm font-medium transition-all duration-200 active:scale-95"
               style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
             >
@@ -161,7 +164,7 @@ export default function Dashboard() {
                       onChange={(e) => setNewTitle(e.target.value)}
                       required
                       placeholder="Ruth's Life Story"
-                      className="rounded-xl text-base"
+                      className="rounded-xl text-base w-full"
                       style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
                     />
                   </div>
@@ -173,17 +176,17 @@ export default function Dashboard() {
                       id="desc"
                       value={newDesc}
                       onChange={(e) => setNewDesc(e.target.value)}
-                      className="resize-none rounded-xl text-base"
+                      className="resize-none rounded-xl text-base w-full"
                       rows={3}
                       placeholder="A collection of memories from a wonderful life..."
                       style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
                     />
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <Button
                       type="submit"
                       disabled={creating}
-                      className="rounded-full h-11 px-7 text-sm font-medium"
+                      className="rounded-full h-11 px-7 text-sm font-medium w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
                     >
                       {creating ? 'Creating...' : 'Create Book'}
@@ -224,6 +227,7 @@ export default function Dashboard() {
             </p>
             <Button
               onClick={() => setShowCreate(true)}
+              type="button"
               className="rounded-full h-12 px-8 text-sm font-medium"
               style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
             >
@@ -272,8 +276,8 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-xs font-medium capitalize" style={{ color: 'var(--charcoal)' }}>{book.storage_tier} plan</p>
-                          <p className="text-xs mt-0.5" style={{ color: '#6A6A5A' }}>
-                            {new Date(book.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                          <p className="text-xs mt-0.5" style={{ color: '#8A8A7A' }}>
+                            {book._count ? `${book._count.memories} ${book._count.memories === 1 ? 'memory' : 'memories'}` : '—'} · Updated {new Date(book.updated_at || book.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </p>
                         </div>
                         <div

@@ -47,7 +47,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   };
 
   const handleDeleteMemory = async (memoryId: number) => {
-    if (!confirm('Delete this memory? This cannot be undone.')) return;
     const res = await fetch(`/api/memories/${memoryId}`, { method: 'DELETE' });
     if (res.ok) setMemories(memories.filter(m => m.id !== memoryId));
   };
@@ -71,35 +70,38 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       {/* ── TOP NAV ── */}
       <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
         <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="text-sm flex items-center gap-1.5 transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>
+          <div className="flex items-center gap-3 min-w-0">
+            <Link href="/dashboard" className="text-sm flex items-center gap-1.5 transition-colors hover:opacity-70 shrink-0" style={{ color: '#6A6A5A' }}>
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M15 18l-6-6 6-6"/>
               </svg>
               Dashboard
             </Link>
             <span style={{ color: 'rgba(212,163,115,0.3)' }}>·</span>
-            <h1 className="text-base font-medium truncate max-w-[140px] md:max-w-none" style={{ color: 'var(--charcoal)' }}>
+            <h1 className="text-base md:text-lg font-medium truncate" style={{ color: 'var(--charcoal)' }}>
               {book.title}
             </h1>
           </div>
           <div className="flex flex-row flex-wrap gap-2 items-center shrink-0">
-            <Link
-              href={`/books/${id}/edit`}
-              className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-            >
-              <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              Add Memory
-            </Link>
+            {memories.length === 0 && (
+              <Link
+                href={`/books/${id}/edit`}
+                className="inline-flex h-8 md:h-9 items-center justify-center rounded-full px-3 md:px-5 text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
+                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+              >
+                <svg className="w-3 h-3 md:w-3.5 md:h-3.5 md:mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                <span className="hidden sm:inline">Add Memory</span>
+              </Link>
+            )}
             <button
+              type="button"
               onClick={() => {
                 navigator.clipboard.writeText(`${window.location.origin}/books/${id}/preview`);
                 alert('Preview link copied! Anyone with this link can view your book.');
               }}
-              className="inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium whitespace-nowrap transition-colors"
+              className="inline-flex h-8 md:h-9 items-center justify-center rounded-full border px-3 md:px-4 text-xs md:text-sm font-medium whitespace-nowrap transition-colors"
               style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
             >
               Share
@@ -167,7 +169,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         ) : (
           /* ── Memory list ── */
-          <div className="space-y-5">
+          <div className="space-y-8">
             {memories.map((memory, index) => (
               <div key={memory.id}>
                 <Card
@@ -177,7 +179,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   <CardContent className="pt-8 pb-8 px-6">
 
                     {/* Header: number + date + prompt */}
-                    <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
+                    <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
                       <div className="flex items-center gap-3">
                         <span
                           className="text-xs font-medium px-2.5 py-1 rounded-full"
@@ -185,19 +187,19 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         >
                           #{index + 1}
                         </span>
-                        <p className="text-xs" style={{ color: '#6A6A5A' }}>
-                          {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                        <p className="text-xs" style={{ color: '#8A8A7A' }}>
+                          {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
                       {memory.prompt_question && (
-                        <p className="text-xs italic max-w-[300px] leading-relaxed tracking-wide" style={{ color: '#6A6A5A' }}>
+                        <p className="text-xs italic max-w-[260px] leading-relaxed" style={{ color: '#A0A08A' }}>
                           &ldquo;{memory.prompt_question}&rdquo;
                         </p>
                       )}
                     </div>
 
                     {/* Memory text */}
-                    <p className="text-base leading-loose leading-8 whitespace-pre-wrap" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                    <p className="text-base md:text-lg leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                       {memory.answer_text}
                     </p>
 
@@ -219,24 +221,29 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
                     {/* Footer actions */}
                     <div className="flex justify-end items-center mt-6 pt-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.15)' }}>
-                      <div className="flex gap-4">
+                      <div className="flex gap-4 items-center">
                         <Link
                           href={`/books/${id}/edit?memory=${memory.id}`}
-                          className="text-sm font-medium flex items-center gap-1.5 transition-colors hover:opacity-70"
+                          className="text-xs font-medium flex items-center gap-1.5 transition-colors hover:opacity-70"
                           style={{ color: 'var(--bronze)' }}
                         >
-                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                           </svg>
                           Edit
                         </Link>
                         <button
-                          onClick={() => handleDeleteMemory(memory.id)}
-                          className="text-sm flex items-center gap-1.5 transition-colors hover:opacity-70"
-                          style={{ color: '#B91C1C' }}
+                          type="button"
+                          onClick={() => {
+                            if (window.confirm('Delete this memory? This cannot be undone.')) {
+                              handleDeleteMemory(memory.id);
+                            }
+                          }}
+                          className="text-xs text-muted-foreground flex items-center gap-1.5 transition-colors hover:opacity-70"
+                          style={{ color: '#9A9A8A' }}
                         >
-                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
                           </svg>
                           Delete
