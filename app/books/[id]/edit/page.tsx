@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 
 const PROMPTS = [
@@ -40,6 +41,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const memoryId = searchParams.get('memory');
 
   const [prompt, setPrompt] = useState('');
+  const [useCustomPrompt, setUseCustomPrompt] = useState(false);
+  const [customPrompt, setCustomPrompt] = useState('');
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
   const [fetchingMemory, setFetchingMemory] = useState(!!memoryId);
@@ -51,6 +54,17 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       fetchMemory(memoryId);
     }
   }, [memoryId]);
+
+  // When fetching an existing memory, detect if it's a custom prompt (not in the preset list)
+  useEffect(() => {
+    if (prompt && !useCustomPrompt) {
+      const allPresetPrompts = PROMPTS.flatMap(g => g.prompts);
+      if (!allPresetPrompts.includes(prompt)) {
+        setUseCustomPrompt(true);
+        setCustomPrompt(prompt);
+      }
+    }
+  }, [prompt]);
 
   useEffect(() => {
     const words = answer.trim() ? answer.trim().split(/\s+/).length : 0;
@@ -65,7 +79,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         setPrompt(data.memory.prompt_question || '');
         setAnswer(data.memory.answer_text || '');
       } else if (res.status === 404) {
-        // Memory not found — redirect to add-mode so no 404 console error surfaces
         router.replace(`/books/${id}/edit`);
       } else {
         console.error('Failed to load memory:', res.status);
@@ -104,16 +117,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
   if (fetchingMemory) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--cornsilk)" }}>
-        <div style={{ color: "#6A6A5A" }}>Loading...</div>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
+        <div style={{ color: '#6A6A5A' }}>Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--cornsilk)" }}>
-      <header className="py-4 px-6 border-b" style={{ backgroundColor: "#FDFCF5", borderColor: "rgba(212,163,115,0.15)" }}>
-        <Link href={`/books/${id}`} className="text-sm transition-colors flex items-center gap-1" style={{ color: "#6A6A5A" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--cornsilk)' }}>
+      <header className="py-4 px-6 border-b" style={{ backgroundColor: '#FDFCF5', borderColor: 'rgba(212,163,115,0.15)' }}>
+        <Link href={`/books/${id}`} className="text-sm transition-colors flex items-center gap-1" style={{ color: '#6A6A5A' }}>
           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
           Back to book
         </Link>
@@ -121,33 +134,79 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
       <main className="flex-1 px-6 py-8 max-w-xl mx-auto w-full">
         <div className="mb-8">
-          <h1 className="text-3xl font-medium mb-4" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>
+          <h1 className="text-3xl font-medium mb-4" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: 'var(--charcoal)' }}>
             {memoryId ? 'Edit Memory' : 'Add a Memory'}
           </h1>
-          <p className="text-sm" style={{ color: "#6A6A5A" }}>Write about a moment that matters to you. Take your time.</p>
+          <p className="text-sm" style={{ color: '#6A6A5A' }}>Write about a moment that matters to you. Take your time.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Prompt selector */}
           <div className="mb-8">
-            <Label className="mb-3 block text-sm" style={{ color: "var(--charcoal)" }}>Writing prompt <span className="font-normal opacity-60">(optional)</span></Label>
+            <Label className="mb-3 block text-sm" style={{ color: 'var(--charcoal)' }}>Writing prompt <span className="font-normal opacity-60">(optional)</span></Label>
 
             <div className="space-y-4">
+              {/* Custom prompt option */}
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#6A6A5A' }}>Custom</p>
+                <div className="flex flex-col gap-3">
+                  <Button
+                    type="button"
+                    variant={useCustomPrompt ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => {
+                      setUseCustomPrompt(true);
+                      setPrompt(customPrompt || '');
+                    }}
+                    className="rounded-full w-full justify-start text-left"
+                    style={useCustomPrompt
+                      ? { backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }
+                      : { borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)', backgroundColor: 'transparent' }
+                    }
+                  >
+                    Write your own prompt…
+                  </Button>
+                  {useCustomPrompt && (
+                    <Input
+                      value={customPrompt}
+                      onChange={(e) => {
+                        setCustomPrompt(e.target.value);
+                        setPrompt(e.target.value);
+                      }}
+                      placeholder="e.g. What's the bravest thing you've ever done?"
+                      className="rounded-xl text-sm"
+                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
+                <span className="text-xs" style={{ color: '#6A6A5A' }}>or choose a guided prompt</span>
+                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
+              </div>
+
+              {/* Preset prompts */}
               {PROMPTS.map((group) => (
                 <div key={group.category}>
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#6A6A5A" }}>{group.category}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#6A6A5A' }}>{group.category}</p>
                   <div className="flex flex-wrap gap-2">
                     {group.prompts.slice(0, 3).map((p) => (
                       <Button
                         key={p}
                         type="button"
-                        variant={prompt === p ? "default" : "outline"}
+                        variant={prompt === p && !useCustomPrompt ? 'default' : 'outline'}
                         size="sm"
-                        onClick={() => setPrompt(p)}
+                        onClick={() => {
+                          setPrompt(p);
+                          setUseCustomPrompt(false);
+                        }}
                         className="rounded-full"
-                        style={prompt === p
-                          ? { backgroundColor: "var(--bronze)", color: "var(--charcoal)" }
-                          : { borderColor: "rgba(212,163,115,0.3)", color: "var(--charcoal)" }
+                        style={prompt === p && !useCustomPrompt
+                          ? { backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }
+                          : { borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }
                         }
                       >
                         {p.length > 40 ? p.slice(0, 40) + '…' : p}
@@ -161,30 +220,33 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 type="button"
                 onClick={() => setShowAllPrompts(!showAllPrompts)}
                 className="text-xs flex items-center gap-1 transition-colors"
-                style={{ color: "var(--bronze)" }}
+                style={{ color: 'var(--bronze)' }}
               >
                 {showAllPrompts ? 'Show fewer prompts' : 'See all prompts'}
                 <svg className={`w-3 h-3 transition-transform ${showAllPrompts ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
               </button>
 
               {showAllPrompts && (
-                <Card className="p-4" style={{ backgroundColor: "#FDFCF5", border: "1px solid rgba(212,163,115,0.2)", boxShadow: "0 4px 20px rgba(212,163,115,0.06)" }}>
+                <Card className="p-4" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.2)', boxShadow: '0 4px 20px rgba(212,163,115,0.06)' }}>
                   <CardContent className="pt-0">
                     {PROMPTS.map((group) => (
                       <div key={group.category} className="mb-4 last:mb-0">
-                        <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#6A6A5A" }}>{group.category}</p>
+                        <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#6A6A5A' }}>{group.category}</p>
                         <div className="flex flex-wrap gap-2">
                           {group.prompts.map((p) => (
                             <Button
                               key={p}
                               type="button"
-                              variant={prompt === p ? "default" : "outline"}
+                              variant={prompt === p && !useCustomPrompt ? 'default' : 'outline'}
                               size="sm"
-                              onClick={() => setPrompt(p)}
+                              onClick={() => {
+                                setPrompt(p);
+                                setUseCustomPrompt(false);
+                              }}
                               className="rounded-full"
-                              style={prompt === p
-                                ? { backgroundColor: "var(--bronze)", color: "var(--charcoal)" }
-                                : { borderColor: "rgba(212,163,115,0.3)", color: "var(--charcoal)" }
+                              style={prompt === p && !useCustomPrompt
+                                ? { backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }
+                                : { borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }
                               }
                             >
                               {p}
@@ -198,21 +260,25 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               )}
             </div>
 
+            {/* Selected prompt preview */}
             {prompt && (
-              <div className="my-4 flex items-start gap-2 rounded-xl p-3" style={{ backgroundColor: "rgba(212,163,115,0.12)", border: "1px solid rgba(212,163,115,0.25)" }}>
-                <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--bronze)" }}>
+              <div className="my-4 flex items-start gap-2 rounded-xl p-3" style={{ backgroundColor: 'rgba(212,163,115,0.12)', border: '1px solid rgba(212,163,115,0.25)' }}>
+                <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
                   <path d="M12 2L2 7l10 5 10-5-10-5z"/>
                   <path d="M2 17l10 5 10-5"/>
                   <path d="M2 12l10 5 10-5"/>
                 </svg>
-                <p className="text-sm font-medium italic" style={{ color: "var(--charcoal)" }}>{prompt}</p>
+                <p className="text-sm font-medium italic" style={{ color: 'var(--charcoal)' }}>{prompt}</p>
               </div>
             )}
           </div>
 
           {/* Writing area */}
           <div className="mb-6">
-            <Label className="text-sm mb-2 block" style={{ color: "var(--charcoal)" }}>Your memory</Label>
+            <div className="flex justify-between items-center mb-2">
+              <Label className="text-sm" style={{ color: 'var(--charcoal)' }}>Your memory</Label>
+              <span className="text-xs" style={{ color: '#6A6A5A' }}>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+            </div>
             <Textarea
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
@@ -220,26 +286,24 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               className="text-base leading-relaxed rounded-xl"
               rows={10}
               placeholder="Take your time. There's no right or wrong way to write a memory — just tell it like it was..."
-              style={{ borderColor: "rgba(212,163,115,0.3)", backgroundColor: "#FDFCF5" }}
+              style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }}
             />
           </div>
 
-          <p className="text-xs mb-6" style={{ color: "#6A6A5A" }}>{wordCount} {wordCount === 1 ? 'word' : 'words'}</p>
-
-          <div className="text-xs text-center py-2" style={{ color: "#6A6A5A" }}>
+          <div className="text-xs text-center py-2" style={{ color: '#6A6A5A' }}>
             Free plan includes unlimited text memories.{' '}
-            <Link href="/signup" className="underline" style={{ color: "var(--bronze)" }}>Upgrade</Link>{' '}
+            <Link href="/signup" className="underline" style={{ color: 'var(--bronze)' }}>Upgrade</Link>{' '}
             to add photos and audio.
           </div>
 
           <div className="mt-6 flex gap-3">
-            <Button type="submit" disabled={loading || !answer.trim()} className="rounded-full" style={{ backgroundColor: "var(--bronze)", color: "var(--charcoal)" }}>
+            <Button type="submit" disabled={loading || !answer.trim()} className="rounded-full" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
               {loading ? 'Saving...' : memoryId ? 'Update Memory' : 'Save Memory'}
             </Button>
             <Link
               href={`/books/${id}`}
               className="inline-flex h-9 px-4 py-2 rounded-full border text-sm font-medium transition-colors"
-              style={{ borderColor: "rgba(212,163,115,0.3)", color: "var(--charcoal)", backgroundColor: "#FDFCF5" }}
+              style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)', backgroundColor: '#FDFCF5' }}
             >
               Cancel
             </Link>
