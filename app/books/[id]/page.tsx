@@ -32,13 +32,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
   useEffect(() => {
     fetchBook();
-    const el = document.querySelectorAll('.reveal');
-    const obs = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); }),
-      { threshold: 0.08 }
-    );
-    el.forEach(e => obs.observe(e));
-    return () => obs.disconnect();
   }, [id]);
 
   const fetchBook = async () => {
@@ -120,7 +113,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Book description */}
         {book.description && (
-          <div className="reveal mb-12">
+          <div className="mb-12">
             <p className="text-base leading-relaxed" style={{ color: '#6A6A5A' }}>{book.description}</p>
             <div className="rule mt-6" />
           </div>
@@ -128,7 +121,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Memory count header */}
         {memories.length > 0 && (
-          <div className="reveal mb-10 flex items-center justify-between">
+          <div className="mb-10 flex items-center justify-between">
             <p className="label-caps" style={{ color: 'var(--bronze)' }}>
               {memories.length} {memories.length === 1 ? 'memory' : 'memories'}
             </p>
@@ -176,7 +169,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           /* ── Memory list ── */
           <div className="space-y-5">
             {memories.map((memory, index) => (
-              <div key={memory.id} className={`reveal delay-${Math.min((index + 1) * 80, 600)}`}>
+              <div key={memory.id}>
                 <Card
                   className="rounded-2xl overflow-hidden"
                   style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 16px rgba(212,163,115,0.07)' }}
@@ -259,7 +252,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Preview CTA */}
         {memories.length > 0 && (
-          <div className="reveal mt-12 text-center">
+          <div className="mt-12 text-center">
             <Link
               href={`/books/${id}/preview`}
               className="inline-flex h-11 items-center justify-center rounded-full border px-7 text-sm font-medium transition-all duration-200 hover:opacity-80"
