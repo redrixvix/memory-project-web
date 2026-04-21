@@ -114,7 +114,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
       <main className="flex-1 px-6 py-8 max-w-xl mx-auto w-full">
         <div className="mb-8">
-          <h1 className="text-2xl font-medium mb-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>
+          <h1 className="text-3xl font-medium mb-4" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>
             {memoryId ? 'Edit Memory' : 'Add a Memory'}
           </h1>
           <p className="text-sm" style={{ color: "#6A6A5A" }}>Write about a moment that matters to you. Take your time.</p>
@@ -122,7 +122,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Prompt selector */}
-          <div>
+          <div className="mb-8">
             <Label className="mb-3 block text-sm" style={{ color: "var(--charcoal)" }}>Writing prompt <span className="font-normal opacity-60">(optional)</span></Label>
 
             <div className="space-y-4">
@@ -192,7 +192,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             </div>
 
             {prompt && (
-              <div className="mt-3 flex items-start gap-2 rounded-xl p-3" style={{ backgroundColor: "rgba(212,163,115,0.12)", border: "1px solid rgba(212,163,115,0.25)" }}>
+              <div className="my-4 flex items-start gap-2 rounded-xl p-3" style={{ backgroundColor: "rgba(212,163,115,0.12)", border: "1px solid rgba(212,163,115,0.25)" }}>
                 <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--bronze)" }}>
                   <path d="M12 2L2 7l10 5 10-5-10-5z"/>
                   <path d="M2 17l10 5 10-5"/>
@@ -204,21 +204,20 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           </div>
 
           {/* Writing area */}
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <Label className="text-sm" style={{ color: "var(--charcoal)" }}>Your memory</Label>
-              <span className="text-xs" style={{ color: "#6A6A5A" }}>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
-            </div>
+          <div className="mb-6">
+            <Label className="text-sm mb-2 block" style={{ color: "var(--charcoal)" }}>Your memory</Label>
             <Textarea
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               required
               className="text-base leading-relaxed rounded-xl"
-              rows={14}
+              rows={10}
               placeholder="Take your time. There's no right or wrong way to write a memory — just tell it like it was..."
               style={{ borderColor: "rgba(212,163,115,0.3)", backgroundColor: "#FDFCF5" }}
             />
           </div>
+
+          <p className="text-xs mb-6" style={{ color: "#6A6A5A" }}>{wordCount} {wordCount === 1 ? 'word' : 'words'}</p>
 
           <div className="text-xs text-center py-2" style={{ color: "#6A6A5A" }}>
             Free plan includes unlimited text memories.{' '}
@@ -226,7 +225,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             to add photos and audio.
           </div>
 
-          <div className="flex gap-3">
+          <div className="mt-6 flex gap-3">
             <Button type="submit" disabled={loading || !answer.trim()} className="rounded-full" style={{ backgroundColor: "var(--bronze)", color: "var(--charcoal)" }}>
               {loading ? 'Saving...' : memoryId ? 'Update Memory' : 'Save Memory'}
             </Button>

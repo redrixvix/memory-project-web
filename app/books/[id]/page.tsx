@@ -83,7 +83,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               {book.title}
             </h1>
           </div>
-          <div className="flex gap-3 items-center">
+          <div className="flex flex-row flex-wrap gap-2 items-center shrink-0">
             <Link
               href={`/books/${id}/edit`}
               className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
@@ -113,7 +113,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Book description */}
         {book.description && (
-          <div className="mb-12">
+          <div className="mb-8">
             <p className="text-base leading-relaxed" style={{ color: '#6A6A5A' }}>{book.description}</p>
             <div className="rule mt-6" />
           </div>
@@ -121,7 +121,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Memory count header */}
         {memories.length > 0 && (
-          <div className="mb-10 flex items-center justify-between">
+          <div className="mb-8 flex items-center justify-between flex-wrap gap-3">
             <p className="label-caps" style={{ color: 'var(--bronze)' }}>
               {memories.length} {memories.length === 1 ? 'memory' : 'memories'}
             </p>
@@ -174,7 +174,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   className="rounded-2xl overflow-hidden"
                   style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 16px rgba(212,163,115,0.07)' }}
                 >
-                  <CardContent className="pt-7 pb-7 px-7">
+                  <CardContent className="pt-8 pb-8 px-6">
 
                     {/* Header: number + date + prompt */}
                     <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
@@ -190,14 +190,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </p>
                       </div>
                       {memory.prompt_question && (
-                        <p className="text-xs italic max-w-[300px] leading-relaxed" style={{ color: '#6A6A5A' }}>
+                        <p className="text-xs italic max-w-[300px] leading-relaxed tracking-wide" style={{ color: '#6A6A5A' }}>
                           &ldquo;{memory.prompt_question}&rdquo;
                         </p>
                       )}
                     </div>
 
                     {/* Memory text */}
-                    <p className="text-base leading-loose whitespace-pre-wrap" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                    <p className="text-base leading-loose leading-8 whitespace-pre-wrap" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                       {memory.answer_text}
                     </p>
 
