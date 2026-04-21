@@ -23,6 +23,41 @@ async function getUserFromSession(request: NextRequest) {
   return user;
 }
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const user = await getUserFromSession(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = await params;
+
+    const [memory] = await sql`
+      SELECT m.id, m.book_id, m.prompt_question, m.answer_text, m.photo_urls, m.audio_url, m.created_at,
+             b.owner_id
+      FROM memories m
+      JOIN books b ON m.book_id = b.id
+      LEFT JOIN book_collaborators bc ON b.id = bc.book_id AND bc.user_id = ${user.id}
+      WHERE m.id = ${parseInt(id)} AND (b.owner_id = ${user.id} OR bc.user_id = ${user.id})
+    `;
+
+    if (!memory) {
+      return NextResponse.json({ error: 'Memory not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ memory });
+  } catch (error) {
+    console.error('Get memory error:', error);
+    return NextResponse.json(
+      { error: 'Failed to get memory' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
