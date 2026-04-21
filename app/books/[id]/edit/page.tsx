@@ -200,7 +200,14 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     type="button"
                     variant={useCustomPrompt ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => { setUseCustomPrompt(true); setPrompt(customPrompt || ''); }}
+                    onClick={() => {
+                      setUseCustomPrompt(true);
+                      if (!customPrompt) {
+                        const defaultPrompt = "What's a memory you'll never forget?";
+                        setCustomPrompt(defaultPrompt);
+                        setPrompt(defaultPrompt);
+                      }
+                    }}
                     className="rounded-full w-full justify-start text-left"
                     style={useCustomPrompt
                       ? { backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }
@@ -332,7 +339,15 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#6A6A5A' }}>Custom prompt</p>
               <button
                 type="button"
-                onClick={() => { setUseCustomPrompt(true); setPrompt(customPrompt || ''); setShowAllPrompts(false); }}
+                onClick={() => {
+                  setUseCustomPrompt(true);
+                  if (!customPrompt) {
+                    const defaultPrompt = "What's a memory you'll never forget?";
+                    setCustomPrompt(defaultPrompt);
+                    setPrompt(defaultPrompt);
+                  }
+                  setShowAllPrompts(false);
+                }}
                 className="w-full text-left rounded-xl px-4 py-3 text-sm transition-colors"
                 style={useCustomPrompt
                   ? { backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }
