@@ -71,6 +71,7 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    autoComplete="email"
                     placeholder="ruth@example.com"
                     className="text-sm rounded-xl"
                     style={{ borderColor: "rgba(212,163,115,0.3)", backgroundColor: "var(--papaya)" }}
@@ -85,6 +86,7 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    autoComplete="current-password"
                     placeholder="Your password"
                     className="text-sm rounded-xl"
                     style={{ borderColor: "rgba(212,163,115,0.3)", backgroundColor: "var(--papaya)" }}

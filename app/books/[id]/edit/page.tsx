@@ -220,6 +220,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             />
           </div>
 
+          <div className="text-xs text-center py-2" style={{ color: "#6A6A5A" }}>
+            Free plan includes unlimited text memories.{' '}
+            <Link href="/signup" className="underline" style={{ color: "var(--bronze)" }}>Upgrade</Link>{' '}
+            to add photos and audio.
+          </div>
+
           <div className="flex gap-3">
             <Button type="submit" disabled={loading || !answer.trim()} className="rounded-full" style={{ backgroundColor: "var(--bronze)", color: "var(--charcoal)" }}>
               {loading ? 'Saving...' : memoryId ? 'Update Memory' : 'Save Memory'}

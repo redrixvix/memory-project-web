@@ -72,6 +72,7 @@ export default function Signup() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
+                    autoComplete="name"
                     placeholder="Ruth Johnson"
                     className="text-sm rounded-xl"
                     style={{ borderColor: "rgba(212,163,115,0.3)", backgroundColor: "var(--papaya)" }}
@@ -86,6 +87,7 @@ export default function Signup() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    autoComplete="email"
                     placeholder="ruth@example.com"
                     className="text-sm rounded-xl"
                     style={{ borderColor: "rgba(212,163,115,0.3)", backgroundColor: "var(--papaya)" }}
@@ -101,6 +103,7 @@ export default function Signup() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
+                    autoComplete="new-password"
                     placeholder="At least 6 characters"
                     className="text-sm rounded-xl"
                     style={{ borderColor: "rgba(212,163,115,0.3)", backgroundColor: "var(--papaya)" }}

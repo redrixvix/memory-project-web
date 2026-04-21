@@ -84,14 +84,27 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </Link>
           <h1 className="text-xl md:text-2xl font-medium mt-1" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>{book.title}</h1>
         </div>
-        <Link
-          href={`/books/${id}/edit`}
-          className="inline-flex h-9 shrink-0 items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium whitespace-nowrap transition-opacity"
-          style={{ backgroundColor: "var(--bronze)", color: "var(--charcoal)" }}
-        >
-          <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-          Add Memory
-        </Link>
+        <div className="flex gap-3 items-center">
+          <Link
+            href={`/books/${id}/edit`}
+            className="inline-flex h-9 shrink-0 items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium whitespace-nowrap transition-opacity"
+            style={{ backgroundColor: "var(--bronze)", color: "var(--charcoal)" }}
+          >
+            <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Add Memory
+          </Link>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}/books/${id}/preview`);
+              alert('Preview link copied! Anyone with this link can view your book.');
+            }}
+            className="inline-flex h-9 shrink-0 items-center justify-center rounded-full border px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-opacity"
+            style={{ borderColor: "rgba(212,163,115,0.3)", color: "var(--charcoal)" }}
+          >
+            <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+            Share
+          </button>
+        </div>
       </header>
 
       <main className="flex-1 px-6 md:px-8 py-8 max-w-2xl mx-auto w-full">

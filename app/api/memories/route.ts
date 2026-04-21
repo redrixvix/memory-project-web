@@ -28,10 +28,10 @@ export async function POST(request: NextRequest) {
     const user = await getUserFromSession(request);
     if (!user) {
       const origin = request.headers.get('origin') || 'https://web-redrixvixs-projects.vercel.app';
-    const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    res.headers.set('Access-Control-Allow-Origin', origin);
-    res.headers.set('Access-Control-Allow-Credentials', 'true');
-    return res;
+      const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      res.headers.set('Access-Control-Allow-Origin', origin);
+      res.headers.set('Access-Control-Allow-Credentials', 'true');
+      return res;
     }
 
     const { book_id, prompt_question, answer_text, photo_urls, audio_url } = await request.json();
@@ -76,10 +76,10 @@ export async function GET(request: NextRequest) {
     const user = await getUserFromSession(request);
     if (!user) {
       const origin = request.headers.get('origin') || 'https://web-redrixvixs-projects.vercel.app';
-    const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    res.headers.set('Access-Control-Allow-Origin', origin);
-    res.headers.set('Access-Control-Allow-Credentials', 'true');
-    return res;
+      const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      res.headers.set('Access-Control-Allow-Origin', origin);
+      res.headers.set('Access-Control-Allow-Credentials', 'true');
+      return res;
     }
 
     const { searchParams } = new URL(request.url);

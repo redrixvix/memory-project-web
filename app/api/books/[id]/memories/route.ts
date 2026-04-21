@@ -19,11 +19,13 @@ export async function GET(
 ) {
   try {
     const user = await getUserFromSession(request);
-    if (!user) const origin = request.headers.get('origin') || 'https://web-redrixvixs-projects.vercel.app';
-    const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    res.headers.set('Access-Control-Allow-Origin', origin);
-    res.headers.set('Access-Control-Allow-Credentials', 'true');
-    return res;
+    if (!user) {
+      const origin = request.headers.get('origin') || 'https://web-redrixvixs-projects.vercel.app';
+      const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      res.headers.set('Access-Control-Allow-Origin', origin);
+      res.headers.set('Access-Control-Allow-Credentials', 'true');
+      return res;
+    }
     const { id } = await params;
     const memories = await sql`
       SELECT m.id, m.book_id, m.prompt_question, m.answer_text, m.photo_urls, m.audio_url, m.created_at
@@ -45,11 +47,13 @@ export async function POST(
 ) {
   try {
     const user = await getUserFromSession(request);
-    if (!user) const origin = request.headers.get('origin') || 'https://web-redrixvixs-projects.vercel.app';
-    const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    res.headers.set('Access-Control-Allow-Origin', origin);
-    res.headers.set('Access-Control-Allow-Credentials', 'true');
-    return res;
+    if (!user) {
+      const origin = request.headers.get('origin') || 'https://web-redrixvixs-projects.vercel.app';
+      const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      res.headers.set('Access-Control-Allow-Origin', origin);
+      res.headers.set('Access-Control-Allow-Credentials', 'true');
+      return res;
+    }
     const { id: bookId } = await params;
     const { prompt_question, answer_text, photo_urls, audio_url } = await request.json();
 

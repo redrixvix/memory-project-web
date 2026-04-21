@@ -114,6 +114,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Demo / Try it section — beige bg */}
+      <section className="py-16 px-6 md:px-10" style={{ backgroundColor: "var(--beige)" }}>
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--bronze)" }}>See it in action</p>
+          <h2 className="text-3xl font-medium mb-4" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>
+            Read the Smith Family's Memory Book
+          </h2>
+          <p className="mb-8 text-base max-w-lg mx-auto" style={{ color: "#6A6A5A" }}>
+            See what a real family memory book looks like — 12 memories, wedding stories, childhood回忆, and more.
+          </p>
+          <a
+            href="/books/1/preview"
+            className="inline-flex h-11 items-center justify-center rounded-full px-7 py-3 text-base font-medium transition-opacity"
+            style={{ backgroundColor: "var(--bronze)", color: "var(--charcoal)" }}
+          >
+            Read the sample book →
+          </a>
+        </div>
+      </section>
+
       {/* How it works — beige background */}
       <section className="py-20 px-6 md:px-10" style={{ backgroundColor: "var(--beige)" }}>
         <div className="max-w-4xl mx-auto">
@@ -298,6 +318,19 @@ export default function Home() {
           >
             Create your memory book
           </Link>
+        </div>
+      </section>
+
+      {/* Testimonial / social proof */}
+      <section className="py-16 px-6 md:px-10" style={{ backgroundColor: "var(--cornsilk)" }}>
+        <div className="max-w-2xl mx-auto text-center space-y-6">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto" style={{ backgroundColor: "rgba(212,163,115,0.15)" }}>
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: "var(--bronze)" }}><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z"/></svg>
+          </div>
+          <blockquote className="text-xl italic leading-relaxed" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: "var(--charcoal)" }}>
+            "We gave this to my grandmother on her 90th birthday. She read every single page out loud and cried happy tears. Worth every penny."
+          </blockquote>
+          <p className="text-sm font-medium" style={{ color: "var(--bronze)" }}>— Martha, Ohio</p>
         </div>
       </section>
 
