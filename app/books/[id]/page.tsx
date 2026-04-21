@@ -147,7 +147,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Empty state */}
         {memories.length === 0 ? (
-          <div className="text-center py-24 reveal">
+          <div className="text-center py-24">
             <div className="inline-block mb-8">
               <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(204,213,174,0.3)' }}>
                 <svg className="w-11 h-11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" style={{ color: 'var(--charcoal)' }}>

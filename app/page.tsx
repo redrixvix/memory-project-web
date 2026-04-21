@@ -19,16 +19,6 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Scroll-reveal observer
-  useEffect(() => {
-    const el = document.querySelectorAll('.reveal');
-    const obs = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); }),
-      { threshold: 0.1 }
-    );
-    el.forEach(e => obs.observe(e));
-    return () => obs.disconnect();
-  }, []);
 
   const memories = [
     {
@@ -119,7 +109,7 @@ export default function Home() {
 
           {/* Display heading */}
           <h1
-            className="display-xl mb-8 animate-fade-up delay-100"
+            className="display-xl mb-8 animate-fade-up"
             style={{ color: 'var(--charcoal)' }}
           >
             Capture the stories<br />
@@ -128,14 +118,14 @@ export default function Home() {
 
           {/* Subheading */}
           <p
-            className="text-base md:text-lg leading-relaxed max-w-lg mx-auto mb-12 animate-fade-up delay-200"
+            className="text-base md:text-lg leading-relaxed max-w-lg mx-auto mb-12 animate-fade-up"
             style={{ color: '#6A6A5A' }}
           >
             Write, photograph, and record — then print a beautiful hardcover book to treasure forever.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up delay-300">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up">
             <Link
               href="/signup"
               className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
@@ -155,7 +145,7 @@ export default function Home() {
 
         {/* Scroll indicator */}
         <div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-up delay-700"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-up"
           style={{ color: '#6A6A5A' }}
         >
           <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)', letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: '0.6rem' }}>Scroll</p>
@@ -170,8 +160,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           {/* Section header */}
           <div className="mb-16 max-w-xl">
-            <p className="label-caps mb-4 reveal" style={{ color: 'var(--bronze)' }}>From the pages</p>
-            <h2 className="display-md reveal delay-100" style={{ color: 'var(--charcoal)' }}>
+            <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>From the pages</p>
+            <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
               Every great memory book starts with a single story
             </h2>
           </div>
@@ -229,16 +219,16 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
             {/* Left: text */}
             <div className="flex-1 text-center md:text-left">
-              <p className="label-caps mb-4 reveal" style={{ color: 'var(--bronze)' }}>See it in action</p>
-              <h2 className="display-md mb-4 reveal delay-100" style={{ color: 'var(--charcoal)' }}>
+              <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>See it in action</p>
+              <h2 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>
                 The Smith Family&apos;s Memory Book
               </h2>
-              <p className="text-sm leading-relaxed mb-8 reveal delay-200" style={{ color: '#6A6A5A' }}>
+              <p className="text-sm leading-relaxed mb-8" style={{ color: '#6A6A5A' }}>
                 12 memories, wedding stories, childhood回忆, and more — all captured in a real family book you can read right now.
               </p>
               <Link
                 href="/books/1/preview"
-                className="inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95 reveal delay-300"
+                className="inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
                 style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
               >
                 Read the sample book
@@ -249,7 +239,7 @@ export default function Home() {
             </div>
 
             {/* Right: decorative book mockup */}
-            <div className="reveal delay-300">
+            <div className="reveal">
               <div className="relative" style={{ width: 180, height: 240 }}>
                 {/* Book shadow */}
                 <div style={{ position: 'absolute', bottom: -16, left: 16, right: -8, height: 16, background: 'radial-gradient(ellipse, rgba(43,43,43,0.12) 0%, transparent 70%)', borderRadius: '50%' }} />
@@ -278,8 +268,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-20">
-            <p className="label-caps mb-4 reveal" style={{ color: 'var(--bronze)' }}>The process</p>
-            <h2 className="display-md reveal delay-100" style={{ color: 'var(--charcoal)' }}>
+            <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>The process</p>
+            <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
               Three steps to a family treasure
             </h2>
           </div>
@@ -321,7 +311,7 @@ export default function Home() {
                 ),
               },
             ].map((step, i) => (
-              <div key={i} className={`flex-1 reveal delay-${(i + 1) * 100} ${i < 2 ? 'md:border-r md:pr-6' : ''} ${i > 0 ? 'md:pl-6' : ''} md:border-opacity-20`} style={{ borderColor: 'rgba(212,163,115,0.2)' }}>
+              <div key={i} className={`flex-1 delay-${(i + 1) * 100} ${i < 2 ? 'md:border-r md:pr-6' : ''} ${i > 0 ? 'md:pl-6' : ''} md:border-opacity-20`} style={{ borderColor: 'rgba(212,163,115,0.2)' }}>
                 {/* Step number */}
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
@@ -354,11 +344,11 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
-            <p className="label-caps mb-4 reveal" style={{ color: 'var(--bronze)' }}>Pricing</p>
-            <h2 className="display-md reveal delay-100" style={{ color: 'var(--charcoal)' }}>
+            <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Pricing</p>
+            <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
               Simple, honest pricing
             </h2>
-            <p className="text-sm mt-3 reveal delay-200" style={{ color: '#6A6A5A' }}>
+            <p className="text-sm mt-3" style={{ color: '#6A6A5A' }}>
               Start free. Pay only for printing.
             </p>
           </div>
@@ -366,7 +356,7 @@ export default function Home() {
           {/* 3 pricing cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Free */}
-            <div className="reveal delay-100">
+            <div className="reveal">
               <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
@@ -407,7 +397,7 @@ export default function Home() {
             </div>
 
             {/* 5GB — featured */}
-            <div className="reveal delay-200">
+            <div className="reveal">
               <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: '#FDFCF5', border: '2px solid var(--bronze)', boxShadow: '0 8px 32px rgba(212,163,115,0.14)' }}>
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                   <Badge className="h-7 px-4 py-1 rounded-full font-medium text-xs shadow-sm" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
@@ -446,7 +436,7 @@ export default function Home() {
             </div>
 
             {/* 15GB */}
-            <div className="reveal delay-300">
+            <div className="reveal">
               <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>15GB Storage</p>
@@ -483,7 +473,7 @@ export default function Home() {
 
       {/* ── TESTIMONIAL ── */}
       <section className="py-24 px-6 md:px-10" style={{ backgroundColor: 'var(--cornsilk)' }}>
-        <div className="max-w-2xl mx-auto text-center reveal">
+        <div className="max-w-2xl mx-auto text-center">
           {/* Large quotation mark */}
           <div style={{ color: 'rgba(212,163,115,0.25)', fontFamily: 'var(--font-serif)', fontSize: '8rem', lineHeight: 0.6, marginBottom: '-2rem' }}>&ldquo;</div>
           <blockquote className="text-xl md:text-2xl italic leading-relaxed mb-8" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
@@ -496,7 +486,7 @@ export default function Home() {
 
       {/* ── CLOSING CTA ── */}
       <section className="py-20 px-6 md:px-10" style={{ backgroundColor: 'var(--papaya)' }}>
-        <div className="max-w-xl mx-auto text-center space-y-6 reveal">
+        <div className="max-w-xl mx-auto text-center space-y-6">
           <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
             Every family has stories worth keeping
           </h2>

@@ -31,14 +31,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchBooks();
-    // Scroll-reveal
-    const el = document.querySelectorAll('.reveal');
-    const obs = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); }),
-      { threshold: 0.08 }
-    );
-    el.forEach(e => obs.observe(e));
-    return () => obs.disconnect();
   }, []);
 
   const fetchBooks = async () => {
@@ -139,7 +131,7 @@ export default function Dashboard() {
 
         {/* ── Create book form (drawer-style) ── */}
         {showCreate && (
-          <div className="reveal mb-8">
+          <div className="mb-8">
             <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.2)', boxShadow: '0 8px 32px rgba(212,163,115,0.1)' }}>
               <CardContent className="pt-0">
                 <div className="flex items-start justify-between mb-6">
@@ -214,7 +206,7 @@ export default function Dashboard() {
 
         {/* ── Empty state ── */}
         {books.length === 0 && !showCreate ? (
-          <div className="text-center py-24 reveal">
+          <div className="text-center py-24">
             {/* Book icon */}
             <div className="inline-block mb-8">
               <div className="w-28 h-36 rounded-xl flex items-center justify-center mx-auto relative" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.25)', boxShadow: '6px 6px 0 rgba(212,163,115,0.12)' }}>
@@ -242,7 +234,7 @@ export default function Dashboard() {
           /* ── Book grid ── */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {books.map((book, i) => (
-              <div key={book.id} className={`reveal delay-${Math.min((i + 1) * 100, 500)} card-hover`}>
+              <div key={book.id} className="card-hover">
                 <Link href={`/books/${book.id}`} className="block h-full">
                   <Card
                     className="h-full rounded-2xl overflow-hidden"
