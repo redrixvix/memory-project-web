@@ -147,7 +147,7 @@ export default function Login() {
 
           <p className="text-center mt-8 text-sm" style={{ color: '#6A6A5A' }}>
             Don&apos;t have an account?{' '}
-            <Link href="/signup" className="font-medium transition-colors hover:opacity-70" style={{ color: 'var(--bronze)' }}>
+            <Link href="/signup" className="font-medium transition-colors hover:opacity-70 inline-flex items-center justify-center px-2 py-1 rounded-lg" style={{ color: 'var(--bronze)' }}>
               Create one — it&apos;s free
             </Link>
           </p>

@@ -147,7 +147,7 @@ export default function Signup() {
 
           <p className="text-center mt-6 text-sm" style={{ color: '#6A6A5A' }}>
             Already have an account?{' '}
-            <Link href="/login" className="font-medium transition-colors hover:opacity-70" style={{ color: 'var(--bronze)' }}>
+            <Link href="/login" className="font-medium transition-colors hover:opacity-70 inline-flex items-center justify-center px-2 py-1 rounded-lg" style={{ color: 'var(--bronze)' }}>
               Sign in
             </Link>
           </p>

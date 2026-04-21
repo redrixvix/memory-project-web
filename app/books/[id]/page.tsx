@@ -86,7 +86,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               Dashboard
             </Link>
             <span style={{ color: 'rgba(212,163,115,0.3)' }}>·</span>
-            <h1 className="text-base font-medium truncate max-w-[200px] md:max-w-none" style={{ color: 'var(--charcoal)' }}>
+            <h1 className="text-base font-medium truncate max-w-[140px] md:max-w-none" style={{ color: 'var(--charcoal)' }}>
               {book.title}
             </h1>
           </div>

@@ -72,7 +72,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
 
       {/* ── TOP BAR ── */}
       <header
-        className="sticky top-0 z-10 h-15 flex items-center px-6 border-b"
+        className="sticky top-0 z-10 h-16 flex items-center px-6 border-b"
         style={{ background: 'rgba(233,237,201,0.94)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.15)' }}
       >
         <div className="flex items-center justify-between w-full max-w-2xl mx-auto">
