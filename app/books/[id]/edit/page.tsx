@@ -146,48 +146,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             <Label className="mb-3 block text-sm" style={{ color: 'var(--charcoal)' }}>Writing prompt <span className="font-normal opacity-60">(optional)</span></Label>
 
             <div className="space-y-4">
-              {/* Custom prompt option */}
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#6A6A5A' }}>Custom</p>
-                <div className="flex flex-col gap-3">
-                  <Button
-                    type="button"
-                    variant={useCustomPrompt ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => {
-                      setUseCustomPrompt(true);
-                      setPrompt(customPrompt || '');
-                    }}
-                    className="rounded-full w-full justify-start text-left"
-                    style={useCustomPrompt
-                      ? { backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }
-                      : { borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)', backgroundColor: 'transparent' }
-                    }
-                  >
-                    Write your own prompt…
-                  </Button>
-                  {useCustomPrompt && (
-                    <Input
-                      value={customPrompt}
-                      onChange={(e) => {
-                        setCustomPrompt(e.target.value);
-                        setPrompt(e.target.value);
-                      }}
-                      placeholder="e.g. What's the bravest thing you've ever done?"
-                      className="rounded-xl text-sm"
-                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }}
-                    />
-                  )}
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
-                <span className="text-xs" style={{ color: '#6A6A5A' }}>or choose a guided prompt</span>
-                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
-              </div>
-
               {/* Preset prompts */}
               {PROMPTS.map((group) => (
                 <div key={group.category}>
@@ -225,6 +183,47 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 {showAllPrompts ? 'Show fewer prompts' : 'See all prompts'}
                 <svg className={`w-3 h-3 transition-transform ${showAllPrompts ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
               </button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
+                <span className="text-xs" style={{ color: '#6A6A5A' }}>or write your own</span>
+                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
+              </div>
+
+              {/* Custom prompt option */}
+              <div>
+                <div className="flex flex-col gap-3">
+                  <Button
+                    type="button"
+                    variant={useCustomPrompt ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => {
+                      setUseCustomPrompt(true);
+                      setPrompt(customPrompt || '');
+                    }}
+                    className="rounded-full w-full justify-start text-left"
+                    style={useCustomPrompt
+                      ? { backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }
+                      : { borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)', backgroundColor: 'transparent' }
+                    }
+                  >
+                    Write your own prompt…
+                  </Button>
+                  {useCustomPrompt && (
+                    <Input
+                      value={customPrompt}
+                      onChange={(e) => {
+                        setCustomPrompt(e.target.value);
+                        setPrompt(e.target.value);
+                      }}
+                      placeholder="e.g. What's the bravest thing you've ever done?"
+                      className="rounded-xl text-sm"
+                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }}
+                    />
+                  )}
+                </div>
+              </div>
 
               {showAllPrompts && (
                 <Card className="p-4" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.2)', boxShadow: '0 4px 20px rgba(212,163,115,0.06)' }}>
