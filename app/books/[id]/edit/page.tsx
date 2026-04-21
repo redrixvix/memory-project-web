@@ -64,7 +64,14 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         const data = await res.json();
         setPrompt(data.memory.prompt_question || '');
         setAnswer(data.memory.answer_text || '');
+      } else if (res.status === 404) {
+        // Memory not found — redirect to add-mode so no 404 console error surfaces
+        router.replace(`/books/${id}/edit`);
+      } else {
+        console.error('Failed to load memory:', res.status);
       }
+    } catch (err) {
+      console.error('Failed to load memory:', err);
     } finally {
       setFetchingMemory(false);
     }
