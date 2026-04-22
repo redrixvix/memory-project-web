@@ -12,7 +12,7 @@ import { motion } from 'framer-motion';
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -21,25 +21,22 @@ export default function Login() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/auth/magic', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email }),
       });
       const data = await res.json();
       if (!res.ok) {
-        if (data.error?.toLowerCase().includes('email') || data.error?.toLowerCase().includes('invalid')) {
-          setError("That email doesn't look right — double-check it?");
-        } else if (data.error?.toLowerCase().includes('password') || data.error?.toLowerCase().includes('wrong')) {
-          setError("That password isn't quite right. Try again?");
-        } else {
-          setError(data.error || 'Something went wrong. Please try again.');
-        }
+        setError(data.error || 'Something went wrong. Please try again.');
         return;
       }
-      router.push('/dashboard');
-    } catch { setError('Something went wrong. Please try again.'); }
-    finally { setLoading(false); }
+      setSent(true);
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -52,7 +49,7 @@ export default function Login() {
           <div style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`,
             opacity: 0.4,
           }} />
         </div>
@@ -139,50 +136,68 @@ export default function Login() {
 
           <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 4px 24px rgba(212,163,115,0.08)' }}>
             <CardContent className="pt-0">
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {error && (
-                  <div
-                    className="p-3.5 rounded-xl text-sm"
-                    style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.25)' }}
-                  >
-                    <svg className="inline w-3.5 h-3.5 mr-1.5 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                      <circle cx="12" cy="12" r="10"/>
-                      <path d="M12 8v4M12 16h.01"/>
-                    </svg>
-                    {error}
+              {!sent ? (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  {error && (
+                    <div
+                      className="p-3.5 rounded-xl text-sm"
+                      style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.25)' }}
+                    >
+                      <svg className="inline w-3.5 h-3.5 mr-1.5 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 8v4M12 16h.01"/>
+                      </svg>
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-sm" style={{ color: 'var(--charcoal)' }}>Email</Label>
+                    <Input
+                      type="email" id="email" value={email}
+                      onChange={(e) => setEmail(e.target.value)} required
+                      autoComplete="email" placeholder="ruth@example.com"
+                      className="text-sm rounded-xl h-11"
+                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
+                    />
                   </div>
-                )}
 
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm" style={{ color: 'var(--charcoal)' }}>Email</Label>
-                  <Input
-                    type="email" id="email" value={email}
-                    onChange={(e) => setEmail(e.target.value)} required
-                    autoComplete="email" placeholder="ruth@example.com"
-                    className="text-sm rounded-xl h-11"
-                    style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
-                  />
+                  <Button
+                    type="submit" disabled={loading}
+                    className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
+                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                  >
+                    {loading ? 'Sending...' : 'Send magic link'}
+                  </Button>
+                </form>
+              ) : (
+                <div className="space-y-5">
+                  <div
+                    className="p-4 rounded-xl"
+                    style={{ backgroundColor: 'rgba(204,213,174,0.2)', border: '1px solid rgba(204,213,174,0.4)' }}
+                  >
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                      </svg>
+                      <div>
+                        <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Check your email</p>
+                        <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>
+                          We sent a magic link to <strong>{email}</strong>. Click it to sign in.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setSent(false); setEmail(''); setError(''); }}
+                    className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
+                    style={{ border: '1.5px solid rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
+                  >
+                    Use a different email
+                  </button>
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm" style={{ color: 'var(--charcoal)' }}>Password</Label>
-                  <Input
-                    type="password" id="password" value={password}
-                    onChange={(e) => setPassword(e.target.value)} required
-                    autoComplete="current-password" placeholder="Your password"
-                    className="text-sm rounded-xl h-11"
-                    style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
-                  />
-                </div>
-
-                <Button
-                  type="submit" disabled={loading}
-                  className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
-                  style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-                >
-                  {loading ? 'Signing in...' : 'Sign in'}
-                </Button>
-              </form>
+              )}
             </CardContent>
           </Card>
 

@@ -15,12 +15,15 @@ const fadeUp = {
 };
 
 export default function Home() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null); // null = loading
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    setLoggedIn(document.cookie.includes('session='));
+    fetch('/api/auth/me')
+      .then(r => r.json())
+      .then(data => setLoggedIn(!!data.user))
+      .catch(() => setLoggedIn(false));
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
