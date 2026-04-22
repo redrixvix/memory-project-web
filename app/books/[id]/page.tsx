@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Lightbox } from '@/components/ui/lightbox';
+import { motion } from 'framer-motion';
 
 interface Memory {
   id: number;
@@ -23,12 +25,15 @@ interface Book {
   owner_name: string;
 }
 
+const ACCENT_COLORS = ['var(--bronze)', 'var(--tea-green)'];
+
 export default function BookDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const [book, setBook] = useState<Book | null>(null);
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
 
   useEffect(() => {
     fetchBook();
@@ -66,6 +71,15 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
+
+      {/* Lightbox */}
+      {lightboxSrc && (
+        <Lightbox
+          src={lightboxSrc}
+          alt="Memory photo"
+          onClose={() => setLightboxSrc(null)}
+        />
+      )}
 
       {/* ── TOP NAV ── */}
       <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
@@ -113,7 +127,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       {/* ── MAIN ── */}
       <main className="px-6 md:px-10 py-12 max-w-3xl mx-auto w-full">
 
-        {/* Book description */}
         {book.description && (
           <div className="mb-8">
             <p className="text-base leading-relaxed" style={{ color: '#6A6A5A' }}>{book.description}</p>
@@ -121,7 +134,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {/* Memory count header */}
         {memories.length > 0 && (
           <div className="mb-8 flex items-center justify-between flex-wrap gap-3">
             <p className="label-caps" style={{ color: 'var(--bronze)' }}>
@@ -142,7 +154,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Empty state */}
         {memories.length === 0 ? (
-          <div className="text-center py-24">
+          <motion.div
+            className="text-center py-24"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             <div className="inline-block mb-8">
               <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(204,213,174,0.3)' }}>
                 <svg className="w-11 h-11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" style={{ color: 'var(--charcoal)' }}>
@@ -166,98 +183,134 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </svg>
               Add your first memory
             </Link>
-          </div>
+          </motion.div>
         ) : (
-          /* ── Memory list ── */
+          /* ── Memory list with lightbox ── */
           <div className="space-y-8">
-            {memories.map((memory, index) => (
-              <div key={memory.id}>
-                <Card
-                  className="rounded-2xl overflow-hidden"
-                  style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 16px rgba(212,163,115,0.07)' }}
+            {memories.map((memory, index) => {
+              const accentColor = ACCENT_COLORS[index % ACCENT_COLORS.length];
+              return (
+                <motion.div
+                  key={memory.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <CardContent className="pt-8 pb-8 px-6">
+                  <Card
+                    className="rounded-2xl overflow-hidden"
+                    style={{ backgroundColor: '#FDFCF5', border: 'none', boxShadow: '0 4px 24px rgba(212,163,115,0.08)' }}
+                  >
+                    <CardContent className="pt-8 pb-8 px-6">
 
-                    {/* Header: number + date + prompt */}
-                    <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
-                      <div className="flex items-center gap-3">
-                        <span
-                          className="text-xs font-medium px-2.5 py-1 rounded-full"
-                          style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-                        >
-                          #{index + 1}
-                        </span>
-                        <p className="text-xs" style={{ color: '#8A8A7A' }}>
-                          {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </p>
+                      {/* Header: number + date + prompt */}
+                      <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
+                        <div className="flex items-center gap-3">
+                          {/* Left accent bar */}
+                          <div
+                            className="w-1 rounded-full self-stretch"
+                            style={{ backgroundColor: accentColor, minHeight: 20 }}
+                          />
+                          <span
+                            className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                            style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                          >
+                            #{index + 1}
+                          </span>
+                          <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                            {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </p>
+                        </div>
+                        {memory.prompt_question && (
+                          <p className="text-xs italic max-w-[260px] leading-relaxed" style={{ color: '#A0A08A', fontFamily: 'var(--font-serif)' }}>
+                            &ldquo;{memory.prompt_question}&rdquo;
+                          </p>
+                        )}
                       </div>
-                      {memory.prompt_question && (
-                        <p className="text-xs italic max-w-[260px] leading-relaxed" style={{ color: '#A0A08A' }}>
-                          &ldquo;{memory.prompt_question}&rdquo;
-                        </p>
+
+                      {/* Memory text */}
+                      <p className="text-base md:text-lg leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                        {memory.answer_text}
+                      </p>
+
+                      {/* ══════════════════════════════════════════
+                          TASK 8: PHOTO LIGHTBOX — 200px min-height
+                      ══════════════════════════════════════════ */}
+                      {memory.photo_urls && memory.photo_urls.length > 0 && (
+                        <div className="flex gap-3 mt-7 overflow-x-auto pb-2">
+                          {memory.photo_urls.map((url, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setLightboxSrc(url)}
+                              className="img-frame rounded-xl overflow-hidden shrink-0 cursor-pointer transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                              style={{ minHeight: 200, minWidth: 200 }}
+                              aria-label={`View photo ${i + 1}`}
+                            >
+                              <img
+                                src={url}
+                                alt={`Memory photo ${i + 1}`}
+                                className="w-48 h-48 object-cover rounded-xl"
+                                style={{ minHeight: 200, minWidth: 200 }}
+                              />
+                            </button>
+                          ))}
+                        </div>
                       )}
-                    </div>
 
-                    {/* Memory text */}
-                    <p className="text-base md:text-lg leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                      {memory.answer_text}
-                    </p>
+                      {/* Audio */}
+                      {memory.audio_url && (
+                        <audio src={memory.audio_url} controls className="mt-7 w-full h-9" />
+                      )}
 
-                    {/* Photos */}
-                    {memory.photo_urls && memory.photo_urls.length > 0 && (
-                      <div className="flex gap-3 mt-7 overflow-x-auto pb-2">
-                        {memory.photo_urls.map((url, i) => (
-                          <div key={i} className="img-frame rounded-xl overflow-hidden shrink-0">
-                            <img src={url} alt="" className="w-24 h-24 object-cover rounded-xl" />
+                      {/* Footer actions */}
+                      <div className="flex justify-end items-center mt-6 pt-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
+                        <div className="flex gap-4 items-center">
+                          {/* Drag handle (visual only) */}
+                          <div className="flex items-center gap-1 text-xs" style={{ color: 'rgba(212,163,115,0.35)' }}>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                              <circle cx="9" cy="5" r="1.5"/>
+                              <circle cx="15" cy="5" r="1.5"/>
+                              <circle cx="9" cy="12" r="1.5"/>
+                              <circle cx="15" cy="12" r="1.5"/>
+                              <circle cx="9" cy="19" r="1.5"/>
+                              <circle cx="15" cy="19" r="1.5"/>
+                            </svg>
                           </div>
-                        ))}
+                          <Link
+                            href={`/books/${id}/edit?memory=${memory.id}`}
+                            className="text-xs font-medium flex items-center gap-1.5 transition-colors hover:opacity-70"
+                            style={{ color: 'var(--bronze)' }}
+                          >
+                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                            Edit
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (window.confirm('Delete this memory? This cannot be undone.')) {
+                                handleDeleteMemory(memory.id);
+                              }
+                            }}
+                            className="text-xs text-muted-foreground flex items-center gap-1.5 transition-colors hover:opacity-70"
+                            style={{ color: '#9A9A8A' }}
+                          >
+                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+                            </svg>
+                            Delete
+                          </button>
+                        </div>
                       </div>
-                    )}
-
-                    {/* Audio */}
-                    {memory.audio_url && (
-                      <audio src={memory.audio_url} controls className="mt-7 w-full h-9" />
-                    )}
-
-                    {/* Footer actions */}
-                    <div className="flex justify-end items-center mt-6 pt-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.15)' }}>
-                      <div className="flex gap-4 items-center">
-                        <Link
-                          href={`/books/${id}/edit?memory=${memory.id}`}
-                          className="text-xs font-medium flex items-center gap-1.5 transition-colors hover:opacity-70"
-                          style={{ color: 'var(--bronze)' }}
-                        >
-                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                          </svg>
-                          Edit
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (window.confirm('Delete this memory? This cannot be undone.')) {
-                              handleDeleteMemory(memory.id);
-                            }
-                          }}
-                          className="text-xs text-muted-foreground flex items-center gap-1.5 transition-colors hover:opacity-70"
-                          style={{ color: '#9A9A8A' }}
-                        >
-                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
-                          </svg>
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         )}
 
-        {/* Preview CTA */}
         {memories.length > 0 && (
           <div className="mt-12 text-center">
             <Link

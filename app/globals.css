@@ -370,7 +370,7 @@ body {
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(212,163,115,0.14);
+  box-shadow: 0 12px 32px rgba(212,163,115,0.12);
 }
 
 /* ─────────────────────────────────────────

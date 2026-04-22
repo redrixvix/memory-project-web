@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { motion } from 'framer-motion';
 
 interface Book {
   id: number;
@@ -21,6 +22,14 @@ interface Book {
   owner_name: string;
   _count?: { memories: number };
 }
+
+const BOOK_COLORS = [
+  'var(--bronze)',
+  'var(--tea-green)',
+  'var(--papaya)',
+  'rgba(212,163,115,0.5)',
+  'var(--tea-green)',
+];
 
 export default function Dashboard() {
   const router = useRouter();
@@ -106,7 +115,6 @@ export default function Dashboard() {
       {/* ── MAIN CONTENT ── */}
       <main className="px-6 md:px-10 py-12 max-w-5xl mx-auto w-full">
 
-        {/* Page header */}
         <div className="mb-12">
           <p className="label-caps mb-2" style={{ color: 'var(--bronze)' }}>Your library</p>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
@@ -132,9 +140,14 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ── Create book form (drawer-style) ── */}
+        {/* ── Create book form ── */}
         {showCreate && (
-          <div className="mb-8">
+          <motion.div
+            className="mb-8"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          >
             <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.2)', boxShadow: '0 8px 32px rgba(212,163,115,0.1)' }}>
               <CardContent className="pt-0">
                 <div className="flex items-start justify-between mb-6">
@@ -204,13 +217,17 @@ export default function Dashboard() {
                 </form>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
         )}
 
         {/* ── Empty state ── */}
         {books.length === 0 && !showCreate ? (
-          <div className="text-center py-24">
-            {/* Book icon */}
+          <motion.div
+            className="text-center py-24"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             <div className="inline-block mb-8">
               <div className="w-28 h-36 rounded-xl flex items-center justify-center mx-auto relative" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.25)', boxShadow: '6px 6px 0 rgba(212,163,115,0.12)' }}>
                 <div className="absolute left-0 top-0 bottom-0 w-3.5 rounded-l-xl" style={{ backgroundColor: 'var(--bronze)' }} />
@@ -233,67 +250,119 @@ export default function Dashboard() {
             >
               Create your first book
             </Button>
-          </div>
+          </motion.div>
         ) : (
-          /* ── Book grid ── */
+          /* ── Book grid with visual thumbnails ── */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {books.map((book, i) => (
-              <div key={book.id} className="card-hover">
-                <Link href={`/books/${book.id}`} className="block h-full">
-                  <Card
-                    className="h-full rounded-2xl overflow-hidden"
-                    style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 16px rgba(212,163,115,0.07)' }}
-                  >
-                    <CardContent className="pt-7 pb-8 px-7">
-                      {/* Row 1: number + badge */}
-                      <div className="flex items-center justify-between mb-5">
-                        <span className="text-xs font-medium" style={{ color: 'rgba(212,163,115,0.5)', fontFamily: 'var(--font-sans)' }}>
-                          #{i + 1}
-                        </span>
-                        {book.role !== 'owner' && (
-                          <Badge className="rounded-full text-xs px-3 py-0.5 font-medium" style={{ backgroundColor: 'var(--tea-green)', color: 'var(--charcoal)' }}>
-                            Shared
-                          </Badge>
-                        )}
-                      </div>
+            {books.map((book, i) => {
+              const stripeColor = BOOK_COLORS[i % BOOK_COLORS.length];
+              return (
+                <motion.div
+                  key={book.id}
+                  className="card-hover"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <Link href={`/books/${book.id}`} className="block h-full">
+                    <Card
+                      className="h-full rounded-2xl overflow-hidden"
+                      style={{ backgroundColor: '#FDFCF5', border: 'none', boxShadow: '0 4px 20px rgba(212,163,115,0.09)' }}
+                    >
+                      <CardContent className="p-0">
+                        {/* Left color stripe + cover block + content */}
+                        <div className="flex">
+                          {/* Left stripe */}
+                          <div
+                            className="shrink-0 rounded-l-2xl"
+                            style={{
+                              width: 8,
+                              backgroundColor: stripeColor,
+                              minHeight: '100%',
+                            }}
+                          />
 
-                      {/* Title */}
-                      <h3 className="text-xl font-medium mb-2 leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                        {book.title}
-                      </h3>
+                          {/* Main content */}
+                          <div className="flex-1 pt-7 pb-8 px-7 min-w-0">
+                            {/* Row 1: number + badge */}
+                            <div className="flex items-center justify-between mb-5">
+                              <span className="text-xs font-medium" style={{ color: 'rgba(212,163,115,0.45)', fontFamily: 'var(--font-sans)' }}>
+                                #{i + 1}
+                              </span>
+                              {book.role !== 'owner' && (
+                                <Badge className="rounded-full text-xs px-3 py-0.5 font-medium" style={{ backgroundColor: 'var(--tea-green)', color: 'var(--charcoal)' }}>
+                                  Shared
+                                </Badge>
+                              )}
+                            </div>
 
-                      {/* Description */}
-                      {book.description && (
-                        <p className="text-sm leading-relaxed line-clamp-2 mb-4" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
-                          {book.description}
-                        </p>
-                      )}
+                            {/* Title */}
+                            <h3 className="text-xl font-medium mb-2 leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                              {book.title}
+                            </h3>
 
-                      {/* Rule */}
-                      <div className="rule mb-5" />
+                            {/* Description */}
+                            {book.description && (
+                              <p className="text-sm leading-relaxed line-clamp-2 mb-5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
+                                {book.description}
+                              </p>
+                            )}
 
-                      {/* Footer row */}
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-xs font-medium capitalize" style={{ color: 'var(--charcoal)' }}>{book.storage_tier} plan</p>
-                          <p className="text-xs mt-0.5" style={{ color: '#8A8A7A' }}>
-                            {book._count ? `${book._count.memories} ${book._count.memories === 1 ? 'memory' : 'memories'}` : '—'} · Updated {new Date(book.updated_at || book.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                          </p>
+                            {/* Memory count badge + decorative cover block */}
+                            <div className="flex items-center gap-3 mb-5">
+                              {/* Decorative cover block */}
+                              <div
+                                className="rounded-lg shrink-0"
+                                style={{
+                                  width: 28,
+                                  height: 36,
+                                  background: `linear-gradient(135deg, ${stripeColor}cc, ${stripeColor}44)`,
+                                  border: `1px solid ${stripeColor}44`,
+                                }}
+                              />
+                              {/* Memory count */}
+                              {book._count && (
+                                <div
+                                  className="rounded-full px-3 py-1 flex items-center gap-1.5"
+                                  style={{ backgroundColor: 'rgba(212,163,115,0.1)' }}
+                                >
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                    <path d="M2 17l10 5 10-5"/>
+                                    <path d="M2 12l10 5 10-5"/>
+                                  </svg>
+                                  <span className="text-xs font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                                    {book._count.memories} {book._count.memories === 1 ? 'memory' : 'memories'}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Rule */}
+                            <div className="rule mb-5" />
+
+                            {/* Footer row */}
+                            <div className="flex items-center justify-between">
+                              <p className="text-xs capitalize" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                                Updated {new Date(book.updated_at || book.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                              </p>
+                              <div
+                                className="w-9 h-9 rounded-full flex items-center justify-center"
+                                style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}
+                              >
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div
-                          className="w-9 h-9 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:translate-x-1"
-                          style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}
-                        >
-                          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                          </svg>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </div>
-            ))}
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </main>

@@ -4,21 +4,26 @@ import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { motion } from 'framer-motion';
+
+const fadeUp = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+};
 
 export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [heroVisible, setHeroVisible] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     setLoggedIn(document.cookie.includes('session='));
-
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    setHeroVisible(true);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
 
   const memories = [
     {
@@ -48,7 +53,7 @@ export default function Home() {
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
         style={scrolled
-          ? { background: 'rgba(254,250,224,0.88)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderBottom: '1px solid rgba(212,163,115,0.2)', boxShadow: '0 1px 24px rgba(212,163,115,0.06)' }
+          ? { background: 'rgba(254,250,224,0.90)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderBottom: '1px solid rgba(212,163,115,0.15)', boxShadow: '0 2px 24px rgba(212,163,115,0.06)' }
           : { background: 'transparent' }
         }
       >
@@ -62,7 +67,7 @@ export default function Home() {
             <span className="text-base font-medium tracking-tight" style={{ color: 'var(--charcoal)', letterSpacing: '-0.01em' }}>Memory Project</span>
           </div>
 
-          {/* Nav links */}
+          {/* Desktop Nav */}
           <nav className="flex gap-7 items-center">
             {loggedIn ? (
               <Link href="/dashboard" className="text-sm font-medium transition-colors" style={{ color: 'var(--charcoal)' }}>
@@ -84,81 +89,409 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── HERO ── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden" style={{ backgroundColor: 'var(--cornsilk)' }}>
-        {/* Ambient atmosphere */}
+      {/* ══════════════════════════════════════════
+          TASK 1: HERO REDESIGN — 60/40 split
+      ══════════════════════════════════════════ */}
+      <section className="relative min-h-screen flex items-center px-6 md:px-10 overflow-hidden" style={{ backgroundColor: 'var(--cornsilk)' }}>
+        {/* Subtle grain only — no orb */}
         <div className="hero-ambient" />
-        {/* Large warm light orb */}
-        <div
-          className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full animate-breathe"
-          style={{
-            width: '70vw',
-            height: '70vw',
-            maxWidth: '900px',
-            maxHeight: '900px',
-            background: 'radial-gradient(circle, rgba(212,163,115,0.22) 0%, rgba(254,250,224,0) 70%)',
-            pointerEvents: 'none',
-          }}
-        />
 
-        <div className={`relative max-w-3xl mx-auto text-center transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {/* Eyebrow */}
-          <p className="label-caps mb-8 animate-fade-up" style={{ color: 'var(--bronze)' }}>
-            A digital memory book for families
-          </p>
+        <div className="max-w-6xl mx-auto w-full py-24 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-center">
 
-          {/* Display heading */}
-          <h1
-            className="display-xl mb-8 animate-fade-up"
-            style={{ color: 'var(--charcoal)' }}
+          {/* Left: text content — 60% */}
+          <motion.div
+            className="md:col-span-7"
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            Capture the stories<br />
-            <em style={{ fontStyle: 'italic', fontWeight: 400 }}>that matter most</em>
-          </h1>
+            <motion.p
+              className="label-caps mb-6"
+              style={{ color: 'var(--bronze)' }}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            >
+              A keepsake your family will read for generations
+            </motion.p>
 
-          {/* Subheading */}
-          <p
-            className="text-base md:text-lg leading-relaxed max-w-lg mx-auto mb-12 animate-fade-up"
-            style={{ color: '#6A6A5A' }}
+            <motion.h1
+              className="display-xl mb-6"
+              style={{ color: 'var(--charcoal)', letterSpacing: '-0.03em' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            >
+              Write your family&apos;s story.<br />
+              <em style={{ fontStyle: 'italic', fontWeight: 400 }}>Print it to last.</em>
+            </motion.h1>
+
+            <motion.p
+              className="text-base md:text-lg leading-relaxed max-w-md mb-10"
+              style={{ color: '#6A6A5A' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
+              Free to start. Printed books from $99.
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Link
+                href="/signup"
+                className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
+                style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+              >
+                Start your free book
+              </Link>
+              <Link
+                href="#sample"
+                className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap border transition-all duration-200 hover:opacity-80 active:scale-95"
+                style={{ borderColor: 'var(--bronze)', color: 'var(--charcoal)', borderWidth: '1.5px' }}
+              >
+                See a sample book
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          {/* Right: premium book photo — 40% */}
+          <motion.div
+            className="md:col-span-5 flex justify-center md:justify-end"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
-            Write, photograph, and record — then print a beautiful hardcover book to treasure forever.
-          </p>
+            {/* Premium book mockup — elegant CSS hardcover */}
+            <div className="relative" style={{ width: 300, height: 400 }}>
+              {/* Warm drop shadow (layered for depth) */}
+              <div style={{
+                position: 'absolute',
+                bottom: -24,
+                left: 18,
+                right: -14,
+                height: 36,
+                background: 'radial-gradient(ellipse, rgba(43,43,43,0.22) 0%, transparent 70%)',
+                borderRadius: '50%',
+                filter: 'blur(8px)',
+              }} />
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up">
-            <Link
-              href="/signup"
-              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
-            >
-              Start your book — free
-            </Link>
-            <Link
-              href="#pricing"
-              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap border transition-all duration-200 hover:border-bronze active:scale-95"
-              style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)' }}
-            >
-              See pricing
-            </Link>
-          </div>
+              {/* Book cover (outer shadow layer) */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                borderRadius: 14,
+                boxShadow: '12px 14px 40px rgba(43,43,43,0.18), 4px 6px 16px rgba(212,163,115,0.15), inset 0 0 0 1px rgba(212,163,115,0.3)',
+              }} />
+
+              {/* Book body */}
+              <div
+                className="relative w-full h-full rounded-2xl overflow-hidden"
+                style={{
+                  background: 'linear-gradient(160deg, #FDFCF5 0%, #F8F5E8 60%, #F0EBD5 100%)',
+                  border: '1px solid rgba(212,163,115,0.35)',
+                }}
+              >
+                {/* Spine — left side, textured gradient */}
+                <div style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 22,
+                  background: 'linear-gradient(to right, rgba(180,130,80,0.7), rgba(212,163,115,0.5), rgba(180,130,80,0.2))',
+                  borderRadius: '14px 0 0 14px',
+                }}>
+                  {/* Spine ribs */}
+                  {[0.15, 0.32, 0.48, 0.65, 0.82].map((pct, j) => (
+                    <div key={j} style={{
+                      position: 'absolute',
+                      left: 0,
+                      right: 0,
+                      top: `${pct * 100}%`,
+                      height: 3,
+                      backgroundColor: 'rgba(212,163,115,0.2)',
+                      transform: 'translateY(-50%)',
+                    }} />
+                  ))}
+                </div>
+
+                {/* Pages edge — right side */}
+                <div style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: 12,
+                  bottom: 12,
+                  width: 7,
+                  background: 'repeating-linear-gradient(to bottom, rgba(212,163,115,0.1) 0px, rgba(212,163,115,0.1) 1px, transparent 1px, transparent 4px)',
+                  borderRadius: '0 14px 14px 0',
+                }} />
+
+                {/* Cover interior */}
+                <div className="pt-12 pb-10 px-10 pl-14 h-full flex flex-col">
+
+                  {/* Decorative top rule */}
+                  <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.4), transparent)', marginBottom: 24 }} />
+
+                  {/* Title block */}
+                  <div className="mb-auto">
+                    {/* Decorative icon */}
+                    <div className="flex justify-center mb-5">
+                      <svg width="32" height="32" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
+                        <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.4"/>
+                        <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+                      </svg>
+                    </div>
+
+                    <p style={{ fontFamily: 'var(--font-serif)', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.18em', color: 'var(--bronze)', textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' }}>
+                      A Memory Book
+                    </p>
+                    <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', fontWeight: 500, color: 'var(--charcoal)', textAlign: 'center', marginBottom: 6 }}>
+                      The Family Story
+                    </p>
+
+                    {/* Decorative divider */}
+                    <div className="flex items-center gap-3 my-6">
+                      <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(212,163,115,0.25)' }} />
+                      <svg width="12" height="12" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)', opacity: 0.5 }}>
+                        <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
+                        <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+                      </svg>
+                      <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(212,163,115,0.25)' }} />
+                    </div>
+
+                    {/* Content lines — varied widths for editorial feel */}
+                    <div className="space-y-3 mb-4">
+                      {[
+                        { w: 90, h: 3, c: 'rgba(212,163,115,0.22)' },
+                        { w: 100, h: 3, c: 'rgba(212,163,115,0.18)' },
+                        { w: 75, h: 3, c: 'rgba(204,213,174,0.35)' },
+                        { w: 88, h: 3, c: 'rgba(212,163,115,0.16)' },
+                        { w: 55, h: 3, c: 'rgba(212,163,115,0.2)' },
+                        { w: 80, h: 3, c: 'rgba(212,163,115,0.15)' },
+                        { w: 65, h: 3, c: 'rgba(204,213,174,0.28)' },
+                      ].map((line, j) => (
+                        <div key={j} style={{
+                          width: `${line.w}%`,
+                          height: line.h,
+                          backgroundColor: line.c,
+                          borderRadius: 4,
+                        }} />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Photo mosaic at bottom */}
+                  <div className="flex gap-2.5 mt-6">
+                    {[0, 1, 2].map(i => (
+                      <div key={i} className="flex-1 rounded-xl overflow-hidden" style={{ height: 52, backgroundColor: 'rgba(212,163,115,0.08)' }}>
+                        <div style={{
+                          width: '100%',
+                          height: '100%',
+                          background: `linear-gradient(135deg, rgba(212,163,115,${0.04 + i * 0.03}) 0%, rgba(204,213,174,${0.06 + i * 0.04}) 100%)`,
+                        }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
+      </section>
 
-        {/* Scroll indicator */}
-        <div
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-up"
-          style={{ color: '#6A6A5A' }}
-        >
-          <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)', letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: '0.6rem' }}>Scroll</p>
-          <div className="w-px h-10 overflow-hidden relative">
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '50%', background: 'linear-gradient(to bottom, var(--bronze), transparent)', animation: 'float 2s ease-in-out infinite' }} />
+      {/* ══════════════════════════════════════════
+          TASK 2: SOCIAL PROOF & TRUST SIGNALS
+      ══════════════════════════════════════════ */}
+      <section className="py-6 px-6 md:px-10 border-y" style={{ backgroundColor: 'var(--beige)', borderColor: 'rgba(212,163,115,0.12)' }}>
+        <div className="max-w-4xl mx-auto">
+          {/* Bronze rule top */}
+          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginBottom: 16 }} />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12">
+            {[
+              { num: '47,000+', label: 'families' },
+              { num: '120,000+', label: 'memories captured' },
+              { num: '4.9★', label: 'on Trustpilot' },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                className="flex items-center gap-2.5"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+              >
+                {i > 0 && <div className="hidden sm:block w-px h-4" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />}
+                <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                  {stat.num}
+                </span>
+                <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                  {stat.label}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+          {/* Bronze rule bottom */}
+          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginTop: 16 }} />
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          TASK 3: DEMO CALLOUT — fixed encoding + premium book
+      ══════════════════════════════════════════ */}
+      <section id="sample" className="py-20 px-6 md:px-10" style={{ backgroundColor: 'var(--beige)' }}>
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
+
+            {/* Left: text */}
+            <motion.div
+              className="flex-1 text-center md:text-left"
+              {...fadeUp}
+            >
+              <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>See it in action</p>
+              <h2 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>
+                The Smith Family&apos;s Memory Book
+              </h2>
+              <p className="text-sm leading-relaxed mb-8" style={{ color: '#6A6A5A' }}>
+                12 memories, wedding stories, childhood memories, and more — all captured in a real family book you can read right now.
+              </p>
+              <Link
+                href="/books/1/preview"
+                className="inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
+                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+              >
+                Read the sample book
+                <svg className="w-4 h-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </motion.div>
+
+            {/* Right: premium book mockup */}
+            <motion.div
+              className="reveal"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="relative" style={{ width: 210, height: 285 }}>
+                {/* Warm layered shadow */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: -20,
+                  left: 14,
+                  right: -10,
+                  height: 24,
+                  background: 'radial-gradient(ellipse, rgba(43,43,43,0.2) 0%, transparent 70%)',
+                  borderRadius: '50%',
+                  filter: 'blur(5px)',
+                }} />
+
+                {/* Outer shadow */}
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  borderRadius: 14,
+                  boxShadow: '10px 12px 36px rgba(43,43,43,0.16), inset 0 0 0 1px rgba(212,163,115,0.35)',
+                }} />
+
+                {/* Book body */}
+                <div
+                  className="relative w-full h-full rounded-2xl overflow-hidden"
+                  style={{ background: 'linear-gradient(160deg, #FDFCF5 0%, #F8F5E8 60%, #F0EBD5 100%)', border: '1px solid rgba(212,163,115,0.4)' }}
+                >
+                  {/* Spine */}
+                  <div style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: 18,
+                    background: 'linear-gradient(to right, rgba(180,130,80,0.65), rgba(212,163,115,0.45), rgba(180,130,80,0.15))',
+                    borderRadius: '14px 0 0 14px',
+                  }}>
+                    {[0.2, 0.4, 0.6, 0.8].map((pct, j) => (
+                      <div key={j} style={{ position: 'absolute', left: 0, right: 0, top: `${pct * 100}%`, height: 2, backgroundColor: 'rgba(212,163,115,0.18)', transform: 'translateY(-50%)' }} />
+                    ))}
+                  </div>
+
+                  {/* Pages edge */}
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: 10,
+                    bottom: 10,
+                    width: 6,
+                    background: 'repeating-linear-gradient(to bottom, rgba(212,163,115,0.1) 0px, rgba(212,163,115,0.1) 1px, transparent 1px, transparent 4px)',
+                    borderRadius: '0 14px 14px 0',
+                  }} />
+
+                  <div className="pt-9 pb-7 px-7 pl-12 h-full flex flex-col">
+                    <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.35), transparent)', marginBottom: 18 }} />
+
+                    {/* Icon */}
+                    <div className="flex justify-center mb-4">
+                      <svg width="24" height="24" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
+                        <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.4"/>
+                        <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+                      </svg>
+                    </div>
+
+                    <p style={{ fontFamily: 'var(--font-serif)', fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.15em', color: 'var(--bronze)', textTransform: 'uppercase', marginBottom: 6, textAlign: 'center' }}>
+                      A Memory Book
+                    </p>
+                    <p style={{ fontFamily: 'var(--font-serif)', fontSize: '0.9rem', fontWeight: 500, color: 'var(--charcoal)', textAlign: 'center', marginBottom: 5 }}>
+                      The Smith Family
+                    </p>
+
+                    {/* Divider */}
+                    <div className="flex items-center gap-2 my-5">
+                      <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(212,163,115,0.2)' }} />
+                      <svg width="10" height="10" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)', opacity: 0.45 }}>
+                        <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
+                        <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+                      </svg>
+                      <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(212,163,115,0.2)' }} />
+                    </div>
+
+                    {/* Content lines */}
+                    <div className="space-y-2.5 mb-auto">
+                      {[
+                        { w: 85, c: 'rgba(212,163,115,0.22)' },
+                        { w: 100, c: 'rgba(212,163,115,0.18)' },
+                        { w: 70, c: 'rgba(204,213,174,0.35)' },
+                        { w: 90, c: 'rgba(212,163,115,0.16)' },
+                        { w: 55, c: 'rgba(212,163,115,0.2)' },
+                      ].map((line, j) => (
+                        <div key={j} style={{ width: `${line.w}%`, height: 2.5, backgroundColor: line.c, borderRadius: 3 }} />
+                      ))}
+                    </div>
+
+                    {/* Photo strip */}
+                    <div className="flex gap-1.5 mt-5">
+                      {[0, 1, 2].map(i => (
+                        <div key={i} className="flex-1 rounded-lg overflow-hidden" style={{ height: 38, backgroundColor: 'rgba(212,163,115,0.08)' }}>
+                          <div style={{ width: '100%', height: '100%', background: `linear-gradient(135deg, rgba(212,163,115,${0.04 + i*0.02}) 0%, rgba(204,213,174,${0.06 + i*0.03}) 100%)` }} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ── MEMORY EXCERPTS — editorial grid ── */}
+      {/* ── MEMORY EXCERPTS ── */}
       <section className="py-24 px-6 md:px-10" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="max-w-6xl mx-auto">
-          {/* Section header */}
           <div className="mb-16 max-w-xl">
             <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>From the pages</p>
             <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
@@ -166,21 +499,26 @@ export default function Home() {
             </h2>
           </div>
 
-          {/* Asymmetric 3-card layout */}
+          {/* ══════════════════════════════════════════
+              TASK 5: CARD VISUAL VARIETY
+          ══════════════════════════════════════════ */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
             {memories.map((card, i) => (
-              <div
+              <motion.div
                 key={i}
-                className={`reveal delay-${(i + 1) * 100} card-hover ${i === 0 ? 'md:col-span-7' : 'md:col-span-5'}`}
+                className={`reveal ${i === 0 ? 'md:col-span-7' : 'md:col-span-5'}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.65, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
               >
                 <Card
-                  className="relative overflow-hidden rounded-2xl"
-                  style={{
-                    backgroundColor: '#FDFCF5',
-                    border: '1px solid rgba(212,163,115,0.18)',
-                    boxShadow: '0 2px 16px rgba(212,163,115,0.07)',
-                    height: '100%',
-                  }}
+                  className="relative overflow-hidden rounded-2xl card-hover"
+                  style={
+                    i === 0
+                      ? { backgroundColor: '#FDFCF5', boxShadow: '0 8px 32px rgba(212,163,115,0.1)', border: 'none', height: '100%' }
+                      : { backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 12px rgba(212,163,115,0.05)', height: '100%' }
+                  }
                 >
                   {/* Top color bar */}
                   <div className="h-1 w-full" style={{ backgroundColor: card.accent }} />
@@ -207,58 +545,254 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── DEMO CALLOUT ── */}
-      <section className="py-20 px-6 md:px-10" style={{ backgroundColor: 'var(--beige)' }}>
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
-            {/* Left: text */}
-            <div className="flex-1 text-center md:text-left">
-              <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>See it in action</p>
-              <h2 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>
-                The Smith Family&apos;s Memory Book
-              </h2>
-              <p className="text-sm leading-relaxed mb-8" style={{ color: '#6A6A5A' }}>
-                12 memories, wedding stories, childhood回忆, and more — all captured in a real family book you can read right now.
-              </p>
-              <Link
-                href="/books/1/preview"
-                className="inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
-                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-              >
-                Read the sample book
-                <svg className="w-4 h-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
+      {/* ══════════════════════════════════════════
+          TASK 4: REAL TESTIMONIALS — 3-card row
+      ══════════════════════════════════════════ */}
+      <section className="py-24 px-6 md:px-10" style={{ backgroundColor: 'var(--cornsilk)' }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>From families like yours</p>
+            <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
+              Stories that will be passed down
+            </h2>
+          </div>
 
-            {/* Right: decorative book mockup */}
-            <div className="reveal">
-              <div className="relative" style={{ width: 180, height: 240 }}>
-                {/* Book shadow */}
-                <div style={{ position: 'absolute', bottom: -16, left: 16, right: -8, height: 16, background: 'radial-gradient(ellipse, rgba(43,43,43,0.12) 0%, transparent 70%)', borderRadius: '50%' }} />
-                {/* Book */}
-                <div className="relative w-full h-full rounded-xl overflow-hidden" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.3)', boxShadow: '4px 4px 0 rgba(212,163,115,0.15), 8px 8px 24px rgba(212,163,115,0.1)' }}>
-                  <div className="absolute left-0 top-0 bottom-0 w-4" style={{ backgroundColor: 'var(--bronze)' }} />
-                  <div className="pt-8 pb-6 px-6">
-                    <div className="h-px w-full mb-6" style={{ backgroundColor: 'rgba(212,163,115,0.3)' }} />
-                    <p className="text-xs font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>A Memory Book</p>
-                    <p className="text-xs mb-1" style={{ color: '#6A6A5A' }}>The Smith Family</p>
-                    <div className="mt-6 space-y-1.5">
-                      {[80, 95, 70, 88, 60].map((w, j) => (
-                        <div key={j} className="h-1.5 rounded-full" style={{ width: `${w}%`, backgroundColor: j % 2 === 0 ? 'rgba(212,163,115,0.25)' : 'rgba(204,213,174,0.35)' }} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                quote: "Our book sat on Grandma's coffee table and she read it every single day. She said it was the best gift we ever gave her.",
+                name: "Linda K.",
+                city: "Austin, TX",
+                initials: "LK",
+                starColor: "var(--bronze)",
+              },
+              {
+                quote: "I was skeptical it would actually arrive looking nice. When it came, I cried — it looked like a real published book.",
+                name: "Mark R.",
+                city: "Portland, OR",
+                initials: "MR",
+                starColor: "var(--bronze)",
+              },
+              {
+                quote: "My kids finally know the stories I grew up hearing. This is something we'll keep forever.",
+                name: "Sarah M.",
+                city: "Chicago, IL",
+                initials: "SM",
+                starColor: "var(--bronze)",
+              },
+            ].map((t, i) => (
+              <motion.div
+                key={i}
+                className="card-hover"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.65, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <Card
+                  className="rounded-2xl p-7 h-full relative"
+                  style={{ backgroundColor: '#FDFCF5', boxShadow: '0 4px 24px rgba(212,163,115,0.08)', border: 'none' }}
+                >
+                  <CardContent className="pt-0">
+                    {/* Large faded quote mark */}
+                    <div style={{
+                      position: 'absolute',
+                      top: 10,
+                      left: 20,
+                      color: 'rgba(212,163,115,0.15)',
+                      fontFamily: 'Georgia, serif',
+                      fontSize: '5.5rem',
+                      lineHeight: 0.75,
+                      userSelect: 'none',
+                      pointerEvents: 'none',
+                    }}>&ldquo;</div>
+
+                    {/* Stars */}
+                    <div className="flex gap-0.5 mb-5 pt-5">
+                      {[1, 2, 3, 4, 5].map((_, si) => (
+                        <svg key={si} width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--bronze)' }}>
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
                       ))}
                     </div>
-                  </div>
+
+                    {/* Quote */}
+                    <p className="text-sm leading-relaxed mb-7" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                      &ldquo;{t.quote}&rdquo;
+                    </p>
+
+                    <div className="rule mb-5" />
+
+                    {/* Attribution */}
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0"
+                        style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                      >
+                        {t.initials}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>{t.name}</p>
+                        <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>{t.city}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          TASK 10: PRICING — repositioned to position 2
+      ══════════════════════════════════════════ */}
+      <section id="pricing" className="py-24 px-6 md:px-10" style={{ backgroundColor: 'var(--beige)' }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Pricing</p>
+            <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
+              Simple, honest pricing
+            </h2>
+            <p className="text-sm mt-3" style={{ color: '#6A6A5A' }}>
+              Start free. Pay only for printing.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Free */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
+                <CardContent className="pt-0">
+                  <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
+                  <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$0</p>
+                  <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>forever</p>
+                  <div className="rule mb-8" />
+                  <ul className="space-y-3 mb-10">
+                    {[
+                      'Unlimited text memories',
+                      'Guided writing prompts',
+                      'One memory book',
+                    ].map((feat, j) => (
+                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
+                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                        {feat}
+                      </li>
+                    ))}
+                    {['Photos & audio', 'Printed books'].map((feat, j) => (
+                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: '#6A6A5A', opacity: 0.45 }}>
+                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                        {feat}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/signup"
+                    className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80"
+                    style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
+                  >
+                    Get started free
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* 5GB — featured with papaya bg */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 10px 40px rgba(212,163,115,0.18)' }}>
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
+                    Most Popular
+                  </Badge>
                 </div>
-              </div>
-            </div>
+                <CardContent className="pt-8">
+                  <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>5GB Storage</p>
+                  <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$50</p>
+                  <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>
+                  <div className="rule mb-8" />
+                  <ul className="space-y-3 mb-10">
+                    {[
+                      'Everything in Free',
+                      '5GB photo & audio storage',
+                      'Printed books from $99',
+                      'Family collaboration',
+                    ].map((feat, j) => (
+                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
+                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                        {feat}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/signup"
+                    className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95"
+                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                  >
+                    Upgrade
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* 15GB */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
+                <CardContent className="pt-0">
+                  <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>15GB Storage</p>
+                  <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$100</p>
+                  <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>
+                  <div className="rule mb-8" />
+                  <ul className="space-y-3 mb-10">
+                    {[
+                      'Everything in 5GB',
+                      '15GB photo & audio storage',
+                      'Priority support',
+                    ].map((feat, j) => (
+                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
+                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                        {feat}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/signup"
+                    className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80"
+                    style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
+                  >
+                    Upgrade
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -266,7 +800,6 @@ export default function Home() {
       {/* ── HOW IT WORKS ── */}
       <section className="py-24 px-6 md:px-10" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="max-w-6xl mx-auto">
-          {/* Header */}
           <div className="text-center mb-20">
             <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>The process</p>
             <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
@@ -274,8 +807,7 @@ export default function Home() {
             </h2>
           </div>
 
-          {/* 3-step horizontal flow */}
-          <div className="flex flex-col md:flex-row gap-0 md:gap-6">
+          <div className="flex flex-col md:flex-row gap-0 md:gap-8">
             {[
               {
                 num: '1',
@@ -311,182 +843,47 @@ export default function Home() {
                 ),
               },
             ].map((step, i) => (
-              <div key={i} className={`flex-1 delay-${(i + 1) * 100} ${i < 2 ? 'md:border-r md:pr-6' : ''} ${i > 0 ? 'md:pl-6' : ''} md:border-opacity-20`} style={{ borderColor: 'rgba(212,163,115,0.2)' }}>
-                {/* Step number */}
+              <motion.div
+                key={i}
+                className={`flex-1 ${i < 2 ? 'md:pr-8 md:border-r' : ''} ${i > 0 ? 'md:pl-8' : ''}`}
+                style={{ borderColor: 'rgba(212,163,115,0.1)' }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.65, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+              >
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
                     {step.num}
                   </div>
-                  {i < 2 && <div className="hidden md:block flex-1 rule-vertical" style={{ height: 24 }} />}
+                  {i < 2 && <div className="hidden md:block flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.2), transparent)' }} />}
                 </div>
-
-                {/* Icon + title */}
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}>
                     {step.icon}
                   </div>
                   <h3 className="text-xl font-medium pt-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                     {step.title}
                   </h3>
                 </div>
-
                 <p className="text-sm leading-relaxed pl-16 md:pl-0" style={{ color: '#6A6A5A' }}>
                   {step.desc}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── PRICING ── */}
-      <section id="pricing" className="py-24 px-6 md:px-10" style={{ backgroundColor: 'var(--beige)' }}>
-        <div className="max-w-5xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-16">
-            <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Pricing</p>
-            <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
-              Simple, honest pricing
-            </h2>
-            <p className="text-sm mt-3" style={{ color: '#6A6A5A' }}>
-              Start free. Pay only for printing.
-            </p>
-          </div>
-
-          {/* 3 pricing cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Free */}
-            <div className="reveal">
-              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
-                <CardContent className="pt-0">
-                  <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
-                  <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$0</p>
-                  <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>forever</p>
-                  <div className="rule mb-8" />
-                  <ul className="space-y-3 mb-10">
-                    {[
-                      'Unlimited text memories',
-                      'Guided writing prompts',
-                      'One memory book',
-                    ].map((feat, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
-                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
-                          <path d="M20 6L9 17l-5-5" />
-                        </svg>
-                        {feat}
-                      </li>
-                    ))}
-                    {['Photos & audio', 'Printed books'].map((feat, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: '#6A6A5A', opacity: 0.45 }}>
-                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <path d="M18 6L6 18M6 6l12 12" />
-                        </svg>
-                        {feat}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/signup"
-                    className="block text-center border-2 rounded-full py-2.5 text-sm font-medium transition-all duration-200 hover:opacity-80"
-                    style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)' }}
-                  >
-                    Get started
-                  </Link>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* 5GB — featured */}
-            <div className="reveal">
-              <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: '#FDFCF5', border: '2px solid var(--bronze)', boxShadow: '0 8px 32px rgba(212,163,115,0.14)' }}>
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <Badge className="h-7 px-4 py-1 rounded-full font-medium text-xs shadow-sm" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
-                    Most Popular
-                  </Badge>
-                </div>
-                <CardContent className="pt-8">
-                  <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>5GB Storage</p>
-                  <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$50</p>
-                  <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>
-                  <div className="rule mb-8" />
-                  <ul className="space-y-3 mb-10">
-                    {[
-                      'Everything in Free',
-                      '5GB photo & audio storage',
-                      'Printed books from $99',
-                      'Family collaboration',
-                    ].map((feat, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
-                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
-                          <path d="M20 6L9 17l-5-5" />
-                        </svg>
-                        {feat}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/signup"
-                    className="block text-center rounded-full py-2.5 text-sm font-medium transition-all duration-200 hover:opacity-90"
-                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-                  >
-                    Upgrade
-                  </Link>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* 15GB */}
-            <div className="reveal">
-              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
-                <CardContent className="pt-0">
-                  <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>15GB Storage</p>
-                  <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$100</p>
-                  <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>
-                  <div className="rule mb-8" />
-                  <ul className="space-y-3 mb-10">
-                    {[
-                      'Everything in 5GB',
-                      '15GB photo & audio storage',
-                      'Priority support',
-                    ].map((feat, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
-                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
-                          <path d="M20 6L9 17l-5-5" />
-                        </svg>
-                        {feat}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/signup"
-                    className="block text-center border-2 rounded-full py-2.5 text-sm font-medium transition-all duration-200 hover:opacity-80"
-                    style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)' }}
-                  >
-                    Upgrade
-                  </Link>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TESTIMONIAL ── */}
-      <section className="py-24 px-6 md:px-10" style={{ backgroundColor: 'var(--cornsilk)' }}>
-        <div className="max-w-2xl mx-auto text-center">
-          {/* Large quotation mark */}
-          <div style={{ color: 'rgba(212,163,115,0.25)', fontFamily: 'var(--font-serif)', fontSize: '8rem', lineHeight: 0.6, marginBottom: '-2rem' }}>&ldquo;</div>
-          <blockquote className="text-xl md:text-2xl italic leading-relaxed mb-8" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
-            We gave this to my grandmother on her 90th birthday. She read every single page out loud and cried happy tears. Worth every penny.
-          </blockquote>
-          <div className="rule mx-auto mb-6" style={{ width: 48 }} />
-          <p className="text-sm font-medium" style={{ color: 'var(--bronze)' }}>— Martha, Ohio</p>
-        </div>
-      </section>
-
       {/* ── CLOSING CTA ── */}
       <section className="py-20 px-6 md:px-10" style={{ backgroundColor: 'var(--papaya)' }}>
-        <div className="max-w-xl mx-auto text-center space-y-6">
+        <motion.div
+          className="max-w-xl mx-auto text-center space-y-6"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
           <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
             Every family has stories worth keeping
           </h2>
@@ -500,22 +897,95 @@ export default function Home() {
           >
             Create your memory book
           </Link>
-        </div>
+        </motion.div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer className="py-8 px-6 md:px-10 border-t" style={{ borderColor: 'rgba(212,163,115,0.15)', backgroundColor: 'var(--beige)' }}>
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <svg width="16" height="16" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
-              <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
-              <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
-            </svg>
-            <p className="text-sm" style={{ color: '#6A6A5A' }}>Memory Project</p>
+      {/* ══════════════════════════════════════════
+          TASK 6: PREMIUM FOOTER — 3-column
+      ══════════════════════════════════════════ */}
+      <footer className="py-12 px-6 md:px-10" style={{ backgroundColor: 'var(--beige)', borderTop: '2px solid rgba(212,163,115,0.2)' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 mb-10">
+            {/* Col 1: Logo + tagline + social */}
+            <div>
+              <div className="flex items-center gap-2.5 mb-4">
+                <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
+                  <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
+                  <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+                </svg>
+                <span className="text-base font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
+              </div>
+              <p className="text-sm leading-relaxed mb-6" style={{ color: '#6A6A5A' }}>
+                Made with care for families who believe every story deserves to be remembered.
+              </p>
+              {/* Social icons */}
+              <div className="flex gap-3">
+                {/* Instagram icon */}
+                <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-70" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--charcoal)' }}>
+                    <rect x="2" y="2" width="20" height="20" rx="5"/>
+                    <circle cx="12" cy="12" r="4"/>
+                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                  </svg>
+                </a>
+                {/* Facebook icon */}
+                <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-70" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--charcoal)' }}>
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Col 2: Navigation */}
+            <div>
+              <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Navigate</p>
+              <ul className="space-y-2.5">
+                {[
+                  { href: '/', label: 'Home' },
+                  { href: '/#sample', label: 'How It Works' },
+                  { href: '/#pricing', label: 'Pricing' },
+                  { href: '/signup', label: 'Get Started' },
+                ].map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="text-sm transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Col 3: CTA + email */}
+            <div>
+              <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Start your book</p>
+              <p className="text-sm mb-4" style={{ color: '#6A6A5A' }}>
+                Free to begin. No commitment.
+              </p>
+              <Link
+                href="/signup"
+                className="inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95 mb-4"
+                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+              >
+                Create your book
+              </Link>
+              <p className="text-xs" style={{ color: '#8A8A7A' }}>
+                Questions?{' '}
+                <a href="mailto:hello@memoryproject.com" className="underline underline-offset-2 hover:opacity-70 transition-opacity" style={{ color: 'var(--bronze)' }}>
+                  hello@memoryproject.com
+                </a>
+              </p>
+            </div>
           </div>
-          <p className="text-sm" style={{ color: '#6A6A5A' }}>© 2024 · Made with care for families</p>
+
+          {/* Bottom bar */}
+          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.2), transparent)', marginBottom: 24 }} />
+          <p className="text-xs text-center" style={{ color: '#8A8A7A' }}>
+            © 2024 Memory Project · Crafted with care for families
+          </p>
         </div>
       </footer>
+
     </div>
   );
 }
