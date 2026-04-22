@@ -5,9 +5,9 @@ import crypto from 'crypto';
 export async function GET(request: NextRequest) {
   try {
     const { url, codeVerifier } = await workos.userManagement.getAuthorizationUrlWithPKCE({
-      provider: 'google',
+      provider: 'GoogleOAuth',
       redirectUri: `${APP_URL}/api/auth/callback`,
-      clientId: process.env.WORKOS_CLIENT_ID || 'client_01KPTJ9V6VTS6BEPNHFAKBJQB1',
+      clientId: process.env.WORKOS_CLIENT_ID,
     });
 
     // Store codeVerifier in a short-lived HttpOnly cookie (5 min TTL)

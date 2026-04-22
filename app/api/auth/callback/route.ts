@@ -115,6 +115,9 @@ export async function GET(request: NextRequest) {
     return redirectResponse;
   } catch (error: any) {
     console.error('OAuth callback error:', error);
+    console.error('Error message:', error?.message);
+    console.error('Error code:', error?.code);
+    console.error('Error status:', error?.status);
     return NextResponse.redirect(new URL('/login?error=callback_failed', request.url));
   }
 }
