@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Avatar } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -27,6 +28,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  profileImageUrl?: string | null;
 }
 
 const BOOK_COLORS = [
@@ -172,22 +174,25 @@ export default function Dashboard() {
         <div className="mb-12">
           <p className="label-caps mb-2" style={{ color: 'var(--bronze)' }}>Your library</p>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-            <div>
+            <div className="flex items-center gap-4">
               {user ? (
-                <h1 className="display-md" style={{ color: 'var(--charcoal)' }}>
-                  {getGreeting(user.name)}
-                </h1>
+                <>
+                  <Avatar name={user.name} imageUrl={user.profileImageUrl} className="w-10 h-10" />
+                  <h1 className="display-md" style={{ color: 'var(--charcoal)' }}>
+                    {getGreeting(user.name)}
+                  </h1>
+                </>
               ) : (
                 <h1 className="display-md" style={{ color: 'var(--charcoal)' }}>
                   Memory Books
                 </h1>
               )}
-              <p className="text-sm mt-2" style={{ color: '#6A6A5A' }}>
-                {books.length === 0
-                  ? 'Capture and preserve your family\'s stories'
-                  : `${books.length} ${books.length === 1 ? 'book' : 'books'} in your library`}
-              </p>
             </div>
+            <p className="text-sm mt-2 sm:mt-0" style={{ color: '#6A6A5A' }}>
+              {books.length === 0
+                ? 'Capture and preserve your family\'s stories'
+                : `${books.length} ${books.length === 1 ? 'book' : 'books'} in your library`}
+            </p>
             <Button
               onClick={() => setShowCreate(true)}
               type="button"

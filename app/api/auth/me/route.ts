@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
     // Get user
     const [user] = await sql`
-      SELECT id, email, name, created_at
+      SELECT id, email, name, created_at, profile_image_url
       FROM users
       WHERE id = ${session.user_id}
     `;
@@ -37,7 +37,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ user: null }, { status: 401 });
     }
 
-    return NextResponse.json({ user });
+    return NextResponse.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        profileImageUrl: user.profile_image_url ?? null,
+      },
+    });
   } catch (error) {
     console.error('Me error:', error);
     return NextResponse.json(
