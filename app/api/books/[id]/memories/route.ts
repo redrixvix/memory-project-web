@@ -1,15 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
+import crypto from 'crypto';
+
+function hashSessionId(sessionId: string): string {
+  return crypto.createHash('sha256').update(sessionId).digest('hex');
+}
 
 async function getUserFromSession(request: NextRequest) {
   const sessionId = request.cookies.get('session')?.value;
   if (!sessionId) return null;
+
+  const sessionIdHash = hashSessionId(sessionId);
+
   const [session] = await sql`
-    SELECT user_id, expires_at FROM auth_sessions WHERE workos_session_id = ${sessionId}
+    SELECT user_id, expires_at
+    FROM auth_sessions
+    WHERE workos_session_id = ${sessionIdHash}
   `;
+
   if (!session) return null;
   if (new Date(session.expires_at) < new Date()) return null;
-  const [user] = await sql`SELECT id, email, name FROM users WHERE id = ${session.user_id}`;
+
+  const [user] = await sql`SELECT id, email, name, created_at, profile_image_url FROM users WHERE id = ${session.user_id}`;
+
   return user;
 }
 
@@ -20,11 +33,7 @@ export async function GET(
   try {
     const user = await getUserFromSession(request);
     if (!user) {
-      const origin = request.headers.get('origin') || 'https://web-redrixvixs-projects.vercel.app';
-      const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      res.headers.set('Access-Control-Allow-Origin', origin);
-      res.headers.set('Access-Control-Allow-Credentials', 'true');
-      return res;
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const { id } = await params;
     const memories = await sql`
@@ -48,11 +57,7 @@ export async function POST(
   try {
     const user = await getUserFromSession(request);
     if (!user) {
-      const origin = request.headers.get('origin') || 'https://web-redrixvixs-projects.vercel.app';
-      const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      res.headers.set('Access-Control-Allow-Origin', origin);
-      res.headers.set('Access-Control-Allow-Credentials', 'true');
-      return res;
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const { id: bookId } = await params;
     const { prompt_question, answer_text, photo_urls, audio_url } = await request.json();

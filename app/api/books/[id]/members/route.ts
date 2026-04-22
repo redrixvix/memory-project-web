@@ -1,25 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomBytes } from 'node:crypto';
 import sql from '@/lib/db';
+import crypto from 'crypto';
+
+function hashSessionId(sessionId: string): string {
+  return crypto.createHash('sha256').update(sessionId).digest('hex');
+}
 
 async function getUserFromSession(request: NextRequest) {
   const sessionId = request.cookies.get('session')?.value;
   if (!sessionId) return null;
 
+  const sessionIdHash = hashSessionId(sessionId);
+
   const [session] = await sql`
     SELECT user_id, expires_at
     FROM auth_sessions
-    WHERE workos_session_id = ${sessionId}
+    WHERE workos_session_id = ${sessionIdHash}
   `;
 
   if (!session) return null;
   if (new Date(session.expires_at) < new Date()) return null;
 
-  const [user] = await sql`
-    SELECT id, email, name, created_at
-    FROM users
-    WHERE id = ${session.user_id}
-  `;
+  const [user] = await sql`SELECT id, email, name, created_at, profile_image_url FROM users WHERE id = ${session.user_id}`;
 
   return user;
 }
