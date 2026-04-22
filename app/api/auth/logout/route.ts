@@ -1,15 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
+import crypto from 'crypto';
+
+function hashSessionId(sessionId: string): string {
+  return crypto.createHash('sha256').update(sessionId).digest('hex');
+}
 
 export async function POST(request: NextRequest) {
   try {
     const sessionId = request.cookies.get('session')?.value;
 
     if (sessionId) {
-      // Delete session from database
+      const sessionIdHash = hashSessionId(sessionId);
+      // Delete session from database using hashed ID
       await sql`
         DELETE FROM auth_sessions
-        WHERE workos_session_id = ${sessionId}
+        WHERE workos_session_id = ${sessionIdHash}
       `;
     }
 

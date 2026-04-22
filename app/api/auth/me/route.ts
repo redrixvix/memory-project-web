@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
+import crypto from 'crypto';
+
+function hashSessionId(sessionId: string): string {
+  return crypto.createHash('sha256').update(sessionId).digest('hex');
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,11 +14,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ user: null }, { status: 401 });
     }
 
-    // Get user from session
+    const sessionIdHash = hashSessionId(sessionId);
+
+    // Get user from session (lookup by hashed ID)
     const [session] = await sql`
       SELECT user_id, expires_at
       FROM auth_sessions
-      WHERE workos_session_id = ${sessionId}
+      WHERE workos_session_id = ${sessionIdHash}
     `;
 
     if (!session) {
@@ -22,7 +29,7 @@ export async function GET(request: NextRequest) {
 
     // Check expiration
     if (new Date(session.expires_at) < new Date()) {
-      await sql`DELETE FROM auth_sessions WHERE workos_session_id = ${sessionId}`;
+      await sql`DELETE FROM auth_sessions WHERE workos_session_id = ${sessionIdHash}`;
       return NextResponse.json({ user: null }, { status: 401 });
     }
 

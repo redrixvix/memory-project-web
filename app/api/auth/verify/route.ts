@@ -7,6 +7,10 @@ function generateSessionId(): string {
   return crypto.randomBytes(32).toString('hex');
 }
 
+function hashSessionId(sessionId: string): string {
+  return crypto.createHash('sha256').update(sessionId).digest('hex');
+}
+
 async function authenticateMagic(code: string, email: string) {
   const result = await workos.userManagement.authenticateWithMagicAuth({
     code,
@@ -28,7 +32,6 @@ async function upsertUser(workosUser: {
   `;
 
   if (existing) {
-    // Mark invite pending as resolved if it was set
     if (existing.invite_pending) {
       await sql`
         UPDATE users
@@ -39,7 +42,6 @@ async function upsertUser(workosUser: {
     return existing;
   }
 
-  // Create new user
   const name = [workosUser.firstName, workosUser.lastName]
     .filter(Boolean)
     .join(' ') || workosUser.email.split('@')[0];
@@ -53,9 +55,17 @@ async function upsertUser(workosUser: {
   return newUser;
 }
 
-function createSessionCookie(sessionId: string): NextResponse['cookies'] extends { set: (...args: infer A) => infer R } ? R : never {
-  // We'll set it manually on the response
-  return {} as ReturnType<NextResponse['cookies']['set']>;
+async function createSession(userId: number): Promise<string> {
+  const sessionId = generateSessionId();
+  const sessionIdHash = hashSessionId(sessionId);
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+  await sql`
+    INSERT INTO auth_sessions (user_id, workos_session_id, expires_at)
+    VALUES (${userId}, ${sessionIdHash}, ${expiresAt})
+  `;
+
+  return sessionId;
 }
 
 export async function POST(request: NextRequest) {
@@ -68,14 +78,12 @@ export async function POST(request: NextRequest) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Authenticate with WorkOS
     const result = await authenticateMagic(code, normalizedEmail);
 
     if (!result.user) {
       return NextResponse.json({ error: 'Invalid or expired magic link' }, { status: 401 });
     }
 
-    // Upsert user in our DB
     const user = await upsertUser({
       id: result.user.id,
       email: result.user.email,
@@ -83,16 +91,8 @@ export async function POST(request: NextRequest) {
       lastName: result.user.lastName,
     });
 
-    // Create session
-    const sessionId = generateSessionId();
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const sessionId = await createSession(Number(user.id));
 
-    await sql`
-      INSERT INTO auth_sessions (user_id, workos_session_id, expires_at)
-      VALUES (${user.id}, ${sessionId}, ${expiresAt})
-    `;
-
-    // Build response
     const response = NextResponse.json({
       user: { id: user.id, email: user.email, name: user.name }
     });
@@ -114,7 +114,6 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Magic verify error:', error);
     const message = error instanceof Error ? error.message : String(error);
-    // WorkOS returns specific error codes for expired/invalid codes
     if (message.includes('invalid') || message.includes('expired') || message.includes('code')) {
       return NextResponse.json({ error: 'Invalid or expired magic link. Please request a new one.' }, { status: 401 });
     }
@@ -125,7 +124,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET version for magic link redirects
+// GET handler: magic link click redirects here from the email
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -138,14 +137,12 @@ export async function GET(request: NextRequest) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Authenticate with WorkOS
     const result = await authenticateMagic(code, normalizedEmail);
 
     if (!result.user) {
       return NextResponse.redirect(new URL('/login?error=invalid_link', request.url));
     }
 
-    // Upsert user in our DB
     const user = await upsertUser({
       id: result.user.id,
       email: result.user.email,
@@ -153,19 +150,13 @@ export async function GET(request: NextRequest) {
       lastName: result.user.lastName,
     });
 
-    // Create session
-    const sessionId = generateSessionId();
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const sessionId = await createSession(Number(user.id));
 
-    await sql`
-      INSERT INTO auth_sessions (user_id, workos_session_id, expires_at)
-      VALUES (${user.id}, ${sessionId}, ${expiresAt})
-    `;
-
-    // Redirect to dashboard
-    const response = NextResponse.redirect(new URL('/dashboard', request.url));
-
-    response.cookies.set('session', sessionId, {
+    // Build response with session cookie, then redirect
+    // Must do this BEFORE calling redirect() — NextResponse.redirect() returns
+    // an immutable redirect Response, so we cannot set cookies after
+    const redirectResponse = NextResponse.redirect(new URL('/dashboard', request.url));
+    redirectResponse.cookies.set('session', sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -173,7 +164,7 @@ export async function GET(request: NextRequest) {
       path: '/',
     });
 
-    return response;
+    return redirectResponse;
   } catch (error: any) {
     console.error('Magic verify GET error:', error);
     return NextResponse.redirect(new URL('/login?error=verify_failed', request.url));

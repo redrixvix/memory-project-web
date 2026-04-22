@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { workos, APP_URL } from '@/lib/workos';
+import { workos } from '@/lib/workos';
 import sql from '@/lib/db';
 import crypto from 'crypto';
 
@@ -7,7 +7,11 @@ function generateSessionId(): string {
   return crypto.randomBytes(32).toString('hex');
 }
 
-async function upsertGoogleUser(workosUser: {
+function hashSessionId(sessionId: string): string {
+  return crypto.createHash('sha256').update(sessionId).digest('hex');
+}
+
+async function upsertUserFromOAuth(workosUser: {
   id: string;
   email: string;
   firstName?: string | null;
@@ -18,7 +22,6 @@ async function upsertGoogleUser(workosUser: {
     .filter(Boolean)
     .join(' ') || workosUser.email.split('@')[0];
 
-  // Try to update existing user or insert new
   const [existing] = await sql`
     SELECT id, email, name, invite_pending
     FROM users
@@ -26,7 +29,6 @@ async function upsertGoogleUser(workosUser: {
   `;
 
   if (existing) {
-    // Update with Google info
     await sql`
       UPDATE users
       SET
@@ -38,7 +40,6 @@ async function upsertGoogleUser(workosUser: {
     return existing;
   }
 
-  // Create new user
   const [newUser] = await sql`
     INSERT INTO users (email, name, password_hash, google_id, profile_image_url)
     VALUES (${workosUser.email.toLowerCase()}, ${name}, NULL, ${workosUser.id}, ${workosUser.profilePictureUrl ?? null})
@@ -49,26 +50,21 @@ async function upsertGoogleUser(workosUser: {
 }
 
 export async function GET(request: NextRequest) {
+  const codeVerifier = request.cookies.get('pkce_verifier')?.value;
+  if (!codeVerifier) {
+    return NextResponse.redirect(new URL('/login?error=missing_verifier', request.url));
+  }
+
+  const { searchParams } = new URL(request.url);
+  const code = searchParams.get('code');
+
+  if (!code) {
+    return NextResponse.redirect(new URL('/login?error=missing_code', request.url));
+  }
+
   try {
-    const { searchParams } = new URL(request.url);
-    const code = searchParams.get('code');
-
-    if (!code) {
-      return NextResponse.redirect(new URL('/login?error=missing_code', request.url));
-    }
-
-    // Read and clear the PKCE verifier cookie
-    const codeVerifier = request.cookies.get('pkce_verifier')?.value;
-    const response = NextResponse.redirect(new URL('/dashboard', request.url));
-
-    // Clear the verifier cookie immediately
-    response.cookies.delete('pkce_verifier');
-
-    if (!codeVerifier) {
-      return NextResponse.redirect(new URL('/login?error=missing_verifier', request.url));
-    }
-
-    // Exchange code for tokens
+    // Exchange code for tokens using PKCE verifier
+    // authenticateWithCode with codeVerifier = PKCE flow (public client)
     const result = await workos.userManagement.authenticateWithCode({
       code,
       codeVerifier,
@@ -78,8 +74,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/login?error=invalid_token', request.url));
     }
 
-    // Upsert user in our DB with Google profile info
-    const user = await upsertGoogleUser({
+    // Upsert user in our DB with OAuth profile info
+    const user = await upsertUserFromOAuth({
       id: result.user.id,
       email: result.user.email,
       firstName: result.user.firstName,
@@ -87,27 +83,38 @@ export async function GET(request: NextRequest) {
       profilePictureUrl: (result.user.profilePictureUrl as string | null) ?? null,
     });
 
-    // Create session
+    // Create session — store the HASH of the session ID, never the raw value
     const sessionId = generateSessionId();
+    const sessionIdHash = hashSessionId(sessionId);
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
     await sql`
       INSERT INTO auth_sessions (user_id, workos_session_id, expires_at)
-      VALUES (${user.id}, ${sessionId}, ${expiresAt})
+      VALUES (${user.id}, ${sessionIdHash}, ${expiresAt})
     `;
 
-    // Set session cookie and redirect
-    response.cookies.set('session', sessionId, {
+    // Build response with session cookie, then redirect
+    // Use NextResponse first to set cookies, then call redirect()
+    const redirectResponse = NextResponse.redirect(new URL('/dashboard', request.url));
+    redirectResponse.cookies.set('session', sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60,
       path: '/',
     });
+    // Clear the PKCE verifier by setting an expired cookie (delete() doesn't work on immutable Response headers)
+    redirectResponse.cookies.set('pkce_verifier', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 0,
+      path: '/',
+    });
 
-    return response;
+    return redirectResponse;
   } catch (error: any) {
-    console.error('Google callback error:', error);
+    console.error('OAuth callback error:', error);
     return NextResponse.redirect(new URL('/login?error=callback_failed', request.url));
   }
 }
