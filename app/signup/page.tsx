@@ -174,7 +174,7 @@ export default function Signup() {
                 onClick={() => window.location.href = '/api/auth/passkey'}
               >
                 <KeyIcon />
-                Use a passkey
+                Sign up with passkey
               </button>
 
               {/* Divider */}
