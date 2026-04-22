@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,11 +24,28 @@ const KeyIcon = () => (
   </svg>
 );
 
-export default function Signup() {
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
+          <p className="text-sm" style={{ color: '#6A6A5A' }}>Loading...</p>
+        </div>
+      </div>
+    }>
+      <Signup />
+    </Suspense>
+  );
+}
+
+function Signup() {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const inviteToken = searchParams.get('invite_token');
 
   const handleGoogleLogin = () => {
     window.location.href = '/api/auth/google';
@@ -183,6 +201,20 @@ export default function Signup() {
                 <span className="text-xs" style={{ color: '#8A8A7A' }}>or continue with email</span>
                 <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
               </div>
+
+              {inviteToken && (
+                <div
+                  className="p-3.5 rounded-xl text-sm"
+                  style={{ backgroundColor: 'rgba(204,213,174,0.2)', border: '1px solid rgba(204,213,174,0.4)', color: 'var(--charcoal)' }}
+                >
+                  <div className="flex items-start gap-3">
+                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
+                      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                    <p>You&apos;ve been invited to join a memory book. Complete sign-up to accept your invitation.</p>
+                  </div>
+                </div>
+              )}
 
               {!sent ? (
                 <form onSubmit={handleSubmit} className="space-y-5">

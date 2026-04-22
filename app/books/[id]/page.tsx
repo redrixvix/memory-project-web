@@ -16,6 +16,9 @@ interface Memory {
   photo_urls: string[];
   audio_url: string | null;
   created_at: string;
+  user_id?: number;
+  contributor_name?: string;
+  contributor_avatar?: string;
 }
 
 interface Book {
@@ -360,7 +363,36 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       )}
 
                       {/* Footer actions */}
-                      <div className="flex justify-end items-center mt-6 pt-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
+                      <div className="flex justify-between items-center mt-6 pt-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
+                        {memory.contributor_name ? (
+                          <div className="flex items-center gap-2">
+                            {memory.contributor_avatar ? (
+                              <img
+                                src={memory.contributor_avatar}
+                                alt={memory.contributor_name}
+                                className="w-6 h-6 rounded-full object-cover"
+                                style={{ width: 24, height: 24 }}
+                              />
+                            ) : (
+                              <div
+                                className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium"
+                                style={{
+                                  width: 24,
+                                  height: 24,
+                                  background: 'linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%)',
+                                  color: '#2B2B2B',
+                                  fontFamily: 'var(--font-serif, Georgia, serif)',
+                                  fontSize: 10,
+                                }}
+                              >
+                                {memory.contributor_name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()}
+                              </div>
+                            )}
+                            <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                              {memory.contributor_name}
+                            </span>
+                          </div>
+                        ) : <div />}
                         <div className="flex gap-4 items-center">
                           {/* Drag handle visual */}
                           <div className="flex items-center gap-1 text-xs" style={{ color: 'rgba(212,163,115,0.35)' }}>

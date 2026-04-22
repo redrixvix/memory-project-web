@@ -50,10 +50,22 @@ export async function GET(request: NextRequest) {
       ORDER BY b.created_at DESC
     `;
 
-    const booksWithCount = books.map((b: Record<string, unknown>) => ({
-      ...b,
-      _count: { memories: Number(b.memory_count) },
-      updated_at: b.updated_at ?? b.created_at,
+    const booksWithCount = await Promise.all(books.map(async (b: Record<string, unknown>) => {
+      const bookId = Number(b.id);
+      const contributors = await sql`
+        SELECT DISTINCT u.id, u.name, u.profile_image_url
+        FROM memories m
+        JOIN users u ON m.user_id = u.id
+        WHERE m.book_id = ${bookId}
+        ORDER BY u.id
+        LIMIT 3
+      `;
+      return {
+        ...b,
+        _count: { memories: Number(b.memory_count) },
+        updated_at: b.updated_at ?? b.created_at,
+        contributors: (contributors as unknown as {id: number, name: string, profile_image_url: string}[])
+      };
     }));
     return NextResponse.json({ books: booksWithCount });
   } catch (error) {

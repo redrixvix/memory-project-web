@@ -39,9 +39,11 @@ export async function GET(
     const { id } = await params;
 
     const [memory] = await sql`
-      SELECT m.id, m.book_id, m.prompt_question, m.answer_text, m.photo_urls, m.audio_url, m.created_at,
+      SELECT m.id, m.book_id, m.prompt_question, m.answer_text, m.photo_urls, m.audio_url, m.user_id, m.created_at,
+             u.name as contributor_name, u.profile_image_url as contributor_avatar,
              b.owner_id
       FROM memories m
+      JOIN users u ON m.user_id = u.id
       JOIN books b ON m.book_id = b.id
       LEFT JOIN book_collaborators bc ON b.id = bc.book_id AND bc.user_id = ${user.id}
       WHERE m.id = ${parseInt(id)} AND (b.owner_id = ${user.id} OR bc.user_id = ${user.id})
@@ -96,7 +98,7 @@ export async function PUT(
           audio_url = COALESCE(${audio_url}, audio_url),
           updated_at = CURRENT_TIMESTAMP
       WHERE id = ${memory.id}
-      RETURNING id, book_id, prompt_question, answer_text, photo_urls, audio_url, created_at
+      RETURNING id, book_id, prompt_question, answer_text, photo_urls, audio_url, user_id, created_at
     `;
 
     return NextResponse.json({ memory: updatedMemory });

@@ -70,18 +70,14 @@ async function createSession(userId: number): Promise<string> {
 
 async function acceptPendingInvites(email: string): Promise<number | null> {
   // Accept all pending book_members invites for this email
-  // Set user_id from the matching email, and set joined_at
+  // Match by invite_email, update user_id from placeholder to real user, set joined_at
   const pending = await sql`
     UPDATE book_members
     SET user_id = (
       SELECT id FROM users WHERE email = ${email.toLowerCase()}
     ), joined_at = CURRENT_TIMESTAMP, invite_token = NULL
-    WHERE book_id IN (
-      SELECT book_id FROM book_members
-      WHERE invite_email = ${email.toLowerCase()} AND joined_at IS NULL AND user_id IS NULL
-    )
-    AND joined_at IS NULL
-    AND user_id IS NULL
+    WHERE invite_email = ${email.toLowerCase()}
+      AND joined_at IS NULL
     RETURNING book_id
   `;
 

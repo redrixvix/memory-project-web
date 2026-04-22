@@ -37,8 +37,11 @@ export async function GET(
     }
     const { id } = await params;
     const memories = await sql`
-      SELECT m.id, m.book_id, m.prompt_question, m.answer_text, m.photo_urls, m.audio_url, m.created_at
-      FROM memories m JOIN books b ON m.book_id = b.id
+      SELECT m.id, m.book_id, m.prompt_question, m.answer_text, m.photo_urls, m.audio_url, m.created_at,
+             u.name as contributor_name, u.profile_image_url as contributor_avatar
+      FROM memories m
+      JOIN users u ON m.user_id = u.id
+      JOIN books b ON m.book_id = b.id
       LEFT JOIN book_collaborators bc ON b.id = bc.book_id AND bc.user_id = ${user.id}
       WHERE m.book_id = ${id} AND (b.owner_id = ${user.id} OR bc.user_id = ${user.id})
       ORDER BY m.created_at ASC
@@ -73,9 +76,9 @@ export async function POST(
     if (!book) return NextResponse.json({ error: 'Book not found' }, { status: 404 });
 
     const [memory] = await sql`
-      INSERT INTO memories (book_id, prompt_question, answer_text, photo_urls, audio_url)
-      VALUES (${bookId}, ${prompt_question || null}, ${answer_text}, ${photo_urls || null}, ${audio_url || null})
-      RETURNING id, book_id, prompt_question, answer_text, photo_urls, audio_url, created_at
+      INSERT INTO memories (book_id, prompt_question, answer_text, photo_urls, audio_url, user_id)
+      VALUES (${bookId}, ${prompt_question || null}, ${answer_text}, ${photo_urls || null}, ${audio_url || null}, ${user.id})
+      RETURNING id, book_id, prompt_question, answer_text, photo_urls, audio_url, user_id, created_at
     `;
     return NextResponse.json({ memory }, { status: 201 });
   } catch (error) {

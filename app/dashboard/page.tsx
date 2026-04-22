@@ -22,6 +22,7 @@ interface Book {
   role: string;
   owner_name: string;
   _count?: { memories: number };
+  contributors?: {id: number, name: string, profile_image_url: string}[];
 }
 
 interface User {
@@ -474,6 +475,46 @@ export default function Dashboard() {
                                   </div>
                                 )}
                               </div>
+
+                              {/* Contributor avatars */}
+                              {book.contributors && book.contributors.length > 0 && (
+                                <div className="flex items-center gap-0 mb-4">
+                                  {book.contributors.slice(0, 3).map((c, ci) => (
+                                    <div
+                                      key={c.id}
+                                      className="relative"
+                                      style={{ marginLeft: ci === 0 ? 0 : -8, zIndex: 3 - ci }}
+                                    >
+                                      {c.profile_image_url ? (
+                                        <img
+                                          src={c.profile_image_url}
+                                          alt={c.name}
+                                          className="w-5 h-5 rounded-full object-cover border-2"
+                                          style={{ borderColor: '#FDFCF5' }}
+                                        />
+                                      ) : (
+                                        <div
+                                          className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium border-2"
+                                          style={{
+                                            borderColor: '#FDFCF5',
+                                            background: 'linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%)',
+                                            color: '#2B2B2B',
+                                            fontFamily: 'var(--font-serif, Georgia, serif)',
+                                            fontSize: 9,
+                                          }}
+                                        >
+                                          {c.name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()}
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                  {book.contributors.length > 3 && (
+                                    <span className="text-xs" style={{ marginLeft: 2, color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                                      +{book.contributors.length - 3}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
 
                               {/* Last written date */}
                               {book._count && book._count.memories > 0 && (
