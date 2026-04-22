@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 
 export default function Login() {
   const router = useRouter();
@@ -26,7 +27,16 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error || 'Login failed'); return; }
+      if (!res.ok) {
+        if (data.error?.toLowerCase().includes('email') || data.error?.toLowerCase().includes('invalid')) {
+          setError("That email doesn't look right — double-check it?");
+        } else if (data.error?.toLowerCase().includes('password') || data.error?.toLowerCase().includes('wrong')) {
+          setError("That password isn't quite right. Try again?");
+        } else {
+          setError(data.error || 'Something went wrong. Please try again.');
+        }
+        return;
+      }
       router.push('/dashboard');
     } catch { setError('Something went wrong. Please try again.'); }
     finally { setLoading(false); }
@@ -34,9 +44,20 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex" style={{ backgroundColor: 'var(--cornsilk)' }}>
+
       {/* ── LEFT EDITORIAL PANEL ── */}
       <div className="hidden lg:flex flex-col justify-center px-12 xl:px-20 w-1/2" style={{ backgroundColor: 'var(--beige)' }}>
-        <div>
+        {/* Subtle grain ambient */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`,
+            opacity: 0.4,
+          }} />
+        </div>
+
+        <div className="relative">
           {/* Brand mark */}
           <div className="flex items-center gap-3 mb-16">
             <svg width="28" height="28" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
@@ -84,8 +105,21 @@ export default function Login() {
 
       {/* ── RIGHT FORM PANEL ── */}
       <div className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-sm">
 
+        {/* Subtle ambient on form side too */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 70% 60% at 50% 0%, rgba(212,163,115,0.06) 0%, transparent 70%)',
+          }}
+        />
+
+        <motion.div
+          className="w-full max-w-sm relative"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
           {/* Mobile brand */}
           <div className="flex items-center gap-2 mb-10 lg:hidden">
             <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
@@ -107,7 +141,14 @@ export default function Login() {
             <CardContent className="pt-0">
               <form onSubmit={handleSubmit} className="space-y-5">
                 {error && (
-                  <div className="p-3.5 rounded-xl text-sm" style={{ backgroundColor: 'rgba(185,28,28,0.06)', color: '#B91C1C' }}>
+                  <div
+                    className="p-3.5 rounded-xl text-sm"
+                    style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.25)' }}
+                  >
+                    <svg className="inline w-3.5 h-3.5 mr-1.5 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M12 8v4M12 16h.01"/>
+                    </svg>
                     {error}
                   </div>
                 )}
@@ -151,7 +192,7 @@ export default function Login() {
               Create one — it&apos;s free
             </Link>
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

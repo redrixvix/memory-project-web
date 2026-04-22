@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState, useRef, useCallback, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 
 const PROMPTS = [
   { category: "Family & Roots", prompts: [
@@ -34,6 +35,8 @@ const PROMPTS = [
   ]},
 ];
 
+type SaveState = 'idle' | 'saving' | 'saved';
+
 export default function EditMemory({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
@@ -48,14 +51,36 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const [fetchingMemory, setFetchingMemory] = useState(!!memoryId);
   const [showAllPrompts, setShowAllPrompts] = useState(false);
   const [wordCount, setWordCount] = useState(0);
+  const [saveState, setSaveState] = useState<SaveState>('idle');
+
+  // Auto-save draft to localStorage
+  const draftKey = `draft-${id}-${memoryId ?? 'new'}`;
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (memoryId) {
       fetchMemory(memoryId);
+    } else {
+      // Restore draft if no memory being edited
+      const draft = localStorage.getItem(draftKey);
+      if (draft) {
+        try {
+          const { prompt: dp, customPrompt: dc, answer: da } = JSON.parse(draft);
+          if (dp) setPrompt(dp);
+          if (da) {
+            setAnswer(da);
+            setWordCount(da.trim() ? da.trim().split(/\s+/).length : 0);
+          }
+          if (dc) {
+            setCustomPrompt(dc);
+            setUseCustomPrompt(true);
+          }
+        } catch {}
+      }
     }
-  }, [memoryId]);
+  }, [memoryId, id]);
 
-  // When fetching an existing memory, detect if it's a custom prompt (not in the preset list)
+  // Detect if prompt is custom (not in presets)
   useEffect(() => {
     if (prompt && !useCustomPrompt) {
       const allPresetPrompts = PROMPTS.flatMap(g => g.prompts);
@@ -64,12 +89,30 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         setCustomPrompt(prompt);
       }
     }
-  }, [prompt]);
+  }, [prompt, useCustomPrompt]);
 
-  useEffect(() => {
-    const words = answer.trim() ? answer.trim().split(/\s+/).length : 0;
+  // Word count + auto-draft
+  const handleAnswerChange = useCallback((val: string) => {
+    setAnswer(val);
+    const words = val.trim() ? val.trim().split(/\s+/).length : 0;
     setWordCount(words);
-  }, [answer]);
+
+    // Debounced draft save
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    setSaveState('saving');
+    saveTimerRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(draftKey, JSON.stringify({ prompt, customPrompt, answer: val }));
+      } catch {}
+      setSaveState('saved');
+      setTimeout(() => setSaveState('idle'), 2000);
+    }, 800);
+  }, [prompt, customPrompt, draftKey]);
+
+  // Clear draft on successful submit
+  const clearDraft = useCallback(() => {
+    try { localStorage.removeItem(draftKey); } catch {}
+  }, [draftKey]);
 
   const fetchMemory = async (mid: string) => {
     try {
@@ -78,6 +121,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         const data = await res.json();
         setPrompt(data.memory.prompt_question || '');
         setAnswer(data.memory.answer_text || '');
+        setWordCount(data.memory.answer_text.trim() ? data.memory.answer_text.trim().split(/\s+/).length : 0);
+        try { localStorage.removeItem(draftKey); } catch {}
       } else if (res.status === 404) {
         router.replace(`/books/${id}/edit`);
       }
@@ -92,6 +137,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     if (!answer.trim()) return;
 
     setLoading(true);
+    clearDraft();
     try {
       if (memoryId) {
         await fetch(`/api/memories/${memoryId}`, {
@@ -122,18 +168,43 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: 'var(--cornsilk)' }}>
+
+      {/* Header */}
       <header className="py-4 px-6 border-b shrink-0" style={{ backgroundColor: '#FDFCF5', borderColor: 'rgba(212,163,115,0.15)' }}>
-        <Link href={`/books/${id}`} className="text-sm transition-colors flex items-center gap-1" style={{ color: '#6A6A5A' }}>
-          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-          Back to book
-        </Link>
+        <div className="flex items-center justify-between max-w-xl mx-auto w-full">
+          <Link href={`/books/${id}`} className="text-sm transition-colors flex items-center gap-1" style={{ color: '#6A6A5A' }}>
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+            Back to book
+          </Link>
+
+          {/* Save state indicator */}
+          <div className="flex items-center gap-1.5 text-xs" style={{ color: '#6A6A5A' }}>
+            {saveState === 'saving' && (
+              <>
+                <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
+                <span>Saving...</span>
+              </>
+            )}
+            {saveState === 'saved' && (
+              <>
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>Saved</span>
+              </>
+            )}
+          </div>
+        </div>
       </header>
 
       <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+
         {/* Scrollable form content */}
         <div className="flex-1 overflow-auto px-6 py-8 max-w-xl mx-auto w-full">
+
+          {/* Title */}
           <div className="mb-8">
-            <h1 className="text-3xl font-medium mb-4" style={{ fontFamily: "var(--font-serif), 'Lora', Georgia, serif", color: 'var(--charcoal)' }}>
+            <h1 className="text-3xl font-medium mb-2" style={{ fontFamily: "var(--font-serif)", color: 'var(--charcoal)' }}>
               {memoryId ? 'Edit Memory' : 'Add a Memory'}
             </h1>
             <p className="text-sm" style={{ color: '#6A6A5A' }}>Write about a moment that matters to you. Take your time.</p>
@@ -141,10 +212,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
           {/* Prompt selector */}
           <div className="mb-8">
-            <Label className="mb-3 block text-sm" style={{ color: 'var(--charcoal)' }}>Writing prompt <span className="font-normal opacity-60">(optional)</span></Label>
+            <Label className="mb-3 block text-sm" style={{ color: 'var(--charcoal)' }}>
+              Writing prompt
+              <span className="font-normal opacity-60 ml-1">(optional — choose one or skip it)</span>
+            </Label>
 
             <div className="space-y-4">
-              {/* Mobile: Browse prompts button that opens full-screen picker */}
+              {/* Mobile: browse button */}
               <div className="md:hidden">
                 <button
                   type="button"
@@ -242,23 +316,43 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             )}
           </div>
 
-          {/* Writing area */}
-          <div className="mb-6">
+          {/* Writing area — the heart of the page */}
+          <div className="mb-5">
             <div className="flex justify-between items-center mb-2">
               <Label className="text-sm" style={{ color: 'var(--charcoal)' }}>Your memory</Label>
-              <span className="text-xs" style={{ color: '#6A6A5A' }}>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+              <span className="text-xs tabular-nums" style={{ color: '#6A6A5A' }}>
+                {wordCount} {wordCount === 1 ? 'word' : 'words'}
+              </span>
             </div>
             <Textarea
               value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+              onChange={(e) => handleAnswerChange(e.target.value)}
               required
-              className="text-base leading-relaxed rounded-xl"
-              rows={10}
+              className="text-lg leading-[1.85] rounded-xl min-h-[280px]"
+              rows={12}
               placeholder="Take your time. There's no right or wrong way to write a memory — just tell it like it was..."
-              style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }}
+              style={{
+                borderColor: 'rgba(212,163,115,0.3)',
+                backgroundColor: '#FDFCF5',
+                fontFamily: 'var(--font-serif)',
+                resize: 'vertical',
+              }}
             />
           </div>
 
+          {/* Privacy hint */}
+          <div
+            className="text-xs text-center py-3 px-4 rounded-xl mb-4"
+            style={{ color: '#6A6A5A', backgroundColor: 'rgba(212,163,115,0.07)' }}
+          >
+            <svg className="inline w-3.5 h-3.5 mr-1.5 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Your memory is private until you decide to share it.
+          </div>
+
+          {/* Upgrade nudge — subtle */}
           <div className="text-xs text-center py-3 rounded-xl px-4" style={{ color: '#6A6A5A', backgroundColor: 'rgba(212,163,115,0.08)' }}>
             Want to add photos or voice recordings?{' '}
             <Link href="/signup" className="font-medium underline" style={{ color: 'var(--bronze)' }}>Upgrade your plan</Link>.
@@ -270,7 +364,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           <Button
             type="submit"
             disabled={loading || !answer.trim()}
-            className="w-full rounded-full h-11 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-full h-12 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
           >
             {loading ? 'Saving...' : memoryId ? 'Update Memory' : 'Save Memory'}
@@ -299,7 +393,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         </div>
       </form>
 
-      {/* Mobile full-screen prompt picker (rendered outside form for z-index) */}
+      {/* Mobile full-screen prompt picker */}
       {showAllPrompts && (
         <div className="fixed inset-0 z-50 md:hidden flex flex-col" style={{ backgroundColor: 'var(--cornsilk)' }}>
           <div className="flex items-center justify-between px-5 py-4 border-b shrink-0" style={{ borderColor: 'rgba(212,163,115,0.2)', backgroundColor: '#FDFCF5' }}>
@@ -346,7 +440,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     setCustomPrompt(defaultPrompt);
                     setPrompt(defaultPrompt);
                   }
-                  // Don't close — show input below in same modal
                 }}
                 className="w-full text-left rounded-xl px-4 py-3 text-sm transition-colors"
                 style={useCustomPrompt
@@ -361,11 +454,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   value={customPrompt}
                   onChange={(e) => { setCustomPrompt(e.target.value); setPrompt(e.target.value); }}
                   placeholder="What's a memory you'll never forget?"
-                  className="rounded-xl text-sm"
+                  className="rounded-xl text-sm mt-2"
                   style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }}
                 />
               )}
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="flex justify-end gap-3 pt-3">
                 <button
                   type="button"
                   onClick={() => setShowAllPrompts(false)}

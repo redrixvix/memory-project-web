@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Lightbox } from '@/components/ui/lightbox';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Memory {
   id: number;
@@ -34,9 +34,16 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loading, setLoading] = useState(true);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [showTopBtn, setShowTopBtn] = useState(false);
 
   useEffect(() => {
     fetchBook();
+
+    const handleScroll = () => {
+      setShowTopBtn(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [id]);
 
   const fetchBook = async () => {
@@ -54,6 +61,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const handleDeleteMemory = async (memoryId: number) => {
     const res = await fetch(`/api/memories/${memoryId}`, { method: 'DELETE' });
     if (res.ok) setMemories(memories.filter(m => m.id !== memoryId));
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (loading) {
@@ -81,6 +92,27 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         />
       )}
 
+      {/* Scroll-to-top button */}
+      <AnimatePresence>
+        {showTopBtn && (
+          <motion.button
+            type="button"
+            onClick={scrollToTop}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-7 right-7 z-30 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 active:scale-95"
+            style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+            aria-label="Scroll to top"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M18 15l-6-6-6 6"/>
+            </svg>
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       {/* ── TOP NAV ── */}
       <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
         <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
@@ -102,6 +134,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 href={`/books/${id}/edit`}
                 className="inline-flex h-8 md:h-9 items-center justify-center rounded-full px-3 md:px-5 text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
                 style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+              >
+                <svg className="w-3 h-3 md:w-3.5 md:h-3.5 md:mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                <span className="hidden sm:inline">Add Memory</span>
+              </Link>
+            )}
+            {memories.length > 0 && (
+              <Link
+                href={`/books/${id}/edit`}
+                className="inline-flex h-8 md:h-9 items-center justify-center rounded-full px-4 md:px-5 text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
+                style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
               >
                 <svg className="w-3 h-3 md:w-3.5 md:h-3.5 md:mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M12 5v14M5 12h14"/>
@@ -198,48 +242,60 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 >
                   <Card
                     className="rounded-2xl overflow-hidden"
-                    style={{ backgroundColor: '#FDFCF5', border: 'none', boxShadow: '0 4px 24px rgba(212,163,115,0.08)' }}
+                    style={{
+                      backgroundColor: '#FDFCF5',
+                      border: 'none',
+                      boxShadow: '0 4px 24px rgba(212,163,115,0.08)',
+                      // Subtle page texture via layered gradient
+                      backgroundImage: 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.03) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.04) 0%, transparent 50%)',
+                    }}
                   >
                     <CardContent className="pt-8 pb-8 px-6">
 
-                      {/* Header: number + date + prompt */}
-                      <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
-                        <div className="flex items-center gap-3">
-                          {/* Left accent bar */}
-                          <div
-                            className="w-1 rounded-full self-stretch"
-                            style={{ backgroundColor: accentColor, minHeight: 20 }}
-                          />
-                          <span
-                            className="text-xs font-semibold px-2.5 py-1 rounded-full"
-                            style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
-                          >
-                            #{index + 1}
-                          </span>
-                          <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
-                            {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                          </p>
-                        </div>
-                        {memory.prompt_question && (
-                          <p className="text-xs italic max-w-[260px] leading-relaxed" style={{ color: '#A0A08A', fontFamily: 'var(--font-serif)' }}>
-                            &ldquo;{memory.prompt_question}&rdquo;
-                          </p>
-                        )}
+                      {/* Memory #N label */}
+                      <div className="flex items-center gap-2 mb-5">
+                        <div
+                          className="w-1 rounded-full"
+                          style={{ backgroundColor: accentColor, height: 16 }}
+                        />
+                        <span
+                          className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                          style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                        >
+                          Memory {index + 1} of {memories.length}
+                        </span>
                       </div>
 
-                      {/* Memory text */}
-                      <p className="text-base md:text-lg leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                      {/* Prompt question as chapter header */}
+                      {memory.prompt_question && (
+                        <p
+                          className="text-sm italic mb-5 leading-relaxed"
+                          style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)' }}
+                        >
+                          &ldquo;{memory.prompt_question}&rdquo;
+                        </p>
+                      )}
+
+                      {/* Memory text — journal feel */}
+                      <p
+                        className="text-base md:text-lg leading-relaxed whitespace-pre-wrap"
+                        style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
+                      >
                         {memory.answer_text}
                       </p>
 
-                      {/* ══════════════════════════════════════════
-                          TASK 8: PHOTO LIGHTBOX — 200px min-height
-                      ══════════════════════════════════════════ */}
+                      {/* Date below text */}
+                      <p className="text-xs mt-5" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                        {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      </p>
+
+                      {/* Photo grid */}
                       {memory.photo_urls && memory.photo_urls.length > 0 && (
                         <div className="flex gap-3 mt-7 overflow-x-auto pb-2">
                           {memory.photo_urls.map((url, i) => (
                             <button
                               key={i}
+                              type="button"
                               onClick={() => setLightboxSrc(url)}
                               className="img-frame rounded-xl overflow-hidden shrink-0 cursor-pointer transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
                               style={{ minHeight: 200, minWidth: 200 }}
@@ -264,7 +320,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       {/* Footer actions */}
                       <div className="flex justify-end items-center mt-6 pt-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
                         <div className="flex gap-4 items-center">
-                          {/* Drag handle (visual only) */}
+                          {/* Drag handle visual */}
                           <div className="flex items-center gap-1 text-xs" style={{ color: 'rgba(212,163,115,0.35)' }}>
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                               <circle cx="9" cy="5" r="1.5"/>
@@ -293,7 +349,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                 handleDeleteMemory(memory.id);
                               }
                             }}
-                            className="text-xs text-muted-foreground flex items-center gap-1.5 transition-colors hover:opacity-70"
+                            className="text-xs flex items-center gap-1.5 transition-colors hover:opacity-70"
                             style={{ color: '#9A9A8A' }}
                           >
                             <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
