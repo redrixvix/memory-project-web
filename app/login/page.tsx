@@ -27,6 +27,7 @@ const KeyIcon = () => (
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -225,7 +226,7 @@ export default function Login() {
                     className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
                     style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
                   >
-                    {loading ? 'Sending...' : 'Send magic link'}
+                    {loading ? 'Sending...' : 'Send code'}
                   </Button>
                 </form>
               ) : (
@@ -239,18 +240,57 @@ export default function Login() {
                         <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
                       </svg>
                       <div>
-                        <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Check your email</p>
+                        <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Code sent to {email}</p>
                         <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>
-                          We sent a magic link to <strong>{email}</strong>. Click it to sign in.
+                          Enter the 6-digit code from your email to sign in.
                         </p>
                       </div>
                     </div>
                   </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="code" className="text-sm" style={{ color: 'var(--charcoal)' }}>Your code</Label>
+                    <Input
+                      type="text" id="code" value={code}
+                      onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      autoComplete="one-time-code" placeholder="123456"
+                      className="text-sm rounded-xl h-12 text-center"
+                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)', fontSize: '1.25rem', letterSpacing: '0.2em' }}
+                    />
+                  </div>
+
+                  {error && (
+                    <div className="p-3 rounded-xl text-sm" style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.25)' }}>{error}</div>
+                  )}
+
+                  <Button
+                    disabled={loading || code.length < 6}
+                    onClick={async () => {
+                      setLoading(true);
+                      setError('');
+                      try {
+                        const res = await fetch('/api/auth/verify', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ code, email }),
+                        });
+                        const data = await res.json();
+                        if (!res.ok) { setError(data.error || 'Invalid code.'); return; }
+                        window.location.href = '/dashboard';
+                      } catch { setError('Something went wrong.'); }
+                      finally { setLoading(false); }
+                    }}
+                    className="w-full h-11 rounded-full text-sm font-medium"
+                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                  >
+                    {loading ? 'Verifying...' : 'Sign in'}
+                  </Button>
+
                   <button
                     type="button"
-                    onClick={() => { setSent(false); setEmail(''); setError(''); }}
-                    className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
-                    style={{ border: '1.5px solid rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
+                    onClick={() => { setSent(false); setEmail(''); setCode(''); setError(''); }}
+                    className="w-full h-9 text-xs"
+                    style={{ color: '#6A6A5A' }}
                   >
                     Use a different email
                   </button>

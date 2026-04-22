@@ -1,14 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
+import crypto from 'crypto';
+
+function hashSessionId(sessionId: string): string {
+  return crypto.createHash('sha256').update(sessionId).digest('hex');
+}
 
 async function getUserFromSession(request: NextRequest) {
   const sessionId = request.cookies.get('session')?.value;
   if (!sessionId) return null;
 
+  const sessionIdHash = hashSessionId(sessionId);
+
   const [session] = await sql`
     SELECT user_id, expires_at
     FROM auth_sessions
-    WHERE workos_session_id = ${sessionId}
+    WHERE workos_session_id = ${sessionIdHash}
   `;
 
   if (!session) return null;

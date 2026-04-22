@@ -68,6 +68,30 @@ async function createSession(userId: number): Promise<string> {
   return sessionId;
 }
 
+async function acceptPendingInvites(email: string): Promise<number | null> {
+  // Accept all pending book_members invites for this email
+  // Set user_id from the matching email, and set joined_at
+  const pending = await sql`
+    UPDATE book_members
+    SET user_id = (
+      SELECT id FROM users WHERE email = ${email.toLowerCase()}
+    ), joined_at = CURRENT_TIMESTAMP, invite_token = NULL
+    WHERE book_id IN (
+      SELECT book_id FROM book_members
+      WHERE invite_email = ${email.toLowerCase()} AND joined_at IS NULL AND user_id IS NULL
+    )
+    AND joined_at IS NULL
+    AND user_id IS NULL
+    RETURNING book_id
+  `;
+
+  // Return the first book_id to redirect to (if any)
+  if (pending && pending.length > 0) {
+    return pending[0].book_id;
+  }
+  return null;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { code, email } = await request.json();
@@ -91,10 +115,16 @@ export async function POST(request: NextRequest) {
       lastName: result.user.lastName,
     });
 
+    // Accept any pending invites for this email
+    const bookId = await acceptPendingInvites(normalizedEmail);
+
     const sessionId = await createSession(Number(user.id));
 
+    const redirectUrl = bookId ? `/books/${bookId}` : '/dashboard';
+
     const response = NextResponse.json({
-      user: { id: user.id, email: user.email, name: user.name }
+      user: { id: user.id, email: user.email, name: user.name },
+      redirect_url: redirectUrl,
     });
 
     response.headers.set('Access-Control-Allow-Origin', 'https://web-redrixvixs-projects.vercel.app');
@@ -150,12 +180,17 @@ export async function GET(request: NextRequest) {
       lastName: result.user.lastName,
     });
 
+    // Accept any pending invites for this email
+    const bookId = await acceptPendingInvites(normalizedEmail);
+
     const sessionId = await createSession(Number(user.id));
+
+    const redirectUrl = bookId ? `/books/${bookId}` : '/dashboard';
 
     // Build response with session cookie, then redirect
     // Must do this BEFORE calling redirect() — NextResponse.redirect() returns
     // an immutable redirect Response, so we cannot set cookies after
-    const redirectResponse = NextResponse.redirect(new URL('/dashboard', request.url));
+    const redirectResponse = NextResponse.redirect(new URL(redirectUrl, request.url));
     redirectResponse.cookies.set('session', sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

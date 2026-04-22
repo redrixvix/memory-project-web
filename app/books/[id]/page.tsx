@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Lightbox } from '@/components/ui/lightbox';
+import { MembersModal } from '@/components/ui/members-modal';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Memory {
@@ -35,6 +36,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [loading, setLoading] = useState(true);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [showTopBtn, setShowTopBtn] = useState(false);
+  const [showMembersModal, setShowMembersModal] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  const [showMembers, setShowMembers] = useState(false);
 
   useEffect(() => {
     fetchBook();
@@ -54,6 +59,27 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       const data = await res.json();
       setBook(data.book);
       setMemories(data.memories || []);
+      // Fetch current user's membership
+      if (data.membership) {
+        setCurrentUserId(data.membership.user_id);
+        setCurrentUserRole(data.membership.role);
+      } else {
+        // Fallback: fetch members list to find self
+        const membersRes = await fetch(`/api/books/${id}/members`);
+        if (membersRes.ok) {
+          const membersData = await membersRes.json();
+          // Find current user by checking /api/auth/me
+          const meRes = await fetch('/api/auth/me');
+          if (meRes.ok) {
+            const me = await meRes.json();
+            const self = (membersData.data || []).find((m: any) => m.user_id === me.user?.id);
+            if (self) {
+              setCurrentUserId(self.user_id);
+              setCurrentUserRole(self.role);
+            }
+          }
+        }
+      }
     } catch { console.error('Failed to fetch book'); }
     finally { setLoading(false); }
   };
@@ -155,6 +181,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             )}
             <button
               type="button"
+              onClick={() => setShowMembersModal(true)}
+              className="inline-flex h-8 md:h-9 items-center justify-center rounded-full border px-3 md:px-4 text-xs md:text-sm font-medium whitespace-nowrap transition-colors"
+              style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
+            >
+              Members
+            </button>
+            <button
+              type="button"
               onClick={() => {
                 navigator.clipboard.writeText(`${window.location.origin}/books/${id}/preview`);
                 alert('Preview link copied! Anyone with this link can view your book.');
@@ -163,6 +197,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
             >
               Share
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowMembers(true)}
+              className="inline-flex h-8 md:h-9 items-center justify-center rounded-full border px-3 md:px-4 text-xs md:text-sm font-medium whitespace-nowrap transition-colors"
+              style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
+            >
+              Members
             </button>
           </div>
         </div>
@@ -383,6 +425,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         )}
       </main>
+
+      {/* Members modal */}
+      <AnimatePresence>
+        {showMembersModal && currentUserId && currentUserRole && (
+          <MembersModal
+            bookId={parseInt(id)}
+            currentUserId={currentUserId}
+            currentUserRole={currentUserRole}
+            onClose={() => setShowMembersModal(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

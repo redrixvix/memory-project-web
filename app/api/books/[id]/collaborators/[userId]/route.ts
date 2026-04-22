@@ -53,7 +53,7 @@ export async function DELETE(
     }
 
     await sql`
-      DELETE FROM book_collaborators
+      DELETE FROM book_members
       WHERE book_id = ${bookId} AND user_id = ${collaboratorId}
     `;
 

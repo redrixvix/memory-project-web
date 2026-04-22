@@ -1,14 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
+import crypto from 'crypto';
+
+function hashSessionId(sessionId: string): string {
+  return crypto.createHash('sha256').update(sessionId).digest('hex');
+}
 
 async function getUserFromSession(request: NextRequest) {
   const sessionId = request.cookies.get('session')?.value;
   if (!sessionId) return null;
 
+  const sessionIdHash = hashSessionId(sessionId);
+
   const [session] = await sql`
     SELECT user_id, expires_at
     FROM auth_sessions
-    WHERE workos_session_id = ${sessionId}
+    WHERE workos_session_id = ${sessionIdHash}
   `;
 
   if (!session) return null;
@@ -29,17 +36,16 @@ async function checkBookAccess(userId: number, bookId: number) {
            u.name as owner_name
     FROM books b
     JOIN users u ON b.owner_id = u.id
-    LEFT JOIN book_collaborators bc ON b.id = bc.book_id AND bc.user_id = ${userId}
     WHERE b.id = ${bookId}
   `;
 
   if (!book) return null;
   if (book.owner_id === userId) return book;
-  const [collab] = await sql`
-    SELECT role FROM book_collaborators
-    WHERE book_id = ${bookId} AND user_id = ${userId} AND accepted_at IS NOT NULL
+  const [member] = await sql`
+    SELECT role FROM book_members
+    WHERE book_id = ${bookId} AND user_id = ${userId} AND joined_at IS NOT NULL
   `;
-  if (collab) return book;
+  if (member) return book;
   return null;
 }
 

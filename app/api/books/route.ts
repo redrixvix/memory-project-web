@@ -1,14 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
+import crypto from 'crypto';
+
+function hashSessionId(sessionId: string): string {
+  return crypto.createHash('sha256').update(sessionId).digest('hex');
+}
 
 async function getUserFromSession(request: NextRequest) {
   const sessionId = request.cookies.get('session')?.value;
   if (!sessionId) return null;
 
+  const sessionIdHash = hashSessionId(sessionId);
+
   const [session] = await sql`
     SELECT user_id, expires_at
     FROM auth_sessions
-    WHERE workos_session_id = ${sessionId}
+    WHERE workos_session_id = ${sessionIdHash}
   `;
 
   if (!session) return null;
@@ -30,16 +37,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get books owned by user and books where user is collaborator
+    // Get books owned by user and books where user is a member (via book_members)
     const books = await sql`
       SELECT DISTINCT b.id, b.title, b.description, b.storage_tier, b.storage_used_bytes, b.created_at, b.updated_at,
              u.name as owner_name,
-             COALESCE(bc.role, 'owner') as role,
+             COALESCE(bm.role, 'owner') as role,
              (SELECT COUNT(*) FROM memories m WHERE m.book_id = b.id) as memory_count
       FROM books b
       JOIN users u ON b.owner_id = u.id
-      LEFT JOIN book_collaborators bc ON b.id = bc.book_id AND bc.user_id = ${user.id}
-      WHERE b.owner_id = ${user.id} OR bc.user_id = ${user.id}
+      LEFT JOIN book_members bm ON b.id = bm.book_id AND bm.user_id = ${user.id}
+      WHERE b.owner_id = ${user.id} OR bm.user_id = ${user.id}
       ORDER BY b.created_at DESC
     `;
 
@@ -80,9 +87,9 @@ export async function POST(request: NextRequest) {
       RETURNING id, title, description, storage_tier, storage_used_bytes, created_at
     `;
 
-    // Add owner as collaborator
+    // Add owner as a member (book_members table, not book_collaborators)
     await sql`
-      INSERT INTO book_collaborators (book_id, user_id, role, accepted_at)
+      INSERT INTO book_members (book_id, user_id, role, joined_at)
       VALUES (${book.id}, ${user.id}, 'owner', CURRENT_TIMESTAMP)
     `;
 

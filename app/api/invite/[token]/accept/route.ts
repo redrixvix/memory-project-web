@@ -26,9 +26,9 @@ async function getUserFromSession(request: NextRequest) {
   return user;
 }
 
-export async function GET(
+export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
     const user = await getUserFromSession(request);
@@ -36,34 +36,32 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = await params;
-    const bookId = parseInt(id);
+    const { token } = await params;
 
-    // Check user is a member of this book
-    const [membership] = await sql`
-      SELECT role FROM book_members
-      WHERE book_id = ${bookId} AND user_id = ${user.id}
+    // Find the pending invite by token
+    const [member] = await sql`
+      SELECT id, book_id, user_id, invite_email
+      FROM book_members
+      WHERE invite_token = ${token}
+        AND joined_at IS NULL
     `;
 
-    if (!membership) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (!member) {
+      return NextResponse.json({ error: 'Invalid or expired invite link' }, { status: 404 });
     }
 
-    // Get all members including pending (no joined_at)
-    const members = await sql`
-      SELECT bm.user_id, bm.role, bm.invite_email, bm.joined_at,
-             u.name, u.email
-      FROM book_members bm
-      JOIN users u ON bm.user_id = u.id
-      WHERE bm.book_id = ${bookId}
-      ORDER BY bm.role = 'owner' DESC, bm.joined_at ASC
+    // Accept the invite: set user_id and joined_at, clear invite_token
+    await sql`
+      UPDATE book_members
+      SET user_id = ${user.id}, joined_at = CURRENT_TIMESTAMP, invite_token = NULL
+      WHERE invite_token = ${token} AND joined_at IS NULL
     `;
 
-    return NextResponse.json({ data: members });
+    return NextResponse.json({ data: { success: true, book_id: member.book_id } });
   } catch (error) {
-    console.error('List members error:', error);
+    console.error('Accept invite error:', error);
     return NextResponse.json(
-      { error: 'Failed to list members' },
+      { error: 'Failed to accept invite' },
       { status: 500 }
     );
   }

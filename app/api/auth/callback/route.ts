@@ -50,31 +50,44 @@ async function upsertUserFromOAuth(workosUser: {
 }
 
 export async function GET(request: NextRequest) {
-  const codeVerifier = request.cookies.get('pkce_verifier')?.value;
-  if (!codeVerifier) {
-    return NextResponse.redirect(new URL('/login?error=missing_verifier', request.url));
-  }
-
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
+  const rawState = searchParams.get('state');
 
   if (!code) {
     return NextResponse.redirect(new URL('/login?error=missing_code', request.url));
   }
+  if (!rawState) {
+    return NextResponse.redirect(new URL('/login?error=missing_state', request.url));
+  }
+
+  let codeVerifier: string | undefined;
+  try {
+    const parsed = JSON.parse(rawState);
+    codeVerifier = parsed.cv;
+  } catch {
+    return NextResponse.redirect(new URL('/login?error=invalid_state', request.url));
+  }
+
+  if (!codeVerifier) {
+    return NextResponse.redirect(new URL('/login?error=missing_verifier', request.url));
+  }
 
   try {
     // Exchange code for tokens using PKCE verifier
-    // authenticateWithCode with codeVerifier = PKCE flow (public client)
     const result = await workos.userManagement.authenticateWithCode({
       code,
       codeVerifier,
     });
+    console.error('Callback: authenticateWithCode result keys:', Object.keys(result));
+    console.error('Callback: user:', JSON.stringify(result.user));
 
     if (!result.user) {
       return NextResponse.redirect(new URL('/login?error=invalid_token', request.url));
     }
 
     // Upsert user in our DB with OAuth profile info
+    console.error('Callback: upserting user from OAuth');
     const user = await upsertUserFromOAuth({
       id: result.user.id,
       email: result.user.email,
@@ -82,43 +95,52 @@ export async function GET(request: NextRequest) {
       lastName: result.user.lastName,
       profilePictureUrl: (result.user.profilePictureUrl as string | null) ?? null,
     });
+    console.error('Callback: user upserted, id:', user?.id, 'email:', user?.email);
+
+    if (!user?.id) {
+      console.error('Callback FATAL: user.id is undefined!');
+      return NextResponse.redirect(new URL('/login?error=user_create_failed', request.url));
+    }
 
     // Create session — store the HASH of the session ID, never the raw value
     const sessionId = generateSessionId();
     const sessionIdHash = hashSessionId(sessionId);
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    console.error('Callback: creating session, hash:', sessionIdHash.substring(0, 16), 'expires:', expiresAt);
 
     await sql`
       INSERT INTO auth_sessions (user_id, workos_session_id, expires_at)
       VALUES (${user.id}, ${sessionIdHash}, ${expiresAt})
     `;
+    console.error('Callback: session inserted in DB');
 
-    // Build response with session cookie, then redirect
-    // Use NextResponse first to set cookies, then call redirect()
+    // Build response with session cookie, then redirect to dashboard
     const redirectResponse = NextResponse.redirect(new URL('/dashboard', request.url));
     redirectResponse.cookies.set('session', sessionId, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60,
       path: '/',
     });
-    // Clear the PKCE verifier by setting an expired cookie (delete() doesn't work on immutable Response headers)
-    redirectResponse.cookies.set('pkce_verifier', '', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 0,
-      path: '/',
-    });
+
+    console.error('=== Callback success ===');
+    console.error('Session ID (raw, truncated):', sessionId.substring(0, 16) + '...');
+    console.error('Session hash (first 16):', sessionIdHash.substring(0, 16) + '...');
+    console.error('User ID:', user.id);
+    console.error('Cookie set, redirecting to /dashboard');
 
     return redirectResponse;
   } catch (error: any) {
-    console.error('OAuth callback error:', error);
+    console.error('=== OAuth callback error ===');
+    console.error('Full error:', JSON.stringify(error));
+    console.error('Error constructor:', error?.constructor?.name);
     console.error('Error message:', error?.message);
     console.error('Error code:', error?.code);
     console.error('Error status:', error?.status);
-    return NextResponse.redirect(new URL('/login?error=callback_failed', request.url));
+    console.error('Error response:', error?.response);
+    console.error('Error stack:', error?.stack?.split('\n').slice(0, 5).join('\n'));
+    return NextResponse.redirect(new URL('/login?error=callback_failed&detail=' + encodeURIComponent(error?.message || String(error)), request.url));
   }
 }
 
