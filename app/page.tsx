@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { MobileNav } from '@/components/ui/mobile-nav';
 import { motion } from 'framer-motion';
 
 const fadeUp = {
@@ -86,8 +87,23 @@ export default function Home() {
               </>
             )}
           </nav>
+
+          {/* Mobile hamburger */}
+          <button
+            className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-colors hover:opacity-70"
+            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open navigation menu"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
         </div>
       </header>
+
+      {/* Mobile nav drawer */}
+      <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
       {/* ══════════════════════════════════════════
           TASK 1: HERO REDESIGN — 60/40 split
