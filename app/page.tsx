@@ -1,20 +1,13 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MobileNav } from '@/components/ui/mobile-nav';
 import SeoSchema from '@/components/seo-schema';
-import { motion } from 'framer-motion';
 
 
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-};
 
 export default function Home() {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null); // null = loading
@@ -28,7 +21,24 @@ export default function Home() {
       .catch(() => setLoggedIn(false));
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Scroll-reveal via IntersectionObserver
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
   }, []);
 
   const memories = [
@@ -93,7 +103,13 @@ export default function Home() {
             ) : (
               <>
                 <Link href="/#how-it-works" className="text-sm transition-colors hidden sm:block" style={{ color: '#6A6A5A' }}>How It Works</Link>
-                <Link href="/#pricing" className="text-sm transition-colors hidden sm:block" style={{ color: '#6A6A5A' }}>Pricing</Link>
+                <Link
+                href="/pricing"
+                className="text-sm transition-colors hidden sm:block"
+                style={{ color: '#6A6A5A' }}
+              >
+                Pricing
+              </Link>
                 <Link href="/login" className="text-sm transition-colors hidden sm:block" style={{ color: '#6A6A5A' }}>Sign in</Link>
                 <Link
                   href="/signup"
@@ -133,49 +149,33 @@ export default function Home() {
         <div className="max-w-6xl mx-auto w-full py-24 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-center">
 
           {/* Left: text content — 60% */}
-          <motion.div
-            className="md:col-span-7"
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <motion.p
-              className="label-caps mb-6"
-              style={{ color: 'var(--bronze)' }}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          <div className="md:col-span-7">
+            <p
+              className="label-caps mb-6 animate-fade-up"
+              style={{ color: 'var(--bronze)', animationDelay: '100ms' }}
             >
               A keepsake your family will read for generations
-            </motion.p>
+            </p>
 
-            <motion.h1
-              className="display-xl mb-6"
-              style={{ color: 'var(--charcoal)', letterSpacing: '-0.03em' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            <h1
+              className="display-xl mb-6 animate-fade-up"
+              style={{ color: 'var(--charcoal)', letterSpacing: '-0.03em', animationDelay: '200ms' }}
             >
               Write your family&apos;s story.<br />
               <em style={{ fontStyle: 'italic', fontWeight: 400 }}>Print it to last.</em>
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              className="text-base md:text-lg leading-relaxed max-w-md mb-10"
-              style={{ color: '#6A6A5A' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            <p
+              className="text-base md:text-lg leading-relaxed max-w-md mb-10 animate-fade-up"
+              style={{ color: '#6A6A5A', animationDelay: '300ms' }}
             >
               Free to start. Printed books from $99.
-            </motion.p>
+            </p>
 
             {/* CTAs */}
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            <div
+              className="flex flex-col sm:flex-row gap-4 animate-fade-up"
+              style={{ animationDelay: '400ms' }}
             >
               <Link
                 href="/signup"
@@ -191,16 +191,11 @@ export default function Home() {
               >
                 See a sample book
               </Link>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Right: premium book photo — 40% */}
-          <motion.div
-            className="md:col-span-5 flex justify-center md:justify-end"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <div className="md:col-span-5 flex justify-center md:justify-end">
             {/* Premium book mockup — elegant CSS hardcover */}
             <div className="relative" style={{ width: 300, height: 400 }} aria-hidden="true">
               {/* Warm layered drop shadow (depth + softness) */}
@@ -356,7 +351,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -409,9 +404,8 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
 
             {/* Left: text */}
-            <motion.div
-              className="flex-1 text-center md:text-left"
-              {...fadeUp}
+            <div
+              className="flex-1 text-center md:text-left reveal"
             >
               <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>See it in action</p>
               <h2 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>
@@ -430,15 +424,11 @@ export default function Home() {
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </Link>
-            </motion.div>
+            </div>
 
             {/* Right: premium book mockup */}
-            <motion.div
+            <div
               className="reveal"
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="relative" style={{ width: 210, height: 285 }} aria-hidden="true">
                 {/* Warm layered shadow */}
@@ -544,7 +534,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -564,13 +554,9 @@ export default function Home() {
           ══════════════════════════════════════════ */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
             {memories.map((card, i) => (
-              <motion.div
+              <div
                 key={i}
                 className={`reveal ${i === 0 ? 'md:col-span-7' : 'md:col-span-5'}`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.65, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
               >
                 <Card
                   className="relative overflow-hidden rounded-2xl card-hover"
@@ -605,7 +591,7 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -647,13 +633,9 @@ export default function Home() {
                 starColor: "var(--bronze)",
               },
             ].map((t, i) => (
-              <motion.div
+              <div
                 key={i}
-                className="card-hover"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.65, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                className="card-hover reveal"
               >
                 <Card
                   className="rounded-2xl p-7 h-full relative"
@@ -704,7 +686,7 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -727,12 +709,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Free */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            >
+            <div className="reveal">
               <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.14)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
@@ -770,15 +747,10 @@ export default function Home() {
                   </Link>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
 
             {/* 5GB — featured with papaya bg */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            >
+            <div className="reveal">
               <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 12px 48px rgba(212,163,115,0.22)' }}>
                 <div className="absolute -top-5 left-1/2 -translate-x-1/2">
                   <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
@@ -814,15 +786,10 @@ export default function Home() {
                   </Link>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
 
             {/* 15GB */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            >
+            <div className="reveal">
               <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>15GB Storage</p>
@@ -852,7 +819,7 @@ export default function Home() {
                   </Link>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -903,14 +870,10 @@ export default function Home() {
                 ),
               },
             ].map((step, i) => (
-              <motion.div
+              <div
                 key={i}
-                className={`flex-1 ${i < 2 ? 'md:pr-8 md:border-r' : ''} ${i > 0 ? 'md:pl-8' : ''}`}
+                className={`flex-1 reveal ${i < 2 ? 'md:pr-8 md:border-r' : ''} ${i > 0 ? 'md:pl-8' : ''}`}
                 style={{ borderColor: 'rgba(212,163,115,0.1)' }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.65, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
@@ -929,7 +892,7 @@ export default function Home() {
                 <p className="text-sm leading-relaxed pl-16 md:pl-0" style={{ color: '#6A6A5A' }}>
                   {step.desc}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -937,12 +900,8 @@ export default function Home() {
 
       {/* ── CLOSING CTA ── */}
       <section className="py-20 px-6 md:px-10" style={{ backgroundColor: 'var(--papaya)' }}>
-        <motion.div
-          className="max-w-xl mx-auto text-center space-y-6"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        <div
+          className="max-w-xl mx-auto text-center space-y-6 reveal"
         >
           <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
             Every family has stories worth keeping
@@ -957,7 +916,7 @@ export default function Home() {
           >
             Create your memory book
           </Link>
-        </motion.div>
+        </div>
       </section>
 
       {/* ══════════════════════════════════════════
@@ -1004,7 +963,7 @@ export default function Home() {
                 {[
                   { href: '/', label: 'Home' },
                   { href: '/#how-it-works', label: 'How It Works' },
-                  { href: '/#pricing', label: 'Pricing' },
+                  { href: '/pricing', label: 'Pricing' },
                   { href: '/#sample', label: 'Sample Book' },
                   { href: '/signup', label: 'Get Started' },
                 ].map((link) => (

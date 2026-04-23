@@ -54,8 +54,8 @@ const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Memory Project',
-  url: 'https://memoryproject.com',
-  logo: 'https://memoryproject.com/icon.png',
+  url: 'https://web-redrixvixs-projects.vercel.app',
+  logo: 'https://web-redrixvixs-projects.vercel.app/og-image.png',
   sameAs: [],
 };
 

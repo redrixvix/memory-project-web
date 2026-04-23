@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://memoryproject.com';
+  const baseUrl = 'https://web-redrixvixs-projects.vercel.app';
   return [
     {
       url: baseUrl,

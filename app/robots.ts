@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/dashboard', '/books/*/edit'],
       },
     ],
-    sitemap: 'https://memoryproject.com/sitemap.xml',
+    sitemap: 'https://web-redrixvixs-projects.vercel.app/sitemap.xml',
   };
 }
