@@ -23,8 +23,8 @@ export const metadata: Metadata = {
     default: "Memory Project — Write Your Family's Story. Print It to Last.",
     template: "%s | Memory Project",
   },
-  description: "Free to start. Capture your family's stories in a beautiful hardcover book. Write with guided prompts or freely, add photos and voice recordings, then print a keepsake that lasts generations.",
-  keywords: ["memory book", "family stories", "life story", "legacy book", "printed memory book", "family history", "keepsake book", "personal memoir"],
+  description: "A keepsake your family will read for generations. Free to start — write unlimited text memories, add photos and voice recordings, and print a beautiful hardcover book from $99.",
+  keywords: ["memory book", "family stories", "life story book", "legacy book", "printed memory book", "family history", "keepsake book", "personal memoir", "family cookbook", "print your memories"],
   authors: [{ name: "Memory Project" }],
   creator: "Memory Project",
   metadataBase: new URL('https://web-redrixvixs-projects.vercel.app'),
@@ -65,7 +65,11 @@ export const metadata: Metadata = {
         type: "image/svg+xml",
       },
     ],
+    apple: [{ url: "/favicon.png" }],
   },
+  referrer: 'origin-when-cross-origin',
+  viewport: { width: 'device-width', initialScale: 1 },
+  other: { "theme-color": "#FEFAE0" },
 };
 
 export default function RootLayout({

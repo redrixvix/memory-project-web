@@ -167,9 +167,9 @@ export default function Home() {
 
             <p
               className="text-base md:text-lg leading-relaxed max-w-md mb-10 animate-fade-up"
-              style={{ color: '#6A6A5A', animationDelay: '300ms' }}
+              style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)', animationDelay: '300ms' }}
             >
-              Free to start. Printed books from $99.
+              Unlimited text memories — free forever. Photos, audio, and printed books from $99.
             </p>
 
             {/* CTAs */}
@@ -179,17 +179,17 @@ export default function Home() {
             >
               <Link
                 href="/signup"
-                className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
+                className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95 shadow-sm"
                 style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
               >
                 Start your free book
               </Link>
               <Link
-                href="#sample"
+                href="/pricing"
                 className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap border transition-all duration-200 hover:opacity-80 active:scale-95"
-                style={{ borderColor: 'var(--bronze)', color: 'var(--charcoal)', borderWidth: '1.5px' }}
+                style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', borderWidth: '1.5px' }}
               >
-                See a sample book
+                View pricing
               </Link>
             </div>
           </div>
@@ -901,10 +901,10 @@ export default function Home() {
           </p>
           <Link
             href="/signup"
-            className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
-            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+            className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95"
+            style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
           >
-            Create your memory book
+            Start your free book
           </Link>
         </div>
       </section>

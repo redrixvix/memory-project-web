@@ -1,10 +1,26 @@
-import { Metadata } from 'next';
-import Script from 'next/script';
-import Link from 'next/link';
+import type { Metadata } from "next";
+import Script from "next/script";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: 'Frequently Asked Questions',
-  description: 'Answers to common questions about Memory Project — how it works, pricing, printing, and more.',
+  title: "Frequently Asked Questions",
+  description: "Answers to common questions about Memory Project — how it works, pricing, printing, family collaboration, and getting started.",
+};
+
+const webSiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Memory Project",
+  url: "https://web-redrixvixs-projects.vercel.app",
+  description: "A keepsake your family will read for generations. Free to start, printed books from $99.",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: "https://web-redrixvixs-projects.vercel.app/?q={search_term_string}",
+    },
+    "query-input": "required name=search_term_string",
+  },
 };
 
 const faqJsonLd = {
@@ -80,6 +96,11 @@ const faqs = [
 export default function FaqPage() {
   return (
     <>
+      <Script
+        id="website-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
+      />
       <Script
         id="faq-schema"
         type="application/ld+json"
