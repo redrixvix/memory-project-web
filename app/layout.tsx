@@ -23,8 +23,8 @@ export const metadata: Metadata = {
     default: "Memory Project — Write Your Family's Story. Print It to Last.",
     template: "%s | Memory Project",
   },
-  description: "A keepsake your family will read for generations. Free to start — write unlimited text memories, add photos and voice recordings, and print a beautiful hardcover book from $99.",
-  keywords: ["memory book", "family stories", "life story book", "legacy book", "printed memory book", "family history", "keepsake book", "personal memoir", "family cookbook", "print your memories"],
+  description: "Capture the stories that matter most. Free to write unlimited text memories — forever. Add photos, voice, and print a beautiful hardcover book from $99.",
+  keywords: ["memory book", "family stories", "life story book", "family memory book", "printed memory book", "legacy book", "keepsake book", "personal memoir", "hardcover book", "family history book"],
   authors: [{ name: "Memory Project" }],
   creator: "Memory Project",
   metadataBase: new URL('https://web-redrixvixs-projects.vercel.app'),
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Memory Project — Write Your Family's Story. Print It to Last.",
-    description: "A keepsake your family will read for generations. Free to start, printed books from $99.",
+    description: "Free to start. Unlimited text memories — forever. Add photos and voice, print a beautiful hardcover book from $99.",
     url: "https://web-redrixvixs-projects.vercel.app",
     siteName: "Memory Project",
     locale: "en_US",
@@ -43,20 +43,21 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Memory Project — Write your family's story. Print it to last.",
+        alt: "Memory Project — A keepsake your family will read for generations.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Memory Project — Write Your Family's Story. Print It to Last.",
-    description: "A keepsake your family will read for generations. Free to start, printed books from $99.",
+    description: "Free to start. Unlimited text memories — forever. Add photos and voice, print a beautiful hardcover book from $99.",
     images: ["/og-image.png"],
+    creator: "@memoryproject",
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true },
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
   },
   icons: {
     icon: [
@@ -68,7 +69,7 @@ export const metadata: Metadata = {
     apple: [{ url: "/favicon.png" }],
   },
   referrer: 'origin-when-cross-origin',
-  viewport: { width: 'device-width', initialScale: 1 },
+  viewport: { width: 'device-width', initialScale: 1, maximumScale: 5 },
   other: { "theme-color": "#FEFAE0" },
 };
 

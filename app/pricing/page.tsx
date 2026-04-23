@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import BreadcrumbSchema from '@/components/breadcrumb-schema';
 
 const pricingFaqJsonLd = {
   '@context': 'https://schema.org',
@@ -36,8 +37,18 @@ const pricingFaqJsonLd = {
 };
 
 export const metadata: Metadata = {
-  title: 'Pricing — Simple, Honest Plans',
-  description: 'Start free. Pay only for printing. Unlimited text memories forever, or upgrade for photo storage and printed hardcover books starting at $99.',
+  title: {
+    default: "Pricing — Memory Project",
+    template: "%s | Memory Project",
+  },
+  description: "Start free. Pay only for printing. Unlimited text memories forever, or upgrade for photo storage and beautifully printed hardcover books starting at $99.",
+  keywords: ["memory book pricing", "family memory book cost", "printed memory book price", "hardcover book printing cost", "photo storage plans"],
+  openGraph: {
+    title: "Pricing — Memory Project",
+    description: "Start free. Pay only for printing. Unlimited text memories forever, upgrade for photo storage and printed hardcover books from $99.",
+    url: "https://web-redrixvixs-projects.vercel.app/pricing",
+    type: "website",
+  },
 };
 
 export default function PricingPage() {
@@ -196,6 +207,7 @@ export default function PricingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingFaqJsonLd) }}
       />
+      <BreadcrumbSchema items={[{ name: 'Pricing', href: '/pricing' }]} />
     </div>
   );
 }

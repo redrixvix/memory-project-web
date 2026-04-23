@@ -160,7 +160,7 @@ export default function Home() {
               className="text-base md:text-lg leading-relaxed max-w-md mb-10 animate-fade-up"
               style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)', animationDelay: '300ms' }}
             >
-              Unlimited text memories — free forever. Photos, audio, and printed books from $99.
+              Unlimited text memories — free forever. Photos, audio, and beautifully printed hardcover books from $99.
             </p>
 
             {/* CTAs */}
@@ -348,32 +348,30 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          TASK 2: SOCIAL PROOF & TRUST SIGNALS
-      ══════════════════════════════════════════ */}
-      <section className="py-6 px-6 md:px-10 border-y" style={{ backgroundColor: 'var(--beige)', borderColor: 'rgba(212,163,115,0.12)' }}>
+      {/* ── TRUST BAR ── */}
+      <section className="py-5 px-6 md:px-10 border-y" style={{ backgroundColor: 'var(--beige)', borderColor: 'rgba(212,163,115,0.12)' }}>
         <div className="max-w-4xl mx-auto">
           {/* Bronze rule top */}
-          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginBottom: 16 }} />
-          {/* Trust stat bar — honest, verifiable */}
-          <div className="flex flex-row items-center justify-center gap-4 flex-wrap">
-            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Thousands of families</span>
-            <span className="text-xs opacity-40" style={{ color: 'var(--charcoal)' }}>·</span>
+          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginBottom: 14 }} />
+          {/* Trust stat bar */}
+          <div className="flex flex-row items-center justify-center gap-5 flex-wrap">
             <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Free to start</span>
             <span className="text-xs opacity-40" style={{ color: 'var(--charcoal)' }}>·</span>
             <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>No credit card required</span>
-          </div>
-          {/* Trustpilot badge */}
-          <div className="flex items-center justify-center gap-1.5 mt-3">
-            {[1,2,3,4,5].map(s => (
-              <svg key={s} width="13" height="13" viewBox="0 0 24 24" fill="var(--bronze)" style={{ opacity: s <= 4 ? 1 : 0.8 }}>
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-              </svg>
-            ))}
-            <span className="text-xs ml-1" style={{ color: '#6A6A5A' }}>Rated 4.8 on Trustpilot</span>
+            <span className="text-xs opacity-40" style={{ color: 'var(--charcoal)' }}>·</span>
+            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Cancel anytime</span>
+            <span className="text-xs opacity-40 hidden sm:inline" style={{ color: 'var(--charcoal)' }}>·</span>
+            <div className="hidden sm:flex items-center gap-1.5">
+              {[1,2,3,4,5].map(s => (
+                <svg key={s} width="12" height="12" viewBox="0 0 24 24" fill="var(--bronze)" style={{ opacity: s <= 5 ? 1 : 0.7 }}>
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              ))}
+              <span className="text-xs font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Loved by families</span>
+            </div>
           </div>
           {/* Bronze rule bottom */}
-          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginTop: 16 }} />
+          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginTop: 14 }} />
         </div>
       </section>
 
@@ -396,11 +394,11 @@ export default function Home() {
                 12 memories, wedding stories, childhood memories, and more — all captured in a real family book you can read right now.
               </p>
               <Link
-                href="/books/1/preview"
+                href="/signup"
                 className="inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
                 style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
               >
-                Read the sample book
+                Start your free book
                 <svg className="w-4 h-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
@@ -947,7 +945,7 @@ export default function Home() {
                   { href: '/', label: 'Home' },
                   { href: '/#how-it-works', label: 'How It Works' },
                   { href: '/pricing', label: 'Pricing' },
-                  { href: '/#sample', label: 'Sample Book' },
+                  { href: '/faq', label: 'FAQ' },
                   { href: '/signup', label: 'Get Started' },
                 ].map((link) => (
                   <li key={link.href}>
@@ -983,9 +981,15 @@ export default function Home() {
 
           {/* Bottom bar */}
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.2), transparent)', marginBottom: 24 }} />
-          <p className="text-xs text-center" style={{ color: '#6A6A5A' }}>
-            © {new Date().getFullYear()} Memory Project · Made with love for families
-          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <p className="text-xs" style={{ color: '#6A6A5A' }}>
+              © {new Date().getFullYear()} Memory Project · Made with love for families
+            </p>
+            <div className="flex items-center gap-4">
+              <Link href="/privacy" className="text-xs transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>Privacy Policy</Link>
+              <Link href="/terms" className="text-xs transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>Terms of Service</Link>
+            </div>
+          </div>
         </div>
       </footer>
 

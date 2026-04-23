@@ -112,12 +112,12 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
                 Pricing
               </Link>
               <Link
-                href="/#sample"
+                href="/faq"
                 onClick={onClose}
                 className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
                 style={{ color: 'var(--charcoal)' }}
               >
-                Sample Book
+                FAQ
               </Link>
               <hr className="my-3" style={{ borderColor: 'rgba(212,163,115,0.15)' }} />
               <Link

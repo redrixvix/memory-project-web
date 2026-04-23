@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
+import BreadcrumbSchema from "@/components/breadcrumb-schema";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions",
@@ -91,6 +92,34 @@ const faqs = [
     q: 'Can my family contribute to a book?',
     a: 'Yes! With our 5GB and 15GB plans, you can invite family members to add their own photos and memories to any entry. You remain the owner and control the final book.',
   },
+  {
+    q: 'How do I print my book?',
+    a: 'When you have enough memories, go to your book dashboard and click "Order Print." We\'ll format your content beautifully, print it as a hardcover book, and ship it to your door. Production takes 2–4 weeks.',
+  },
+  {
+    q: 'Can I edit my book after printing?',
+    a: "Yes — your digital book is always editable. Printing a book doesn't lock in your content. You can print updated editions anytime, and your printed book stays as a snapshot of that moment.",
+  },
+  {
+    q: 'What writing prompts do you offer?',
+    a: "We offer hundreds of prompts across categories: childhood, family traditions, milestones, relationships, travel, food, lessons learned, and more. You can also write freely without any prompt at all.",
+  },
+  {
+    q: 'What if I want to delete my account?',
+    a: "You can delete your account and all data at any time from your settings. Text memories are deleted immediately. Photo and audio storage are deleted within 30 days. Printed books already in circulation won't be recalled.",
+  },
+  {
+    q: 'Can I use Memory Project on my phone?',
+    a: 'Yes. Memory Project works on any device with a web browser. We also have native iOS and Android apps available in the app stores.',
+  },
+  {
+    q: 'Who sees my memories?',
+    a: 'Only you, and anyone you explicitly invite to collaborate. Your memories are private by default. If you choose to print a book and give it as a gift, the recipient sees only the content in that printed copy.',
+  },
+  {
+    q: "What's the difference between the plans?",
+    a: 'The Free plan gives you unlimited text memories forever. The 5GB plan ($50/5yr) adds photo and audio storage, family collaboration, and printed books from $99. The 15GB plan ($100/5yr) adds more storage and priority support.',
+  },
 ];
 
 export default function FaqPage() {
@@ -106,6 +135,7 @@ export default function FaqPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      <BreadcrumbSchema items={[{ name: 'FAQ', href: '/faq' }]} />
 
       <div
         className="min-h-screen"

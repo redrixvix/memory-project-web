@@ -34,10 +34,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/dashboard`,
+      url: `${baseUrl}/privacy`,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.5,
+      changeFrequency: 'yearly',
+      priority: 0.3,
     },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    // /dashboard is disallowed in robots.txt — intentionally excluded from sitemap
   ];
 }
