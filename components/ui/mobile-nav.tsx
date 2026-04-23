@@ -93,7 +93,7 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
             >
               Dashboard
             </Link>
-          ) : (
+          ) : loggedIn === false ? (
             <>
               <Link
                 href="/#how-it-works"
@@ -129,11 +129,11 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
                 Sign in
               </Link>
             </>
-          )}
+          ) : null}
         </nav>
 
         {/* Footer — logged out only */}
-        {!loggedIn && (
+        {loggedIn === false && (
           <div className="px-6 py-6 border-t" style={{ borderColor: 'rgba(212,163,115,0.15)' }}>
             <Link
               href="/signup"

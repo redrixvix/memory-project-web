@@ -1,6 +1,5 @@
 'use client';
 
-import { Metadata } from 'next';
 import Script from 'next/script';
 
 const faqJsonLd = {
