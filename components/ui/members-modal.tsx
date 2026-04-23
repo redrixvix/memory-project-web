@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface Member {
   user_id: number;
@@ -121,26 +120,17 @@ export function MembersModal({ bookId, onClose, currentUserId, currentUserRole }
   };
 
   return (
-    <AnimatePresence>
+    <>
       {/* Backdrop */}
-      <motion.div
-        key="backdrop"
-        className="fixed inset-0 z-40"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+      <div
+        className="fixed inset-0 z-40 members-backdrop"
         style={{ backgroundColor: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(4px)' }}
         onClick={onClose}
       />
 
       {/* Panel */}
-      <motion.div
-        key="panel"
-        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md overflow-y-auto"
-        initial={{ x: '100%' }}
-        animate={{ x: 0 }}
-        exit={{ x: '100%' }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      <div
+        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md overflow-y-auto members-panel"
         style={{ backgroundColor: 'var(--cornsilk)' }}
       >
         {/* Header */}
@@ -342,7 +332,24 @@ export function MembersModal({ bookId, onClose, currentUserId, currentUserRole }
             </div>
           )}
         </div>
-      </motion.div>
-    </AnimatePresence>
+      </div>
+
+      <style>{`
+        .members-backdrop {
+          opacity: 0;
+          animation: fadeIn 0.2s ease forwards;
+        }
+        .members-panel {
+          transform: translateX(100%);
+          animation: slideInPanel 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+          to { opacity: 1; }
+        }
+        @keyframes slideInPanel {
+          to { transform: translateX(0); }
+        }
+      `}</style>
+    </>
   );
 }

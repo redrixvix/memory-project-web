@@ -4,7 +4,7 @@ import { useEffect, useState, use } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { AnimatePresence } from 'framer-motion';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Lightbox } from '@/components/ui/lightbox';
@@ -470,16 +470,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       </main>
 
       {/* Members modal */}
-      <AnimatePresence>
-        {showMembersModal && currentUserId && currentUserRole && (
-          <MembersModal
-            bookId={parseInt(id)}
-            currentUserId={currentUserId}
-            currentUserRole={currentUserRole}
-            onClose={() => setShowMembersModal(false)}
-          />
-        )}
-      </AnimatePresence>
+      {showMembersModal && currentUserId && currentUserRole && (
+        <MembersModal
+          bookId={parseInt(id)}
+          currentUserId={currentUserId}
+          currentUserRole={currentUserRole}
+          onClose={() => setShowMembersModal(false)}
+        />
+      )}
     </div>
   );
 }
