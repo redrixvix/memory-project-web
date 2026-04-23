@@ -37,18 +37,28 @@ const PROMPTS = [
 
 type SaveState = 'idle' | 'saving' | 'saved';
 
+interface Book {
+  id: number;
+  title: string;
+  description: string | null;
+  storage_tier: string;
+  owner_name: string;
+}
+
 export default function EditMemory({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
   const memoryId = searchParams.get('memory');
 
+  const [book, setBook] = useState<Book | null>(null);
   const [prompt, setPrompt] = useState('');
   const [useCustomPrompt, setUseCustomPrompt] = useState(false);
   const [customPrompt, setCustomPrompt] = useState('');
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
   const [fetchingMemory, setFetchingMemory] = useState(!!memoryId);
+  const [fetchingBook, setFetchingBook] = useState(true);
   const [showAllPrompts, setShowAllPrompts] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [saveState, setSaveState] = useState<SaveState>('idle');
