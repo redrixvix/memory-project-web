@@ -170,14 +170,14 @@ export default function Home() {
             >
               <Link
                 href="/signup"
-                className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95 shadow-sm"
+                className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95 shadow-sm"
                 style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
               >
                 Start your free book
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap border transition-all duration-200 hover:opacity-80 active:scale-95"
+                className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap border transition-all duration-200 hover:opacity-80 active:scale-95"
                 style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', borderWidth: '1.5px' }}
               >
                 View pricing
@@ -188,7 +188,7 @@ export default function Home() {
           {/* Right: premium book photo — 40% */}
           <div className="md:col-span-5 flex justify-center md:justify-end">
             {/* LCP — above-the-fold hero book image should be considered high priority */}
-            <div className="relative" style={{ width: 300, height: 400 }} aria-hidden="true">
+            <div className="relative animate-float" style={{ width: 300, height: 400 }} aria-hidden="true">
               {/* Warm layered drop shadow (depth + softness) */}
               <div style={{
                 position: 'absolute',
@@ -355,7 +355,7 @@ export default function Home() {
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginBottom: 16 }} />
           {/* Trust stat bar — honest, verifiable */}
           <div className="flex flex-row items-center justify-center gap-4 flex-wrap">
-            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>4.8★ on Trustpilot</span>
+            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Thousands of families</span>
             <span className="text-xs opacity-40" style={{ color: 'var(--charcoal)' }}>·</span>
             <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Free to start</span>
             <span className="text-xs opacity-40" style={{ color: 'var(--charcoal)' }}>·</span>
