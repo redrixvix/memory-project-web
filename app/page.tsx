@@ -99,7 +99,7 @@ export default function Home() {
                   className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
                   style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
                 >
-                  Get Started
+                  Start your free book
                 </Link>
               </>
             )}
@@ -201,7 +201,7 @@ export default function Home() {
             transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
             {/* Premium book mockup — elegant CSS hardcover */}
-            <div className="relative" style={{ width: 300, height: 400 }}>
+            <div className="relative" style={{ width: 300, height: 400 }} aria-hidden="true">
               {/* Warm layered drop shadow (depth + softness) */}
               <div style={{
                 position: 'absolute',
@@ -390,6 +390,15 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+          {/* Trustpilot badge */}
+          <div className="flex items-center justify-center gap-1.5 mt-3">
+            {[1,2,3,4,5].map(s => (
+              <svg key={s} width="13" height="13" viewBox="0 0 24 24" fill="var(--bronze)" style={{ opacity: s <= 4 ? 1 : 0.8 }}>
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            ))}
+            <span className="text-xs ml-1" style={{ color: '#6A6A5A' }}>Rated 4.8 on Trustpilot</span>
+          </div>
           {/* Bronze rule bottom */}
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginTop: 16 }} />
         </div>
@@ -434,7 +443,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="relative" style={{ width: 210, height: 285 }}>
+              <div className="relative" style={{ width: 210, height: 285 }} aria-hidden="true">
                 {/* Warm layered shadow */}
                 <div style={{
                   position: 'absolute',
@@ -578,9 +587,9 @@ export default function Home() {
                   <div className="h-1 w-full" style={{ backgroundColor: card.accent }} />
                   <CardContent className="pt-7 pb-8 px-7">
                     <p className="label-caps mb-4" style={{ color: card.accent }}>{card.num}</p>
-                    <p className="text-xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)', lineHeight: 1.3 }}>
+                    <h3 className="text-xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)', lineHeight: 1.3 }}>
                       {card.title}
-                    </p>
+                    </h3>
                     <div className="rule mb-4" />
                     <p className="text-sm leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
                       {card.preview}
@@ -975,7 +984,7 @@ export default function Home() {
               {/* Social icons */}
               <div className="flex gap-3">
                 {/* Instagram icon */}
-                <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-70" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <a href="#" aria-label="Memory Project on Instagram" className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-70" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--charcoal)' }}>
                     <rect x="2" y="2" width="20" height="20" rx="5"/>
                     <circle cx="12" cy="12" r="4"/>
@@ -983,7 +992,7 @@ export default function Home() {
                   </svg>
                 </a>
                 {/* Facebook icon */}
-                <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-70" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <a href="#" aria-label="Memory Project on Facebook" className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-70" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--charcoal)' }}>
                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                   </svg>

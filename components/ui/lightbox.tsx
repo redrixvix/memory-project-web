@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface LightboxProps {
@@ -11,25 +11,41 @@ interface LightboxProps {
 
 export function Lightbox({ src, alt = '', onClose }: LightboxProps) {
   const [visible, setVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    // Delay visibility to allow entrance animation
     const timer = setTimeout(() => setVisible(true), 10);
     return () => clearTimeout(timer);
   }, []);
 
+  // ESC to close
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose();
+    // Focus trap — keep focus within lightbox
+    if (e.key === 'Tab' && containerRef.current) {
+      const focusable = containerRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
+        e.preventDefault();
+        (e.shiftKey ? last : first)?.focus();
+      }
+    }
   }, [onClose]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
+    // Move focus to close button once visible
+    if (visible) closeButtonRef.current?.focus();
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
     };
-  }, [handleKeyDown]);
+  }, [handleKeyDown, visible]);
 
   return (
     <AnimatePresence>
@@ -42,6 +58,10 @@ export function Lightbox({ src, alt = '', onClose }: LightboxProps) {
           className="fixed inset-0 z-50 flex items-center justify-center p-6"
           onClick={onClose}
           style={{ backgroundColor: 'rgba(43,43,43,0.88)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+          ref={containerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={alt || 'Image preview'}
         >
           {/* Image */}
           <motion.div
@@ -61,10 +81,11 @@ export function Lightbox({ src, alt = '', onClose }: LightboxProps) {
             />
             {/* Close button */}
             <button
+              ref={closeButtonRef}
               onClick={onClose}
               className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:opacity-80 active:scale-95"
               style={{ backgroundColor: 'rgba(254,250,224,0.92)', color: 'var(--charcoal)' }}
-              aria-label="Close lightbox"
+              aria-label="Close image preview"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M18 6L6 18M6 6l12 12"/>
