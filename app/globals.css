@@ -398,6 +398,11 @@ body {
     animation: none !important;
   }
 
+  .hero-ambient::before {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+
   .animate-slide-in {
     animation: none !important;
     transform: translateX(0) !important;

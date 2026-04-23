@@ -3,6 +3,22 @@
 import Script from 'next/script';
 
 // Homepage schema: Organization + WebApplication (no FAQPage — that's on /faq only)
+const webSiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Memory Project',
+  url: 'https://web-redrixvixs-projects.vercel.app',
+  description: 'A keepsake your family will read for generations. Free to start — write unlimited text memories, add photos and voice recordings, and print a beautiful hardcover book from $99.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://web-redrixvixs-projects.vercel.app/?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -62,6 +78,11 @@ export default function SeoSchema() {
         id="webapplication-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webApplicationJsonLd) }}
+      />
+      <Script
+        id="website-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
       />
     </>
   );

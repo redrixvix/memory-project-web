@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MobileNav } from '@/components/ui/mobile-nav';
@@ -190,7 +191,7 @@ export default function Home() {
           {/* Right: premium book photo — 40% */}
           <div className="md:col-span-5 flex justify-center md:justify-end">
             {/* LCP — above-the-fold hero book image should be considered high priority */}
-            <div className="relative animate-float" style={{ width: 300, height: 400 }} aria-hidden="true">
+            <div className="relative" style={{ width: 300, height: 400 }}>
               {/* Warm layered drop shadow (depth + softness) */}
               <div style={{
                 position: 'absolute',
@@ -212,137 +213,15 @@ export default function Home() {
                 borderRadius: '50%',
                 filter: 'blur(6px)',
               }} />
-
-              {/* Book cover outer shell */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                borderRadius: 14,
-                boxShadow: '10px 14px 44px rgba(43,43,43,0.20), 3px 5px 18px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.28)',
-              }} />
-
-              {/* Book body */}
-              <div
-                className="relative w-full h-full rounded-2xl overflow-hidden"
-                style={{
-                  background: 'linear-gradient(160deg, #FDFCF5 0%, #F8F5E8 60%, #F0EBD5 100%)',
-                  border: '1px solid rgba(212,163,115,0.35)',
-                }}
-              >
-                {/* Spine — left side with rib texture */}
-                <div style={{
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: 24,
-                  background: 'linear-gradient(to right, rgba(150,105,60,0.80) 0%, rgba(195,150,95,0.55) 35%, rgba(212,163,115,0.45) 65%, rgba(180,125,70,0.20) 100%)',
-                  borderRadius: '14px 0 0 14px',
-                }}>
-                  {/* Spine ribs — embossed effect */}
-                  {[0.12, 0.28, 0.44, 0.60, 0.76].map((pct, j) => (
-                    <div key={j} style={{
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      top: `${pct * 100}%`,
-                      height: 2,
-                      backgroundColor: 'rgba(100,65,35,0.22)',
-                      transform: 'translateY(-50%)',
-                    }} />
-                  ))}
-                  {/* Spine highlight (left edge catch light) */}
-                  <div style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: 2,
-                    background: 'linear-gradient(to bottom, rgba(255,248,220,0.5), rgba(255,248,220,0.15), transparent)',
-                    borderRadius: '14px 0 0 14px',
-                  }} />
-                </div>
-
-                {/* Pages edge — right side with visible page stack */}
-                <div style={{
-                  position: 'absolute',
-                  right: 0,
-                  top: 10,
-                  bottom: 10,
-                  width: 8,
-                  background: 'repeating-linear-gradient(to bottom, rgba(232,226,205,0.9) 0px, rgba(240,236,218,0.85) 1px, rgba(248,244,228,0.80) 2px, rgba(232,226,205,0.9) 3px)',
-                  borderRadius: '0 14px 14px 0',
-                  boxShadow: 'inset 2px 0 6px rgba(180,150,100,0.12)',
-                }} />
-
-                {/* Cover interior */}
-                <div className="pt-12 pb-10 px-10 pl-14 h-full flex flex-col">
-
-                  {/* Decorative top rule */}
-                  <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.4), transparent)', marginBottom: 24 }} />
-
-                  {/* Title block */}
-                  <div className="mb-auto">
-                    {/* Decorative icon */}
-                    <div className="flex justify-center mb-5">
-                      <svg width="32" height="32" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
-                        <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.4"/>
-                        <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
-                      </svg>
-                    </div>
-
-                    <p style={{ fontFamily: 'var(--font-serif)', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.18em', color: 'var(--bronze)', textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' }}>
-                      A Memory Book
-                    </p>
-                    <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', fontWeight: 500, color: 'var(--charcoal)', textAlign: 'center', marginBottom: 6 }}>
-                      The Family Story
-                    </p>
-
-                    {/* Decorative divider */}
-                    <div className="flex items-center gap-3 my-6">
-                      <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(212,163,115,0.25)' }} />
-                      <svg width="12" height="12" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)', opacity: 0.5 }}>
-                        <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
-                        <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
-                      </svg>
-                      <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(212,163,115,0.25)' }} />
-                    </div>
-
-                    {/* Content lines — varied widths for editorial feel */}
-                    <div className="space-y-3 mb-4">
-                      {[
-                        { w: 90, h: 3, c: 'rgba(212,163,115,0.22)' },
-                        { w: 100, h: 3, c: 'rgba(212,163,115,0.18)' },
-                        { w: 75, h: 3, c: 'rgba(204,213,174,0.35)' },
-                        { w: 88, h: 3, c: 'rgba(212,163,115,0.16)' },
-                        { w: 55, h: 3, c: 'rgba(212,163,115,0.2)' },
-                        { w: 80, h: 3, c: 'rgba(212,163,115,0.15)' },
-                        { w: 65, h: 3, c: 'rgba(204,213,174,0.28)' },
-                      ].map((line, j) => (
-                        <div key={j} style={{
-                          width: `${line.w}%`,
-                          height: line.h,
-                          backgroundColor: line.c,
-                          borderRadius: 4,
-                        }} />
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Photo mosaic at bottom */}
-                  <div className="flex gap-2.5 mt-6">
-                    {[0, 1, 2].map(i => (
-                      <div key={i} className="flex-1 rounded-xl overflow-hidden" style={{ height: 52, backgroundColor: 'rgba(212,163,115,0.08)' }}>
-                        <div style={{
-                          width: '100%',
-                          height: '100%',
-                          background: `linear-gradient(135deg, rgba(212,163,115,${0.04 + i * 0.03}) 0%, rgba(204,213,174,${0.06 + i * 0.04}) 100%)`,
-                        }} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <Image
+                src="/hero-book.svg"
+                alt="A sample Memory Project hardcover book showing warm bronze spine and cream pages"
+                width={300}
+                height={400}
+                priority
+                className="animate-float"
+                style={{ borderRadius: 14 }}
+              />
             </div>
           </div>
         </div>
@@ -813,7 +692,7 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-0 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0">
             {[
               {
                 num: '1',
@@ -851,16 +730,12 @@ export default function Home() {
             ].map((step, i) => (
               <div
                 key={i}
-                className={`flex-1 reveal ${i < 2 ? 'md:pr-8 md:border-r' : ''} ${i > 0 ? 'md:pl-8' : ''}`}
-                style={{ borderColor: 'rgba(212,163,115,0.1)' }}
+                className="flex-1 reveal"
               >
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
                     {step.num}
                   </div>
-                  {i < 2 && (
-                    <span className="hidden md:inline text-xs opacity-30" style={{ color: 'var(--bronze)' }}>●</span>
-                  )}
                 </div>
                 <div className="flex items-start gap-4 mb-4">
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}>
