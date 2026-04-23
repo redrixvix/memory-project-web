@@ -321,7 +321,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       </p>
 
                       {/* Date below text */}
-                      <p className="text-xs mt-5" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                      <p className="text-xs mt-5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                         {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                       </p>
 

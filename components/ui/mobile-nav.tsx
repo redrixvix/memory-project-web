@@ -145,18 +145,6 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
             </Link>
           </div>
         )}
-        {!loggedIn && (
-          <div className="px-6 py-6 border-t" style={{ borderColor: 'rgba(212,163,115,0.15)' }}>
-            <Link
-              href="/signup"
-              onClick={onClose}
-              className="flex h-11 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-            >
-              Get Started
-            </Link>
-          </div>
-        )}
       </div>
 
       <style>{`

@@ -60,7 +60,7 @@ export default function PricingPage() {
                   </li>
                 ))}
                 {['Photos & audio', 'Printed books'].map((feat, j) => (
-                  <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: '#8A8A7A' }}>
+                  <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: '#6A6A5A' }}>
                     <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#B0B09A' }}>
                       <path d="M18 6L6 18M6 6l12 12" />
                     </svg>
