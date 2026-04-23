@@ -8,8 +8,44 @@ export const metadata: Metadata = {
   description: 'Start free. Pay only for printing. Unlimited text memories forever, or upgrade for photo storage and printed hardcover books starting at $99.',
 };
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What happens to my free memories if I never upgrade?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'They stay yours, forever. Even on the free plan, your text memories are yours to keep, edit, and export any time.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How does printing work?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "When you're ready to print, we'll format your book as a hardcover with archival paper, smyth-sewn binding, and a custom dust jacket. Starting at $99 for a 200-page book.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I switch plans later?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes, you can upgrade at any time. You can also add photo storage à la carte without upgrading your whole plan.',
+      },
+    },
+  ],
+};
+
 export default function PricingPage() {
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
       {/* Minimal header */}
       <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>

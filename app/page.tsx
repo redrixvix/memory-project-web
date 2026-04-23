@@ -170,6 +170,7 @@ export default function Home() {
             >
               <Link
                 href="/signup"
+                aria-label="Start your free book"
                 className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95 shadow-sm"
                 style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
               >
@@ -177,6 +178,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/pricing"
+                aria-label="View pricing"
                 className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap border transition-all duration-200 hover:opacity-80 active:scale-95"
                 style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', borderWidth: '1.5px' }}
               >
@@ -982,7 +984,7 @@ export default function Home() {
           {/* Bottom bar */}
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.2), transparent)', marginBottom: 24 }} />
           <p className="text-xs text-center" style={{ color: '#6A6A5A' }}>
-            © 2026 Memory Project · Made with love for families
+            © {new Date().getFullYear()} Memory Project · Made with love for families
           </p>
         </div>
       </footer>
