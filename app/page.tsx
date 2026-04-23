@@ -362,22 +362,13 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           {/* Bronze rule top */}
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginBottom: 16 }} />
-          {/* Press bar */}
-          <p
-            className="text-xs opacity-50 text-center tracking-widest mb-5"
-            style={{ fontFamily: 'var(--font-sans)', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--charcoal)' }}
-          >
-            As featured in: The New York Times · Oprah Daily · The Guardian
-          </p>
-          {/* Bronze rule above stats */}
-          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.25), transparent)', marginBottom: 16 }} />
-          {/* Stat bar — uniform, middot-separated */}
-          <div className="flex flex-row items-center justify-center gap-4">
-            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>12,000+ families</span>
+          {/* Trust stat bar — honest, verifiable */}
+          <div className="flex flex-row items-center justify-center gap-4 flex-wrap">
+            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>4.8★ on Trustpilot</span>
             <span className="text-xs opacity-40" style={{ color: 'var(--charcoal)' }}>·</span>
-            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>38 countries</span>
+            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Free to start</span>
             <span className="text-xs opacity-40" style={{ color: 'var(--charcoal)' }}>·</span>
-            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>4.8★ Trustpilot</span>
+            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>No credit card required</span>
           </div>
           {/* Trustpilot badge */}
           <div className="flex items-center justify-center gap-1.5 mt-3">

@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Memory Project" }],
   creator: "Memory Project",
   metadataBase: new URL('https://web-redrixvixs-projects.vercel.app'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: "Memory Project — Write Your Family's Story. Print It to Last.",
     description: "A keepsake your family will read for generations. Free to start, printed books from $99.",

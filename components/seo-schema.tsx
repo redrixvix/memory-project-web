@@ -53,8 +53,8 @@ const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Memory Project',
-  url: 'https://memoryproject.com',
-  logo: 'https://memoryproject.com/og-image.png',
+  url: 'https://web-redrixvixs-projects.vercel.app',
+  logo: 'https://web-redrixvixs-projects.vercel.app/og-image.png',
   sameAs: [],
   description: 'A platform for preserving family stories, memories, and legacies in beautifully printed hardcover books.',
 };
