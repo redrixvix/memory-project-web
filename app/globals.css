@@ -360,6 +360,38 @@ body {
 }
 
 /* ─────────────────────────────────────────
+   Prefers-reduced-motion support
+───────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-scale-in,
+  .animate-breathe,
+  .animate-float,
+  .animate-shimmer,
+  .reveal {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero-ambient::before,
+  .hero-ambient::after {
+    animation: none !important;
+  }
+}
+
+/* ─────────────────────────────────────────
    Card hover lift
 ───────────────────────────────────────── */
 
@@ -371,6 +403,27 @@ body {
 .card-hover:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(212,163,115,0.12);
+}
+
+/* Keyboard focus-within for card-hover */
+.card-hover:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212,163,115,0.10);
+}
+
+/* ─────────────────────────────────────────
+   Global focus states
+───────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--bronze);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Remove focus ring for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
 /* ─────────────────────────────────────────

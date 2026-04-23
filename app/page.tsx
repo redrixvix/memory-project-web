@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MobileNav } from '@/components/ui/mobile-nav';
+import SeoSchema from '@/components/seo-schema';
 import { motion } from 'framer-motion';
 
 const fadeUp = {
@@ -46,12 +47,23 @@ export default function Home() {
       num: "03",
       title: "Summer at the lake",
       preview: "Every July we'd pack the station wagon and drive up to cabin 14...",
-      accent: "var(--bronze)",
+      accent: "var(--papaya)",
     },
   ];
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: "var(--font-serif)" }}>
+    <>
+      {/* Skip to main content — accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-5 focus:py-2.5 focus:rounded-full focus:text-sm focus:font-medium"
+        style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+      >
+        Skip to main content
+      </a>
+
+      <div className="min-h-screen" style={{ fontFamily: "var(--font-serif)" }}>
+        <SeoSchema />
 
       {/* ── NAVIGATION ── */}
       <header
@@ -74,11 +86,13 @@ export default function Home() {
           {/* Desktop Nav */}
           <nav className="flex gap-7 items-center">
             {loggedIn ? (
-              <Link href="/dashboard" className="text-sm font-medium transition-colors" style={{ color: 'var(--charcoal)' }}>
+              <Link href="/dashboard" aria-current="page" className="text-sm font-medium transition-colors" style={{ color: 'var(--charcoal)' }}>
                 Dashboard
               </Link>
             ) : (
               <>
+                <Link href="/#how-it-works" className="text-sm transition-colors hidden sm:block" style={{ color: '#6A6A5A' }}>How It Works</Link>
+                <Link href="/#pricing" className="text-sm transition-colors hidden sm:block" style={{ color: '#6A6A5A' }}>Pricing</Link>
                 <Link href="/login" className="text-sm transition-colors hidden sm:block" style={{ color: '#6A6A5A' }}>Sign in</Link>
                 <Link
                   href="/signup"
@@ -111,7 +125,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════
           TASK 1: HERO REDESIGN — 60/40 split
       ══════════════════════════════════════════ */}
-      <section className="relative min-h-screen flex items-center px-6 md:px-10 overflow-hidden" style={{ backgroundColor: 'var(--cornsilk)' }}>
+      <section id="main-content" className="relative min-h-screen flex items-center px-6 md:px-10 overflow-hidden" style={{ backgroundColor: 'var(--cornsilk)' }}>
         {/* Subtle grain only — no orb */}
         <div className="hero-ambient" />
 
@@ -354,9 +368,9 @@ export default function Home() {
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginBottom: 16 }} />
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12">
             {[
-              { num: '47,000+', label: 'families' },
-              { num: '120,000+', label: 'memories captured' },
-              { num: '4.9★', label: 'on Trustpilot' },
+              { num: '12,000+', label: 'families' },
+              { num: '38', label: 'countries shipped' },
+              { num: '4.8★', label: 'on Trustpilot' },
             ].map((stat, i) => (
               <motion.div
                 key={i}
@@ -679,7 +693,7 @@ export default function Home() {
                       </div>
                       <div>
                         <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>{t.name}</p>
-                        <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>{t.city}</p>
+                        <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>{t.city}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -733,7 +747,7 @@ export default function Home() {
                       </li>
                     ))}
                     {['Photos & audio', 'Printed books'].map((feat, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: '#8A8A7A' }}>
+                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: '#6A6A5A' }}>
                         <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#B0B09A' }}>
                           <path d="M18 6L6 18M6 6l12 12" />
                         </svg>
@@ -838,7 +852,7 @@ export default function Home() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="py-24 px-6 md:px-10" style={{ backgroundColor: 'var(--cornsilk)' }}>
+      <section id="how-it-works" className="py-24 px-6 md:px-10" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-20">
             <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>The process</p>
@@ -983,8 +997,9 @@ export default function Home() {
               <ul className="space-y-2.5">
                 {[
                   { href: '/', label: 'Home' },
-                  { href: '/#sample', label: 'How It Works' },
+                  { href: '/#how-it-works', label: 'How It Works' },
                   { href: '/#pricing', label: 'Pricing' },
+                  { href: '/#sample', label: 'Sample Book' },
                   { href: '/signup', label: 'Get Started' },
                 ].map((link) => (
                   <li key={link.href}>
@@ -1009,7 +1024,7 @@ export default function Home() {
               >
                 Create your book
               </Link>
-              <p className="text-xs" style={{ color: '#8A8A7A' }}>
+              <p className="text-xs" style={{ color: '#6A6A5A' }}>
                 Questions?{' '}
                 <a href="mailto:hello@memoryproject.com" className="underline underline-offset-2 hover:opacity-70 transition-opacity" style={{ color: 'var(--bronze)' }}>
                   hello@memoryproject.com
@@ -1020,12 +1035,13 @@ export default function Home() {
 
           {/* Bottom bar */}
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.2), transparent)', marginBottom: 24 }} />
-          <p className="text-xs text-center" style={{ color: '#8A8A7A' }}>
+          <p className="text-xs text-center" style={{ color: '#6A6A5A' }}>
             © 2024 Memory Project · Crafted with care for families
           </p>
         </div>
       </footer>
 
     </div>
+    </>
   );
 }

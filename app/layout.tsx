@@ -35,11 +35,20 @@ export const metadata: Metadata = {
     siteName: "Memory Project",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Memory Project — Write your family's story. Print it to last.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Memory Project — Write Your Family's Story. Print It to Last.",
     description: "A keepsake your family will read for generations. Free to start, printed books from $99.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
