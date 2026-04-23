@@ -1,14 +1,10 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import Script from 'next/script';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-export const metadata: Metadata = {
-  title: 'Pricing — Simple, Honest Plans',
-  description: 'Start free. Pay only for printing. Unlimited text memories forever, or upgrade for photo storage and printed hardcover books starting at $99.',
-};
-
-const faqSchema = {
+const pricingFaqJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: [
@@ -39,12 +35,18 @@ const faqSchema = {
   ],
 };
 
+export const metadata: Metadata = {
+  title: 'Pricing — Simple, Honest Plans',
+  description: 'Start free. Pay only for printing. Unlimited text memories forever, or upgrade for photo storage and printed hardcover books starting at $99.',
+};
+
 export default function PricingPage() {
   return (
     <>
-      <script
+      <Script
+        id="pricing-faq-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingFaqJsonLd) }}
       />
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
       {/* Minimal header */}
@@ -80,7 +82,7 @@ export default function PricingPage() {
             <CardContent className="pt-0">
               <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$0</p>
-              <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>forever</p>
+              <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>Unlimited text memories, forever free</p>
               <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 32 }} />
               <ul className="space-y-3 mb-10">
                 {[

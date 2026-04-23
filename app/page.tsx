@@ -963,7 +963,7 @@ export default function Home() {
             <div>
               <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Start your book</p>
               <p className="text-sm mb-4" style={{ color: '#6A6A5A' }}>
-                Free to begin. No commitment.
+                Free to start. No credit card required.
               </p>
               <Link
                 href="/signup"
