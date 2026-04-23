@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.png",
+        url: "https://memoryproject.com/og-image.png",
         width: 1200,
         height: 630,
         alt: "Memory Project — Write your family's story. Print it to last.",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Memory Project — Write Your Family's Story. Print It to Last.",
     description: "A keepsake your family will read for generations. Free to start, printed books from $99.",
-    images: ["/og-image.png"],
+    images: ["https://memoryproject.com/og-image.png"],
   },
   robots: {
     index: true,

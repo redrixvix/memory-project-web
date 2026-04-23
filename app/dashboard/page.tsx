@@ -173,6 +173,14 @@ export default function Dashboard() {
               <span className="text-base font-medium tracking-tight" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
             </Link>
           </div>
+          <Link
+            href="/dashboard"
+            aria-current="page"
+            className="text-sm font-medium transition-colors hover:opacity-70"
+            style={{ color: 'var(--charcoal)' }}
+          >
+            Dashboard
+          </Link>
           <button
             type="button"
             onClick={handleLogout}
@@ -478,7 +486,7 @@ export default function Dashboard() {
                                   </div>
                                 ))}
                                 {book.contributors.length > 3 && (
-                                  <span className="text-xs" style={{ marginLeft: 2, color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                                  <span className="text-xs" style={{ marginLeft: 2, color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                                     +{book.contributors.length - 3}
                                   </span>
                                 )}
@@ -488,7 +496,7 @@ export default function Dashboard() {
 
                           {/* Right side: updated time + arrow */}
                           <div className="flex items-center gap-3">
-                            <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                            <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                               Updated {new Date(lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                             </p>
                             <div
