@@ -59,6 +59,7 @@ export default function Dashboard() {
   const router = useRouter();
   const [books, setBooks] = useState<Book[]>([]);
   const [user, setUser] = useState<User | null>(null);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null); // null = checking auth
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -77,6 +78,7 @@ export default function Dashboard() {
       ]);
 
       if (userRes.status === 401) { router.push('/login'); return; }
+      setLoggedIn(true);
 
       const userData = await userRes.json();
       setUser(userData.user);
@@ -86,6 +88,7 @@ export default function Dashboard() {
       setBooks(booksData.books || []);
     } catch {
       console.error('Failed to fetch data');
+      setLoggedIn(false);
     } finally {
       setLoading(false);
     }
@@ -127,29 +130,28 @@ export default function Dashboard() {
     router.push('/');
   };
 
-  if (loading) {
+  if (loading || loggedIn === null) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="w-full max-w-3xl px-6">
-          {/* Skeleton greeting */}
+          {/* Auth loading skeleton — matches dashboard layout */}
           <div className="mb-10">
-            <div className="h-9 w-64 rounded-xl mb-2 animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
+            <div className="h-9 w-56 rounded-xl mb-2 animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
             <div className="h-4 w-40 rounded-lg animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.07)' }} />
           </div>
-          {/* Skeleton book cards */}
           <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-2xl p-6 flex items-center gap-6" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)' }}>
-                <div className="w-14 h-20 rounded-xl shrink-0 animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
-                <div className="flex-1 space-y-3">
+            {[1,2,3].map(i => (
+              <div key={i} className="rounded-2xl p-6 flex items-center gap-5" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)' }}>
+                <div className="w-12 h-18 rounded-xl shrink-0 animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+                <div className="flex-1 space-y-2.5">
                   <div className="h-5 w-48 rounded-lg animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
                   <div className="h-3 w-32 rounded-md animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.07)' }} />
-                  <div className="h-3 w-24 rounded-md animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.06)' }} />
                 </div>
               </div>
             ))}
           </div>
         </div>
+        <style>{`@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.85; } } .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }`}</style>
       </div>
     );
   }
