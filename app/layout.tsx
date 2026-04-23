@@ -79,7 +79,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("font-sans", inter.variable, lora.variable)}>
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium"
+          style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+        >
+          Skip to main content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

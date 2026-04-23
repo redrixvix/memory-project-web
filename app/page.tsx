@@ -64,15 +64,6 @@ export default function Home() {
 
   return (
     <>
-      {/* Skip to main content — accessibility */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-5 focus:py-2.5 focus:rounded-full focus:text-sm focus:font-medium"
-        style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-      >
-        Skip to main content
-      </a>
-
       <div className="min-h-screen" style={{ fontFamily: "var(--font-serif)" }}>
         <SeoSchema />
 
