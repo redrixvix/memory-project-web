@@ -6,6 +6,12 @@ import BreadcrumbSchema from "@/components/breadcrumb-schema";
 export const metadata: Metadata = {
   title: "Frequently Asked Questions",
   description: "Answers to common questions about Memory Project — how it works, pricing, printing, family collaboration, and getting started.",
+  openGraph: {
+    title: "Frequently Asked Questions — Memory Project",
+    description: "Answers to common questions about Memory Project — how it works, pricing, printing, family collaboration, and getting started.",
+    url: "https://web-redrixvixs-projects.vercel.app/faq",
+    type: "website",
+  },
 };
 
 const webSiteJsonLd = {

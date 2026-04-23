@@ -65,6 +65,7 @@ export default function Dashboard() {
   const [newTitle, setNewTitle] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [creating, setCreating] = useState(false);
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
 
   useEffect(() => {
     fetchUserAndBooks();
@@ -194,9 +195,9 @@ export default function Dashboard() {
       <main className="px-6 md:px-10 py-12 max-w-5xl mx-auto w-full">
 
         {/* Greeting + header */}
-        <div className="mb-12">
+        <div className="mb-8">
           <p className="label-caps mb-2" style={{ color: 'var(--bronze)' }}>Your library</p>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="flex items-center gap-4">
               {user ? (
                 <>
@@ -211,22 +212,40 @@ export default function Dashboard() {
                 </h1>
               )}
             </div>
-            <p className="text-sm mt-2 sm:mt-0" style={{ color: '#6A6A5A' }}>
-              {books.length === 0
-                ? 'Capture and preserve your family\'s stories'
-                : `${books.length} ${books.length === 1 ? 'book' : 'books'} in your library`}
-            </p>
-            <Button
-              onClick={() => setShowCreate(true)}
-              type="button"
-              className="rounded-full shrink-0 h-11 px-6 text-sm font-medium transition-all duration-200 active:scale-95"
-              style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
-            >
-              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              New Book
-            </Button>
+            <div className="flex items-center gap-3">
+              {books.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <label htmlFor="sort-select" className="text-xs sr-only" style={{ color: '#6A6A5A' }}>Sort by</label>
+                  <select
+                    id="sort-select"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value as typeof sortOrder)}
+                    className="text-xs rounded-lg px-3 py-1.5 cursor-pointer"
+                    style={{ border: '1px solid rgba(212,163,115,0.25)', backgroundColor: 'var(--papaya)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                  >
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="alpha">A–Z</option>
+                  </select>
+                </div>
+              )}
+              <p className="text-sm" style={{ color: '#6A6A5A' }}>
+                {books.length === 0
+                  ? 'Capture and preserve your family\'s stories'
+                  : `${books.length} ${books.length === 1 ? 'book' : 'books'} in your library`}
+              </p>
+              <Button
+                onClick={() => setShowCreate(true)}
+                type="button"
+                className="rounded-full shrink-0 h-11 px-6 text-sm font-medium transition-all duration-200 active:scale-95"
+                style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+              >
+                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                New Book
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -398,7 +417,14 @@ export default function Dashboard() {
         ) : (
           /* ── Book grid ── */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {books.map((book, i) => {
+            {books
+              .slice()
+              .sort((a, b) => {
+                if (sortOrder === 'newest') return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+                if (sortOrder === 'oldest') return new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
+                return a.title.localeCompare(b.title);
+              })
+              .map((book, i) => {
               const lastUpdated = book.updated_at || book.created_at;
               return (
                 <div
@@ -431,7 +457,44 @@ export default function Dashboard() {
                           backgroundColor: BOOK_COLORS[i % BOOK_COLORS.length],
                         }}
                       />
-                      <CardContent className="p-7" style={{ paddingLeft: 24 }}>
+                      {/* Mini book cover visual */}
+                      <div
+                        className="absolute"
+                        style={{
+                          right: 20,
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          width: 52,
+                          height: 70,
+                          borderRadius: 6,
+                          background: `linear-gradient(160deg, #FDFCF5 0%, #F8F5E8 60%, #F0EBD5 100%)`,
+                          border: '1px solid rgba(212,163,115,0.35)',
+                          boxShadow: '2px 3px 8px rgba(43,43,43,0.12)',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {/* Mini spine */}
+                        <div style={{
+                          position: 'absolute',
+                          left: 0, top: 0, bottom: 0,
+                          width: 5,
+                          background: `linear-gradient(to right, ${BOOK_COLORS[i % BOOK_COLORS.length]}88, ${BOOK_COLORS[i % BOOK_COLORS.length]}44)`,
+                          borderRadius: '6px 0 0 6px',
+                        }} />
+                        <div className="pt-3 px-2 pl-3">
+                          <div style={{ height: 1, backgroundColor: 'rgba(212,163,115,0.25)', marginBottom: 5 }} />
+                          {[1,2,3].map((_, li) => (
+                            <div key={li} style={{
+                              height: 2,
+                              width: `${70 + li * 8}%`,
+                              backgroundColor: 'rgba(212,163,115,0.2)',
+                              borderRadius: 2,
+                              marginBottom: 3,
+                            }} />
+                          ))}
+                        </div>
+                      </div>
+                      <CardContent className="p-7" style={{ paddingLeft: 24, paddingRight: 80 }}>
                         {/* Title */}
                         <h3 className="text-2xl font-medium mb-2 leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                           {book.title}

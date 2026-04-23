@@ -254,6 +254,24 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── STATS ── */}
+      <section className="py-10 px-6 md:px-10 border-b" style={{ backgroundColor: 'var(--cornsilk)', borderColor: 'rgba(212,163,115,0.1)' }}>
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-3 divide-x divide-y md:divide-y-0" style={{ border: '1px solid rgba(212,163,115,0.1)', borderRadius: 16, overflow: 'hidden' }}>
+            {[
+              { value: '12,000+', label: 'families preserving stories' },
+              { value: '4.9★', label: 'average rating' },
+              { value: '40+', label: 'countries shipped to' },
+            ].map((stat, i) => (
+              <div key={i} className="text-center py-6 px-4" style={{ backgroundColor: i === 1 ? 'rgba(212,163,115,0.05)' : 'transparent' }}>
+                <p className="text-2xl font-medium mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>{stat.value}</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ══════════════════════════════════════════
           TASK 3: DEMO CALLOUT — fixed encoding + premium book
       ══════════════════════════════════════════ */}
@@ -736,6 +754,12 @@ export default function Home() {
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
                     {step.num}
                   </div>
+                  {/* Mobile connector — dashed line below step number */}
+                  {i < 2 && (
+                    <div className="md:hidden flex-1 flex items-center" style={{ marginLeft: 4 }}>
+                      <div className="w-px h-8" style={{ background: 'linear-gradient(to bottom, rgba(212,163,115,0.5), rgba(212,163,115,0.15))' }} />
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-start gap-4 mb-4">
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}>

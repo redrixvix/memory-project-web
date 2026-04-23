@@ -403,6 +403,10 @@ body {
     opacity: 0 !important;
   }
 
+  .hero-ambient::after {
+    animation: none !important;
+  }
+
   .animate-slide-in {
     animation: none !important;
     transform: translateX(0) !important;
