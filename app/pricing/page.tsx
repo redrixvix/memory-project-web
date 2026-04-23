@@ -42,12 +42,6 @@ export const metadata: Metadata = {
 
 export default function PricingPage() {
   return (
-    <>
-      <Script
-        id="pricing-faq-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingFaqJsonLd) }}
-      />
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
       {/* Minimal header */}
       <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
@@ -197,6 +191,11 @@ export default function PricingPage() {
           ))}
         </div>
       </main>
+      <Script
+        id="pricing-faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingFaqJsonLd) }}
+      />
     </div>
   );
 }
