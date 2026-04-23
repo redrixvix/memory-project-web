@@ -769,7 +769,7 @@ export default function Home() {
                     className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80"
                     style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.06)' }}
                   >
-                    Get started free
+                    Start your free book
                   </Link>
                 </CardContent>
               </Card>
