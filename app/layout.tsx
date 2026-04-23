@@ -19,31 +19,32 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "Memory Project — Capture the stories that matter",
-  description: "A digital life story app for families: capture memories with text, photos, and audio, then print beautiful hardcover books.",
-  keywords: ["memory book", "family stories", "life story", "legacy", "printed book", "family history", "memories"],
+  title: {
+    default: "Memory Project — Capture Your Family's Stories",
+    template: "%s | Memory Project",
+  },
+  description: "Write your family's stories and print them as beautiful hardcover books. Free to start. Preserve memories with text, photos, and audio for generations to come.",
+  keywords: ["memory book", "family stories", "life story", "legacy book", "printed memory book", "family history", "keepsake book", "personal memoir"],
   authors: [{ name: "Memory Project" }],
+  creator: "Memory Project",
+  metadataBase: new URL('https://memoryproject.com'),
   openGraph: {
-    title: "Memory Project — Capture the stories that matter",
-    description: "Write your family's stories. Print them to last. Free to start.",
-    url: "https://web-redrixvixs-projects.vercel.app",
+    title: "Memory Project — Write Your Family's Story. Print It to Last.",
+    description: "A keepsake your family will read for generations. Free to start, printed books from $99.",
+    url: "https://memoryproject.com",
     siteName: "Memory Project",
     locale: "en_US",
     type: "website",
-    images: [
-      {
-        url: "https://web-redrixvixs-projects.vercel.app/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Memory Project — A keepsake your family will read for generations",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Memory Project — Capture the stories that matter",
-    description: "Write your family's stories. Print them to last. Free to start.",
-    images: ["https://web-redrixvixs-projects.vercel.app/og-image.png"],
+    title: "Memory Project — Write Your Family's Story. Print It to Last.",
+    description: "A keepsake your family will read for generations. Free to start, printed books from $99.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
   },
   icons: {
     icon: [

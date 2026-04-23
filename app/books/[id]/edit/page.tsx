@@ -51,6 +51,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const memoryId = searchParams.get('memory');
 
   const [book, setBook] = useState<Book | null>(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [prompt, setPrompt] = useState('');
   const [useCustomPrompt, setUseCustomPrompt] = useState(false);
   const [customPrompt, setCustomPrompt] = useState('');
@@ -66,24 +67,20 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    // Auth check first — show loading until confirmed
+    fetch('/api/auth/me')
+      .then(r => { if (r.status === 401) router.push('/login'); else setIsCheckingAuth(false); })
+      .catch(() => { router.push('/login'); });
     fetchBook();
-
-    if (memoryId) {
-      fetchMemory(memoryId);
-    } else {
+    if (memoryId) { fetchMemory(memoryId); }
+    else {
       const draft = localStorage.getItem(draftKey);
       if (draft) {
         try {
           const { prompt: dp, customPrompt: dc, answer: da } = JSON.parse(draft);
           if (dp) setPrompt(dp);
-          if (da) {
-            setAnswer(da);
-            setWordCount(da.trim() ? da.trim().split(/\s+/).length : 0);
-          }
-          if (dc) {
-            setCustomPrompt(dc);
-            setUseCustomPrompt(true);
-          }
+          if (da) { setAnswer(da); setWordCount(da.trim() ? da.trim().split(/\s+/).length : 0); }
+          if (dc) { setCustomPrompt(dc); setUseCustomPrompt(true); }
         } catch {}
       }
     }
@@ -172,7 +169,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     }
   };
 
-  if (fetchingMemory || fetchingBook) {
+  if (fetchingMemory || fetchingBook || isCheckingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="flex flex-col items-center gap-3">

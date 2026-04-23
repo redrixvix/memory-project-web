@@ -188,24 +188,34 @@ export default function Home() {
           >
             {/* Premium book mockup — elegant CSS hardcover */}
             <div className="relative" style={{ width: 300, height: 400 }}>
-              {/* Warm drop shadow (layered for depth) */}
+              {/* Warm layered drop shadow (depth + softness) */}
               <div style={{
                 position: 'absolute',
-                bottom: -24,
-                left: 18,
-                right: -14,
-                height: 36,
-                background: 'radial-gradient(ellipse, rgba(43,43,43,0.22) 0%, transparent 70%)',
+                bottom: -28,
+                left: 16,
+                right: -16,
+                height: 40,
+                background: 'radial-gradient(ellipse, rgba(43,43,43,0.24) 0%, rgba(43,43,43,0.10) 40%, transparent 70%)',
                 borderRadius: '50%',
-                filter: 'blur(8px)',
+                filter: 'blur(10px)',
+              }} />
+              <div style={{
+                position: 'absolute',
+                bottom: -16,
+                left: 8,
+                right: -8,
+                height: 24,
+                background: 'radial-gradient(ellipse, rgba(43,43,43,0.14) 0%, transparent 65%)',
+                borderRadius: '50%',
+                filter: 'blur(6px)',
               }} />
 
-              {/* Book cover (outer shadow layer) */}
+              {/* Book cover outer shell */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
                 borderRadius: 14,
-                boxShadow: '12px 14px 40px rgba(43,43,43,0.18), 4px 6px 16px rgba(212,163,115,0.15), inset 0 0 0 1px rgba(212,163,115,0.3)',
+                boxShadow: '10px 14px 44px rgba(43,43,43,0.20), 3px 5px 18px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.28)',
               }} />
 
               {/* Book body */}
@@ -216,39 +226,50 @@ export default function Home() {
                   border: '1px solid rgba(212,163,115,0.35)',
                 }}
               >
-                {/* Spine — left side, textured gradient */}
+                {/* Spine — left side with rib texture */}
                 <div style={{
                   position: 'absolute',
                   left: 0,
                   top: 0,
                   bottom: 0,
-                  width: 22,
-                  background: 'linear-gradient(to right, rgba(180,130,80,0.7), rgba(212,163,115,0.5), rgba(180,130,80,0.2))',
+                  width: 24,
+                  background: 'linear-gradient(to right, rgba(150,105,60,0.80) 0%, rgba(195,150,95,0.55) 35%, rgba(212,163,115,0.45) 65%, rgba(180,125,70,0.20) 100%)',
                   borderRadius: '14px 0 0 14px',
                 }}>
-                  {/* Spine ribs */}
-                  {[0.15, 0.32, 0.48, 0.65, 0.82].map((pct, j) => (
+                  {/* Spine ribs — embossed effect */}
+                  {[0.12, 0.28, 0.44, 0.60, 0.76].map((pct, j) => (
                     <div key={j} style={{
                       position: 'absolute',
                       left: 0,
                       right: 0,
                       top: `${pct * 100}%`,
-                      height: 3,
-                      backgroundColor: 'rgba(212,163,115,0.2)',
+                      height: 2,
+                      backgroundColor: 'rgba(100,65,35,0.22)',
                       transform: 'translateY(-50%)',
                     }} />
                   ))}
+                  {/* Spine highlight (left edge catch light) */}
+                  <div style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: 2,
+                    background: 'linear-gradient(to bottom, rgba(255,248,220,0.5), rgba(255,248,220,0.15), transparent)',
+                    borderRadius: '14px 0 0 14px',
+                  }} />
                 </div>
 
-                {/* Pages edge — right side */}
+                {/* Pages edge — right side with visible page stack */}
                 <div style={{
                   position: 'absolute',
                   right: 0,
-                  top: 12,
-                  bottom: 12,
-                  width: 7,
-                  background: 'repeating-linear-gradient(to bottom, rgba(212,163,115,0.1) 0px, rgba(212,163,115,0.1) 1px, transparent 1px, transparent 4px)',
+                  top: 10,
+                  bottom: 10,
+                  width: 8,
+                  background: 'repeating-linear-gradient(to bottom, rgba(232,226,205,0.9) 0px, rgba(240,236,218,0.85) 1px, rgba(248,244,228,0.80) 2px, rgba(232,226,205,0.9) 3px)',
                   borderRadius: '0 14px 14px 0',
+                  boxShadow: 'inset 2px 0 6px rgba(180,150,100,0.12)',
                 }} />
 
                 {/* Cover interior */}
@@ -692,7 +713,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
+              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.14)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
                   <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$0</p>
@@ -712,8 +733,8 @@ export default function Home() {
                       </li>
                     ))}
                     {['Photos & audio', 'Printed books'].map((feat, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: '#6A6A5A', opacity: 0.45 }}>
-                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: '#8A8A7A' }}>
+                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#B0B09A' }}>
                           <path d="M18 6L6 18M6 6l12 12" />
                         </svg>
                         {feat}
@@ -723,7 +744,7 @@ export default function Home() {
                   <Link
                     href="/signup"
                     className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80"
-                    style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
+                    style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.06)' }}
                   >
                     Get started free
                   </Link>
@@ -738,13 +759,13 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 10px 40px rgba(212,163,115,0.18)' }}>
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
+              <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 12px 48px rgba(212,163,115,0.22)' }}>
+                <div className="absolute -top-5 left-1/2 -translate-x-1/2">
+                  <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
                     Most Popular
                   </Badge>
                 </div>
-                <CardContent className="pt-8">
+                <CardContent className="pt-10">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>5GB Storage</p>
                   <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$50</p>
                   <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>

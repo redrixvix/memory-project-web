@@ -119,10 +119,17 @@ function Signup() {
 
           {/* Testimonial excerpt */}
           <div className="p-5 rounded-xl max-w-xs" style={{ backgroundColor: 'rgba(254,250,224,0.7)', border: '1px solid rgba(212,163,115,0.2)' }}>
+            <div className="flex gap-0.5 mb-4">
+              {[1,2,3,4,5].map((_, si) => (
+                <svg key={si} width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--bronze)' }}>
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              ))}
+            </div>
             <p className="text-sm italic leading-relaxed mb-4" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
               &ldquo;We gave this to my grandmother on her 90th birthday. She read every single page out loud and cried happy tears.&rdquo;
             </p>
-            <p className="text-xs font-medium" style={{ color: 'var(--bronze)' }}>— Martha, Ohio</p>
+            <p className="text-xs font-medium" style={{ color: 'var(--bronze)' }}>— Diane M., Portland OR ★★★★★</p>
           </div>
         </div>
       </div>
@@ -156,9 +163,9 @@ function Signup() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-2xl font-medium mb-2" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
-              Start your memory book
+              Create your memory book
             </h1>
-            <p className="text-sm" style={{ color: '#6A6A5A' }}>Free to begin — no credit card needed</p>
+            <p className="text-sm" style={{ color: '#6A6A5A' }}>Free forever — no credit card required</p>
           </div>
 
           <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 4px 24px rgba(212,163,115,0.08)' }}>
