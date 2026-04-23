@@ -378,9 +378,8 @@ export default function Dashboard() {
           </motion.div>
         ) : (
           /* ── Book grid ── */
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {books.map((book, i) => {
-              const stripeColor = BOOK_COLORS[i % BOOK_COLORS.length];
               const lastUpdated = book.updated_at || book.created_at;
               return (
                 <motion.div
@@ -389,163 +388,106 @@ export default function Dashboard() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <div className="relative h-full">
-                    {/* Preview eye button — top right */}
-                    <Link
-                      href={`/books/${book.id}/preview`}
-                      title="Preview book"
-                      className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
-                      style={{ backgroundColor: 'rgba(254,250,224,0.9)', backdropFilter: 'blur(8px)', border: '1px solid rgba(212,163,115,0.2)' }}
+                  <Link href={`/books/${book.id}`} className="block h-full">
+                    <Card
+                      className="h-full rounded-2xl"
+                      style={{ backgroundColor: '#FFFFFF', border: 'none', boxShadow: '0 2px 12px rgba(212,163,115,0.08)' }}
                     >
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                      </svg>
-                    </Link>
+                      <CardContent className="p-7">
+                        {/* Title */}
+                        <h3 className="text-2xl font-medium mb-2 leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                          {book.title}
+                        </h3>
 
-                    <Link href={`/books/${book.id}`} className="block h-full">
-                      <Card
-                        className="h-full rounded-2xl overflow-hidden"
-                        style={{ backgroundColor: '#FDFCF5', border: 'none', boxShadow: '0 4px 20px rgba(212,163,115,0.09)' }}
-                      >
-                        <CardContent className="p-0">
-                          <div className="flex">
-                            {/* Book spine */}
-                            <div
-                              className="shrink-0"
-                              style={{
-                                width: 10,
-                                background: `linear-gradient(to right, ${stripeColor}cc, ${stripeColor}88, ${stripeColor}44)`,
-                                minHeight: '100%',
-                                borderRadius: '12px 0 0 12px',
-                              }}
-                            />
+                        {/* Description */}
+                        {book.description && (
+                          <p className="text-sm leading-relaxed line-clamp-2 mb-6" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
+                            {book.description}
+                          </p>
+                        )}
 
-                            {/* Main content */}
-                            <div className="flex-1 pt-7 pb-8 px-7 min-w-0">
-                              {/* Row 1: number + badge */}
-                              <div className="flex items-center justify-between mb-5">
-                                <span className="text-xs font-medium" style={{ color: 'rgba(212,163,115,0.45)', fontFamily: 'var(--font-sans)' }}>
-                                  #{i + 1}
+                        {/* Rule */}
+                        <div className="rule mb-5" />
+
+                        {/* Footer row */}
+                        <div className="flex items-center justify-between">
+                          {/* Left side: memory count + contributors */}
+                          <div className="flex items-center gap-3">
+                            {book._count && (
+                              <div
+                                className="rounded-full px-3 py-1 flex items-center gap-1.5"
+                                style={{ backgroundColor: 'rgba(204,213,174,0.3)' }}
+                              >
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
+                                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                  <path d="M2 17l10 5 10-5"/>
+                                  <path d="M2 12l10 5 10-5"/>
+                                </svg>
+                                <span className="text-xs font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                                  {book._count.memories} {book._count.memories === 1 ? 'memory' : 'memories'}
                                 </span>
-                                {book.role !== 'owner' && (
-                                  <Badge className="rounded-full text-xs px-3 py-0.5 font-medium" style={{ backgroundColor: 'var(--tea-green)', color: 'var(--charcoal)' }}>
-                                    Shared
-                                  </Badge>
-                                )}
                               </div>
+                            )}
 
-                              {/* Title */}
-                              <h3 className="text-xl font-medium mb-2 leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                                {book.title}
-                              </h3>
-
-                              {/* Description */}
-                              {book.description && (
-                                <p className="text-sm leading-relaxed line-clamp-2 mb-5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
-                                  {book.description}
-                                </p>
-                              )}
-
-                              {/* Memory count + decorative mini book icon */}
-                              <div className="flex items-center gap-3 mb-4">
-                                <div
-                                  className="rounded-lg shrink-0"
-                                  style={{
-                                    width: 24,
-                                    height: 32,
-                                    background: `linear-gradient(135deg, ${stripeColor}cc, ${stripeColor}44)`,
-                                    border: `1px solid ${stripeColor}44`,
-                                    borderRadius: 3,
-                                  }}
-                                />
-                                {book._count && (
+                            {/* Contributor avatars */}
+                            {book.contributors && book.contributors.length > 0 && (
+                              <div className="flex items-center -space-x-1.5">
+                                {book.contributors.slice(0, 3).map((c, ci) => (
                                   <div
-                                    className="rounded-full px-3 py-1 flex items-center gap-1.5"
-                                    style={{ backgroundColor: 'rgba(212,163,115,0.1)' }}
+                                    key={c.id}
+                                    className="relative"
+                                    style={{ zIndex: 3 - ci }}
                                   >
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                                      <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                                      <path d="M2 17l10 5 10-5"/>
-                                      <path d="M2 12l10 5 10-5"/>
-                                    </svg>
-                                    <span className="text-xs font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
-                                      {book._count.memories} {book._count.memories === 1 ? 'memory' : 'memories'}
-                                    </span>
+                                    {c.profile_image_url ? (
+                                      <img
+                                        src={c.profile_image_url}
+                                        alt={c.name}
+                                        className="w-5 h-5 rounded-full object-cover border-2 border-white"
+                                        style={{ borderColor: '#FFFFFF' }}
+                                      />
+                                    ) : (
+                                      <div
+                                        className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium border-2 border-white"
+                                        style={{
+                                          borderColor: '#FFFFFF',
+                                          background: 'linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%)',
+                                          color: '#2B2B2B',
+                                          fontFamily: 'var(--font-serif, Georgia, serif)',
+                                          fontSize: 9,
+                                        }}
+                                      >
+                                        {c.name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()}
+                                      </div>
+                                    )}
                                   </div>
+                                ))}
+                                {book.contributors.length > 3 && (
+                                  <span className="text-xs" style={{ marginLeft: 2, color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                                    +{book.contributors.length - 3}
+                                  </span>
                                 )}
                               </div>
+                            )}
+                          </div>
 
-                              {/* Contributor avatars */}
-                              {book.contributors && book.contributors.length > 0 && (
-                                <div className="flex items-center gap-0 mb-4">
-                                  {book.contributors.slice(0, 3).map((c, ci) => (
-                                    <div
-                                      key={c.id}
-                                      className="relative"
-                                      style={{ marginLeft: ci === 0 ? 0 : -8, zIndex: 3 - ci }}
-                                    >
-                                      {c.profile_image_url ? (
-                                        <img
-                                          src={c.profile_image_url}
-                                          alt={c.name}
-                                          className="w-5 h-5 rounded-full object-cover border-2"
-                                          style={{ borderColor: '#FDFCF5' }}
-                                        />
-                                      ) : (
-                                        <div
-                                          className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium border-2"
-                                          style={{
-                                            borderColor: '#FDFCF5',
-                                            background: 'linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%)',
-                                            color: '#2B2B2B',
-                                            fontFamily: 'var(--font-serif, Georgia, serif)',
-                                            fontSize: 9,
-                                          }}
-                                        >
-                                          {c.name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()}
-                                        </div>
-                                      )}
-                                    </div>
-                                  ))}
-                                  {book.contributors.length > 3 && (
-                                    <span className="text-xs" style={{ marginLeft: 2, color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
-                                      +{book.contributors.length - 3}
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-
-                              {/* Last written date */}
-                              {book._count && book._count.memories > 0 && (
-                                <p className="text-xs mb-4" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
-                                  Last memory added {timeAgo(lastUpdated)}
-                                </p>
-                              )}
-
-                              {/* Rule */}
-                              <div className="rule mb-5" />
-
-                              {/* Footer row */}
-                              <div className="flex items-center justify-between">
-                                <p className="text-xs capitalize" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
-                                  Updated {new Date(lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                </p>
-                                <div
-                                  className="w-9 h-9 rounded-full flex items-center justify-center"
-                                  style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}
-                                >
-                                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                                  </svg>
-                                </div>
-                              </div>
+                          {/* Right side: updated time + arrow */}
+                          <div className="flex items-center gap-3">
+                            <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                              Updated {new Date(lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </p>
+                            <div
+                              className="w-9 h-9 rounded-full flex items-center justify-center"
+                              style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}
+                            >
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                              </svg>
                             </div>
                           </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </motion.div>
               );
             })}
