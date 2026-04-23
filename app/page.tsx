@@ -196,7 +196,7 @@ export default function Home() {
 
           {/* Right: premium book photo — 40% */}
           <div className="md:col-span-5 flex justify-center md:justify-end">
-            {/* Premium book mockup — elegant CSS hardcover */}
+            {/* LCP — above-the-fold hero book image should be considered high priority */}
             <div className="relative" style={{ width: 300, height: 400 }} aria-hidden="true">
               {/* Warm layered drop shadow (depth + softness) */}
               <div style={{
