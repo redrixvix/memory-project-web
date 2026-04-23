@@ -7,9 +7,10 @@ import { useRouter } from 'next/navigation';
 interface MobileNavProps {
   isOpen: boolean;
   onClose: () => void;
+  loggedIn: boolean;
 }
 
-export function MobileNav({ isOpen, onClose }: MobileNavProps) {
+export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -75,59 +76,87 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
         {/* Nav links */}
         <nav className="flex-1 px-4 py-6 space-y-1">
-          {[
-            { href: '/', label: 'Home' },
-            { href: '/#how-it-works', label: 'How It Works' },
-            { href: '/#pricing', label: 'Pricing' },
-            { href: '/#sample', label: 'Sample Book' },
-          ].map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={onClose}
-              className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-              style={{ color: 'var(--charcoal)' }}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <hr className="my-3" style={{ borderColor: 'rgba(212,163,115,0.15)' }} />
           <Link
-            href="/dashboard"
+            href="/"
             onClick={onClose}
             className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
             style={{ color: 'var(--charcoal)' }}
           >
-            Dashboard
+            Home
           </Link>
-          <Link
-            href="/login"
-            onClick={onClose}
-            className="block px-4 py-3 rounded-xl text-sm transition-colors hover:bg-white/50"
-            style={{ color: '#6A6A5A' }}
-          >
-            Sign in
-          </Link>
+          {loggedIn ? (
+            <Link
+              href="/dashboard"
+              onClick={onClose}
+              className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+              style={{ color: 'var(--charcoal)' }}
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/#how-it-works"
+                onClick={onClose}
+                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)' }}
+              >
+                How It Works
+              </Link>
+              <Link
+                href="/pricing"
+                onClick={onClose}
+                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)' }}
+              >
+                Pricing
+              </Link>
+              <Link
+                href="/#sample"
+                onClick={onClose}
+                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)' }}
+              >
+                Sample Book
+              </Link>
+              <hr className="my-3" style={{ borderColor: 'rgba(212,163,115,0.15)' }} />
+              <Link
+                href="/login"
+                onClick={onClose}
+                className="block px-4 py-3 rounded-xl text-sm transition-colors hover:bg-white/50"
+                style={{ color: '#6A6A5A' }}
+              >
+                Sign in
+              </Link>
+            </>
+          )}
         </nav>
 
-        {/* Footer */}
-        <div className="px-6 py-6 border-t space-y-3" style={{ borderColor: 'rgba(212,163,115,0.15)' }}>
-          <Link
-            href="/signup"
-            onClick={onClose}
-            className="flex h-11 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
-            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-          >
-            Get Started
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="w-full py-2.5 text-xs transition-colors hover:opacity-70"
-            style={{ color: '#8A8A7A' }}
-          >
-            Sign out
-          </button>
-        </div>
+        {/* Footer — logged out only */}
+        {!loggedIn && (
+          <div className="px-6 py-6 border-t" style={{ borderColor: 'rgba(212,163,115,0.15)' }}>
+            <Link
+              href="/signup"
+              onClick={onClose}
+              className="flex h-11 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
+              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+            >
+              Get Started
+            </Link>
+          </div>
+        )}
+        {!loggedIn && (
+          <div className="px-6 py-6 border-t" style={{ borderColor: 'rgba(212,163,115,0.15)' }}>
+            <Link
+              href="/signup"
+              onClick={onClose}
+              className="flex h-11 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
+              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+            >
+              Get Started
+            </Link>
+          </div>
+        )}
       </div>
 
       <style>{`

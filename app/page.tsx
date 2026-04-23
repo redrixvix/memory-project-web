@@ -120,7 +120,7 @@ export default function Home() {
       </header>
 
       {/* Mobile nav drawer */}
-      <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+      <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} />
 
       {/* ══════════════════════════════════════════
           TASK 1: HERO REDESIGN — 60/40 split
@@ -1036,7 +1036,7 @@ export default function Home() {
           {/* Bottom bar */}
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.2), transparent)', marginBottom: 24 }} />
           <p className="text-xs text-center" style={{ color: '#6A6A5A' }}>
-            © 2024 Memory Project · Crafted with care for families
+            © 2026 Memory Project · Crafted with care for families
           </p>
         </div>
       </footer>
