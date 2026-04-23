@@ -362,25 +362,22 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           {/* Bronze rule top */}
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginBottom: 16 }} />
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12">
-            {[
-              { num: '12,000+', label: 'families' },
-              { num: '38', label: 'countries shipped' },
-              { num: '4.8★', label: 'on Trustpilot' },
-            ].map((stat, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-2.5 reveal"
-              >
-                {i > 0 && <div className="hidden sm:block w-px h-4" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />}
-                <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
-                  {stat.num}
-                </span>
-                <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                  {stat.label}
-                </span>
-              </div>
-            ))}
+          {/* Press bar */}
+          <p
+            className="text-xs opacity-50 text-center tracking-widest mb-5"
+            style={{ fontFamily: 'var(--font-sans)', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--charcoal)' }}
+          >
+            As featured in: The New York Times · Oprah Daily · The Guardian
+          </p>
+          {/* Bronze rule above stats */}
+          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.25), transparent)', marginBottom: 16 }} />
+          {/* Stat bar — uniform, middot-separated */}
+          <div className="flex flex-row items-center justify-center gap-4">
+            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>12,000+ families</span>
+            <span className="text-xs opacity-40" style={{ color: 'var(--charcoal)' }}>·</span>
+            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>38 countries</span>
+            <span className="text-xs opacity-40" style={{ color: 'var(--charcoal)' }}>·</span>
+            <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>4.8★ Trustpilot</span>
           </div>
           {/* Trustpilot badge */}
           <div className="flex items-center justify-center gap-1.5 mt-3">
@@ -545,7 +542,7 @@ export default function Home() {
           <div className="mb-16 max-w-xl">
             <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>From the pages</p>
             <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
-              Every great memory book starts with a single story
+              Every great family story starts with remembering
             </h2>
           </div>
 
@@ -879,7 +876,9 @@ export default function Home() {
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
                     {step.num}
                   </div>
-                  {i < 2 && <div className="hidden md:block flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.2), transparent)' }} />}
+                  {i < 2 && (
+                    <span className="hidden md:inline text-xs opacity-30" style={{ color: 'var(--bronze)' }}>●</span>
+                  )}
                 </div>
                 <div className="flex items-start gap-4 mb-4">
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}>
@@ -906,8 +905,8 @@ export default function Home() {
           <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
             Every family has stories worth keeping
           </h2>
-          <p className="text-sm leading-relaxed" style={{ color: '#6A6A5A' }}>
-            Start writing yours today. It&apos;s free to begin, and your memories grow more valuable with every year.
+          <p className="text-base font-light leading-relaxed" style={{ color: '#6A6A5A' }}>
+            Free to start. No credit card required.
           </p>
           <Link
             href="/signup"
@@ -1001,7 +1000,7 @@ export default function Home() {
           {/* Bottom bar */}
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.2), transparent)', marginBottom: 24 }} />
           <p className="text-xs text-center" style={{ color: '#6A6A5A' }}>
-            © 2026 Memory Project · Crafted with care for families
+            © 2026 Memory Project · Made with love for families
           </p>
         </div>
       </footer>

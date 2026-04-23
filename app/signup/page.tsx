@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { motion } from 'framer-motion';
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -145,11 +144,8 @@ function Signup() {
           }}
         />
 
-        <motion.div
-          className="w-full max-w-sm relative"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        <div
+          className="w-full max-w-sm relative animate-fade-up"
         >
           {/* Mobile brand */}
           <div className="flex items-center gap-2 mb-10 lg:hidden">
@@ -205,7 +201,7 @@ function Signup() {
               {/* Divider */}
               <div className="flex items-center gap-3 py-1">
                 <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
-                <span className="text-xs" style={{ color: '#8A8A7A' }}>or continue with email</span>
+                <span className="text-xs" style={{ color: '#7A7A6A' }}>or continue with email</span>
                 <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
               </div>
 
@@ -227,6 +223,8 @@ function Signup() {
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {error && (
                     <div
+                      role="alert"
+                      aria-live="polite"
                       className="p-3.5 rounded-xl text-sm"
                       style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.25)' }}
                     >
@@ -298,7 +296,7 @@ function Signup() {
               Sign in
             </Link>
           </p>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -3,7 +3,6 @@
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 
 interface InviteData {
   book_id: number;
@@ -97,11 +96,8 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
   if (error || !inviteData) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: 'var(--cornsilk)' }}>
-        <motion.div
-          className="text-center max-w-sm"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <div
+          className="text-center max-w-sm animate-fade-up"
         >
           <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}>
             <svg className="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--bronze)' }}>
@@ -121,7 +117,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
           >
             Go to Dashboard
           </Link>
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -131,11 +127,8 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: 'var(--cornsilk)' }}>
-      <motion.div
-        className="w-full max-w-sm text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      <div
+        className="w-full max-w-sm text-center animate-fade-up"
       >
         {/* Book icon */}
         <div className="w-20 h-20 rounded-full mx-auto mb-8 flex items-center justify-center" style={{ backgroundColor: 'rgba(204,213,174,0.25)' }}>
@@ -195,10 +188,10 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
           </Link>
         </div>
 
-        <p className="text-xs mt-8" style={{ color: '#8A8A7A' }}>
+        <p className="text-xs mt-8" style={{ color: '#7A7A6A' }}>
           Free to join. No credit card required.
         </p>
-      </motion.div>
+      </div>
     </div>
   );
 }

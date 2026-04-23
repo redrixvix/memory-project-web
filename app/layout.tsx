@@ -20,10 +20,10 @@ const lora = Lora({
 
 export const metadata: Metadata = {
   title: {
-    default: "Memory Project — Capture Your Family's Stories",
+    default: "Memory Project — Write Your Family's Story. Print It to Last.",
     template: "%s | Memory Project",
   },
-  description: "Write your family's stories and print them as beautiful hardcover books. Free to start. Preserve memories with text, photos, and audio for generations to come.",
+  description: "Free to start. Capture your family's stories in a beautiful hardcover book. Write with guided prompts or freely, add photos and voice recordings, then print a keepsake that lasts generations.",
   keywords: ["memory book", "family stories", "life story", "legacy book", "printed memory book", "family history", "keepsake book", "personal memoir"],
   authors: [{ name: "Memory Project" }],
   creator: "Memory Project",

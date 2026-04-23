@@ -334,10 +334,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
             {/* Selected prompt preview */}
             {prompt && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="my-4 flex items-start gap-2 rounded-xl p-3"
+              <div
+                className="my-4 flex items-start gap-2 rounded-xl p-3 animate-fade-up"
                 style={{ backgroundColor: 'rgba(212,163,115,0.1)', border: '1px solid rgba(212,163,115,0.22)' }}
               >
                 <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
@@ -346,7 +344,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   <path d="M2 12l10 5 10-5"/>
                 </svg>
                 <p className="text-sm font-medium italic" style={{ color: 'var(--charcoal)' }}>{prompt}</p>
-              </motion.div>
+              </div>
             )}
           </div>
 

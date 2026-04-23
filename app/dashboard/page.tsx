@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { motion } from 'framer-motion';
 
 interface Book {
   id: number;
@@ -40,12 +40,13 @@ const BOOK_COLORS = [
   'var(--tea-green)',
 ];
 
-function getGreeting(name: string) {
+function getGreeting(userName?: string) {
   const hour = new Date().getHours();
-  const firstName = name.split(' ')[0];
-  if (hour < 12) return `Good morning, ${firstName}`;
-  if (hour < 17) return `Good afternoon, ${firstName}`;
-  return `Good evening, ${firstName}`;
+  let timeGreeting = 'Good morning';
+  if (hour >= 12 && hour < 17) timeGreeting = 'Good afternoon';
+  else if (hour >= 17) timeGreeting = 'Good evening';
+  const firstName = userName ? userName.split(' ')[0] : '';
+  return firstName ? `${timeGreeting}, ${firstName}` : timeGreeting;
 }
 
 function timeAgo(dateStr: string): string {
@@ -209,7 +210,7 @@ export default function Dashboard() {
                 </>
               ) : (
                 <h1 className="display-md" style={{ color: 'var(--charcoal)' }}>
-                  Memory Books
+                  Your Memory Books
                 </h1>
               )}
             </div>
@@ -234,11 +235,8 @@ export default function Dashboard() {
 
         {/* ── Create book form ── */}
         {showCreate && (
-          <motion.div
-            className="mb-8"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          <div
+            className="mb-8 animate-fade-up"
           >
             <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.2)', boxShadow: '0 8px 32px rgba(212,163,115,0.1)' }}>
               <CardContent className="pt-0">
@@ -310,16 +308,13 @@ export default function Dashboard() {
                 </form>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         )}
 
         {/* ── Empty state ── */}
         {books.length === 0 && !showCreate ? (
-          <motion.div
-            className="text-center py-24"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+          <div
+            className="text-center py-24 animate-fade-up"
           >
             {/* Elegant empty-state illustration */}
             <div className="inline-block mb-10">
@@ -399,25 +394,47 @@ export default function Dashboard() {
             >
               Create your first book
             </Button>
-          </motion.div>
+            <p className="text-xs mt-5 max-w-xs mx-auto leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+              It takes about 5 minutes to create your first book and add your first memory.
+            </p>
+          </div>
         ) : (
           /* ── Book grid ── */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {books.map((book, i) => {
               const lastUpdated = book.updated_at || book.created_at;
               return (
-                <motion.div
-                  key={book.id}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                <div
+                  className="animate-fade-up"
+                  style={{ animationDelay: `${i * 0.06}s` }}
                 >
-                  <Link href={`/books/${book.id}`} className="block h-full">
-                    <Card
-                      className="h-full rounded-2xl"
-                      style={{ backgroundColor: '#FFFFFF', border: 'none', boxShadow: '0 2px 12px rgba(212,163,115,0.08)' }}
+                  <Link href={`/books/${book.id}`} className="block h-full group">
+                    <div
+                      className="relative h-full rounded-2xl overflow-hidden"
+                      style={{
+                        backgroundColor: '#FFFFFF',
+                        boxShadow: '0 2px 12px rgba(212,163,115,0.08)',
+                        transition: 'box-shadow 0.2s ease, transform 0.2s ease',
+                        cursor: 'pointer',
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 32px rgba(212,163,115,0.14)';
+                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(212,163,115,0.08)';
+                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
+                      }}
                     >
-                      <CardContent className="p-7">
+                      {/* Color stripe on left */}
+                      <div
+                        className="absolute left-0 top-0 bottom-0"
+                        style={{
+                          width: 6,
+                          backgroundColor: BOOK_COLORS[i % BOOK_COLORS.length],
+                        }}
+                      />
+                      <CardContent className="p-7" style={{ paddingLeft: 24 }}>
                         {/* Title */}
                         <h3 className="text-2xl font-medium mb-2 leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                           {book.title}
@@ -434,18 +451,17 @@ export default function Dashboard() {
                         <div className="rule mb-5" />
 
                         {/* Footer row */}
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between" style={{ paddingBottom: 4 }}>
                           {/* Left side: memory count + contributors */}
                           <div className="flex items-center gap-3">
                             {book._count && (
                               <div
                                 className="rounded-full px-3 py-1 flex items-center gap-1.5"
-                                style={{ backgroundColor: 'rgba(204,213,174,0.3)' }}
+                                style={{ backgroundColor: 'rgba(184,137,90,0.12)' }}
                               >
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
-                                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                                  <path d="M2 17l10 5 10-5"/>
-                                  <path d="M2 12l10 5 10-5"/>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                                 </svg>
                                 <span className="text-xs font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
                                   {book._count.memories} {book._count.memories === 1 ? 'memory' : 'memories'}
@@ -463,10 +479,12 @@ export default function Dashboard() {
                                     style={{ zIndex: 3 - ci }}
                                   >
                                     {c.profile_image_url ? (
-                                      <img
+                                      <Image
                                         src={c.profile_image_url}
                                         alt={c.name}
-                                        className="w-5 h-5 rounded-full object-cover border-2 border-white"
+                                        width={20}
+                                        height={20}
+                                        className="rounded-full object-cover border-2 border-white"
                                         style={{ borderColor: '#FFFFFF' }}
                                       />
                                     ) : (
@@ -510,9 +528,9 @@ export default function Dashboard() {
                           </div>
                         </div>
                       </CardContent>
-                    </Card>
+                    </div>
                   </Link>
-                </motion.div>
+                </div>
               );
             })}
           </div>

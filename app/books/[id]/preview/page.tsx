@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, use } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -223,7 +224,14 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
                       <div className="flex gap-3 mt-8 flex-wrap">
                         {memory.photo_urls.map((url, j) => (
                           <div key={j} className="img-frame rounded-xl overflow-hidden shadow-sm">
-                            <img src={url} alt="" className="w-40 h-40 object-cover rounded-xl" />
+                            <Image
+                              src={url}
+                              alt=""
+                              width={160}
+                              height={160}
+                              unoptimized={true}
+                              className="w-40 h-40 object-cover rounded-xl"
+                            />
                           </div>
                         ))}
                       </div>

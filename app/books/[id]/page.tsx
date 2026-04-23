@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState, use } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Lightbox } from '@/components/ui/lightbox';
 import { MembersModal } from '@/components/ui/members-modal';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface Memory {
   id: number;
@@ -121,25 +122,19 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       )}
 
       {/* Scroll-to-top button */}
-      <AnimatePresence>
-        {showTopBtn && (
-          <motion.button
-            type="button"
-            onClick={scrollToTop}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.25 }}
-            className="fixed bottom-7 right-7 z-30 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 active:scale-95"
-            style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
-            aria-label="Scroll to top"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M18 15l-6-6-6 6"/>
-            </svg>
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {showTopBtn && (
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className="fixed bottom-7 right-7 z-30 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 animate-fade-up"
+          style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+          aria-label="Scroll to top"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M18 15l-6-6-6 6"/>
+          </svg>
+        </button>
+      )}
 
       {/* ── TOP NAV ── */}
       <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
@@ -234,12 +229,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Empty state */}
         {memories.length === 0 ? (
-          <motion.div
-            className="text-center py-24"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center py-24 animate-fade-up">
             <div className="inline-block mb-8">
               <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(204,213,174,0.3)' }}>
                 <svg className="w-11 h-11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" style={{ color: 'var(--charcoal)' }}>
@@ -263,18 +253,17 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </svg>
               Add your first memory
             </Link>
-          </motion.div>
+          </div>
         ) : (
           /* ── Memory list with lightbox ── */
           <div className="space-y-8">
             {memories.map((memory, index) => {
               const accentColor = ACCENT_COLORS[index % ACCENT_COLORS.length];
               return (
-                <motion.div
+                <div
                   key={memory.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                  className="animate-fade-up"
+                  style={{ animationDelay: `${index * 0.07}s` }}
                 >
                   <Card
                     className="rounded-2xl overflow-hidden"
@@ -337,10 +326,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               style={{ minHeight: 200, minWidth: 200 }}
                               aria-label={`View photo ${i + 1}`}
                             >
-                              <img
+                              <Image
                                 src={url}
                                 alt={`Memory photo ${i + 1}`}
-                                className="w-48 h-48 object-cover rounded-xl"
+                                width={192}
+                                height={192}
+                                className="object-cover rounded-xl"
                                 style={{ minHeight: 200, minWidth: 200 }}
                               />
                             </button>
@@ -358,11 +349,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         {memory.contributor_name ? (
                           <div className="flex items-center gap-2">
                             {memory.contributor_avatar ? (
-                              <img
+                              <Image
                                 src={memory.contributor_avatar}
                                 alt={memory.contributor_name}
-                                className="w-6 h-6 rounded-full object-cover"
-                                style={{ width: 24, height: 24 }}
+                                width={24}
+                                height={24}
+                                className="rounded-full object-cover"
                               />
                             ) : (
                               <div
@@ -426,7 +418,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </div>
               );
             })}
           </div>
