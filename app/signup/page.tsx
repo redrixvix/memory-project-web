@@ -128,7 +128,7 @@ function Signup() {
             <p className="text-sm italic leading-relaxed mb-4" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
               &ldquo;We gave this to my grandmother on her 90th birthday. She read every single page out loud and cried happy tears.&rdquo;
             </p>
-            <p className="text-xs font-medium" style={{ color: 'var(--bronze)' }}>— Diane M., Portland OR ★★★★★</p>
+            <p className="text-xs font-medium" style={{ color: 'var(--bronze)' }}>— A family who gave this as a 90th birthday gift</p>
           </div>
         </div>
       </div>
