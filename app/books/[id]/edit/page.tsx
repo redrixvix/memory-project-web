@@ -161,38 +161,50 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   if (fetchingMemory) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
-        <div style={{ color: '#6A6A5A' }}>Loading...</div>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
+          <p className="text-sm" style={{ color: '#6A6A5A' }}>Loading...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ backgroundColor: 'var(--cornsilk)' }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
-      {/* Header */}
-      <header className="py-4 px-6 border-b shrink-0" style={{ backgroundColor: '#FDFCF5', borderColor: 'rgba(212,163,115,0.15)' }}>
-        <div className="flex items-center justify-between max-w-xl mx-auto w-full">
-          <Link href={`/books/${id}`} className="text-sm transition-colors flex items-center gap-1" style={{ color: '#6A6A5A' }}>
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-            Back to book
-          </Link>
-
-          {/* Save state indicator */}
-          <div className="flex items-center gap-1.5 text-xs" style={{ color: '#6A6A5A' }}>
-            {saveState === 'saving' && (
-              <>
-                <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
-                <span>Saving...</span>
-              </>
-            )}
-            {saveState === 'saved' && (
-              <>
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
-                  <path d="M20 6L9 17l-5-5"/>
-                </svg>
-                <span>Saved</span>
-              </>
-            )}
+      {/* ── TOP NAV (matches book detail page) ── */}
+      <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b shrink-0" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
+        <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
+          <div className="flex items-center gap-3 min-w-0">
+            <Link href="/dashboard" className="text-sm flex items-center gap-1.5 transition-colors hover:opacity-70 shrink-0" style={{ color: '#6A6A5A' }}>
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M15 18l-6-6 6-6"/>
+              </svg>
+              Dashboard
+            </Link>
+            <span style={{ color: 'rgba(212,163,115,0.3)' }}>·</span>
+            <h1 className="text-base md:text-lg font-medium truncate" style={{ color: 'var(--charcoal)' }}>
+              {memoryId ? 'Edit Memory' : 'Add Memory'}
+            </h1>
+          </div>
+          <div className="flex items-center gap-3">
+            {/* Save state indicator */}
+            <div className="flex items-center gap-1.5 text-xs" style={{ color: '#6A6A5A' }}>
+              {saveState === 'saving' && (
+                <>
+                  <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
+                  <span>Saving...</span>
+                </>
+              )}
+              {saveState === 'saved' && (
+                <>
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg>
+                  <span>Saved</span>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -200,14 +212,14 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
 
         {/* Scrollable form content */}
-        <div className="flex-1 overflow-auto px-6 py-8 max-w-xl mx-auto w-full">
+        <div className="flex-1 overflow-auto px-6 md:px-10 py-10 max-w-3xl mx-auto w-full">
 
           {/* Title */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-medium mb-2" style={{ fontFamily: "var(--font-serif)", color: 'var(--charcoal)' }}>
+          <div className="mb-10">
+            <h1 className="display-md mb-3" style={{ color: 'var(--charcoal)' }}>
               {memoryId ? 'Edit Memory' : 'Add a Memory'}
             </h1>
-            <p className="text-sm" style={{ color: '#6A6A5A' }}>Write about a moment that matters to you. Take your time.</p>
+            <p className="text-base" style={{ color: '#6A6A5A' }}>Write about a moment that matters to you. Take your time.</p>
           </div>
 
           {/* Prompt selector */}
@@ -372,8 +384,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         </div>
 
         {/* Desktop action row */}
-        <div className="hidden md:block shrink-0 px-6 py-6">
-          <div className="flex gap-3 max-w-xl mx-auto">
+        <div className="hidden md:block shrink-0 px-6 md:px-10 py-6">
+          <div className="flex gap-3 max-w-3xl">
             <Button
               type="submit"
               disabled={loading || !answer.trim()}

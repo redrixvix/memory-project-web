@@ -39,17 +39,23 @@ export async function GET(
     const { id } = await params;
     const bookId = parseInt(id);
 
-    // Check user is a member of this book
+    // Check user is a member — check both book_members and book_collaborators
     const [membership] = await sql`
       SELECT role FROM book_members
       WHERE book_id = ${bookId} AND user_id = ${user.id}
     `;
+    const [collabMembership] = await sql`
+      SELECT role FROM book_collaborators
+      WHERE book_id = ${bookId} AND user_id = ${user.id}
+    `;
+    const [ownerCheck] = await sql`SELECT owner_id FROM books WHERE id = ${bookId}`;
+    const isOwner = ownerCheck?.owner_id === user.id;
 
-    if (!membership) {
+    if (!membership && !collabMembership && !isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Get all members including pending (no joined_at)
+    // Get members from book_members
     const members = await sql`
       SELECT bm.user_id, bm.role, bm.invite_email, bm.joined_at,
              u.name, u.email
@@ -59,7 +65,21 @@ export async function GET(
       ORDER BY bm.role = 'owner' DESC, bm.joined_at ASC
     `;
 
-    return NextResponse.json({ data: members });
+    // If book_members is empty, fall back to book_collaborators
+    let collabMembers: Record<string, unknown>[] = [];
+    if (members.length === 0) {
+      collabMembers = await sql`
+        SELECT bc.user_id, bc.role, bc.invited_at as joined_at,
+               u.name, u.email
+        FROM book_collaborators bc
+        JOIN users u ON bc.user_id = u.id
+        WHERE bc.book_id = ${bookId}
+        ORDER BY bc.role = 'owner' DESC
+      `;
+    }
+
+    const allMembers = members.length > 0 ? members : collabMembers;
+    return NextResponse.json({ data: allMembers });
   } catch (error) {
     console.error('List members error:', error);
     return NextResponse.json(

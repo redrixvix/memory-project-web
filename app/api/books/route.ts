@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     // Get books owned by user and books where user is a member (via book_members)
     const books = await sql`
-      SELECT DISTINCT b.id, b.title, b.description, b.storage_tier, b.storage_used_bytes, b.created_at, b.updated_at,
+      SELECT DISTINCT b.id, b.title, b.description, b.storage_tier, b.storage_used_bytes, b.created_at, b.updated_at, b.owner_id,
              u.name as owner_name,
              COALESCE(bm.role, 'owner') as role,
              (SELECT COUNT(*) FROM memories m WHERE m.book_id = b.id) as memory_count
@@ -50,24 +50,50 @@ export async function GET(request: NextRequest) {
       ORDER BY b.created_at DESC
     `;
 
-    const booksWithCount = await Promise.all(books.map(async (b: Record<string, unknown>) => {
-      const bookId = Number(b.id);
-      const contributors = await sql`
-        SELECT DISTINCT u.id, u.name, u.profile_image_url
-        FROM memories m
-        JOIN users u ON m.user_id = u.id
-        WHERE m.book_id = ${bookId}
-        ORDER BY u.id
-        LIMIT 3
-      `;
-      return {
-        ...b,
-        _count: { memories: Number(b.memory_count) },
-        updated_at: b.updated_at ?? b.created_at,
-        contributors: (contributors as unknown as {id: number, name: string, profile_image_url: string}[])
-      };
+    // Collect book IDs for contributor query
+    const bookIds = books.map((b: Record<string, unknown>) => Number(b.id));
+
+    const booksWithCount = books.map((b: Record<string, unknown>) => ({
+      ...b,
+      _count: { memories: Number(b.memory_count) },
+      updated_at: b.updated_at ?? b.created_at,
     }));
-    return NextResponse.json({ books: booksWithCount });
+
+    // Get contributors for all books in ONE query (avoids N+1 connection problem)
+    let contributors: Record<string, {id: number, name: string, profile_image_url: string}[]> = {};
+    try {
+      if (bookIds.length > 0) {
+        const rows = await sql`
+          SELECT m.book_id, u.id, u.name, u.profile_image_url
+          FROM memories m
+          JOIN users u ON m.user_id = u.id
+          WHERE m.book_id IN (${bookIds}) AND m.user_id IS NOT NULL
+          ORDER BY m.book_id, u.id
+        `;
+        for (const row of rows as unknown as {book_id: string, id: number, name: string, profile_image_url: string}[]) {
+          if (!contributors[row.book_id]) contributors[row.book_id] = [];
+          if (contributors[row.book_id].length < 3) {
+            contributors[row.book_id].push({ id: row.id, name: row.name, profile_image_url: row.profile_image_url });
+          }
+        }
+      }
+    } catch (e) {
+      // Contributors query failed — continue without them (non-fatal)
+      console.error('Contributors query failed:', e);
+    }
+
+    // Attach contributors (or owner fallback) to each book
+    const result = booksWithCount.map((b: Record<string, unknown>) => {
+      const bookId = String(b.id);
+      const list = contributors[bookId] || [];
+      if (list.length === 0) {
+        // Fallback: show owner as contributor
+        list.push({ id: Number(b.owner_id), name: String(b.owner_name), profile_image_url: '' });
+      }
+      return { ...b, contributors: list };
+    });
+
+    return NextResponse.json({ books: result });
   } catch (error) {
     console.error('List books error:', error);
     return NextResponse.json(

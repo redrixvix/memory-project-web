@@ -41,11 +41,18 @@ async function checkBookAccess(userId: number, bookId: number) {
 
   if (!book) return null;
   if (book.owner_id === userId) return book;
+  // Check book_members (new system)
   const [member] = await sql`
     SELECT role FROM book_members
     WHERE book_id = ${bookId} AND user_id = ${userId} AND joined_at IS NOT NULL
   `;
   if (member) return book;
+  // Fallback to book_collaborators (old system)
+  const [collab] = await sql`
+    SELECT role FROM book_collaborators
+    WHERE book_id = ${bookId} AND user_id = ${userId}
+  `;
+  if (collab) return book;
   return null;
 }
 
@@ -66,14 +73,38 @@ export async function GET(
       return NextResponse.json({ error: 'Book not found' }, { status: 404 });
     }
 
+    // Get membership info — check book_members first, then book_collaborators as fallback
+    let membership = null;
+    const [bm] = await sql`
+      SELECT user_id, role FROM book_members
+      WHERE book_id = ${book.id} AND user_id = ${user.id} AND joined_at IS NOT NULL
+    `;
+    if (bm) {
+      membership = { user_id: bm.user_id, role: bm.role };
+    } else {
+      // Fallback to book_collaborators for books created before the new system
+      const [bc] = await sql`
+        SELECT user_id, role FROM book_collaborators
+        WHERE book_id = ${book.id} AND user_id = ${user.id}
+      `;
+      if (bc) {
+        membership = { user_id: bc.user_id, role: bc.role };
+      } else if (book.owner_id === user.id) {
+        // Owner always has access
+        membership = { user_id: user.id, role: 'owner' };
+      }
+    }
+
     const memories = await sql`
-      SELECT id, prompt_question, answer_text, photo_urls, audio_url, created_at
-      FROM memories
-      WHERE book_id = ${book.id}
-      ORDER BY created_at DESC
+      SELECT m.id, m.book_id, m.prompt_question, m.answer_text, m.photo_urls, m.audio_url, m.created_at,
+             u.name as contributor_name, u.profile_image_url as contributor_avatar
+      FROM memories m
+      LEFT JOIN users u ON m.user_id = u.id
+      WHERE m.book_id = ${book.id}
+      ORDER BY m.created_at DESC
     `;
 
-    return NextResponse.json({ book, memories });
+    return NextResponse.json({ book, memories, membership });
   } catch (error) {
     console.error('Get book error:', error);
     return NextResponse.json(

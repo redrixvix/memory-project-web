@@ -42,7 +42,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
-  const [showMembers, setShowMembers] = useState(false);
 
   useEffect(() => {
     fetchBook();
@@ -200,14 +199,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
             >
               Share
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowMembers(true)}
-              className="inline-flex h-8 md:h-9 items-center justify-center rounded-full border px-3 md:px-4 text-xs md:text-sm font-medium whitespace-nowrap transition-colors"
-              style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
-            >
-              Members
             </button>
           </div>
         </div>
