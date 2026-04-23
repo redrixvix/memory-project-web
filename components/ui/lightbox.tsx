@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useCallback, useState, useRef } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface LightboxProps {
@@ -73,11 +74,12 @@ export function Lightbox({ src, alt = '', onClose }: LightboxProps) {
             className="relative max-w-3xl w-full rounded-2xl overflow-hidden"
             style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.45)' }}
           >
-            <img
+            <Image
               src={src}
               alt={alt}
               className="w-full h-auto max-h-[80vh] object-contain"
               style={{ display: 'block', borderRadius: '0.75rem' }}
+              unoptimized
             />
             {/* Close button */}
             <button

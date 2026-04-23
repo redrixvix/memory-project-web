@@ -27,17 +27,17 @@ export const metadata: Metadata = {
   keywords: ["memory book", "family stories", "life story", "legacy book", "printed memory book", "family history", "keepsake book", "personal memoir"],
   authors: [{ name: "Memory Project" }],
   creator: "Memory Project",
-  metadataBase: new URL('https://memoryproject.com'),
+  metadataBase: new URL('https://web-redrixvixs-projects.vercel.app'),
   openGraph: {
     title: "Memory Project — Write Your Family's Story. Print It to Last.",
     description: "A keepsake your family will read for generations. Free to start, printed books from $99.",
-    url: "https://memoryproject.com",
+    url: "https://web-redrixvixs-projects.vercel.app",
     siteName: "Memory Project",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://memoryproject.com/og-image.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Memory Project — Write your family's story. Print it to last.",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Memory Project — Write Your Family's Story. Print It to Last.",
     description: "A keepsake your family will read for generations. Free to start, printed books from $99.",
-    images: ["https://memoryproject.com/og-image.png"],
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,

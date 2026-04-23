@@ -8,6 +8,7 @@ import { MobileNav } from '@/components/ui/mobile-nav';
 import SeoSchema from '@/components/seo-schema';
 import { motion } from 'framer-motion';
 
+
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
@@ -372,13 +373,9 @@ export default function Home() {
               { num: '38', label: 'countries shipped' },
               { num: '4.8★', label: 'on Trustpilot' },
             ].map((stat, i) => (
-              <motion.div
+              <div
                 key={i}
-                className="flex items-center gap-2.5"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="flex items-center gap-2.5 reveal"
               >
                 {i > 0 && <div className="hidden sm:block w-px h-4" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />}
                 <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
@@ -387,7 +384,7 @@ export default function Home() {
                 <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                   {stat.label}
                 </span>
-              </motion.div>
+              </div>
             ))}
           </div>
           {/* Trustpilot badge */}

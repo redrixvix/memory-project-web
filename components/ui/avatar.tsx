@@ -8,6 +8,8 @@ interface AvatarProps {
   className?: string;
 }
 
+import Image from 'next/image';
+
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) {
@@ -21,10 +23,11 @@ export function Avatar({ name, imageUrl, className }: AvatarProps) {
 
   if (imageUrl) {
     return (
-      <img
+      <Image
         src={imageUrl}
         alt={name}
         className={cn('rounded-full object-cover', className)}
+        unoptimized
       />
     );
   }

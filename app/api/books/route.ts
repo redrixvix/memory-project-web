@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     }));
 
     // Get contributors for all books in ONE query (avoids N+1 connection problem)
-    let contributors: Record<string, {id: number, name: string, profile_image_url: string}[]> = {};
+    const contributors: Record<string, {id: number, name: string, profile_image_url: string}[]> = {};
     try {
       if (bookIds.length > 0) {
         const rows = await sql`
