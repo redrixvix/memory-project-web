@@ -230,7 +230,6 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
                               width={160}
                               height={160}
                               unoptimized={true}
-                              priority={true}
                               className="w-40 h-40 object-cover rounded-xl"
                             />
                           </div>

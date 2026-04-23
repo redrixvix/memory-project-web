@@ -94,7 +94,7 @@ const webApplicationJsonLd = {
   aggregateRating: {
     '@type': 'AggregateRating',
     ratingValue: '4.8',
-    ratingCount: '1000+',
+    reviewCount: '50',
     bestRating: '5',
     worstRating: '1',
   },
