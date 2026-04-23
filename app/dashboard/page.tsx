@@ -40,13 +40,8 @@ const BOOK_COLORS = [
   'var(--tea-green)',
 ];
 
-function getGreeting(userName?: string) {
-  const hour = new Date().getHours();
-  let timeGreeting = 'Good morning';
-  if (hour >= 12 && hour < 17) timeGreeting = 'Good afternoon';
-  else if (hour >= 17) timeGreeting = 'Good evening';
-  const firstName = userName ? userName.split(' ')[0] : '';
-  return firstName ? `${timeGreeting}, ${firstName}` : timeGreeting;
+function getGreeting() {
+  return 'Welcome back';
 }
 
 function timeAgo(dateStr: string): string {
@@ -205,7 +200,7 @@ export default function Dashboard() {
                 <>
                   <Avatar name={user.name} imageUrl={user.profileImageUrl} className="w-10 h-10" />
                   <h1 className="display-md" style={{ color: 'var(--charcoal)' }}>
-                    {getGreeting(user.name)}
+                    Your Memory Books
                   </h1>
                 </>
               ) : (
