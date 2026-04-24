@@ -32,7 +32,7 @@ async function getUserFromSession(request: NextRequest) {
 
 async function checkBookAccess(userId: number, bookId: number) {
   const [book] = await sql`
-    SELECT b.id, b.owner_id, b.title, b.description, b.storage_tier, b.storage_used_bytes, b.created_at,
+    SELECT b.id, b.owner_id, b.title, b.description, b.storage_tier, b.plan, b.storage_used_bytes, b.created_at,
            u.name as owner_name
     FROM books b
     JOIN users u ON b.owner_id = u.id

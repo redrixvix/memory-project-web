@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     // Get books owned by user and books where user is a member (via book_members)
     const books = await sql`
-      SELECT DISTINCT b.id, b.title, b.description, b.storage_tier, b.storage_used_bytes, b.created_at, b.updated_at, b.owner_id,
+      SELECT DISTINCT b.id, b.title, b.description, b.storage_tier, b.plan, b.storage_used_bytes, b.created_at, b.updated_at, b.owner_id,
              u.name as owner_name,
              COALESCE(bm.role, 'owner') as role,
              (SELECT COUNT(*) FROM memories m WHERE m.book_id = b.id) as memory_count

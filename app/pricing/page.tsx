@@ -152,7 +152,7 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/signup" className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
+              <Link href="/upgrade" className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
                 Upgrade
               </Link>
             </CardContent>
@@ -179,7 +179,7 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/signup" className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80" style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}>
+              <Link href="/upgrade" className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80" style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}>
                 Upgrade
               </Link>
             </CardContent>

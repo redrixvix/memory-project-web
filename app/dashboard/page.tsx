@@ -17,6 +17,7 @@ interface Book {
   title: string;
   description: string | null;
   storage_tier: string;
+  plan: string;
   created_at: string;
   updated_at: string;
   role: string;
@@ -495,10 +496,21 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <CardContent className="p-7" style={{ paddingLeft: 24, paddingRight: 80 }}>
-                        {/* Title */}
-                        <h3 className="text-2xl font-medium mb-2 leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                          {book.title}
-                        </h3>
+                        {/* Title + plan badge */}
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="text-2xl font-medium leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                            {book.title}
+                          </h3>
+                          {book.plan === 'pro' ? (
+                            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full shrink-0" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
+                              Pro
+                            </span>
+                          ) : (
+                            <span className="text-xs font-medium px-2.5 py-0.5 rounded-full shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>
+                              Free
+                            </span>
+                          )}
+                        </div>
 
                         {/* Description */}
                         {book.description && (
