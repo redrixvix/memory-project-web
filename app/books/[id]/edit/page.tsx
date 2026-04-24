@@ -3,10 +3,12 @@
 import { useEffect, useState, useRef, useCallback, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { ImageUploader, AudioUploader } from '@/components/upload-button';
 
 const PROMPTS = [
   { category: "Family & Roots", prompts: [
@@ -61,6 +63,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const [showAllPrompts, setShowAllPrompts] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [saveState, setSaveState] = useState<SaveState>('idle');
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const draftKey = `draft-${id}-${memoryId ?? 'new'}`;
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -76,10 +80,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       const draft = localStorage.getItem(draftKey);
       if (draft) {
         try {
-          const { prompt: dp, customPrompt: dc, answer: da } = JSON.parse(draft);
+          const { prompt: dp, customPrompt: dc, answer: da, photoUrls: dp2, audioUrl: da2 } = JSON.parse(draft);
           if (dp) setPrompt(dp);
           if (da) { setAnswer(da); setWordCount(da.trim() ? da.trim().split(/\s+/).length : 0); }
           if (dc) { setCustomPrompt(dc); setUseCustomPrompt(true); }
+          if (dp2) setPhotoUrls(dp2);
+          if (da2) setAudioUrl(da2);
         } catch {}
       }
     }
@@ -115,12 +121,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     setSaveState('saving');
     saveTimerRef.current = setTimeout(() => {
       try {
-        localStorage.setItem(draftKey, JSON.stringify({ prompt, customPrompt, answer: val }));
+        localStorage.setItem(draftKey, JSON.stringify({ prompt, customPrompt, answer: val, photoUrls, audioUrl }));
       } catch {}
       setSaveState('saved');
       setTimeout(() => setSaveState('idle'), 2000);
     }, 800);
-  }, [prompt, customPrompt, draftKey]);
+  }, [prompt, customPrompt, draftKey, photoUrls, audioUrl]);
 
   const clearDraft = useCallback(() => {
     try { localStorage.removeItem(draftKey); } catch {}
@@ -134,6 +140,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         setPrompt(data.memory.prompt_question || '');
         setAnswer(data.memory.answer_text || '');
         setWordCount(data.memory.answer_text.trim() ? data.memory.answer_text.trim().split(/\s+/).length : 0);
+        setPhotoUrls(data.memory.photo_urls || []);
+        setAudioUrl(data.memory.audio_url || null);
         try { localStorage.removeItem(draftKey); } catch {}
       } else if (res.status === 404) {
         router.replace(`/books/${id}/edit`);
@@ -153,13 +161,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         await fetch(`/api/memories/${memoryId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt_question: prompt, answer_text: answer }),
+          body: JSON.stringify({ prompt_question: prompt, answer_text: answer, photo_urls: photoUrls, audio_url: audioUrl }),
         });
       } else {
         await fetch(`/api/books/${id}/memories`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt_question: prompt, answer_text: answer }),
+          body: JSON.stringify({ prompt_question: prompt, answer_text: answer, photo_urls: photoUrls, audio_url: audioUrl }),
         });
       }
       router.push(`/books/${id}`);
@@ -369,6 +377,70 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 resize: 'vertical',
               }}
             />
+          </div>
+
+          {/* Media uploaders */}
+          <div>
+            <Label className="mb-3 block label-caps" style={{ color: 'var(--bronze)' }}>
+              Photos &amp; Audio
+              <span className="font-normal opacity-60 ml-2" style={{ textTransform: 'none', letterSpacing: 0, fontSize: '0.8125rem' }}>(optional)</span>
+            </Label>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <ImageUploader
+                  onUploadComplete={(res) => setPhotoUrls(prev => [...prev, ...res.map(r => r.url)])}
+                />
+                <AudioUploader
+                  onUploadComplete={(res) => {
+                    if (res[0]) setAudioUrl(res[0].url);
+                  }}
+                />
+              </div>
+
+              {/* Image previews */}
+              {photoUrls.length > 0 && (
+                <div className="flex gap-3 flex-wrap">
+                  {photoUrls.map((url, i) => (
+                    <div key={i} className="relative group">
+                      <Image
+                        src={url}
+                        alt={`Upload ${i + 1}`}
+                        width={80}
+                        height={80}
+                        className="w-20 h-20 object-cover rounded-xl"
+                        style={{ border: '1px solid rgba(212,163,115,0.2)' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setPhotoUrls(prev => prev.filter((_, idx) => idx !== i))}
+                        className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+                        aria-label="Remove image"
+                      >
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Audio preview */}
+              {audioUrl && (
+                <div className="flex items-center gap-3">
+                  <audio src={audioUrl} controls className="h-9 w-full max-w-sm" />
+                  <button
+                    type="button"
+                    onClick={() => setAudioUrl(null)}
+                    className="text-xs flex items-center gap-1 transition-colors hover:opacity-70"
+                    style={{ color: '#9A9A8A' }}
+                    aria-label="Remove audio"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Privacy hint */}
