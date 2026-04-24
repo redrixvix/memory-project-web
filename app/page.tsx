@@ -710,7 +710,7 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-0">
             {[
               {
                 num: '1',
@@ -754,10 +754,16 @@ export default function Home() {
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
                     {step.num}
                   </div>
-                  {/* Mobile connector — dashed line below step number */}
+                  {/* Mobile vertical connector between steps */}
                   {i < 2 && (
-                    <div className="md:hidden flex-1 flex items-center" style={{ marginLeft: 4 }}>
-                      <div className="w-px h-8" style={{ background: 'linear-gradient(to bottom, rgba(212,163,115,0.5), rgba(212,163,115,0.15))' }} />
+                    <div className="sm:hidden flex flex-col items-center">
+                      <div className="w-0.5 h-8 rounded-full" style={{ background: 'linear-gradient(to bottom, rgba(212,163,115,0.4), rgba(212,163,115,0.1))' }} />
+                    </div>
+                  )}
+                  {/* Desktop horizontal connector between steps */}
+                  {i < 2 && (
+                    <div className="hidden sm:flex items-center justify-center flex-1" style={{ marginTop: -28 }}>
+                      <div className="w-full h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.3), rgba(212,163,115,0.08), rgba(212,163,115,0.3))' }} />
                     </div>
                   )}
                 </div>
