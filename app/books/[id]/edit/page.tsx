@@ -93,6 +93,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
   const draftKey = `draft-${id}-${memoryId ?? 'new'}`;
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const activePlan = normalizeBookPlan(book?.plan, book?.storage_tier);
+  const canUseMedia = activePlan !== 'free';
 
   useEffect(() => {
     // Auth check first — show loading until confirmed
@@ -483,11 +485,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             Your memory is private until you decide to share it.
           </div>
 
-          {/* Upgrade nudge */}
-          <div className="text-xs text-center py-3 rounded-xl px-4" style={{ color: '#6A6A5A', backgroundColor: 'rgba(212,163,115,0.06)' }}>
-            Want to add photos or voice recordings?{' '}
-            <Link href={`/upgrade?book=${id}`} className="font-medium underline" style={{ color: 'var(--bronze)' }}>Set this book to Premium or Plus</Link>.
-          </div>
+          {canUseMedia ? (
+            <div className="text-xs text-center py-3 rounded-xl px-4" style={{ color: '#6A6A5A', backgroundColor: 'rgba(204,213,174,0.18)' }}>
+              Photos and voice recordings are enabled for this book on the {getBookPlanLabel(activePlan)} plan.
+            </div>
+          ) : (
+            <div className="text-xs text-center py-3 rounded-xl px-4" style={{ color: '#6A6A5A', backgroundColor: 'rgba(212,163,115,0.06)' }}>
+              Want to add photos or voice recordings?{' '}
+              <Link href={`/upgrade?book=${id}`} className="font-medium underline" style={{ color: 'var(--bronze)' }}>Set this book to Premium or Plus</Link>.
+            </div>
+          )}
 
           {/* Action row */}
           <div className="flex gap-3 pt-2 pb-12">
