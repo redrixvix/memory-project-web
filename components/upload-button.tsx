@@ -282,9 +282,11 @@ export function DropZone({
 
 // Generate the button once — resolved client-side via window.location.origin
 let _UTButton: ReturnType<typeof import("@uploadthing/react").generateUploadButton> | null = null;
-async function getUTButton() {
+
+function getUTButton() {
   if (_UTButton) return _UTButton;
-  const { generateUploadButton } = await import("@uploadthing/react");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { generateUploadButton } = require("@uploadthing/react");
   _UTButton = generateUploadButton({
     url: typeof window !== "undefined" ? `${window.location.origin}/api/uploadthing` : "/api/uploadthing",
   });
@@ -301,7 +303,7 @@ export function ImageUploader({ onUploadComplete, className }: UploadButtonProps
   const [UTButton, setUTButton] = useState<React.ComponentType<any> | null>(null);
 
   useEffect(() => {
-    getUTButton().then(setUTButton);
+    setUTButton(getUTButton());
   }, []);
 
   if (!UTButton) {
@@ -362,7 +364,7 @@ export function AudioUploader({ onUploadComplete, className }: UploadButtonProps
   const [UTButton, setUTButton] = useState<React.ComponentType<any> | null>(null);
 
   useEffect(() => {
-    getUTButton().then(setUTButton);
+    setUTButton(getUTButton());
   }, []);
 
   if (!UTButton) {
