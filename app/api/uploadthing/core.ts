@@ -1,5 +1,4 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "@uploadthing/shared";
 
 const f = createUploadthing();
 

@@ -1,8 +1,20 @@
 "use client";
 
-import { UploadButton as UTButton } from "@uploadthing/react";
+import { generateUploadButton } from "@uploadthing/react";
 import { type OurFileRouter } from "@/app/api/uploadthing/core";
 import { cn } from "@/lib/utils";
+
+const UploadThingButton = generateUploadButton<OurFileRouter>({
+  url: "/api/uploadthing",
+});
+
+const uploadThingConfig = { cn } as const;
+
+function logUploadDebug(message: string, details?: unknown) {
+  if (process.env.NODE_ENV !== "production") {
+    console.log(`[UploadThing] ${message}`, details);
+  }
+}
 
 // ─── Image Uploader ──────────────────────────────────────────────────────────
 // Usage: <ImageUploader onUploadComplete={(res) => console.log(res.map(r => r.url))} />
@@ -16,20 +28,29 @@ export function ImageUploader({
   className?: string;
 }) {
   return (
-    <UTButton<OurFileRouter, "imageUploader">
+    <UploadThingButton
       endpoint="imageUploader"
-      onClientUploadComplete={(res) =>
-        onUploadComplete?.(res.map((f) => ({ url: f.url, fileName: f.name })))
-      }
-      onUploadError={(error) => console.error("[UploadThing]", error)}
-      className={cn(
-        "inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg",
-        "bg-primary text-primary-foreground px-3 py-2 h-8 text-sm font-medium",
-        "border border-transparent transition-all outline-none",
-        "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
-        "disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/80",
-        className
-      )}
+      config={uploadThingConfig}
+      onUploadBegin={(fileName) => logUploadDebug("upload started", { endpoint: "imageUploader", fileName })}
+      onClientUploadComplete={(res) => {
+        logUploadDebug("upload completed", { endpoint: "imageUploader", files: res });
+        onUploadComplete?.(res.map((f) => ({ url: f.url, fileName: f.name })));
+      }}
+      onUploadError={(error) => {
+        console.error("[UploadThing] image upload failed", error);
+      }}
+      appearance={{
+        container: cn("inline-flex shrink-0 flex-col items-start gap-1", className),
+        button: cn(
+          "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg px-3 py-2",
+          "bg-primary text-primary-foreground text-sm font-medium",
+          "border border-transparent transition-all outline-none",
+          "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+          "disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/80",
+          "w-auto min-w-0"
+        ),
+        allowedContent: "ml-1 text-xs opacity-70",
+      }}
       content={{
         button: () => (
           <span className="flex items-center gap-1.5">
@@ -70,20 +91,29 @@ export function AudioUploader({
   className?: string;
 }) {
   return (
-    <UTButton<OurFileRouter, "audioUploader">
+    <UploadThingButton
       endpoint="audioUploader"
-      onClientUploadComplete={(res) =>
-        onUploadComplete?.(res.map((f) => ({ url: f.url, fileName: f.name })))
-      }
-      onUploadError={(error) => console.error("[UploadThing]", error)}
-      className={cn(
-        "inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg",
-        "bg-secondary text-secondary-foreground px-3 py-2 h-8 text-sm font-medium",
-        "border border-transparent transition-all outline-none",
-        "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
-        "disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80",
-        className
-      )}
+      config={uploadThingConfig}
+      onUploadBegin={(fileName) => logUploadDebug("upload started", { endpoint: "audioUploader", fileName })}
+      onClientUploadComplete={(res) => {
+        logUploadDebug("upload completed", { endpoint: "audioUploader", files: res });
+        onUploadComplete?.(res.map((f) => ({ url: f.url, fileName: f.name })));
+      }}
+      onUploadError={(error) => {
+        console.error("[UploadThing] audio upload failed", error);
+      }}
+      appearance={{
+        container: cn("inline-flex shrink-0 flex-col items-start gap-1", className),
+        button: cn(
+          "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg px-3 py-2",
+          "bg-secondary text-secondary-foreground text-sm font-medium",
+          "border border-transparent transition-all outline-none",
+          "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+          "disabled:pointer-events-none disabled:opacity-50 hover:bg-secondary/80",
+          "w-auto min-w-0"
+        ),
+        allowedContent: "ml-1 text-xs opacity-70",
+      }}
       content={{
         button: () => (
           <span className="flex items-center gap-1.5">
