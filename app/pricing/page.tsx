@@ -48,6 +48,14 @@ export const metadata: Metadata = {
     description: "Start free. Pay only for printing. Unlimited text memories forever, upgrade for photo storage and printed hardcover books from $99.",
     url: "https://web-redrixvixs-projects.vercel.app/pricing",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Memory Project pricing — free to start, printed books from $99",
+      },
+    ],
   },
 };
 

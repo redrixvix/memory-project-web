@@ -5,6 +5,20 @@ import BreadcrumbSchema from '@/components/breadcrumb-schema';
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'How Memory Project collects, uses, and protects your personal information. Your memories and data are yours — we never sell or share them.',
+  openGraph: {
+    title: 'Privacy Policy — Memory Project',
+    description: 'How Memory Project collects, uses, and protects your personal information. Your memories and data are yours — we never sell or share them.',
+    url: 'https://web-redrixvixs-projects.vercel.app/privacy',
+    type: 'website',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Memory Project privacy policy',
+      },
+    ],
+  },
 };
 
 export default function PrivacyPage() {

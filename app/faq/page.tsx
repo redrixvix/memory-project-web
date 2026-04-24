@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     description: "Answers to common questions about Memory Project — how it works, pricing, printing, family collaboration, and getting started.",
     url: "https://web-redrixvixs-projects.vercel.app/faq",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Memory Project — frequently asked questions",
+      },
+    ],
   },
 };
 

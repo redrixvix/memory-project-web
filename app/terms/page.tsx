@@ -5,6 +5,20 @@ import BreadcrumbSchema from '@/components/breadcrumb-schema';
 export const metadata: Metadata = {
   title: 'Terms of Service',
   description: 'The terms and conditions for using Memory Project. By using our service, you agree to these terms.',
+  openGraph: {
+    title: 'Terms of Service — Memory Project',
+    description: 'The terms and conditions for using Memory Project. By using our service, you agree to these terms.',
+    url: 'https://web-redrixvixs-projects.vercel.app/terms',
+    type: 'website',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Memory Project terms of service',
+      },
+    ],
+  },
 };
 
 export default function TermsPage() {
