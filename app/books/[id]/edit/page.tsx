@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { ImageUploader, AudioUploader } from '@/components/upload-button';
+import { ImageGallery, DropZone } from '@/components/image-gallery';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 
 const PROMPTS = [
@@ -409,68 +410,151 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             />
           </div>
 
-          {/* Media uploaders */}
+          {/* ── Photos & Audio Section ── */}
           <div>
-            <Label className="mb-3 block label-caps" style={{ color: 'var(--bronze)' }}>
+            <Label className="mb-4 block label-caps" style={{ color: 'var(--bronze)' }}>
               Photos &amp; Audio
               <span className="font-normal opacity-60 ml-2" style={{ textTransform: 'none', letterSpacing: 0, fontSize: '0.8125rem' }}>(optional)</span>
             </Label>
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <ImageUploader
-                  onUploadComplete={(res) => setPhotoUrls(prev => [...prev, ...res.map(r => r.url)])}
-                />
-                <AudioUploader
-                  onUploadComplete={(res) => {
-                    if (res[0]) setAudioUrl(res[0].url);
-                  }}
-                />
-              </div>
 
-              {/* Image previews */}
-              {photoUrls.length > 0 && (
-                <div className="flex gap-3 flex-wrap">
-                  {photoUrls.map((url, i) => (
-                    <div key={i} className="relative group">
-                      <Image
-                        src={url}
-                        alt={`Upload ${i + 1}`}
-                        width={80}
-                        height={80}
-                        className="w-20 h-20 object-cover rounded-xl"
-                        style={{ border: '1px solid rgba(212,163,115,0.2)' }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setPhotoUrls(prev => prev.filter((_, idx) => idx !== i))}
-                        className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                        style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
-                        aria-label="Remove image"
-                      >
-                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                      </button>
-                    </div>
-                  ))}
+            {canUseMedia ? (
+              <div className="flex flex-col gap-5">
+                {/* Upload buttons row */}
+                <div className="flex items-center gap-3 flex-wrap">
+                  <ImageUploader
+                    onUploadComplete={(res) => setPhotoUrls(prev => [...prev, ...res.map(r => r.url)])}
+                  />
+                  <AudioUploader
+                    onUploadComplete={(res) => {
+                      if (res[0]) setAudioUrl(res[0].url);
+                    }}
+                  />
                 </div>
-              )}
 
-              {/* Audio preview */}
-              {audioUrl && (
-                <div className="flex items-center gap-3">
-                  <audio src={audioUrl} controls className="h-9 w-full max-w-sm" />
-                  <button
-                    type="button"
-                    onClick={() => setAudioUrl(null)}
-                    className="text-xs flex items-center gap-1 transition-colors hover:opacity-70"
-                    style={{ color: '#9A9A8A' }}
-                    aria-label="Remove audio"
+                {/* Drop zone hint */}
+                {photoUrls.length === 0 && (
+                  <DropZone
+                    onFilesSelected={(files) => {
+                      // Create object URLs for preview (actual upload happens via ImageUploader)
+                    }}
+                    disabled
+                    className="mb-2"
+                  />
+                )}
+
+                {/* Image Gallery */}
+                {photoUrls.length > 0 && (
+                  <div
+                    className="rounded-2xl p-5 animate-fade-up"
+                    style={{
+                      backgroundColor: 'rgba(250,237,205,0.3)',
+                      border: '1px solid rgba(212,163,115,0.15)',
+                    }}
                   >
-                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                    Remove
-                  </button>
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="text-xs font-medium" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                        {photoUrls.length} {photoUrls.length === 1 ? 'photo' : 'photos'} added
+                      </p>
+                      <p className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>
+                        Click photo to remove
+                      </p>
+                    </div>
+                    <ImageGallery
+                      urls={photoUrls}
+                      onRemove={(i) => setPhotoUrls(prev => prev.filter((_, idx) => idx !== i))}
+                    />
+                  </div>
+                )}
+
+                {/* Audio preview */}
+                {audioUrl && (
+                  <div
+                    className="flex items-center gap-4 rounded-2xl p-4 animate-fade-up"
+                    style={{
+                      backgroundColor: 'rgba(204,213,174,0.2)',
+                      border: '1px solid rgba(212,163,115,0.15)',
+                    }}
+                  >
+                    {/* Audio icon */}
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                      style={{ backgroundColor: 'rgba(204,213,174,0.4)' }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        style={{ color: 'var(--charcoal)' }}
+                      >
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                        <line x1="12" x2="12" y1="19" y2="22" />
+                      </svg>
+                    </div>
+                    <audio src={audioUrl} controls className="flex-1 h-9" />
+                    <button
+                      type="button"
+                      onClick={() => setAudioUrl(null)}
+                      className="flex items-center gap-1.5 text-xs transition-colors hover:opacity-70 shrink-0"
+                      style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}
+                      aria-label="Remove audio"
+                    >
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* Upgrade nudge for free plan */
+              <div
+                className="rounded-2xl p-6 text-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(212,163,115,0.08) 0%, rgba(204,213,174,0.1) 100%)',
+                  border: '1px solid rgba(212,163,115,0.2)',
+                }}
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full mb-4" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{ color: 'var(--bronze)' }}
+                  >
+                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                    <circle cx="9" cy="9" r="2" />
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                  </svg>
                 </div>
-              )}
-            </div>
+                <p className="text-sm font-medium mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                  Add photos &amp; voice recordings
+                </p>
+                <p className="text-xs mb-4" style={{ color: '#6A6A5A' }}>
+                  Upgrade to Plus or Premium to preserve photos and audio with each memory
+                </p>
+                <Link
+                  href={`/upgrade?book=${id}`}
+                  className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200 hover:opacity-90"
+                  style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                >
+                  Upgrade this book
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Privacy hint */}
@@ -484,17 +568,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             </svg>
             Your memory is private until you decide to share it.
           </div>
-
-          {canUseMedia ? (
-            <div className="text-xs text-center py-3 rounded-xl px-4" style={{ color: '#6A6A5A', backgroundColor: 'rgba(204,213,174,0.18)' }}>
-              Photos and voice recordings are enabled for this book on the {getBookPlanLabel(activePlan)} plan.
-            </div>
-          ) : (
-            <div className="text-xs text-center py-3 rounded-xl px-4" style={{ color: '#6A6A5A', backgroundColor: 'rgba(212,163,115,0.06)' }}>
-              Want to add photos or voice recordings?{' '}
-              <Link href={`/upgrade?book=${id}`} className="font-medium underline" style={{ color: 'var(--bronze)' }}>Set this book to Premium or Plus</Link>.
-            </div>
-          )}
 
           {/* Action row */}
           <div className="flex gap-3 pt-2 pb-12">

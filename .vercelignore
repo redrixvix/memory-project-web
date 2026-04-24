@@ -1,0 +1,9 @@
+# Vercel deploy exclusions
+node_modules
+.next
+.next/**
+.env.local
+.env.production.local
+.git
+*.log
+.vercelignore
