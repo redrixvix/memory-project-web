@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sql from '@/lib/db';
+import sql, { ensureDatabaseReady } from '@/lib/db';
 import crypto from 'crypto';
 
 function hashSessionId(sessionId: string): string {
@@ -32,6 +32,7 @@ async function getUserFromSession(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    await ensureDatabaseReady();
     const user = await getUserFromSession(request);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -105,6 +106,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    await ensureDatabaseReady();
     const user = await getUserFromSession(request);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

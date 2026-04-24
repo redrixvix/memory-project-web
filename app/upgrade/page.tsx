@@ -3,14 +3,15 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 interface Book {
   id: number;
   title: string;
   plan: string;
+  role: string;
 }
+
+type PlanId = 'free' | 'pro';
 
 const PLANS = [
   {
@@ -34,33 +35,92 @@ const PLANS = [
 export default function UpgradePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const bookIdParam = searchParams.get('book');
+  const requestedBookId = searchParams.get('book')?.trim() ?? '';
 
   const [books, setBooks] = useState<Book[]>([]);
-  const [selectedBookId, setSelectedBookId] = useState<string>(bookIdParam || '');
-  const [selectedPlan, setSelectedPlan] = useState<string>('pro');
+  const [selectedBookId, setSelectedBookId] = useState<string>(requestedBookId);
+  const [selectedPlan, setSelectedPlan] = useState<PlanId>('pro');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/books')
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (data?.books) {
-          setBooks(data.books);
-          if (!selectedBookId && data.books.length > 0) {
-            setSelectedBookId(String(data.books[0].id));
-          }
+    let cancelled = false;
+
+    async function loadBooks() {
+      try {
+        const response = await fetch('/api/books');
+        if (response.status === 401) {
+          router.push('/login');
+          return;
         }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+
+        if (!response.ok) {
+          throw new Error('Failed to load books');
+        }
+
+        const data = await response.json();
+        const nextBooks = Array.isArray(data?.books) ? data.books : [];
+        const ownerBooks = nextBooks.filter((book: Book) => book.role === 'owner');
+
+        if (cancelled) {
+          return;
+        }
+
+        setBooks(ownerBooks);
+        setSelectedBookId((current) => {
+          if (requestedBookId && ownerBooks.some((book: Book) => String(book.id) === requestedBookId)) {
+            return requestedBookId;
+          }
+
+          if (current && ownerBooks.some((book: Book) => String(book.id) === current)) {
+            return current;
+          }
+
+          return ownerBooks[0] ? String(ownerBooks[0].id) : '';
+        });
+
+        if (requestedBookId && !ownerBooks.some((book: Book) => String(book.id) === requestedBookId)) {
+          setError('That book is unavailable or you do not own it.');
+        } else if (ownerBooks.length === 0) {
+          setError('You need to create a book before you can manage a plan.');
+        } else {
+          setError(null);
+        }
+      } catch {
+        if (!cancelled) {
+          setError('Failed to load your books. Please try again.');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadBooks();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [requestedBookId, router]);
+
+  const selectedBook = books.find((book) => String(book.id) === selectedBookId) ?? null;
+
+  useEffect(() => {
+    if (selectedBook) {
+      setSelectedPlan(selectedBook.plan === 'pro' ? 'pro' : 'free');
+    }
+  }, [selectedBook]);
 
   const handleSubmit = async () => {
-    if (!selectedBookId) {
+    if (!selectedBook) {
       setError('Please select a book to upgrade.');
+      return;
+    }
+
+    if (selectedBook.plan === selectedPlan) {
+      setError(`"${selectedBook.title}" is already on the ${selectedPlan === 'pro' ? 'Pro' : 'Free'} plan.`);
       return;
     }
 
@@ -75,8 +135,14 @@ export default function UpgradePage() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || 'Failed to update plan.');
+        let message = 'Failed to update plan.';
+        try {
+          const data = await res.json();
+          if (data?.error) {
+            message = data.error;
+          }
+        } catch {}
+        setError(message);
         return;
       }
 
@@ -129,6 +195,21 @@ export default function UpgradePage() {
           </p>
         </div>
 
+        {books.length === 0 && (
+          <div className="rounded-2xl p-8 text-center mb-8" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)' }}>
+            <p className="text-base mb-4" style={{ color: 'var(--charcoal)' }}>
+              You do not have any books you can manage yet.
+            </p>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center rounded-full h-11 px-6 text-sm font-medium transition-opacity hover:opacity-80"
+              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+            >
+              Go to Dashboard
+            </Link>
+          </div>
+        )}
+
         {/* Book selector */}
         {books.length > 1 && (
           <div className="mb-8">
@@ -150,7 +231,7 @@ export default function UpgradePage() {
           </div>
         )}
 
-        {books.length === 1 && !bookIdParam && (
+        {books.length === 1 && !requestedBookId && (
           <div className="mb-8">
             <p className="text-sm mb-2" style={{ color: '#6A6A5A' }}>
               Upgrading:
@@ -229,7 +310,7 @@ export default function UpgradePage() {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={submitting}
+            disabled={submitting || !selectedBook || selectedBook.plan === selectedPlan}
             className="rounded-full h-12 px-10 text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
           >
@@ -238,6 +319,8 @@ export default function UpgradePage() {
                 <div className="w-4 h-4 rounded-full animate-spin" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
                 Saving...
               </span>
+            ) : selectedBook && selectedBook.plan === selectedPlan ? (
+              `${selectedPlan === 'pro' ? 'Pro' : 'Free'} Plan Active`
             ) : `Confirm ${selectedPlan === 'pro' ? 'Pro' : 'Free'} Plan`}
           </button>
           <Link

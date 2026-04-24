@@ -59,7 +59,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PricingPage() {
+type PricingPageProps = {
+  searchParams: Promise<{ book?: string | string[] | undefined }>;
+};
+
+export default async function PricingPage({ searchParams }: PricingPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const bookParam = Array.isArray(resolvedSearchParams.book)
+    ? resolvedSearchParams.book[0]
+    : resolvedSearchParams.book;
+  const upgradeHref = bookParam ? `/upgrade?book=${encodeURIComponent(bookParam)}` : '/upgrade';
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
       {/* Minimal header */}
@@ -152,7 +162,7 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/upgrade" className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
+              <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
                 Upgrade
               </Link>
             </CardContent>
@@ -179,7 +189,7 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/upgrade" className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80" style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}>
+              <Link href={upgradeHref} className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80" style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}>
                 Upgrade
               </Link>
             </CardContent>
