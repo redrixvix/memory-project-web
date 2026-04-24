@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import sql, { ensureDatabaseReady } from '@/lib/db';
+import { normalizeBookPlan, parseBookPlanInput, planToStorageTier } from '@/lib/book-plan';
 
 type BookAccess = {
   id: number;
@@ -9,8 +10,6 @@ type BookAccess = {
   storage_tier: string | null;
   is_owner: boolean;
 };
-
-type PlanValue = 'free' | 'pro';
 
 function hashSessionId(sessionId: string): string {
   return crypto.createHash('sha256').update(sessionId).digest('hex');
@@ -23,14 +22,6 @@ function parseBookId(value: string): number | null {
 
   const id = Number(value);
   return Number.isSafeInteger(id) && id > 0 ? id : null;
-}
-
-function planToStorageTier(plan: PlanValue, currentStorageTier: string | null): string {
-  if (plan === 'free') {
-    return 'free';
-  }
-
-  return currentStorageTier && currentStorageTier !== 'free' ? currentStorageTier : '5gb';
 }
 
 async function getUserFromSession(request: NextRequest) {
@@ -119,7 +110,7 @@ export async function GET(
     }
 
     return NextResponse.json({
-      plan: book.plan ?? 'free',
+      plan: normalizeBookPlan(book.plan, book.storage_tier),
       can_manage_plan: book.is_owner,
     });
   } catch (error) {
@@ -159,23 +150,23 @@ export async function POST(
     }
 
     const body = await request.json().catch(() => null);
-    const plan = body && typeof body.plan === 'string' ? body.plan : null;
-    if (plan !== 'free' && plan !== 'pro') {
-      return NextResponse.json({ error: 'Plan must be free or pro' }, { status: 400 });
+    const plan = parseBookPlanInput(body?.plan);
+    if (!plan) {
+      return NextResponse.json({ error: 'Plan must be free, premium, or plus' }, { status: 400 });
     }
 
     const [updated] = await sql`
       UPDATE books
       SET
         plan = ${plan},
-        storage_tier = ${planToStorageTier(plan, book.storage_tier)},
+        storage_tier = ${planToStorageTier(plan)},
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ${book.id}
       RETURNING id, plan, storage_tier
     `;
 
     return NextResponse.json({
-      plan: updated.plan,
+      plan: normalizeBookPlan(updated.plan, updated.storage_tier),
       storage_tier: updated.storage_tier,
     });
   } catch (error) {

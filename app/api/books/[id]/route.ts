@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql, { ensureDatabaseReady } from '@/lib/db';
 import crypto from 'crypto';
+import { normalizeBookPlan } from '@/lib/book-plan';
 
 function hashSessionId(sessionId: string): string {
   return crypto.createHash('sha256').update(sessionId).digest('hex');
@@ -105,7 +106,14 @@ export async function GET(
       ORDER BY m.created_at DESC
     `;
 
-    return NextResponse.json({ book, memories, membership });
+    return NextResponse.json({
+      book: {
+        ...book,
+        plan: normalizeBookPlan(book.plan, book.storage_tier),
+      },
+      memories,
+      membership,
+    });
   } catch (error) {
     console.error('Get book error:', error);
     return NextResponse.json(
@@ -145,10 +153,15 @@ export async function PUT(
           description = COALESCE(${description}, description),
           updated_at = CURRENT_TIMESTAMP
       WHERE id = ${book.id}
-      RETURNING id, title, description, storage_tier, storage_used_bytes, created_at
+      RETURNING id, title, description, storage_tier, plan, storage_used_bytes, created_at
     `;
 
-    return NextResponse.json({ book: updatedBook });
+    return NextResponse.json({
+      book: {
+        ...updatedBook,
+        plan: normalizeBookPlan(updatedBook.plan, updatedBook.storage_tier),
+      },
+    });
   } catch (error) {
     console.error('Update book error:', error);
     return NextResponse.json(

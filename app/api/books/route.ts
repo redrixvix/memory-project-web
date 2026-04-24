@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql, { ensureDatabaseReady } from '@/lib/db';
 import crypto from 'crypto';
+import { normalizeBookPlan, parseBookPlanInput, planToStorageTier } from '@/lib/book-plan';
 
 function hashSessionId(sessionId: string): string {
   return crypto.createHash('sha256').update(sessionId).digest('hex');
@@ -56,6 +57,7 @@ export async function GET(request: NextRequest) {
 
     const booksWithCount = books.map((b: Record<string, unknown>) => ({
       ...b,
+      plan: normalizeBookPlan(b.plan, b.storage_tier),
       _count: { memories: Number(b.memory_count) },
       updated_at: b.updated_at ?? b.created_at,
     }));
@@ -112,7 +114,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, description } = await request.json();
+    const body = await request.json();
+    const title = typeof body?.title === 'string' ? body.title.trim() : '';
+    const description = typeof body?.description === 'string' ? body.description.trim() : '';
+    const selectedPlan =
+      parseBookPlanInput(body?.plan) ??
+      parseBookPlanInput(body?.subscriptionType) ??
+      'free';
 
     if (!title) {
       return NextResponse.json(
@@ -122,9 +130,9 @@ export async function POST(request: NextRequest) {
     }
 
     const [book] = await sql`
-      INSERT INTO books (owner_id, title, description, storage_tier)
-      VALUES (${user.id}, ${title}, ${description || null}, 'free')
-      RETURNING id, title, description, storage_tier, storage_used_bytes, created_at
+      INSERT INTO books (owner_id, title, description, storage_tier, plan)
+      VALUES (${user.id}, ${title}, ${description || null}, ${planToStorageTier(selectedPlan)}, ${selectedPlan})
+      RETURNING id, title, description, storage_tier, plan, storage_used_bytes, created_at
     `;
 
     // Add owner as a member (book_members table, not book_collaborators)
@@ -133,7 +141,12 @@ export async function POST(request: NextRequest) {
       VALUES (${book.id}, ${user.id}, 'owner', CURRENT_TIMESTAMP)
     `;
 
-    return NextResponse.json({ book }, { status: 201 });
+    return NextResponse.json({
+      book: {
+        ...book,
+        plan: normalizeBookPlan(book.plan, book.storage_tier),
+      },
+    }, { status: 201 });
   } catch (error) {
     console.error('Create book error:', error);
     return NextResponse.json(

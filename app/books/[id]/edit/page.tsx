@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { ImageUploader, AudioUploader } from '@/components/upload-button';
+import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 
 const PROMPTS = [
   { category: "Family & Roots", prompts: [
@@ -44,6 +45,29 @@ interface Book {
   storage_tier: string;
   plan: string;
   owner_name: string;
+}
+
+function getPlanBadgeStyles(plan: string) {
+  const normalizedPlan = normalizeBookPlan(plan);
+
+  if (normalizedPlan === 'plus') {
+    return {
+      backgroundColor: 'var(--charcoal)',
+      color: 'var(--cornsilk)',
+    };
+  }
+
+  if (normalizedPlan === 'premium') {
+    return {
+      backgroundColor: 'var(--bronze)',
+      color: 'var(--charcoal)',
+    };
+  }
+
+  return {
+    backgroundColor: 'rgba(212,163,115,0.12)',
+    color: '#6A6A5A',
+  };
 }
 
 export default function EditMemory({ params }: { params: Promise<{ id: string }> }) {
@@ -207,15 +231,9 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 <h1 className="text-base md:text-lg font-medium truncate" style={{ color: 'var(--charcoal)' }}>
                   {book.title}
                 </h1>
-                {book.plan === 'pro' ? (
-                  <span className="ml-2 shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
-                    Pro
-                  </span>
-                ) : (
-                  <span className="ml-2 shrink-0 text-xs font-medium px-2.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>
-                    Free
-                  </span>
-                )}
+                <span className="ml-2 shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full" style={getPlanBadgeStyles(book.plan)}>
+                  {getBookPlanLabel(book.plan, book.storage_tier)}
+                </span>
               </>
             )}
           </div>
@@ -468,7 +486,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           {/* Upgrade nudge */}
           <div className="text-xs text-center py-3 rounded-xl px-4" style={{ color: '#6A6A5A', backgroundColor: 'rgba(212,163,115,0.06)' }}>
             Want to add photos or voice recordings?{' '}
-            <Link href={`/upgrade?book=${id}`} className="font-medium underline" style={{ color: 'var(--bronze)' }}>Upgrade this book</Link>.
+            <Link href={`/upgrade?book=${id}`} className="font-medium underline" style={{ color: 'var(--bronze)' }}>Set this book to Premium or Plus</Link>.
           </div>
 
           {/* Action row */}

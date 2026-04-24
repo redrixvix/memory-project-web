@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 
 interface Book {
   id: number;
@@ -11,27 +12,6 @@ interface Book {
   role: string;
 }
 
-type PlanId = 'free' | 'pro';
-
-const PLANS = [
-  {
-    id: 'free',
-    label: 'Free',
-    price: '$0',
-    description: 'Unlimited text memories, forever free',
-    features: ['Unlimited text memories', 'Guided writing prompts', 'One memory book'],
-    notFeatures: ['Photos & audio', 'Printed books'],
-  },
-  {
-    id: 'pro',
-    label: 'Pro',
-    price: '$50',
-    description: 'for 5 years — includes 5GB photo & audio storage',
-    features: ['Everything in Free', '5GB photo & audio storage', 'Printed books from $99', 'Family collaboration'],
-    notFeatures: [],
-  },
-];
-
 export default function UpgradePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -39,10 +19,18 @@ export default function UpgradePage() {
 
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBookId, setSelectedBookId] = useState<string>(requestedBookId);
-  const [selectedPlan, setSelectedPlan] = useState<PlanId>('pro');
+  const [selectedPlan, setSelectedPlan] = useState<BookPlan>('premium');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const updateSelectedBook = (nextBookId: string, availableBooks: Book[]) => {
+    setSelectedBookId(nextBookId);
+    const nextBook = availableBooks.find((book) => String(book.id) === nextBookId);
+    if (nextBook) {
+      setSelectedPlan(normalizeBookPlan(nextBook.plan));
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -68,17 +56,15 @@ export default function UpgradePage() {
         }
 
         setBooks(ownerBooks);
-        setSelectedBookId((current) => {
-          if (requestedBookId && ownerBooks.some((book: Book) => String(book.id) === requestedBookId)) {
-            return requestedBookId;
-          }
-
-          if (current && ownerBooks.some((book: Book) => String(book.id) === current)) {
-            return current;
-          }
-
-          return ownerBooks[0] ? String(ownerBooks[0].id) : '';
-        });
+        const nextSelectedBookId =
+          requestedBookId && ownerBooks.some((book: Book) => String(book.id) === requestedBookId)
+            ? requestedBookId
+            : selectedBookId && ownerBooks.some((book: Book) => String(book.id) === selectedBookId)
+              ? selectedBookId
+              : ownerBooks[0]
+                ? String(ownerBooks[0].id)
+                : '';
+        updateSelectedBook(nextSelectedBookId, ownerBooks);
 
         if (requestedBookId && !ownerBooks.some((book: Book) => String(book.id) === requestedBookId)) {
           setError('That book is unavailable or you do not own it.');
@@ -107,12 +93,6 @@ export default function UpgradePage() {
 
   const selectedBook = books.find((book) => String(book.id) === selectedBookId) ?? null;
 
-  useEffect(() => {
-    if (selectedBook) {
-      setSelectedPlan(selectedBook.plan === 'pro' ? 'pro' : 'free');
-    }
-  }, [selectedBook]);
-
   const handleSubmit = async () => {
     if (!selectedBook) {
       setError('Please select a book to upgrade.');
@@ -120,7 +100,7 @@ export default function UpgradePage() {
     }
 
     if (selectedBook.plan === selectedPlan) {
-      setError(`"${selectedBook.title}" is already on the ${selectedPlan === 'pro' ? 'Pro' : 'Free'} plan.`);
+      setError(`"${selectedBook.title}" is already on the ${getBookPlanLabel(selectedPlan)} plan.`);
       return;
     }
 
@@ -218,13 +198,13 @@ export default function UpgradePage() {
             </label>
             <select
               value={selectedBookId}
-              onChange={e => setSelectedBookId(e.target.value)}
+              onChange={(e) => updateSelectedBook(e.target.value, books)}
               className="w-full rounded-xl px-4 py-3 text-base"
               style={{ border: '1px solid rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)', color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
             >
               {books.map(b => (
                 <option key={b.id} value={b.id}>
-                  {b.title} {b.plan === 'pro' ? '(Pro)' : '(Free)'}
+                  {b.title} ({getBookPlanLabel(b.plan)})
                 </option>
               ))}
             </select>
@@ -243,8 +223,8 @@ export default function UpgradePage() {
         )}
 
         {/* Plan radio cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {PLANS.map(plan => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {BOOK_PLAN_OPTIONS.map(plan => (
             <button
               key={plan.id}
               type="button"
@@ -261,7 +241,7 @@ export default function UpgradePage() {
                 <div>
                   <p className="label-caps mb-1" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
                   <p className="text-3xl font-medium" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
-                  {plan.id === 'pro' && <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>{plan.description}</p>}
+                  <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>{plan.description}</p>
                 </div>
                 <div
                   className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-1"
@@ -320,8 +300,8 @@ export default function UpgradePage() {
                 Saving...
               </span>
             ) : selectedBook && selectedBook.plan === selectedPlan ? (
-              `${selectedPlan === 'pro' ? 'Pro' : 'Free'} Plan Active`
-            ) : `Confirm ${selectedPlan === 'pro' ? 'Pro' : 'Free'} Plan`}
+              `${getBookPlanLabel(selectedPlan)} Plan Active`
+            ) : `Confirm ${getBookPlanLabel(selectedPlan)} Plan`}
           </button>
           <Link
             href="/dashboard"

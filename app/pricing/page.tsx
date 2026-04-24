@@ -135,7 +135,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </CardContent>
           </Card>
 
-          {/* 5GB — featured */}
+          {/* Premium — featured */}
           <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 12px 48px rgba(212,163,115,0.22)' }}>
             <div className="absolute -top-5 left-1/2 -translate-x-1/2">
               <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
@@ -143,7 +143,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
               </Badge>
             </div>
             <CardContent className="pt-10">
-              <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>5GB Storage</p>
+              <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Premium</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$50</p>
               <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>
               <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 32 }} />
@@ -168,16 +168,16 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </CardContent>
           </Card>
 
-          {/* 15GB */}
+          {/* Plus */}
           <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
             <CardContent className="pt-0">
-              <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>15GB Storage</p>
+              <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Plus</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$100</p>
               <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>
               <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 32 }} />
               <ul className="space-y-3 mb-10">
                 {[
-                  'Everything in 5GB',
+                  'Everything in Premium',
                   '15GB photo & audio storage',
                   'Priority support',
                 ].map((feat, j) => (

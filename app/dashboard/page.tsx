@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 
 interface Book {
   id: number;
@@ -56,6 +57,29 @@ function timeAgo(dateStr: string): string {
   return `${Math.floor(days / 365)} years ago`;
 }
 
+function getPlanBadgeStyles(plan: string) {
+  const normalizedPlan = normalizeBookPlan(plan);
+
+  if (normalizedPlan === 'plus') {
+    return {
+      backgroundColor: 'var(--charcoal)',
+      color: 'var(--cornsilk)',
+    };
+  }
+
+  if (normalizedPlan === 'premium') {
+    return {
+      backgroundColor: 'var(--bronze)',
+      color: 'var(--charcoal)',
+    };
+  }
+
+  return {
+    backgroundColor: 'rgba(212,163,115,0.12)',
+    color: '#6A6A5A',
+  };
+}
+
 export default function Dashboard() {
   const router = useRouter();
   const [books, setBooks] = useState<Book[]>([]);
@@ -65,6 +89,7 @@ export default function Dashboard() {
   const [showCreate, setShowCreate] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDesc, setNewDesc] = useState('');
+  const [newPlan, setNewPlan] = useState<BookPlan>('free');
   const [creating, setCreating] = useState(false);
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
 
@@ -116,11 +141,12 @@ export default function Dashboard() {
       const res = await fetch('/api/books', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: newTitle, description: newDesc }),
+        body: JSON.stringify({ title: newTitle, description: newDesc, plan: newPlan }),
       });
       if (res.ok) {
         const data = await res.json();
         setNewTitle(''); setNewDesc('');
+        setNewPlan('free');
         setShowCreate(false);
         router.push(`/books/${data.book.id}`);
       }
@@ -303,6 +329,35 @@ export default function Dashboard() {
                       style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
                     />
                   </div>
+                  <div className="space-y-3">
+                    <Label className="text-sm" style={{ color: 'var(--charcoal)' }}>
+                      Subscription tier
+                    </Label>
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {BOOK_PLAN_OPTIONS.map((plan) => (
+                        <button
+                          key={plan.id}
+                          type="button"
+                          onClick={() => setNewPlan(plan.id)}
+                          className="rounded-2xl border px-4 py-4 text-left transition-all duration-200"
+                          style={{
+                            backgroundColor: newPlan === plan.id ? '#FDFCF5' : 'var(--papaya)',
+                            borderColor: newPlan === plan.id ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
+                            boxShadow: newPlan === plan.id ? '0 8px 24px rgba(212,163,115,0.12)' : 'none',
+                          }}
+                        >
+                          <p className="label-caps mb-1" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
+                          <p className="text-lg font-medium" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
+                          <p className="text-xs mt-2 leading-relaxed" style={{ color: '#6A6A5A' }}>
+                            {plan.description}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs" style={{ color: '#6A6A5A' }}>
+                      Plans are assigned per book, so you can keep some books free and upgrade others later.
+                    </p>
+                  </div>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Button
                       type="submit"
@@ -429,6 +484,7 @@ export default function Dashboard() {
               const lastUpdated = book.updated_at || book.created_at;
               return (
                 <div
+                  key={book.id}
                   className="animate-fade-up"
                   style={{ animationDelay: `${i * 0.06}s` }}
                 >
@@ -501,15 +557,12 @@ export default function Dashboard() {
                           <h3 className="text-2xl font-medium leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                             {book.title}
                           </h3>
-                          {book.plan === 'pro' ? (
-                            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full shrink-0" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
-                              Pro
-                            </span>
-                          ) : (
-                            <span className="text-xs font-medium px-2.5 py-0.5 rounded-full shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>
-                              Free
-                            </span>
-                          )}
+                          <span
+                            className="text-xs font-semibold px-2.5 py-0.5 rounded-full shrink-0"
+                            style={getPlanBadgeStyles(book.plan)}
+                          >
+                            {getBookPlanLabel(book.plan, book.storage_tier)}
+                          </span>
                         </div>
 
                         {/* Description */}

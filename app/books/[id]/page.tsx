@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Lightbox } from '@/components/ui/lightbox';
 import { MembersModal } from '@/components/ui/members-modal';
+import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 
 interface Memory {
   id: number;
@@ -32,6 +33,29 @@ interface Book {
 }
 
 const ACCENT_COLORS = ['var(--bronze)', 'var(--tea-green)', 'var(--papaya)'];
+
+function getPlanBadgeStyles(plan: string) {
+  const normalizedPlan = normalizeBookPlan(plan);
+
+  if (normalizedPlan === 'plus') {
+    return {
+      backgroundColor: 'var(--charcoal)',
+      color: 'var(--cornsilk)',
+    };
+  }
+
+  if (normalizedPlan === 'premium') {
+    return {
+      backgroundColor: 'var(--bronze)',
+      color: 'var(--charcoal)',
+    };
+  }
+
+  return {
+    backgroundColor: 'rgba(212,163,115,0.12)',
+    color: '#6A6A5A',
+  };
+}
 
 export default function BookDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -179,17 +203,20 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             <h1 className="text-base md:text-lg font-medium truncate" style={{ color: 'var(--charcoal)' }}>
               {book.title}
             </h1>
-            {book.plan === 'pro' ? (
-              <span className="ml-2 shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
-                Pro
-              </span>
-            ) : (
-              <span className="ml-2 shrink-0 text-xs font-medium px-2.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>
-                Free
-              </span>
-            )}
+            <span className="ml-2 shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full" style={getPlanBadgeStyles(book.plan)}>
+              {getBookPlanLabel(book.plan, book.storage_tier)}
+            </span>
           </div>
           <div className="flex flex-row flex-wrap gap-2 items-center shrink-0">
+            {currentUserRole === 'owner' && (
+              <Link
+                href={`/upgrade?book=${id}`}
+                className="inline-flex h-8 md:h-9 items-center justify-center rounded-full border px-3 md:px-4 text-xs md:text-sm font-medium whitespace-nowrap transition-colors"
+                style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
+              >
+                Manage plan
+              </Link>
+            )}
             {memories.length === 0 && (
               <Link
                 href={`/books/${id}/edit`}
