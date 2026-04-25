@@ -242,7 +242,7 @@ export default function Dashboard() {
             <div className="flex items-center gap-3">
               {books.length > 0 && (
                 <div className="flex items-center gap-2">
-                  <label htmlFor="sort-select" className="text-xs sr-only" style={{ color: '#6A6A5A' }}>Sort by</label>
+                  <label htmlFor="sort-select" className="text-xs" style={{ color: '#6A6A5A' }}>Sort by</label>
                   <select
                     id="sort-select"
                     value={sortOrder}

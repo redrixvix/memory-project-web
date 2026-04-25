@@ -154,7 +154,7 @@ export default function Home() {
               style={{ color: 'var(--charcoal)', letterSpacing: '-0.03em', animationDelay: '200ms' }}
             >
               Write your family&apos;s story.<br />
-              <em style={{ fontStyle: 'italic', fontWeight: 400 }}>Print it to last.</em>
+              <em style={{ fontStyle: 'italic', fontWeight: 400 }}>Leave it to the generations who follow.</em>
             </h1>
 
             <p
