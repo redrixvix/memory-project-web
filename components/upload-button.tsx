@@ -307,7 +307,23 @@ export function ImageUploader({ onUploadComplete, className }: UploadButtonProps
   const [UTButton, setUTButton] = useState<React.ComponentType<any> | null>(null);
 
   useEffect(() => {
-    getUTButton().then(setUTButton).catch(() => setUTButton(null));
+    let isMounted = true;
+
+    getUTButton()
+      .then((button) => {
+        if (isMounted) {
+          setUTButton(() => button);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setUTButton(null);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (!UTButton) {
@@ -368,7 +384,23 @@ export function AudioUploader({ onUploadComplete, className }: UploadButtonProps
   const [UTButton, setUTButton] = useState<React.ComponentType<any> | null>(null);
 
   useEffect(() => {
-    getUTButton().then(setUTButton).catch(() => setUTButton(null));
+    let isMounted = true;
+
+    getUTButton()
+      .then((button) => {
+        if (isMounted) {
+          setUTButton(() => button);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setUTButton(null);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (!UTButton) {

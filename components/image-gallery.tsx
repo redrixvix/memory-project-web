@@ -1,26 +1,35 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import Image from "next/image";
+
 import { cn } from "@/lib/utils";
 
+export interface ImageGalleryItem {
+  id: string;
+  previewUrl: string;
+  fileName: string;
+  status: "uploading" | "uploaded" | "error";
+  error?: string;
+}
+
 interface ImageGalleryProps {
-  urls: string[];
-  onRemove: (index: number) => void;
-  onReorder?: (from: number, to: number) => void;
-  disabled?: boolean;
+  items: ImageGalleryItem[];
+  onRemove: (id: string) => void;
+  onRetry?: (id: string) => void;
 }
 
 function ImageCard({
-  url,
+  item,
   index,
   total,
   onRemove,
+  onRetry,
 }: {
-  url: string;
+  item: ImageGalleryItem;
   index: number;
   total: number;
   onRemove: () => void;
+  onRetry?: () => void;
 }) {
   const [isRemoving, setIsRemoving] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -38,7 +47,6 @@ function ImageCard({
       )}
       style={{ animationDelay: `${index * 60}ms`, animationFillMode: "both" }}
     >
-      {/* Polaroid-style frame */}
       <div
         className="relative bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-300 group-hover:shadow-md"
         style={{
@@ -46,7 +54,6 @@ function ImageCard({
           padding: "6px 6px 28px 6px",
         }}
       >
-        {/* Image container */}
         <div
           className="relative overflow-hidden rounded-lg img-frame"
           style={{ width: 160, height: 160 }}
@@ -57,16 +64,17 @@ function ImageCard({
               style={{ backgroundColor: "var(--beige)" }}
             />
           )}
-          <Image
-            src={url}
+
+          <img
+            src={item.previewUrl}
             alt={`Photo ${index + 1}`}
-            fill
-            className={cn("object-cover transition-opacity duration-300", isLoaded ? "opacity-100" : "opacity-0")}
+            className={cn(
+              "h-full w-full object-cover transition-opacity duration-300",
+              isLoaded ? "opacity-100" : "opacity-0"
+            )}
             onLoad={() => setIsLoaded(true)}
-            sizes="160px"
           />
 
-          {/* Hover overlay */}
           <div
             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
             style={{ background: "rgba(43,43,43,0.32)" }}
@@ -83,7 +91,59 @@ function ImageCard({
             </button>
           </div>
 
-          {/* Photo number badge */}
+          {item.status === "uploading" && (
+            <div
+              className="absolute inset-0 flex flex-col items-center justify-center gap-2"
+              style={{ background: "rgba(43,43,43,0.42)" }}
+            >
+              <div
+                className="h-7 w-7 rounded-full animate-spin"
+                style={{
+                  border: "2px solid rgba(254,250,224,0.4)",
+                  borderTopColor: "var(--cornsilk)",
+                }}
+              />
+              <span
+                className="text-[0.7rem] font-medium"
+                style={{ color: "var(--cornsilk)", fontFamily: "var(--font-sans)" }}
+              >
+                Uploading
+              </span>
+            </div>
+          )}
+
+          {item.status === "error" && (
+            <div
+              className="absolute inset-x-2 bottom-2 rounded-lg px-2 py-2"
+              style={{
+                backgroundColor: "rgba(115,46,46,0.92)",
+                color: "var(--cornsilk)",
+                boxShadow: "0 8px 24px rgba(43,43,43,0.15)",
+              }}
+            >
+              <p
+                className="text-[0.625rem] font-medium leading-tight"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                {item.error ?? "Upload failed"}
+              </p>
+              {onRetry && (
+                <button
+                  type="button"
+                  onClick={onRetry}
+                  className="mt-2 inline-flex items-center rounded-full px-2.5 py-1 text-[0.625rem] font-medium"
+                  style={{
+                    backgroundColor: "rgba(254,250,224,0.18)",
+                    color: "var(--cornsilk)",
+                    fontFamily: "var(--font-sans)",
+                  }}
+                >
+                  Retry upload
+                </button>
+              )}
+            </div>
+          )}
+
           <div
             className="absolute bottom-2 left-2 text-xs font-medium px-2 py-0.5 rounded-full"
             style={{
@@ -97,25 +157,24 @@ function ImageCard({
           </div>
         </div>
 
-        {/* Polaroid caption line */}
         <div
           className="absolute bottom-0 left-0 right-0 text-center py-2 text-xs truncate"
           style={{
-            color: "rgba(43,43,43,0.45)",
+            color: item.status === "error" ? "rgba(124,69,47,0.75)" : "rgba(43,43,43,0.45)",
             fontFamily: "var(--font-sans)",
             fontSize: "0.625rem",
             letterSpacing: "0.05em",
           }}
         >
-          {`Photo ${index + 1}`}
+          {item.status === "uploaded" ? item.fileName : `Photo ${index + 1}`}
         </div>
       </div>
     </div>
   );
 }
 
-export function ImageGallery({ urls, onRemove, disabled }: ImageGalleryProps) {
-  if (urls.length === 0) return null;
+export function ImageGallery({ items, onRemove, onRetry }: ImageGalleryProps) {
+  if (items.length === 0) return null;
 
   return (
     <div className="mt-6">
@@ -123,21 +182,20 @@ export function ImageGallery({ urls, onRemove, disabled }: ImageGalleryProps) {
         className="flex flex-wrap gap-5"
         style={{ padding: "4px 2px" }}
       >
-        {urls.map((url, i) => (
+        {items.map((item, index) => (
           <ImageCard
-            key={`${url}-${i}`}
-            url={url}
-            index={i}
-            total={urls.length}
-            onRemove={() => onRemove(i)}
+            key={item.id}
+            item={item}
+            index={index}
+            total={items.length}
+            onRemove={() => onRemove(item.id)}
+            onRetry={item.status === "error" ? () => onRetry?.(item.id) : undefined}
           />
         ))}
       </div>
     </div>
   );
 }
-
-// ─── Elegant Drop Zone ────────────────────────────────────────────────────────
 
 interface DropZoneProps {
   onFilesSelected: (files: File[]) => void;
@@ -172,8 +230,8 @@ export function DropZone({
       setIsDragging(false);
       if (disabled) return;
 
-      const files = Array.from(e.dataTransfer.files).filter((f) =>
-        f.type.startsWith("image/")
+      const files = Array.from(e.dataTransfer.files).filter((file) =>
+        file.type.startsWith("image/")
       );
       if (files.length > 0) onFilesSelected(files);
     },
@@ -215,8 +273,8 @@ export function DropZone({
         isDragging
           ? "border-[var(--bronze)] scale-[1.01]"
           : isHovering
-          ? "border-[var(--bronze)]/60"
-          : "border-[rgba(212,163,115,0.25)]"
+            ? "border-[var(--bronze)]/60"
+            : "border-[rgba(212,163,115,0.25)]"
       )}
       style={{
         backgroundColor: isDragging
@@ -225,7 +283,6 @@ export function DropZone({
         minHeight: 120,
       }}
     >
-      {/* Ambient texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-30"
         style={{
@@ -249,7 +306,6 @@ export function DropZone({
           isDragging && "scale-100"
         )}
       >
-        {/* Decorative icon */}
         <div
           className={cn(
             "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300",
