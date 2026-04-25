@@ -167,7 +167,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         const data = await res.json();
         setPrompt(data.memory.prompt_question || '');
         setAnswer(data.memory.answer_text || '');
-        setWordCount(data.memory.answer_text.trim() ? data.memory.answer_text.trim().split(/\s+/).length : 0);
+        setWordCount((data.memory.answer_text || '').trim() ? (data.memory.answer_text || '').trim().split(/\s+/).length : 0);
         setPhotoUrls(data.memory.photo_urls || []);
         setAudioUrl(data.memory.audio_url || null);
         try { localStorage.removeItem(draftKey); } catch {}
