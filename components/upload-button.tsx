@@ -280,17 +280,21 @@ export function DropZone({
 
 // ─── UploadThing Buttons ──────────────────────────────────────────────────────
 
-// Generate the button once — resolved client-side via window.location.origin
+// Cached button class — generated once per browser session
 let _UTButton: ReturnType<typeof import("@uploadthing/react").generateUploadButton> | null = null;
+let _UTButtonPromise: Promise<NonNullable<typeof _UTButton>> | null = null;
 
-function getUTButton() {
+async function getUTButton(): Promise<NonNullable<typeof _UTButton>> {
   if (_UTButton) return _UTButton;
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { generateUploadButton } = require("@uploadthing/react");
-  _UTButton = generateUploadButton({
-    url: typeof window !== "undefined" ? `${window.location.origin}/api/uploadthing` : "/api/uploadthing",
-  });
-  return _UTButton;
+  if (_UTButtonPromise) return _UTButtonPromise;
+  _UTButtonPromise = (async () => {
+    const { generateUploadButton } = await import("@uploadthing/react");
+    _UTButton = generateUploadButton({
+      url: typeof window !== "undefined" ? `${window.location.origin}/api/uploadthing` : "/api/uploadthing",
+    }) as NonNullable<typeof _UTButton>;
+    return _UTButton;
+  })();
+  return _UTButtonPromise;
 }
 
 interface UploadButtonProps {
@@ -303,7 +307,7 @@ export function ImageUploader({ onUploadComplete, className }: UploadButtonProps
   const [UTButton, setUTButton] = useState<React.ComponentType<any> | null>(null);
 
   useEffect(() => {
-    setUTButton(getUTButton());
+    getUTButton().then(setUTButton).catch(() => setUTButton(null));
   }, []);
 
   if (!UTButton) {
@@ -364,7 +368,7 @@ export function AudioUploader({ onUploadComplete, className }: UploadButtonProps
   const [UTButton, setUTButton] = useState<React.ComponentType<any> | null>(null);
 
   useEffect(() => {
-    setUTButton(getUTButton());
+    getUTButton().then(setUTButton).catch(() => setUTButton(null));
   }, []);
 
   if (!UTButton) {
