@@ -12,7 +12,7 @@ export const uploadRouter = {
       return { userId: "anonymous" };
     })
     .onUploadComplete(({ file }) => {
-      return { url: file.url, fileName: file.name };
+      return { url: file.ufsUrl, key: file.key, fileName: file.name };
     }),
 
   // Audio — up to 16MB
@@ -23,7 +23,7 @@ export const uploadRouter = {
       return { userId: "anonymous" };
     })
     .onUploadComplete(({ file }) => {
-      return { url: file.url, fileName: file.name };
+      return { url: file.ufsUrl, key: file.key, fileName: file.name };
     }),
 } satisfies FileRouter;
 

@@ -2,18 +2,18 @@
 
 import { generateReactHelpers } from '@uploadthing/react';
 import { useCallback, useEffect, useMemo, useRef, useState, use } from 'react';
+import type { MutableRefObject } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import type { OurFileRouter } from '@/app/api/uploadthing/core';
-import { AudioUploader } from '@/components/upload-button';
 import { Button } from '@/components/ui/button';
 import { ImageGallery, type ImageGalleryItem, DropZone } from '@/components/image-gallery';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
-import { flattenMemoryPrompts, isMemoryPromptGroups, type MemoryPromptGroup } from '@/lib/memory-prompts';
+import { flattenMemoryPrompts, getMemoryPromptGroups, isMemoryPromptGroups, type MemoryPromptGroup } from '@/lib/memory-prompts';
 
 type SaveState = 'idle' | 'saving' | 'saved';
 type PromptLoadState = 'loading' | 'ready' | 'empty' | 'error';
@@ -36,13 +36,34 @@ interface DraftState {
 }
 
 interface PhotoDraftItem extends ImageGalleryItem {
+  uploadedKey: string | null;
   uploadedUrl: string | null;
   sourceFile?: File;
+}
+
+type AudioDraftStatus = 'ready' | 'uploading' | 'uploaded' | 'error';
+type RecorderState = 'idle' | 'requesting' | 'recording' | 'processing' | 'unsupported';
+
+interface AudioDraft {
+  previewUrl: string;
+  uploadedKey: string | null;
+  uploadedUrl: string | null;
+  fileName: string;
+  sourceFile?: File;
+  status: AudioDraftStatus;
+  error?: string;
+}
+
+interface ResolvedUpload {
+  url: string | null;
+  key: string | null;
+  fileName: string | null;
 }
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
+const MAX_AUDIO_BYTES = 16 * 1024 * 1024;
 const NO_PROMPT_VALUE = '__none__';
 const CUSTOM_PROMPT_VALUE = '__custom__';
 
@@ -92,30 +113,47 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const [draftLoaded, setDraftLoaded] = useState(false);
   const [photoItems, setPhotoItems] = useState<PhotoDraftItem[]>([]);
   const [mediaErrors, setMediaErrors] = useState<string[]>([]);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [audioDraft, setAudioDraft] = useState<AudioDraft | null>(null);
+  const [audioError, setAudioError] = useState<string | null>(null);
+  const [recorderState, setRecorderState] = useState<RecorderState>('idle');
 
   const draftKey = `draft-${id}-${memoryId ?? 'new'}`;
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const photoItemsRef = useRef<PhotoDraftItem[]>([]);
+  const audioDraftRef = useRef<AudioDraft | null>(null);
+  const removedAssetKeysRef = useRef<Set<string>>(new Set());
+  const removedPhotoIdsRef = useRef<Set<string>>(new Set());
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recorderStreamRef = useRef<MediaStream | null>(null);
+  const recorderChunksRef = useRef<Blob[]>([]);
   const activePlan = normalizeBookPlan(book?.plan, book?.storage_tier);
   const canUseMedia = activePlan !== 'free';
   const allPresetPrompts = useMemo(() => flattenMemoryPrompts(promptGroups), [promptGroups]);
+  const promptOptionCount = allPresetPrompts.length;
   const uploadedPhotoUrls = useMemo(
     () => photoItems.flatMap((item) => item.uploadedUrl ? [item.uploadedUrl] : []),
     [photoItems]
   );
   const hasUploadingPhotos = photoItems.some((item) => item.status === 'uploading');
   const hasErroredPhotos = photoItems.some((item) => item.status === 'error');
+  const hasBlockingRecorderState = recorderState === 'requesting' || recorderState === 'recording' || recorderState === 'processing';
+  const isSubmitDisabled = loading || !answer.trim() || hasUploadingPhotos || hasBlockingRecorderState;
   const promptSelectValue = useCustomPrompt
     ? CUSTOM_PROMPT_VALUE
     : prompt
       ? prompt
       : NO_PROMPT_VALUE;
   const { startUpload: startImageUpload } = useUploadThing('imageUploader');
+  const { startUpload: startAudioUpload } = useUploadThing('audioUploader');
+  const currentAudioUrl = audioDraft?.uploadedUrl ?? null;
 
   useEffect(() => {
     photoItemsRef.current = photoItems;
   }, [photoItems]);
+
+  useEffect(() => {
+    audioDraftRef.current = audioDraft;
+  }, [audioDraft]);
 
   useEffect(() => {
     return () => {
@@ -123,7 +161,9 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         clearTimeout(saveTimerRef.current);
       }
 
+      stopRecorder(mediaRecorderRef, recorderStreamRef);
       photoItemsRef.current.forEach(revokePreviewUrl);
+      revokeAudioPreview(audioDraftRef.current);
     };
   }, []);
 
@@ -162,7 +202,9 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         if (Array.isArray(parsed.photoUrls)) {
           setPhotoItems(createDraftPhotoItems(parsed.photoUrls));
         }
-        if (parsed.audioUrl) setAudioUrl(parsed.audioUrl);
+        if (parsed.audioUrl) {
+          setAudioDraft(createExistingAudioDraft(parsed.audioUrl));
+        }
       } catch {}
     }
 
@@ -203,7 +245,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           customPrompt,
           answer,
           photoUrls: uploadedPhotoUrls,
-          audioUrl,
+          audioUrl: currentAudioUrl,
         };
         localStorage.setItem(draftKey, JSON.stringify(nextDraft));
       } catch {}
@@ -211,7 +253,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       setSaveState('saved');
       setTimeout(() => setSaveState('idle'), 2000);
     }, 700);
-  }, [answer, audioUrl, customPrompt, draftKey, draftLoaded, prompt, uploadedPhotoUrls]);
+  }, [answer, currentAudioUrl, customPrompt, draftKey, draftLoaded, prompt, uploadedPhotoUrls]);
 
   async function fetchBook() {
     try {
@@ -233,6 +275,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     setPromptLoadMessage('');
 
     try {
+      const fallbackGroups = getMemoryPromptGroups();
       const response = await fetch('/api/prompts', { cache: 'no-store' });
       if (!response.ok) {
         throw new Error('Unable to load prompts right now.');
@@ -244,6 +287,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       }
 
       if (data.groups.length === 0) {
+        if (fallbackGroups.length > 0) {
+          setPromptGroups(fallbackGroups);
+          setPromptLoadState('ready');
+          setPromptLoadMessage('Using built-in prompts while the live prompt list refreshes.');
+          return;
+        }
+
         setPromptGroups([]);
         setPromptLoadState('empty');
         setPromptLoadMessage('No guided prompts are available right now. You can still write freely.');
@@ -252,7 +302,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
       setPromptGroups(data.groups);
       setPromptLoadState('ready');
+      setPromptLoadMessage('');
     } catch (error) {
+      const fallbackGroups = getMemoryPromptGroups();
+      if (fallbackGroups.length > 0) {
+        setPromptGroups(fallbackGroups);
+        setPromptLoadState('ready');
+        setPromptLoadMessage('Using built-in prompts while live prompts are temporarily unavailable.');
+        return;
+      }
+
       setPromptGroups([]);
       setPromptLoadState('error');
       setPromptLoadMessage(error instanceof Error ? error.message : 'Unable to load prompts right now.');
@@ -268,7 +327,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         setAnswer(data.memory.answer_text || '');
         setWordCount((data.memory.answer_text || '').trim() ? (data.memory.answer_text || '').trim().split(/\s+/).length : 0);
         setPhotoItems(createDraftPhotoItems(data.memory.photo_urls || []));
-        setAudioUrl(data.memory.audio_url || null);
+        setAudioDraft(data.memory.audio_url ? createExistingAudioDraft(data.memory.audio_url) : null);
 
         try {
           localStorage.removeItem(draftKey);
@@ -295,6 +354,40 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     } catch {}
   }, [draftKey]);
 
+  const replaceAudioDraft = useCallback((nextDraft: AudioDraft | null) => {
+    const currentDraft = audioDraftRef.current;
+    if (currentDraft && currentDraft.previewUrl !== nextDraft?.previewUrl) {
+      revokeAudioPreview(currentDraft);
+    }
+
+    audioDraftRef.current = nextDraft;
+    setAudioDraft(nextDraft);
+  }, []);
+
+  const queueUploadedAssetForDeletion = useCallback((key: string | null | undefined) => {
+    if (!key) {
+      return;
+    }
+
+    removedAssetKeysRef.current.add(key);
+  }, []);
+
+  const queuePhotoForDeletion = useCallback((item: PhotoDraftItem | undefined) => {
+    const key = item?.uploadedKey
+      ?? extractUploadThingKey(item?.uploadedUrl)
+      ?? extractUploadThingKey(item?.previewUrl);
+
+    queueUploadedAssetForDeletion(key);
+  }, [queueUploadedAssetForDeletion]);
+
+  const queueAudioForDeletion = useCallback((draft: AudioDraft | null) => {
+    const key = draft?.uploadedKey
+      ?? extractUploadThingKey(draft?.uploadedUrl)
+      ?? extractUploadThingKey(draft?.previewUrl);
+
+    queueUploadedAssetForDeletion(key);
+  }, [queueUploadedAssetForDeletion]);
+
   const uploadSinglePhoto = useCallback(async (itemId: string, file: File) => {
     setPhotoItems((current) => current.map((item) => (
       item.id === itemId
@@ -305,8 +398,15 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     try {
       const result = await startImageUpload([file]);
       const uploaded = result?.[0];
-      if (!uploaded?.url) {
+      const resolvedUpload = resolveUploadedFile(uploaded);
+      if (!resolvedUpload.url) {
         throw new Error('Upload finished without a file URL.');
+      }
+
+      if (removedPhotoIdsRef.current.has(itemId)) {
+        queueUploadedAssetForDeletion(resolvedUpload.key);
+        removedPhotoIdsRef.current.delete(itemId);
+        return;
       }
 
       setPhotoItems((current) => current.map((item) => (
@@ -314,12 +414,18 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           ? {
               ...item,
               status: 'uploaded',
-              uploadedUrl: uploaded.url,
-              fileName: uploaded.name ?? item.fileName,
+              uploadedKey: resolvedUpload.key,
+              uploadedUrl: resolvedUpload.url,
+              fileName: resolvedUpload.fileName ?? item.fileName,
             }
           : item
       )));
     } catch (error) {
+      if (removedPhotoIdsRef.current.has(itemId)) {
+        removedPhotoIdsRef.current.delete(itemId);
+        return;
+      }
+
       const message = getUploadErrorMessage(error);
       setPhotoItems((current) => current.map((item) => (
         item.id === itemId
@@ -348,6 +454,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       nextItems.push({
         id: itemId,
         previewUrl: URL.createObjectURL(file),
+        uploadedKey: null,
         uploadedUrl: null,
         fileName: file.name,
         sourceFile: file,
@@ -381,47 +488,249 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     setPhotoItems((current) => {
       const itemToRemove = current.find((item) => item.id === idToRemove);
       if (itemToRemove) {
+        removedPhotoIdsRef.current.add(idToRemove);
+        queuePhotoForDeletion(itemToRemove);
         revokePreviewUrl(itemToRemove);
       }
 
       return current.filter((item) => item.id !== idToRemove);
     });
-  }, []);
+  }, [queuePhotoForDeletion]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!answer.trim() || hasUploadingPhotos) return;
+  const handleAudioFileSelection = useCallback((files: FileList | File[] | null) => {
+    const file = Array.isArray(files)
+      ? files[0]
+      : files?.[0];
 
-    setLoading(true);
-    clearDraft();
+    if (!file) {
+      return;
+    }
+
+    const validationError = getAudioValidationError(file);
+    if (validationError) {
+      setAudioError(validationError);
+      return;
+    }
+
+    setAudioError(null);
+    queueAudioForDeletion(audioDraftRef.current);
+    replaceAudioDraft(createLocalAudioDraft(file));
+  }, [queueAudioForDeletion, replaceAudioDraft]);
+
+  const handleRemoveAudio = useCallback(() => {
+    queueAudioForDeletion(audioDraftRef.current);
+    setAudioError(null);
+    replaceAudioDraft(null);
+  }, [queueAudioForDeletion, replaceAudioDraft]);
+
+  const handleStartRecording = useCallback(async () => {
+    if (typeof window === 'undefined' || typeof MediaRecorder === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      setRecorderState('unsupported');
+      setAudioError('Audio recording is not supported in this browser.');
+      return;
+    }
 
     try {
+      setAudioError(null);
+      setRecorderState('requesting');
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = getPreferredRecordingMimeType();
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+
+      recorderChunksRef.current = [];
+      recorderStreamRef.current = stream;
+      mediaRecorderRef.current = recorder;
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recorderChunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onerror = () => {
+        setAudioError('Recording failed. Please try again.');
+        setRecorderState('idle');
+        stopRecorder(mediaRecorderRef, recorderStreamRef);
+      };
+
+      recorder.onstop = () => {
+        const recordedChunks = recorderChunksRef.current;
+        const finalMimeType = recorder.mimeType || mimeType || 'audio/webm';
+
+        stopRecorder(mediaRecorderRef, recorderStreamRef);
+
+        if (recordedChunks.length === 0) {
+          setRecorderState('idle');
+          return;
+        }
+
+        const recording = new File(
+          [new Blob(recordedChunks, { type: finalMimeType })],
+          createRecordingFileName(finalMimeType),
+          { type: finalMimeType, lastModified: Date.now() }
+        );
+
+        const validationError = getAudioValidationError(recording);
+        if (validationError) {
+          setAudioError(validationError);
+          setRecorderState('idle');
+          return;
+        }
+
+        queueAudioForDeletion(audioDraftRef.current);
+        replaceAudioDraft(createLocalAudioDraft(recording));
+        setAudioError(null);
+        setRecorderState('idle');
+      };
+
+      recorder.start();
+      setRecorderState('recording');
+    } catch (error) {
+      setRecorderState('idle');
+      setAudioError(getAudioRecorderErrorMessage(error));
+    }
+  }, [queueAudioForDeletion, replaceAudioDraft]);
+
+  const handleStopRecording = useCallback(() => {
+    const recorder = mediaRecorderRef.current;
+
+    if (!recorder || recorder.state !== 'recording') {
+      return;
+    }
+
+    setRecorderState('processing');
+    recorder.stop();
+  }, []);
+
+  const flushRemovedUploads = useCallback(async () => {
+    const activeKeys = new Set<string>();
+
+    photoItemsRef.current.forEach((item) => {
+      const key = item.uploadedKey
+        ?? extractUploadThingKey(item.uploadedUrl)
+        ?? extractUploadThingKey(item.previewUrl);
+
+      if (key) {
+        activeKeys.add(key);
+      }
+    });
+
+    const activeAudioKey = audioDraftRef.current?.uploadedKey
+      ?? extractUploadThingKey(audioDraftRef.current?.uploadedUrl)
+      ?? extractUploadThingKey(audioDraftRef.current?.previewUrl);
+
+    if (activeAudioKey) {
+      activeKeys.add(activeAudioKey);
+    }
+
+    const keysToDelete = Array.from(removedAssetKeysRef.current).filter((key) => !activeKeys.has(key));
+    if (keysToDelete.length === 0) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/uploadthing/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookId: Number(id), keys: keysToDelete }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete removed media files.');
+      }
+
+      keysToDelete.forEach((key) => removedAssetKeysRef.current.delete(key));
+    } catch (error) {
+      console.error(error);
+    }
+  }, [id]);
+
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!answer.trim() || hasUploadingPhotos || hasBlockingRecorderState) return;
+
+    setLoading(true);
+
+    try {
+      let nextAudioUrl = currentAudioUrl;
+      let nextAudioKey = audioDraftRef.current?.uploadedKey ?? null;
+
+      if (audioDraftRef.current?.sourceFile) {
+        setAudioDraft((current) => current ? { ...current, status: 'uploading', error: undefined } : current);
+
+        const result = await startAudioUpload([audioDraftRef.current.sourceFile]);
+        const uploaded = result?.[0];
+        const resolvedUpload = resolveUploadedFile(uploaded);
+
+        if (!resolvedUpload.url) {
+          throw new Error('Audio upload finished without a file URL.');
+        }
+
+        nextAudioUrl = resolvedUpload.url;
+        nextAudioKey = resolvedUpload.key;
+
+        setAudioDraft((current) => current ? {
+          ...current,
+          uploadedKey: resolvedUpload.key,
+          uploadedUrl: resolvedUpload.url,
+          fileName: resolvedUpload.fileName ?? current.fileName,
+          sourceFile: undefined,
+          status: 'uploaded',
+          error: undefined,
+        } : current);
+      }
+
       const payload = {
         prompt_question: prompt || null,
         answer_text: answer,
         photo_urls: uploadedPhotoUrls,
-        audio_url: audioUrl,
+        audio_url: nextAudioUrl,
       };
 
-      if (memoryId) {
-        await fetch(`/api/memories/${memoryId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-      } else {
-        await fetch(`/api/books/${id}/memories`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
+      const response = memoryId
+        ? await fetch(`/api/memories/${memoryId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+        : await fetch(`/api/books/${id}/memories`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+
+      if (!response.ok) {
+        throw new Error('Failed to save memory.');
       }
 
+      if (nextAudioUrl) {
+        audioDraftRef.current = audioDraftRef.current ? {
+          ...audioDraftRef.current,
+          uploadedKey: nextAudioKey,
+          uploadedUrl: nextAudioUrl,
+          sourceFile: undefined,
+          status: 'uploaded',
+          error: undefined,
+        } : null;
+        setAudioDraft(audioDraftRef.current);
+      }
+
+      clearDraft();
+      await flushRemovedUploads();
+
       router.push(`/books/${id}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to save memory.';
+      setAudioDraft((current) => current && current.sourceFile
+        ? { ...current, status: 'error', error: message }
+        : current
+      );
+      setAudioError((current) => current ?? message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [answer, clearDraft, currentAudioUrl, flushRemovedUploads, hasBlockingRecorderState, hasUploadingPhotos, id, memoryId, prompt, router, startAudioUpload, uploadedPhotoUrls]);
 
   if (fetchingMemory || fetchingBook || isCheckingAuth) {
     return (
@@ -437,7 +746,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
       <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b shrink-0" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
-        <div className="flex items-center justify-between w-full max-w-4xl mx-auto">
+        <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
           <div className="flex items-center gap-3 min-w-0">
             <Link href={`/books/${id}`} className="text-sm flex items-center gap-1.5 transition-colors hover:opacity-70 shrink-0" style={{ color: '#6A6A5A' }}>
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -477,413 +786,515 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         </div>
       </header>
 
-      <main className="px-5 md:px-10 py-8 md:py-12 max-w-4xl mx-auto w-full">
-        <div
-          className="relative overflow-hidden rounded-[2rem] border px-5 py-6 md:px-8 md:py-8"
+      <main className="mx-auto w-full max-w-5xl px-5 py-8 md:px-10 md:py-12">
+        <article
+          className="relative overflow-hidden rounded-[2.25rem] border"
           style={{
-            background: 'linear-gradient(180deg, rgba(253,252,245,0.96) 0%, rgba(250,237,205,0.74) 100%)',
+            background: 'linear-gradient(180deg, rgba(253,252,245,0.97) 0%, rgba(250,237,205,0.72) 100%)',
             borderColor: 'rgba(212,163,115,0.22)',
-            boxShadow: '0 22px 64px rgba(212,163,115,0.12)',
+            boxShadow: '0 24px 72px rgba(212,163,115,0.12)',
           }}
         >
           <div className="hero-ambient" />
 
-          <div className="relative mb-8 md:mb-10">
-            <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>
-              Memory entry
-            </p>
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div className="max-w-2xl">
+          <div className="relative px-5 py-6 md:px-9 md:py-9">
+            <div className="grid gap-6 border-b pb-8 md:grid-cols-[minmax(0,1.55fr)_minmax(15rem,0.85fr)] md:gap-10 md:pb-10" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+              <div>
+                <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>
+                  Memory entry
+                </p>
                 <h1 className="display-md mb-3" style={{ color: 'var(--charcoal)' }}>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
-                <p className="text-[0.98rem] leading-7" style={{ color: '#6A6A5A' }}>
-                  Capture one vivid story at a time. A prompt can help you begin, or you can skip it and write freely in your own voice.
+                <p className="max-w-2xl text-[0.98rem] leading-7 md:text-[1.02rem]" style={{ color: '#6A6A5A' }}>
+                  Capture one story at a time. Start with a guided question, skip it, or write in your own voice. Photos and a voice note can help preserve the texture of the moment.
                 </p>
               </div>
 
-              <div
-                className="rounded-[1.25rem] border px-4 py-3 text-sm md:max-w-xs"
-                style={{
-                  backgroundColor: 'rgba(254,250,224,0.78)',
-                  borderColor: 'rgba(212,163,115,0.18)',
-                  color: '#6A6A5A',
-                }}
-              >
-                <span className="label-caps block mb-1" style={{ color: 'var(--bronze)' }}>
+              <aside className="self-start rounded-[1.3rem] px-4 py-4" style={{ backgroundColor: 'rgba(255,253,246,0.76)', border: '1px solid rgba(212,163,115,0.14)' }}>
+                <span className="label-caps block mb-2" style={{ color: 'var(--bronze)' }}>
                   Kept private
                 </span>
-                Your memory stays private until you decide to share or print it.
-              </div>
+                <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
+                  This memory stays private until you decide to share it, print it, or include it in a keepsake.
+                </p>
+              </aside>
             </div>
-          </div>
 
-          <form onSubmit={handleSubmit} className="relative flex flex-col gap-6 md:gap-7">
-            <section
-              className="rounded-[1.75rem] border p-5 md:p-6"
-              style={{
-                backgroundColor: 'rgba(253,252,245,0.88)',
-                borderColor: 'rgba(212,163,115,0.18)',
-              }}
-            >
-              <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
-                    Writing prompt
-                  </Label>
-                  <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
-                    Choose a guided question, skip it, or write your own.
-                  </p>
-                </div>
-                <div
-                  className="rounded-full px-3 py-1 text-xs"
-                  style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#7B6B56', fontFamily: 'var(--font-sans)' }}
-                >
-                  Optional
-                </div>
-              </div>
-
-              <div className="relative">
-                <select
-                  value={promptLoadState === 'ready' || useCustomPrompt ? promptSelectValue : NO_PROMPT_VALUE}
-                  onChange={(e) => handlePromptSelectChange(e.target.value, { customPrompt, setCustomPrompt, setPrompt, setUseCustomPrompt })}
-                  disabled={promptLoadState === 'loading'}
-                  className="w-full appearance-none rounded-[1.15rem] border px-4 py-3.5 pr-12 text-sm md:text-[0.95rem] transition-colors outline-none"
-                  style={{
-                    borderColor: 'rgba(212,163,115,0.28)',
-                    backgroundColor: '#FDFCF5',
-                    color: 'var(--charcoal)',
-                    fontFamily: 'var(--font-sans)',
-                  }}
-                  aria-label="Choose a writing prompt"
-                >
-                  {promptLoadState === 'loading' && (
-                    <option value={NO_PROMPT_VALUE}>Loading prompts…</option>
-                  )}
-                  {promptLoadState !== 'loading' && (
-                    <>
-                      <option value={NO_PROMPT_VALUE}>No prompt — write freely</option>
-                      {promptLoadState === 'ready' && promptGroups.map((group) => (
-                        <optgroup key={group.category} label={group.category}>
-                          {group.prompts.map((promptOption) => (
-                            <option key={promptOption} value={promptOption}>
-                              {promptOption}
-                            </option>
-                          ))}
-                        </optgroup>
-                      ))}
-                      <option value={CUSTOM_PROMPT_VALUE}>Write my own prompt…</option>
-                    </>
-                  )}
-                </select>
-                <svg
-                  className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  style={{ color: '#8E7861' }}
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </div>
-
-              {useCustomPrompt && (
-                <div className="mt-4">
-                  <Label className="mb-2 block text-xs font-medium" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
-                    Custom prompt
-                  </Label>
-                  <Input
-                    value={customPrompt}
-                    onChange={(e) => {
-                      setCustomPrompt(e.target.value);
-                      setPrompt(e.target.value);
-                    }}
-                    placeholder="What would you like this memory to begin with?"
-                    className="h-11 rounded-[1rem] border px-4 text-sm"
-                    style={{ borderColor: 'rgba(212,163,115,0.28)', backgroundColor: '#FDFCF5' }}
-                  />
-                </div>
-              )}
-
-              {promptLoadState !== 'ready' && (
-                <div
-                  className="mt-4 rounded-[1rem] border px-4 py-3 text-sm"
-                  style={{
-                    backgroundColor: 'rgba(250,237,205,0.48)',
-                    borderColor: promptLoadState === 'error' ? 'rgba(169,84,60,0.28)' : 'rgba(212,163,115,0.2)',
-                    color: '#6A6A5A',
-                  }}
-                >
-                  <p>{promptLoadMessage || 'You can still write freely while prompts are unavailable.'}</p>
-                  {promptLoadState === 'error' && (
-                    <button
-                      type="button"
-                      onClick={() => void loadPromptGroups()}
-                      className="mt-3 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium"
-                      style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
-                    >
-                      Retry prompts
-                    </button>
-                  )}
-                </div>
-              )}
-
-              {prompt && (
-                <div
-                  className="mt-4 flex items-start gap-3 rounded-[1rem] px-4 py-3"
-                  style={{ backgroundColor: 'rgba(212,163,115,0.1)', border: '1px solid rgba(212,163,115,0.2)' }}
-                >
-                  <svg className="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                  </svg>
-                  <p className="text-sm italic leading-6" style={{ color: 'var(--charcoal)' }}>
-                    {prompt}
-                  </p>
-                </div>
-              )}
-            </section>
-
-            <section
-              className="rounded-[1.75rem] border p-5 md:p-6"
-              style={{
-                backgroundColor: 'rgba(250,237,205,0.42)',
-                borderColor: 'rgba(212,163,115,0.18)',
-              }}
-            >
-              <div className="mb-4 flex justify-between items-center gap-3">
-                <div>
-                  <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
-                    Your memory
-                  </Label>
-                  <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
-                    Write as much or as little as you need. You can refine it later.
-                  </p>
-                </div>
-                <span className="rounded-full px-3 py-1 text-xs tabular-nums shrink-0" style={{ backgroundColor: 'rgba(254,250,224,0.85)', color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
-                  {wordCount} {wordCount === 1 ? 'word' : 'words'}
-                </span>
-              </div>
-              <Textarea
-                value={answer}
-                onChange={(e) => handleAnswerChange(e.target.value)}
-                required
-                className="min-h-[320px] rounded-[1.4rem] border-0 px-5 py-5 text-base md:text-lg leading-[1.9] shadow-[inset_0_0_0_1px_rgba(212,163,115,0.2)]"
-                rows={14}
-                placeholder="Take your time. There's no right or wrong way to write a memory — just tell it like it was..."
-                style={{
-                  backgroundColor: '#FFFDF6',
-                  fontFamily: 'var(--font-serif)',
-                  resize: 'vertical',
-                }}
-              />
-            </section>
-
-            <section
-              className="rounded-[1.75rem] border p-5 md:p-6"
-              style={{
-                backgroundColor: 'rgba(253,252,245,0.88)',
-                borderColor: 'rgba(212,163,115,0.18)',
-              }}
-            >
-              <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
-                    Photos &amp; Audio
-                  </Label>
-                  <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
-                    Add images and voice recordings to make the story feel lived-in.
-                  </p>
-                </div>
-                <div className="rounded-full px-3 py-1 text-xs" style={{ backgroundColor: 'rgba(204,213,174,0.24)', color: '#5E644F', fontFamily: 'var(--font-sans)' }}>
-                  Optional
-                </div>
-              </div>
-
-              {canUseMedia ? (
-                <div className="flex flex-col gap-5">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <label
-                      className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl px-5 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
-                      style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}
-                    >
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        className="sr-only"
-                        onChange={(e) => {
-                          handlePhotoFiles(Array.from(e.target.files ?? []));
-                          e.currentTarget.value = '';
-                        }}
-                      />
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="17 8 12 3 7 8" />
-                        <line x1="12" x2="12" y1="3" y2="15" />
-                      </svg>
-                      Add Photos
-                    </label>
-                    <AudioUploader
-                      onUploadComplete={(result) => {
-                        if (result[0]) {
-                          setAudioUrl(result[0].url);
-                        }
-                      }}
-                    />
-                    <p className="text-xs" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
-                      Images up to 4MB each. Previews appear immediately.
+            <form onSubmit={handleSubmit} className="relative">
+              <section className="grid gap-6 py-8 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-10 md:py-10">
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#7B6B56', fontFamily: 'var(--font-sans)' }}>
+                      Optional
+                    </span>
+                    <span className="rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: '#5F6650', fontFamily: 'var(--font-sans)' }}>
+                      {promptOptionCount} guided prompts ready
+                    </span>
+                  </div>
+                  <div>
+                    <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
+                      Writing prompt
+                    </Label>
+                    <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
+                      Choose a prompt to help you begin, or leave it open and let the memory unfold naturally.
                     </p>
                   </div>
+                </div>
 
-                  <DropZone onFilesSelected={handlePhotoFiles} className="mb-1" />
-
-                  {mediaErrors.length > 0 && (
-                    <div
-                      className="rounded-[1rem] border px-4 py-3 text-sm"
+                <div>
+                  <div className="relative">
+                    <select
+                      value={promptLoadState === 'ready' || useCustomPrompt ? promptSelectValue : NO_PROMPT_VALUE}
+                      onChange={(e) => handlePromptSelectChange(e.target.value, { customPrompt, setCustomPrompt, setPrompt, setUseCustomPrompt })}
+                      disabled={promptLoadState === 'loading'}
+                      className="w-full appearance-none rounded-[1.15rem] border px-4 py-3.5 pr-12 text-sm md:text-[0.95rem] transition-colors outline-none"
                       style={{
-                        backgroundColor: 'rgba(185,28,28,0.08)',
-                        borderColor: 'rgba(185,28,28,0.18)',
-                        color: '#7C2D12',
+                        borderColor: 'rgba(212,163,115,0.24)',
+                        backgroundColor: 'rgba(255,253,246,0.88)',
+                        color: 'var(--charcoal)',
+                        fontFamily: 'var(--font-sans)',
+                        boxShadow: '0 10px 24px rgba(212,163,115,0.06)',
                       }}
+                      aria-label="Choose a writing prompt"
                     >
-                      {mediaErrors.map((message) => (
-                        <p key={message}>{message}</p>
-                      ))}
+                      {promptLoadState === 'loading' && (
+                        <option value={NO_PROMPT_VALUE}>Loading prompts…</option>
+                      )}
+                      {promptLoadState !== 'loading' && (
+                        <>
+                          <option value={NO_PROMPT_VALUE}>No prompt — write freely</option>
+                          {promptLoadState === 'ready' && promptGroups.map((group) => (
+                            <optgroup key={group.category} label={group.category}>
+                              {group.prompts.map((promptOption) => (
+                                <option key={promptOption} value={promptOption}>
+                                  {promptOption}
+                                </option>
+                              ))}
+                            </optgroup>
+                          ))}
+                          <option value={CUSTOM_PROMPT_VALUE}>Write my own prompt…</option>
+                        </>
+                      )}
+                    </select>
+                    <svg
+                      className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      style={{ color: '#8E7861' }}
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </div>
+
+                  {useCustomPrompt && (
+                    <div className="mt-4">
+                      <Label className="mb-2 block text-xs font-medium" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
+                        Custom prompt
+                      </Label>
+                      <Input
+                        value={customPrompt}
+                        onChange={(e) => {
+                          setCustomPrompt(e.target.value);
+                          setPrompt(e.target.value);
+                        }}
+                        placeholder="What would you like this memory to begin with?"
+                        className="h-11 rounded-[1rem] border px-4 text-sm"
+                        style={{
+                          borderColor: 'rgba(212,163,115,0.24)',
+                          backgroundColor: 'rgba(255,253,246,0.88)',
+                          boxShadow: '0 8px 20px rgba(212,163,115,0.05)',
+                        }}
+                      />
                     </div>
                   )}
 
-                  {photoItems.length > 0 && (
+                  {(promptLoadState !== 'ready' || promptLoadMessage) && (
                     <div
-                      className="rounded-[1.5rem] p-5"
+                      className="mt-4 rounded-[1.05rem] border px-4 py-3 text-sm"
                       style={{
-                        backgroundColor: 'rgba(250,237,205,0.35)',
+                        backgroundColor: promptLoadState === 'error'
+                          ? 'rgba(185,28,28,0.05)'
+                          : 'rgba(250,237,205,0.42)',
+                        borderColor: promptLoadState === 'error'
+                          ? 'rgba(169,84,60,0.22)'
+                          : 'rgba(212,163,115,0.18)',
+                        color: promptLoadState === 'error' ? '#7C2D12' : '#6A6A5A',
+                      }}
+                    >
+                      <p>{promptLoadMessage || 'You can still write freely while prompts are unavailable.'}</p>
+                      {promptLoadState === 'error' && (
+                        <button
+                          type="button"
+                          onClick={() => void loadPromptGroups()}
+                          className="mt-3 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium"
+                          style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                        >
+                          Retry prompts
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {prompt && (
+                    <div
+                      className="mt-4 flex items-start gap-3 rounded-[1.15rem] px-4 py-4"
+                      style={{
+                        backgroundColor: 'rgba(212,163,115,0.08)',
                         border: '1px solid rgba(212,163,115,0.16)',
                       }}
                     >
-                      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                        <p className="text-xs font-medium" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                          {photoItems.length} {photoItems.length === 1 ? 'photo' : 'photos'} attached
-                        </p>
-                        <p className="text-xs" style={{ color: hasErroredPhotos ? '#9A5A4A' : '#9A9A8A', fontFamily: 'var(--font-sans)' }}>
-                          {hasUploadingPhotos ? 'Finishing uploads…' : hasErroredPhotos ? 'Retry failed uploads or save without them.' : 'Remove any photo you do not want to keep.'}
-                        </p>
-                      </div>
-                      <ImageGallery
-                        items={photoItems}
-                        onRemove={handleRemovePhoto}
-                        onRetry={handleRetryPhoto}
-                      />
-                    </div>
-                  )}
-
-                  {audioUrl && (
-                    <div
-                      className="flex items-center gap-4 rounded-2xl p-4 animate-fade-up"
-                      style={{
-                        backgroundColor: 'rgba(204,213,174,0.2)',
-                        border: '1px solid rgba(212,163,115,0.15)',
-                      }}
-                    >
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                        style={{ backgroundColor: 'rgba(204,213,174,0.4)' }}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--charcoal)' }}>
-                          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-                          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                          <line x1="12" x2="12" y1="19" y2="22" />
-                        </svg>
-                      </div>
-                      <audio src={audioUrl} controls className="flex-1 h-9" />
-                      <button
-                        type="button"
-                        onClick={() => setAudioUrl(null)}
-                        className="flex items-center gap-1.5 text-xs transition-colors hover:opacity-70 shrink-0"
-                        style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}
-                        aria-label="Remove audio"
-                      >
-                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M18 6L6 18M6 6l12 12" />
-                        </svg>
-                        Remove
-                      </button>
+                      <svg className="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M2 17l10 5 10-5" />
+                        <path d="M2 12l10 5 10-5" />
+                      </svg>
+                      <p className="text-sm italic leading-6" style={{ color: 'var(--charcoal)' }}>
+                        {prompt}
+                      </p>
                     </div>
                   )}
                 </div>
-              ) : (
+              </section>
+
+              <section className="grid gap-6 border-t py-8 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-10 md:py-10" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+                <div className="space-y-3">
+                  <div className="inline-flex rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(254,250,224,0.82)', color: '#7B6B56', fontFamily: 'var(--font-sans)' }}>
+                    {wordCount} {wordCount === 1 ? 'word' : 'words'}
+                  </div>
+                  <div>
+                    <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
+                      Your memory
+                    </Label>
+                    <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
+                      Write with as much detail as feels right. You can return later and revise, but start with what you remember now.
+                    </p>
+                  </div>
+                </div>
+
                 <div
-                  className="rounded-2xl p-6 text-center"
+                  className="rounded-[1.5rem] border p-3 md:p-4"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(212,163,115,0.08) 0%, rgba(204,213,174,0.1) 100%)',
-                    border: '1px solid rgba(212,163,115,0.2)',
+                    backgroundColor: 'rgba(255,253,246,0.78)',
+                    borderColor: 'rgba(212,163,115,0.18)',
+                    boxShadow: '0 18px 40px rgba(212,163,115,0.08)',
                   }}
                 >
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full mb-4" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--bronze)' }}>
-                      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-                      <circle cx="9" cy="9" r="2" />
-                      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-                    </svg>
-                  </div>
-                  <p className="text-sm font-medium mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                    Add photos &amp; voice recordings
-                  </p>
-                  <p className="text-xs mb-4" style={{ color: '#6A6A5A' }}>
-                    Upgrade to Plus or Premium to preserve photos and audio with each memory.
-                  </p>
-                  <Link
-                    href={`/upgrade?book=${id}`}
-                    className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200 hover:opacity-90"
-                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-                  >
-                    Upgrade this book
-                  </Link>
+                  <Textarea
+                    value={answer}
+                    onChange={(e) => handleAnswerChange(e.target.value)}
+                    required
+                    className="min-h-[340px] rounded-[1.2rem] border-0 px-5 py-5 text-base leading-[1.9] md:min-h-[380px] md:text-[1.05rem]"
+                    rows={14}
+                    placeholder="Take your time. There is no perfect way to tell a memory, only your way."
+                    style={{
+                      backgroundColor: '#FFFDF6',
+                      fontFamily: 'var(--font-serif)',
+                      resize: 'vertical',
+                      boxShadow: 'inset 0 0 0 1px rgba(212,163,115,0.18)',
+                    }}
+                  />
                 </div>
-              )}
-            </section>
+              </section>
 
-            <section
-              className="rounded-[1.5rem] border px-4 py-3 text-sm"
-              style={{
-                backgroundColor: 'rgba(212,163,115,0.08)',
-                borderColor: 'rgba(212,163,115,0.14)',
-                color: '#6A6A5A',
-              }}
-            >
-              <svg className="inline w-3.5 h-3.5 mr-1.5 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              Your draft autosaves while you write. Uploaded photos stay attached if you come back later.
-            </section>
+              <section className="grid gap-6 border-t py-8 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-10 md:py-10" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+                <div className="space-y-3">
+                  <div className="inline-flex rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: '#5F6650', fontFamily: 'var(--font-sans)' }}>
+                    Optional
+                  </div>
+                  <div>
+                    <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
+                      Photos &amp; audio
+                    </Label>
+                    <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
+                      Attach a few images or a voice note to preserve details that are difficult to capture in text alone.
+                    </p>
+                  </div>
+                </div>
 
-            <div className="flex flex-col gap-3 pt-1 pb-2 md:flex-row">
-              <Button
-                type="submit"
-                disabled={loading || !answer.trim() || hasUploadingPhotos}
-                className="rounded-full disabled:opacity-50 disabled:cursor-not-allowed h-11 px-7"
-                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-              >
-                {loading ? (
-                  <>
-                    <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
-                    Saving...
-                  </>
-                ) : hasUploadingPhotos ? 'Finishing photo uploads…' : memoryId ? 'Update Memory' : 'Save Memory'}
-              </Button>
-              <Link
-                href={`/books/${id}`}
-                className="inline-flex items-center justify-center h-11 px-6 rounded-full border text-sm font-medium transition-colors"
-                style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)', backgroundColor: '#FDFCF5' }}
-              >
-                Cancel
-              </Link>
-            </div>
-          </form>
-        </div>
+                <div>
+                  {canUseMedia ? (
+                    <div className="space-y-6">
+                      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.95fr)]">
+                        <div
+                          className="rounded-[1.4rem] border p-5"
+                          style={{
+                            backgroundColor: 'rgba(250,237,205,0.28)',
+                            borderColor: 'rgba(212,163,115,0.16)',
+                          }}
+                        >
+                          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                                Photo attachments
+                              </p>
+                              <p className="mt-1 text-xs leading-5" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
+                                Add photos from your device. Images must be under 4MB, and previews appear immediately.
+                              </p>
+                            </div>
+                            <label
+                              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                              style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}
+                            >
+                              <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                className="sr-only"
+                                onChange={(e) => {
+                                  handlePhotoFiles(Array.from(e.target.files ?? []));
+                                  e.currentTarget.value = '';
+                                }}
+                              />
+                              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" x2="12" y1="3" y2="15" />
+                              </svg>
+                              Add photos
+                            </label>
+                          </div>
+
+                          <DropZone onFilesSelected={handlePhotoFiles} className="mt-2" />
+
+                          {mediaErrors.length > 0 && (
+                            <div
+                              className="mt-4 rounded-[1rem] border px-4 py-3 text-sm"
+                              style={{
+                                backgroundColor: 'rgba(185,28,28,0.08)',
+                                borderColor: 'rgba(185,28,28,0.18)',
+                                color: '#7C2D12',
+                              }}
+                            >
+                              {mediaErrors.map((message) => (
+                                <p key={message}>{message}</p>
+                              ))}
+                            </div>
+                          )}
+
+                          {photoItems.length > 0 && (
+                            <div className="mt-5">
+                              <div className="flex flex-wrap items-center justify-between gap-2">
+                                <p className="text-xs font-medium uppercase tracking-[0.16em]" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                                  {photoItems.length} {photoItems.length === 1 ? 'photo' : 'photos'} attached
+                                </p>
+                                <p className="text-xs" style={{ color: hasErroredPhotos ? '#9A5A4A' : '#8E8478', fontFamily: 'var(--font-sans)' }}>
+                                  {hasUploadingPhotos ? 'Finishing uploads…' : hasErroredPhotos ? 'Retry failed uploads or save without them.' : 'Remove any photo you do not want to keep.'}
+                                </p>
+                              </div>
+                              <ImageGallery
+                                items={photoItems}
+                                onRemove={handleRemovePhoto}
+                                onRetry={handleRetryPhoto}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        <div
+                          className="rounded-[1.4rem] border p-5"
+                          style={{
+                            backgroundColor: 'rgba(255,253,246,0.72)',
+                            borderColor: 'rgba(212,163,115,0.16)',
+                          }}
+                        >
+                          <div className="mb-4">
+                            <p className="text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                              Voice note
+                            </p>
+                            <p className="mt-1 text-xs leading-5" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
+                              Upload an audio file or record here. Audio stays local until you save this memory.
+                            </p>
+                          </div>
+
+                          <div className="flex flex-wrap gap-3">
+                            <label
+                              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                              style={{
+                                borderColor: 'rgba(212,163,115,0.24)',
+                                backgroundColor: '#FDFCF5',
+                                color: 'var(--charcoal)',
+                                fontFamily: 'var(--font-sans)',
+                              }}
+                            >
+                              <input
+                                type="file"
+                                accept="audio/*"
+                                className="sr-only"
+                                onChange={(e) => {
+                                  handleAudioFileSelection(e.target.files);
+                                  e.currentTarget.value = '';
+                                }}
+                              />
+                              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" x2="12" y1="3" y2="15" />
+                              </svg>
+                              Add audio file
+                            </label>
+                            <button
+                              type="button"
+                              onClick={recorderState === 'recording' ? handleStopRecording : () => void handleStartRecording()}
+                              disabled={loading || recorderState === 'requesting' || recorderState === 'processing'}
+                              className="inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-70"
+                              style={{
+                                backgroundColor: recorderState === 'recording' ? '#8A3F2B' : 'rgba(212,163,115,0.12)',
+                                color: recorderState === 'recording' ? 'var(--cornsilk)' : 'var(--charcoal)',
+                                fontFamily: 'var(--font-sans)',
+                              }}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                <line x1="12" x2="12" y1="19" y2="22" />
+                              </svg>
+                              {recorderState === 'recording'
+                                ? 'Stop recording'
+                                : recorderState === 'requesting'
+                                  ? 'Preparing…'
+                                  : recorderState === 'processing'
+                                    ? 'Processing…'
+                                    : 'Record audio'}
+                            </button>
+                          </div>
+
+                          <p className="mt-3 text-xs leading-5" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
+                            Audio files up to 16MB. Recorded clips upload when you save.
+                          </p>
+
+                          {audioError && (
+                            <div
+                              className="mt-4 rounded-[1rem] border px-4 py-3 text-sm"
+                              style={{
+                                backgroundColor: 'rgba(185,28,28,0.08)',
+                                borderColor: 'rgba(185,28,28,0.18)',
+                                color: '#7C2D12',
+                              }}
+                            >
+                              {audioError}
+                            </div>
+                          )}
+
+                          {audioDraft && (
+                            <div
+                              className="mt-4 rounded-[1.15rem] border px-4 py-4"
+                              style={{
+                                backgroundColor: 'rgba(204,213,174,0.16)',
+                                borderColor: 'rgba(204,213,174,0.3)',
+                              }}
+                            >
+                              <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                  <p className="truncate text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                                    {audioDraft.fileName}
+                                  </p>
+                                  <p className="mt-1 text-xs leading-5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                                    {audioDraft.sourceFile
+                                      ? 'Ready to upload when you save.'
+                                      : audioDraft.status === 'uploading'
+                                        ? 'Uploading audio…'
+                                        : 'Saved audio attached.'}
+                                  </p>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={handleRemoveAudio}
+                                  className="inline-flex items-center gap-1.5 text-xs transition-colors hover:opacity-70 shrink-0"
+                                  style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}
+                                  aria-label="Remove audio"
+                                >
+                                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M18 6L6 18M6 6l12 12" />
+                                  </svg>
+                                  Remove
+                                </button>
+                              </div>
+                              <audio src={audioDraft.previewUrl} controls className="h-10 w-full" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className="rounded-[1.5rem] px-5 py-6"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(212,163,115,0.08) 0%, rgba(204,213,174,0.1) 100%)',
+                        border: '1px solid rgba(212,163,115,0.2)',
+                      }}
+                    >
+                      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                        <div className="max-w-lg">
+                          <p className="text-sm font-medium mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                            Add photos &amp; voice recordings
+                          </p>
+                          <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
+                            Upgrade to Plus or Premium to preserve photos and audio alongside each memory.
+                          </p>
+                        </div>
+                        <Link
+                          href={`/upgrade?book=${id}`}
+                          className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200 hover:opacity-90"
+                          style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                        >
+                          Upgrade this book
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              <section className="border-t pt-6 md:pt-7" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div
+                    className="rounded-[1.2rem] border px-4 py-3 text-sm"
+                    style={{
+                      backgroundColor: 'rgba(212,163,115,0.08)',
+                      borderColor: 'rgba(212,163,115,0.14)',
+                      color: '#6A6A5A',
+                    }}
+                  >
+                    <svg className="inline w-3.5 h-3.5 mr-1.5 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    Your draft autosaves while you write. Uploaded photos stay attached if you come back later, and audio uploads when you save.
+                  </div>
+
+                  <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+                    <Link
+                      href={`/books/${id}`}
+                      className="inline-flex h-11 items-center justify-center rounded-full border px-6 text-sm font-medium transition-colors"
+                      style={{ borderColor: 'rgba(212,163,115,0.26)', color: 'var(--charcoal)', backgroundColor: 'rgba(255,253,246,0.82)' }}
+                    >
+                      Cancel
+                    </Link>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitDisabled}
+                      className="h-11 rounded-full px-7 disabled:cursor-not-allowed disabled:opacity-100"
+                      style={{
+                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.4)' : 'var(--bronze)',
+                        color: 'var(--charcoal)',
+                      }}
+                    >
+                      {loading ? (
+                        <>
+                          <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                          Saving...
+                        </>
+                      ) : hasUploadingPhotos ? 'Finishing photo uploads…' : hasBlockingRecorderState ? 'Finish recording first' : memoryId ? 'Update Memory' : 'Save Memory'}
+                    </Button>
+                  </div>
+                </div>
+              </section>
+            </form>
+          </div>
+        </article>
       </main>
     </div>
   );
@@ -893,10 +1304,32 @@ function createDraftPhotoItems(urls: string[]): PhotoDraftItem[] {
   return urls.map((url, index) => ({
     id: `${url}-${index}`,
     previewUrl: url,
+    uploadedKey: extractUploadThingKey(url),
     uploadedUrl: url,
     fileName: `Saved photo ${index + 1}`,
     status: 'uploaded',
   }));
+}
+
+function createExistingAudioDraft(url: string): AudioDraft {
+  return {
+    previewUrl: url,
+    uploadedKey: extractUploadThingKey(url),
+    uploadedUrl: url,
+    fileName: getFileNameFromUrl(url, 'Saved audio') ?? 'Saved audio',
+    status: 'uploaded',
+  };
+}
+
+function createLocalAudioDraft(file: File): AudioDraft {
+  return {
+    previewUrl: URL.createObjectURL(file),
+    uploadedKey: null,
+    uploadedUrl: null,
+    fileName: file.name,
+    sourceFile: file,
+    status: 'ready',
+  };
 }
 
 function handlePromptSelectChange(
@@ -936,6 +1369,18 @@ function getImageValidationError(file: File): string | null {
   return null;
 }
 
+function getAudioValidationError(file: File): string | null {
+  if (!file.type.startsWith('audio/')) {
+    return 'Please choose an audio file.';
+  }
+
+  if (file.size > MAX_AUDIO_BYTES) {
+    return 'This audio file is larger than the 16MB limit.';
+  }
+
+  return null;
+}
+
 function getUploadErrorMessage(error: unknown): string {
   if (error instanceof Error && error.message) {
     return error.message;
@@ -948,4 +1393,134 @@ function revokePreviewUrl(item: PhotoDraftItem) {
   if (item.sourceFile && item.previewUrl.startsWith('blob:')) {
     URL.revokeObjectURL(item.previewUrl);
   }
+}
+
+function revokeAudioPreview(draft: AudioDraft | null) {
+  if (draft?.sourceFile && draft.previewUrl.startsWith('blob:')) {
+    URL.revokeObjectURL(draft.previewUrl);
+  }
+}
+
+function resolveUploadedFile(uploaded: unknown): ResolvedUpload {
+  if (!uploaded || typeof uploaded !== 'object') {
+    return { url: null, key: null, fileName: null };
+  }
+
+  const upload = uploaded as {
+    key?: string;
+    name?: string;
+    ufsUrl?: string;
+    serverData?: {
+      key?: string;
+      url?: string;
+      fileName?: string;
+    };
+  };
+
+  const url = upload.ufsUrl ?? upload.serverData?.url ?? null;
+  const key = upload.key ?? upload.serverData?.key ?? extractUploadThingKey(url);
+  const fileName = upload.serverData?.fileName ?? upload.name ?? getFileNameFromUrl(url, null);
+
+  return { url, key, fileName };
+}
+
+function extractUploadThingKey(url: string | null | undefined): string | null {
+  if (!url) {
+    return null;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+    const uploadThingHosts = ['uploadthing.com', 'utfs.io', 'ufs.sh'];
+    if (!uploadThingHosts.some((host) => parsedUrl.hostname === host || parsedUrl.hostname.endsWith(`.${host}`))) {
+      return null;
+    }
+
+    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+    if (pathParts.length === 0) {
+      return null;
+    }
+
+    const fileSegment = pathParts.lastIndexOf('f');
+    const rawKey = fileSegment >= 0 && pathParts[fileSegment + 1]
+      ? pathParts[fileSegment + 1]
+      : pathParts[pathParts.length - 1];
+
+    return rawKey ? decodeURIComponent(rawKey) : null;
+  } catch {
+    return null;
+  }
+}
+
+function getFileNameFromUrl(url: string | null | undefined, fallback: string | null): string | null {
+  if (!url) {
+    return fallback;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+    const fileName = pathParts[pathParts.length - 1];
+
+    return fileName ? decodeURIComponent(fileName) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function getPreferredRecordingMimeType(): string | undefined {
+  if (typeof MediaRecorder === 'undefined') {
+    return undefined;
+  }
+
+  const preferredMimeTypes = [
+    'audio/webm;codecs=opus',
+    'audio/webm',
+    'audio/ogg;codecs=opus',
+    'audio/mp4',
+  ];
+
+  return preferredMimeTypes.find((mimeType) => MediaRecorder.isTypeSupported(mimeType));
+}
+
+function createRecordingFileName(mimeType: string): string {
+  const extension = mimeType.includes('ogg')
+    ? 'ogg'
+    : mimeType.includes('mp4')
+      ? 'm4a'
+      : 'webm';
+
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  return `voice-memory-${timestamp}.${extension}`;
+}
+
+function getAudioRecorderErrorMessage(error: unknown): string {
+  if (error instanceof DOMException) {
+    if (error.name === 'NotAllowedError') {
+      return 'Microphone access was blocked. Please allow microphone access and try again.';
+    }
+
+    if (error.name === 'NotFoundError') {
+      return 'No microphone was found on this device.';
+    }
+  }
+
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  return 'Unable to start recording right now.';
+}
+
+function stopRecorder(
+  recorderRef: MutableRefObject<MediaRecorder | null>,
+  streamRef: MutableRefObject<MediaStream | null>
+) {
+  const stream = streamRef.current;
+  if (stream) {
+    stream.getTracks().forEach((track) => track.stop());
+  }
+
+  recorderRef.current = null;
+  streamRef.current = null;
 }

@@ -88,14 +88,23 @@ export async function PUT(
       return NextResponse.json({ error: 'Memory not found' }, { status: 404 });
     }
 
-    const { prompt_question, answer_text, photo_urls, audio_url } = await request.json();
+    const body = await request.json();
+    const hasPromptQuestion = Object.prototype.hasOwnProperty.call(body, 'prompt_question');
+    const hasAnswerText = Object.prototype.hasOwnProperty.call(body, 'answer_text');
+    const hasPhotoUrls = Object.prototype.hasOwnProperty.call(body, 'photo_urls');
+    const hasAudioUrl = Object.prototype.hasOwnProperty.call(body, 'audio_url');
+
+    const promptQuestion = hasPromptQuestion ? body.prompt_question : memory.prompt_question;
+    const answerText = hasAnswerText ? body.answer_text : memory.answer_text;
+    const photoUrls = hasPhotoUrls ? body.photo_urls : memory.photo_urls;
+    const audioUrl = hasAudioUrl ? body.audio_url : memory.audio_url;
 
     const [updatedMemory] = await sql`
       UPDATE memories
-      SET prompt_question = COALESCE(${prompt_question}, prompt_question),
-          answer_text = COALESCE(${answer_text}, answer_text),
-          photo_urls = COALESCE(${photo_urls}, photo_urls),
-          audio_url = COALESCE(${audio_url}, audio_url),
+      SET prompt_question = ${promptQuestion},
+          answer_text = ${answerText},
+          photo_urls = ${photoUrls},
+          audio_url = ${audioUrl},
           updated_at = CURRENT_TIMESTAMP
       WHERE id = ${memory.id}
       RETURNING id, book_id, prompt_question, answer_text, photo_urls, audio_url, user_id, created_at

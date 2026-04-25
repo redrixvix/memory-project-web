@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { workos, getWorkOS } from '@/lib/workos';
-import sql from '@/lib/db';
-import crypto from 'crypto';
+import { getWorkOS } from '@/lib/workos';
 
 // Simple in-memory rate limiting: email -> lastRequestTimestamp
 const rateLimitMap = new Map<string, number>();
@@ -28,17 +26,10 @@ export async function POST(request: NextRequest) {
     rateLimitMap.set(normalizedEmail, Date.now());
 
     // Create magic auth via WorkOS
-    console.error('MAGIC DEBUG: about to create magic auth');
-    console.error('MAGIC DEBUG: env check', {
-      apiKey: process.env.WORKOS_API_KEY ? 'SET' : 'MISSING',
-      clientId: process.env.WORKOS_CLIENT_ID ? 'SET' : 'MISSING',
-    });
     const workosForMagic = getWorkOS();
-    console.error('MAGIC DEBUG: workos created successfully');
     await workosForMagic.userManagement.createMagicAuth({
       email: normalizedEmail,
     });
-    console.error('MAGIC DEBUG: magic auth created');
 
     // CORS for Expo app
     const response = NextResponse.json({ message: 'Check your email for a magic link' });
@@ -48,7 +39,7 @@ export async function POST(request: NextRequest) {
     response.headers.set('Access-Control-Allow-Credentials', 'true');
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Magic initiate error:', error);
     return NextResponse.json(
       { error: 'Failed to send magic link', detail: error instanceof Error ? error.message : String(error) },

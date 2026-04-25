@@ -10,17 +10,11 @@ export async function GET(request: NextRequest) {
   try {
     const sessionId = request.cookies.get('session')?.value;
 
-    console.error('=== /api/auth/me called ===');
-    console.error('Has session cookie:', !!sessionId);
-    console.error('Cookie value (first 16):', sessionId ? sessionId.substring(0, 16) + '...' : 'none');
-
     if (!sessionId) {
-      console.error('No session cookie - returning 401');
       return NextResponse.json({ user: null }, { status: 401 });
     }
 
     const sessionIdHash = hashSessionId(sessionId);
-    console.error('Hash (first 16):', sessionIdHash.substring(0, 16) + '...');
 
     // Get user from session (lookup by hashed ID)
     const [session] = await sql`
@@ -29,10 +23,7 @@ export async function GET(request: NextRequest) {
       WHERE workos_session_id = ${sessionIdHash}
     `;
 
-    console.error('Session found:', !!session);
-
     if (!session) {
-      console.error('Session not found in DB - returning 401');
       return NextResponse.json({ user: null }, { status: 401 });
     }
 

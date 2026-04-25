@@ -43,21 +43,19 @@ function ImageCard({
     <div
       className={cn(
         "relative group animate-scale-in",
-        isRemoving && "animate-fade-out scale-95 opacity-0 transition-all duration-[280ms]"
+        isRemoving && "animate-fade-out scale-95 opacity-0 transition-all duration-[280ms]",
       )}
       style={{ animationDelay: `${index * 60}ms`, animationFillMode: "both" }}
     >
-      <div
-        className="relative bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-300 group-hover:shadow-md"
+      <figure
+        className="relative overflow-hidden rounded-[1.15rem] border transition-all duration-300"
         style={{
-          boxShadow: "0 2px 12px rgba(212,163,115,0.12), 0 1px 3px rgba(43,43,43,0.06)",
-          padding: "6px 6px 28px 6px",
+          backgroundColor: "rgba(253,252,245,0.9)",
+          borderColor: "rgba(212,163,115,0.18)",
+          boxShadow: "0 14px 32px rgba(212,163,115,0.12)",
         }}
       >
-        <div
-          className="relative overflow-hidden rounded-lg img-frame"
-          style={{ width: 160, height: 160 }}
-        >
+        <div className="relative overflow-hidden img-frame" style={{ aspectRatio: "1 / 1" }}>
           {!isLoaded && (
             <div
               className="absolute inset-0 animate-shimmer"
@@ -70,26 +68,34 @@ function ImageCard({
             alt={`Photo ${index + 1}`}
             className={cn(
               "h-full w-full object-cover transition-opacity duration-300",
-              isLoaded ? "opacity-100" : "opacity-0"
+              isLoaded ? "opacity-100" : "opacity-0",
             )}
             onLoad={() => setIsLoaded(true)}
           />
 
           <div
-            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
-            style={{ background: "rgba(43,43,43,0.32)" }}
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(43,43,43,0.04) 0%, rgba(43,43,43,0.34) 100%)",
+            }}
+          />
+
+          <button
+            type="button"
+            onClick={handleRemove}
+            className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+            style={{
+              backgroundColor: "rgba(254,250,224,0.92)",
+              color: "var(--charcoal)",
+              boxShadow: "0 8px 20px rgba(43,43,43,0.12)",
+            }}
+            aria-label="Remove photo"
           >
-            <button
-              type="button"
-              onClick={handleRemove}
-              className="w-8 h-8 rounded-full flex items-center justify-center bg-white/90 hover:bg-white transition-colors"
-              aria-label="Remove photo"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: "var(--charcoal)" }}>
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
 
           {item.status === "uploading" && (
             <div
@@ -114,15 +120,15 @@ function ImageCard({
 
           {item.status === "error" && (
             <div
-              className="absolute inset-x-2 bottom-2 rounded-lg px-2 py-2"
+              className="absolute inset-x-3 bottom-3 rounded-[0.9rem] px-3 py-2"
               style={{
-                backgroundColor: "rgba(115,46,46,0.92)",
+                backgroundColor: "rgba(115,46,46,0.94)",
                 color: "var(--cornsilk)",
                 boxShadow: "0 8px 24px rgba(43,43,43,0.15)",
               }}
             >
               <p
-                className="text-[0.625rem] font-medium leading-tight"
+                className="text-[0.66rem] font-medium leading-tight"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 {item.error ?? "Upload failed"}
@@ -144,31 +150,50 @@ function ImageCard({
             </div>
           )}
 
-          <div
-            className="absolute bottom-2 left-2 text-xs font-medium px-2 py-0.5 rounded-full"
+          <span
+            className="absolute bottom-3 left-3 rounded-full px-2.5 py-1 text-[0.65rem] font-medium"
             style={{
               backgroundColor: "rgba(254,250,224,0.92)",
               color: "var(--charcoal)",
               fontFamily: "var(--font-sans)",
-              fontSize: "0.6875rem",
+              letterSpacing: "0.04em",
             }}
           >
-            {index + 1} / {total}
-          </div>
+            {item.status === "uploading"
+              ? "Uploading"
+              : item.status === "error"
+                ? "Needs attention"
+                : `${index + 1} of ${total}`}
+          </span>
         </div>
 
         <div
-          className="absolute bottom-0 left-0 right-0 text-center py-2 text-xs truncate"
+          className="flex items-center justify-between gap-3 px-4 py-3"
           style={{
-            color: item.status === "error" ? "rgba(124,69,47,0.75)" : "rgba(43,43,43,0.45)",
-            fontFamily: "var(--font-sans)",
-            fontSize: "0.625rem",
-            letterSpacing: "0.05em",
+            borderTop: "1px solid rgba(212,163,115,0.14)",
+            backgroundColor: "rgba(255,253,246,0.76)",
           }}
         >
-          {item.status === "uploaded" ? item.fileName : `Photo ${index + 1}`}
+          <figcaption
+            className="min-w-0 truncate text-[0.72rem] uppercase tracking-[0.16em]"
+            style={{
+              color: item.status === "error" ? "#8B5E4C" : "rgba(43,43,43,0.52)",
+              fontFamily: "var(--font-sans)",
+            }}
+          >
+            {item.status === "uploaded" ? item.fileName : `Photo ${index + 1}`}
+          </figcaption>
+          <span
+            className="shrink-0 text-[0.68rem]"
+            style={{
+              color: item.status === "error" ? "#8B5E4C" : "#8C7A67",
+              fontFamily: "var(--font-sans)",
+            }}
+          >
+            {index + 1}/{total}
+          </span>
         </div>
-      </div>
+      </figure>
     </div>
   );
 }
@@ -178,10 +203,7 @@ export function ImageGallery({ items, onRemove, onRetry }: ImageGalleryProps) {
 
   return (
     <div className="mt-6">
-      <div
-        className="flex flex-wrap gap-5"
-        style={{ padding: "4px 2px" }}
-      >
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {items.map((item, index) => (
           <ImageCard
             key={item.id}
@@ -214,10 +236,13 @@ export function DropZone({
   const [isHovering, setIsHovering] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    if (!disabled) setIsDragging(true);
-  }, [disabled]);
+  const handleDragOver = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      if (!disabled) setIsDragging(true);
+    },
+    [disabled],
+  );
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -230,12 +255,10 @@ export function DropZone({
       setIsDragging(false);
       if (disabled) return;
 
-      const files = Array.from(e.dataTransfer.files).filter((file) =>
-        file.type.startsWith("image/")
-      );
+      const files = Array.from(e.dataTransfer.files).filter((file) => file.type.startsWith("image/"));
       if (files.length > 0) onFilesSelected(files);
     },
-    [disabled, onFilesSelected]
+    [disabled, onFilesSelected],
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -267,88 +290,93 @@ export function DropZone({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       className={cn(
-        "relative cursor-pointer rounded-2xl border-2 border-dashed transition-all duration-300 overflow-hidden",
+        "relative cursor-pointer overflow-hidden rounded-[1.35rem] border transition-all duration-300",
+        isDragging && "scale-[1.01]",
         className,
-        disabled && "opacity-50 cursor-not-allowed",
-        isDragging
-          ? "border-[var(--bronze)] scale-[1.01]"
-          : isHovering
-            ? "border-[var(--bronze)]/60"
-            : "border-[rgba(212,163,115,0.25)]"
       )}
       style={{
+        borderColor: isDragging
+          ? "rgba(212,163,115,0.5)"
+          : isHovering
+            ? "rgba(212,163,115,0.34)"
+            : "rgba(212,163,115,0.2)",
         backgroundColor: isDragging
           ? "rgba(212,163,115,0.08)"
-          : "rgba(250,237,205,0.4)",
-        minHeight: 120,
+          : isHovering
+            ? "rgba(250,237,205,0.42)"
+            : "rgba(255,253,246,0.82)",
+        minHeight: 148,
+        boxShadow: isDragging ? "0 18px 36px rgba(212,163,115,0.14)" : "none",
       }}
     >
-      <div
-        className="absolute inset-0 pointer-events-none opacity-30"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E")`,
-        }}
-      />
-
       <input
         ref={inputRef}
         type="file"
-        accept={accept}
         multiple
+        accept={accept}
         onChange={handleInputChange}
-        className="sr-only"
         disabled={disabled}
+        className="sr-only"
       />
 
-      <div
-        className={cn(
-          "flex flex-col items-center justify-center gap-3 py-8 px-6 transition-all duration-300",
-          isDragging && "scale-100"
-        )}
-      >
+      <div className="absolute inset-0 opacity-[0.06]">
         <div
-          className={cn(
-            "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300",
-            isDragging
-              ? "bg-[var(--bronze)] scale-110"
-              : "bg-[rgba(212,163,115,0.15)]"
-          )}
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 25% 25%, rgba(212,163,115,0.28) 0, transparent 42%), radial-gradient(circle at 75% 70%, rgba(204,213,174,0.3) 0, transparent 40%)",
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 flex h-full flex-col items-center justify-center p-8 text-center">
+        <div
+          className={cn("mb-4 flex h-14 w-14 items-center justify-center rounded-full transition-all duration-300", isDragging && "scale-110")}
+          style={{
+            backgroundColor: isDragging ? "rgba(212,163,115,0.15)" : "rgba(212,163,115,0.1)",
+          }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
+            width="24"
+            height="24"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="1.8"
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{ color: isDragging ? "var(--cornsilk)" : "var(--bronze)" }}
+            style={{
+              color: isDragging ? "var(--bronze)" : "rgba(43,43,43,0.55)",
+              transition: "color 300ms ease",
+            }}
           >
-            <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-            <circle cx="9" cy="9" r="2" />
-            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" x2="12" y1="3" y2="15" />
           </svg>
         </div>
 
-        <div className="text-center">
-          <p
-            className="text-sm font-medium transition-colors duration-200"
-            style={{
-              color: isDragging ? "var(--bronze)" : "var(--charcoal)",
-              fontFamily: "var(--font-sans)",
-            }}
-          >
-            {isDragging ? "Drop photos here" : "Drag photos here"}
-          </p>
-          <p
-            className="text-xs mt-1"
-            style={{ color: "#6A6A5A", fontFamily: "var(--font-sans)" }}
-          >
-            or click to browse — up to 4MB each
-          </p>
-        </div>
+        <p
+          className="mb-1 text-sm font-medium"
+          style={{
+            color: "var(--charcoal)",
+            fontFamily: "var(--font-sans)",
+          }}
+        >
+          {isDragging ? "Drop images here" : "Drag photos here"}
+        </p>
+
+        <p
+          className="max-w-xs text-xs leading-5"
+          style={{
+            color: "rgba(43,43,43,0.6)",
+            fontFamily: "var(--font-sans)",
+          }}
+        >
+          or click to browse from your device. We will show previews right away and finish
+          uploading in the background.
+        </p>
       </div>
     </div>
   );
