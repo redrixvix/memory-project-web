@@ -69,6 +69,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  // Per-photo error state for graceful degradation in the grid
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     fetchBook();
@@ -120,6 +122,16 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePhotoError = (memoryIndex: number) => {
+    setImageErrors(prev => ({ ...prev, [memoryIndex]: true }));
+  };
+
+  const handlePhotoClick = (memoryIndex: number, url: string) => {
+    if (!imageErrors[memoryIndex]) {
+      setLightboxSrc(url);
+    }
   };
 
   if (loading) {
@@ -384,17 +396,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       {memory.photo_urls && memory.photo_urls.length > 0 && (
                         <div className="flex gap-3 mt-7 overflow-x-auto pb-2">
                           {memory.photo_urls.map((url, i) => {
-                            const [imgError, setImgError] = useState(false);
+                            const globalIndex = memories.indexOf(memory) * 100 + i;
+                            const hasError = !!imageErrors[globalIndex];
                             return (
                               <button
                                 key={i}
                                 type="button"
-                                onClick={() => !imgError && setLightboxSrc(url)}
+                                onClick={() => handlePhotoClick(globalIndex, url)}
                                 className="img-frame rounded-xl overflow-hidden shrink-0 cursor-pointer transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] relative"
                                 style={{ minHeight: 200, minWidth: 200 }}
                                 aria-label={`View photo ${i + 1}`}
                               >
-                                {imgError ? (
+                                {hasError ? (
                                   <div
                                     className="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl"
                                     style={{
@@ -437,7 +450,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                     height={192}
                                     className="object-cover rounded-xl"
                                     style={{ minHeight: 200, minWidth: 200 }}
-                                    onError={() => setImgError(true)}
+                                    onError={() => handlePhotoError(globalIndex)}
                                   />
                                 )}
                               </button>
