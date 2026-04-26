@@ -75,6 +75,7 @@ export default function Dashboard() {
   const [newDesc, setNewDesc] = useState('');
   const [newPlan, setNewPlan] = useState<BookPlan>('free');
   const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
 
   useEffect(() => {
@@ -105,9 +106,27 @@ export default function Dashboard() {
     void fetchUserAndBooks();
   }, [router]);
 
+  // Close modal on Escape
+  useEffect(() => {
+    if (!showCreate) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !creating) {
+        setShowCreate(false);
+        setCreateError('');
+      }
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [showCreate, creating]);
+
   const createBook = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!newTitle.trim()) {
+      setCreateError('Please enter a title for your book.');
+      return;
+    }
     setCreating(true);
+    setCreateError('');
     try {
       const res = await fetch('/api/books', {
         method: 'POST',
@@ -120,6 +139,9 @@ export default function Dashboard() {
         setNewPlan('free');
         setShowCreate(false);
         router.push(`/books/${data.book.id}`);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setCreateError(err.error || 'Failed to create book. Please try again.');
       }
     } finally { setCreating(false); }
   };
@@ -159,33 +181,41 @@ export default function Dashboard() {
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
       {/* ── TOP NAV ── */}
-      <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
+      <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
+          {/* Left: Logo */}
           <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2">
-              <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
-                <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
-                <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
-              </svg>
-              <span className="text-base font-medium tracking-tight" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 group-hover:scale-105" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <svg width="18" height="18" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
+                  <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
+                  <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+                </svg>
+              </div>
+              <span className="text-base font-medium tracking-tight hidden sm:block" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
             </Link>
           </div>
-          <Link
-            href="/dashboard"
-            aria-current="page"
-            className="text-sm font-medium transition-colors hover:opacity-70"
-            style={{ color: 'var(--charcoal)' }}
-          >
-            Dashboard
-          </Link>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="text-sm transition-colors hover:opacity-70"
-            style={{ color: '#6A6A5A' }}
-          >
-            Sign out
-          </button>
+
+          {/* Center: Page indicator */}
+          <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--bronze)' }} />
+            <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Dashboard</span>
+          </div>
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="h-9 px-4 rounded-full text-sm font-medium transition-all duration-200 hover:opacity-70 flex items-center gap-2"
+              style={{ color: '#6A6A5A', backgroundColor: 'rgba(212,163,115,0.08)' }}
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              <span className="hidden sm:inline">Sign out</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -193,168 +223,232 @@ export default function Dashboard() {
       <main className="px-6 md:px-10 py-12 max-w-5xl mx-auto w-full">
 
         {/* Greeting + header */}
-        <div className="mb-8">
-          <p className="label-caps mb-2" style={{ color: 'var(--bronze)' }}>Your library</p>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div className="flex items-center gap-4">
-              {user ? (
-                <>
-                  <Avatar
-                    name={user.name}
-                    imageUrl={user.profileImageUrl || null}
-                    className="w-10 h-10"
-                  />
-                  <h1 className="display-md" style={{ color: 'var(--charcoal)' }}>
-                    Your Memory Books
-                  </h1>
-                </>
-              ) : (
-                <h1 className="display-md" style={{ color: 'var(--charcoal)' }}>
+        <div className="mb-10">
+          {user && (
+            <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-8">
+              <Avatar
+                name={user.name}
+                imageUrl={user.profileImageUrl || null}
+                className="w-14 h-14 shrink-0"
+              />
+              <div className="flex flex-col">
+                <p className="label-caps mb-1.5" style={{ color: 'var(--bronze)' }}>
+                  Welcome back
+                </p>
+                <h1 className="display-md mb-2" style={{ color: 'var(--charcoal)' }}>
                   Your Memory Books
                 </h1>
-              )}
+                <p className="text-sm mb-5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                  {user.name.split(' ')[0]}'s collection — {books.length} {books.length === 1 ? 'book' : 'books'} in the library
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              {books.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <label htmlFor="sort-select" className="text-xs" style={{ color: '#6A6A5A' }}>Sort by</label>
-                  <select
-                    id="sort-select"
-                    value={sortOrder}
-                    onChange={(e) => setSortOrder(e.target.value as typeof sortOrder)}
-                    className="text-xs rounded-lg px-3 py-1.5 cursor-pointer"
-                    style={{ border: '1px solid rgba(212,163,115,0.25)', backgroundColor: 'var(--papaya)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+          )}
+
+          {!user && (
+            <h1 className="display-md mb-6" style={{ color: 'var(--charcoal)' }}>
+              Your Memory Books
+            </h1>
+          )}
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            {books.length > 0 && (
+              <div className="flex items-center gap-1 rounded-full p-1" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.12)' }}>
+                {([
+                  { value: 'newest', label: 'Newest' },
+                  { value: 'oldest', label: 'Oldest' },
+                  { value: 'alpha', label: 'A–Z' },
+                ] as const).map(({ value, label }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setSortOrder(value)}
+                    className="rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200"
+                    style={{
+                      backgroundColor: sortOrder === value ? 'var(--charcoal)' : 'transparent',
+                      color: sortOrder === value ? 'var(--cornsilk)' : '#6A6A5A',
+                      fontFamily: 'var(--font-sans)',
+                    }}
                   >
-                    <option value="newest">Newest</option>
-                    <option value="oldest">Oldest</option>
-                    <option value="alpha">A–Z</option>
-                  </select>
-                </div>
-              )}
-              <p className="text-sm" style={{ color: '#6A6A5A' }}>
-                {books.length === 0
-                  ? 'Capture and preserve your family\'s stories'
-                  : `${books.length} ${books.length === 1 ? 'book' : 'books'} in your library`}
-              </p>
-              <Button
-                onClick={() => setShowCreate(true)}
-                type="button"
-                className="rounded-full shrink-0 h-11 px-6 text-sm font-medium transition-all duration-200 active:scale-95"
-                style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
-              >
-                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M12 5v14M5 12h14"/>
-                </svg>
-                New Book
-              </Button>
-            </div>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+            <Button
+              onClick={() => setShowCreate(true)}
+              type="button"
+              className="rounded-full shrink-0 h-12 px-7 text-sm font-medium transition-all duration-200 active:scale-95"
+              style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+            >
+              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              New Book
+            </Button>
           </div>
         </div>
 
-        {/* ── Create book form ── */}
+        {/* ── Create book modal ── */}
         {showCreate && (
           <div
-            className="mb-8 animate-fade-up"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="create-book-title"
           >
-            <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.2)', boxShadow: '0 8px 32px rgba(212,163,115,0.1)' }}>
-              <CardContent className="pt-0">
-                <div className="flex items-start justify-between mb-6">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0"
+              style={{ backgroundColor: 'rgba(43,43,43,0.55)', backdropFilter: 'blur(6px)' }}
+              onClick={() => { if (!creating) { setShowCreate(false); setCreateError(''); } }}
+            />
+
+            {/* Modal panel */}
+            <div
+              className="relative w-full max-w-lg rounded-3xl overflow-hidden animate-fade-up"
+              style={{
+                backgroundColor: '#FDFCF5',
+                boxShadow: '0 40px 100px rgba(43,43,43,0.22), 0 12px 40px rgba(212,163,115,0.12)',
+              }}
+            >
+              {/* Warm top bar */}
+              <div className="h-1.5 w-full" style={{ backgroundColor: 'var(--bronze)' }} />
+
+              <div className="p-8">
+                {/* Header */}
+                <div className="flex items-start justify-between mb-7">
                   <div>
-                    <h2 className="text-xl font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+                    <h2 id="create-book-title" className="text-2xl font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
                       Create a new memory book
                     </h2>
-                    <p className="text-sm mt-1" style={{ color: '#6A6A5A' }}>Give it a name — you can always change it later.</p>
+                    <p className="text-sm mt-1.5" style={{ color: '#6A6A5A' }}>Give it a name — you can always change it later.</p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowCreate(false)}
-                    className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-70"
-                    style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A' }}
-                  >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M18 6L6 18M6 6l12 12"/>
-                    </svg>
-                  </button>
+                  {!creating && (
+                    <button
+                      type="button"
+                      onClick={() => { setShowCreate(false); setCreateError(''); }}
+                      className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:opacity-70 active:scale-95 shrink-0"
+                      style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}
+                      aria-label="Close"
+                    >
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  )}
                 </div>
-                <form onSubmit={createBook} className="space-y-5">
+
+                <form onSubmit={createBook} className="space-y-6">
+                  {/* Title */}
                   <div className="space-y-2">
-                    <Label htmlFor="title" className="text-sm" style={{ color: 'var(--charcoal)' }}>Book title</Label>
+                    <Label htmlFor="modal-title" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                      Book title <span style={{ color: 'var(--bronze)' }}>*</span>
+                    </Label>
                     <Input
-                      id="title"
+                      id="modal-title"
                       type="text"
                       value={newTitle}
-                      onChange={(e) => setNewTitle(e.target.value)}
+                      onChange={(e) => { setNewTitle(e.target.value); setCreateError(''); }}
                       required
+                      autoFocus
                       placeholder="Ruth's Life Story"
-                      className="rounded-xl text-base w-full"
-                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
+                      className="rounded-xl text-base w-full h-12"
+                      style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
                     />
                   </div>
+
+                  {/* Description */}
                   <div className="space-y-2">
-                    <Label htmlFor="desc" className="text-sm" style={{ color: 'var(--charcoal)' }}>
+                    <Label htmlFor="modal-desc" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                       Description <span className="font-normal opacity-50">(optional)</span>
                     </Label>
                     <Textarea
-                      id="desc"
+                      id="modal-desc"
                       value={newDesc}
                       onChange={(e) => setNewDesc(e.target.value)}
                       className="resize-none rounded-xl text-base w-full"
                       rows={3}
                       placeholder="A collection of memories from a wonderful life..."
-                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
+                      style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
                     />
                   </div>
+
+                  {/* Plan selection */}
                   <div className="space-y-3">
-                    <Label className="text-sm" style={{ color: 'var(--charcoal)' }}>
-                      Subscription tier
+                    <Label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                      Plan
                     </Label>
-                    <div className="grid gap-3 sm:grid-cols-3">
+                    <div className="grid gap-3">
                       {BOOK_PLAN_OPTIONS.map((plan) => (
                         <button
                           key={plan.id}
                           type="button"
                           onClick={() => setNewPlan(plan.id)}
-                          className="rounded-2xl border px-4 py-4 text-left transition-all duration-200"
+                          className="rounded-2xl border px-5 py-4 text-left transition-all duration-200 relative"
                           style={{
-                            backgroundColor: newPlan === plan.id ? '#FDFCF5' : 'var(--papaya)',
+                            backgroundColor: newPlan === plan.id ? '#FFFDF8' : 'rgba(212,163,115,0.04)',
                             borderColor: newPlan === plan.id ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
-                            boxShadow: newPlan === plan.id ? '0 8px 24px rgba(212,163,115,0.12)' : 'none',
+                            boxShadow: newPlan === plan.id ? '0 6px 20px rgba(212,163,115,0.14)' : 'none',
                           }}
                         >
+                          {newPlan === plan.id && (
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
+                              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
+                                <path d="M20 6L9 17l-5-5"/>
+                              </svg>
+                            </div>
+                          )}
                           <p className="label-caps mb-1" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
-                          <p className="text-lg font-medium" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
+                          <p className="text-base font-medium" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
                           <p className="text-xs mt-2 leading-relaxed" style={{ color: '#6A6A5A' }}>
                             {plan.description}
                           </p>
                         </button>
                       ))}
                     </div>
-                    <p className="text-xs" style={{ color: '#6A6A5A' }}>
-                      Plans are assigned per book, so you can keep some books free and upgrade others later.
-                    </p>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-3">
+
+                  {/* Error */}
+                  {createError && (
+                    <div
+                      className="rounded-xl px-4 py-3 text-sm"
+                      style={{ backgroundColor: 'rgba(185,28,28,0.08)', border: '1px solid rgba(185,28,28,0.2)', color: '#7C2D12' }}
+                    >
+                      {createError}
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex gap-3 pt-2">
                     <Button
                       type="submit"
                       disabled={creating}
-                      className="rounded-full h-11 px-7 text-sm font-medium w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-60"
                       style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
                     >
-                      {creating ? 'Creating...' : 'Create Book'}
+                      {creating ? (
+                        <>
+                          <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                          Creating...
+                        </>
+                      ) : 'Create Book'}
                     </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowCreate(false)}
-                      className="rounded-full h-11 px-6 text-sm"
-                      style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
-                    >
-                      Cancel
-                    </Button>
+                    {!creating && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => { setShowCreate(false); setCreateError(''); }}
+                        className="rounded-full h-12 px-6 text-sm font-medium"
+                        style={{ borderColor: 'rgba(212,163,115,0.35)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
+                      >
+                        Cancel
+                      </Button>
+                    )}
                   </div>
                 </form>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         )}
 
@@ -364,10 +458,10 @@ export default function Dashboard() {
             className="text-center py-24 animate-fade-up"
           >
             {/* Elegant empty-state illustration */}
-            <div className="inline-block mb-10">
+            <div className="inline-block mb-12">
               <div
-                className="relative mx-auto"
-                style={{ width: 120, height: 160 }}
+                className="relative mx-auto animate-float"
+                style={{ width: 120, height: 160, animationDuration: '5s', animationDelay: '0.5s' }}
               >
                 {/* Book stack - bottom */}
                 <div
@@ -430,8 +524,8 @@ export default function Dashboard() {
             </div>
 
             <h2 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>Your library is empty</h2>
-            <p className="text-sm max-w-xs mx-auto leading-relaxed mb-10" style={{ color: '#6A6A5A' }}>
-              Every family has stories worth keeping. Create your first memory book and start capturing the moments that matter most.
+            <p className="text-base max-w-sm mx-auto leading-relaxed mb-10" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+              Every family has stories worth preserving. Create your first book and start capturing the moments that matter.
             </p>
             <Button
               onClick={() => setShowCreate(true)}
@@ -439,10 +533,13 @@ export default function Dashboard() {
               className="rounded-full h-12 px-8 text-sm font-medium"
               style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
             >
+              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
               Create your first book
             </Button>
-            <p className="text-xs mt-5 max-w-xs mx-auto leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-              It takes about 5 minutes to create your first book and add your first memory.
+            <p className="text-xs mt-6 max-w-xs mx-auto leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+              Takes about 5 minutes — and it&apos;s free to start.
             </p>
           </div>
         ) : (
@@ -465,43 +562,41 @@ export default function Dashboard() {
                 >
                   <Link href={`/books/${book.id}`} className="block h-full group">
                     <div
-                      className="relative h-full rounded-2xl overflow-hidden"
+                      className="relative h-full rounded-3xl overflow-hidden group cursor-pointer transition-all duration-500"
                       style={{
                         backgroundColor: '#FFFFFF',
-                        boxShadow: '0 2px 12px rgba(212,163,115,0.08)',
-                        transition: 'box-shadow 0.2s ease, transform 0.2s ease',
-                        cursor: 'pointer',
+                        boxShadow: '0 2px 12px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.04)',
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 32px rgba(212,163,115,0.14)';
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 56px rgba(212,163,115,0.16), 0 4px 16px rgba(212,163,115,0.08)';
                         (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)';
                       }}
                       onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(212,163,115,0.08)';
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.04)';
                         (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
                       }}
                     >
                       {/* Color stripe on left */}
                       <div
-                        className="absolute left-0 top-0 bottom-0"
+                        className="absolute left-0 top-0 bottom-0 rounded-l-3xl"
                         style={{
-                          width: 6,
+                          width: 7,
                           backgroundColor: BOOK_COLORS[i % BOOK_COLORS.length],
                         }}
                       />
                       {/* Mini book cover visual */}
                       <div
-                        className="absolute"
+                        className="absolute hidden md:flex"
                         style={{
-                          right: 20,
+                          right: 24,
                           top: '50%',
                           transform: 'translateY(-50%)',
-                          width: 52,
-                          height: 70,
-                          borderRadius: 6,
-                          background: `linear-gradient(160deg, #FDFCF5 0%, #F8F5E8 60%, #F0EBD5 100%)`,
+                          width: 60,
+                          height: 82,
+                          borderRadius: 8,
+                          background: `linear-gradient(160deg, #FDFCF5 0%, #F8F5E8 55%, #F0EBD5 100%)`,
                           border: '1px solid rgba(212,163,115,0.35)',
-                          boxShadow: '2px 3px 8px rgba(43,43,43,0.12)',
+                          boxShadow: '3px 4px 12px rgba(43,43,43,0.10), inset 0 0 0 0.5px rgba(255,255,255,0.6)',
                           overflow: 'hidden',
                         }}
                       >
@@ -510,23 +605,32 @@ export default function Dashboard() {
                           position: 'absolute',
                           left: 0, top: 0, bottom: 0,
                           width: 5,
-                          background: `linear-gradient(to right, ${BOOK_COLORS[i % BOOK_COLORS.length]}88, ${BOOK_COLORS[i % BOOK_COLORS.length]}44)`,
-                          borderRadius: '6px 0 0 6px',
+                          background: `linear-gradient(to right, ${BOOK_COLORS[i % BOOK_COLORS.length]}aa, ${BOOK_COLORS[i % BOOK_COLORS.length]}44)`,
+                          borderRadius: '8px 0 0 8px',
                         }} />
-                        <div className="pt-3 px-2 pl-3">
-                          <div style={{ height: 1, backgroundColor: 'rgba(212,163,115,0.25)', marginBottom: 5 }} />
-                          {[1,2,3].map((_, li) => (
+                        {/* Cover content */}
+                        <div className="pt-4 px-3 pl-3">
+                          <div style={{ height: 1, backgroundColor: 'rgba(212,163,115,0.28)', marginBottom: 6 }} />
+                          {[1,2,3,4].map((_, li) => (
                             <div key={li} style={{
-                              height: 2,
-                              width: `${70 + li * 8}%`,
-                              backgroundColor: 'rgba(212,163,115,0.2)',
+                              height: 2.5,
+                              width: `${55 + li * 10}%`,
+                              backgroundColor: li % 2 === 0 ? 'rgba(212,163,115,0.25)' : 'rgba(204,213,174,0.38)',
                               borderRadius: 2,
-                              marginBottom: 3,
+                              marginBottom: 4,
                             }} />
                           ))}
+                          {/* Small title line */}
+                          <div style={{
+                            height: 3,
+                            width: '75%',
+                            backgroundColor: `${BOOK_COLORS[i % BOOK_COLORS.length]}66`,
+                            borderRadius: 2,
+                            marginTop: 8,
+                          }} />
                         </div>
                       </div>
-                      <CardContent className="p-7" style={{ paddingLeft: 24, paddingRight: 80 }}>
+                      <CardContent className="p-8 pr-24 md:pr-28" style={{ paddingLeft: 28 }}>
                         {/* Title + plan badge */}
                         <div className="flex items-center gap-2 mb-2">
                           <h3 className="text-2xl font-medium leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
@@ -564,7 +668,9 @@ export default function Dashboard() {
                                   <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                                 </svg>
                                 <span className="text-xs font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
-                                  {book._count.memories} {book._count.memories === 1 ? 'memory' : 'memories'}
+                                  {book._count.memories === 0
+                                    ? 'No memories yet'
+                                    : `${book._count.memories} ${book._count.memories === 1 ? 'memory' : 'memories'}`}
                                 </span>
                               </div>
                             )}

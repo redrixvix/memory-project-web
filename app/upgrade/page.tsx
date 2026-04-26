@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { Check } from 'lucide-react';
+
 import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 
 interface Book {
@@ -224,60 +226,87 @@ export default function UpgradePage() {
 
         {/* Plan radio cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {BOOK_PLAN_OPTIONS.map(plan => (
-            <button
-              key={plan.id}
-              type="button"
-              onClick={() => setSelectedPlan(plan.id)}
-              className="text-left rounded-2xl p-7 transition-all duration-200"
-              style={{
-                backgroundColor: selectedPlan === plan.id ? '#FDFCF5' : 'var(--papaya)',
-                border: selectedPlan === plan.id ? '2px solid var(--bronze)' : '1px solid rgba(212,163,115,0.2)',
-                boxShadow: selectedPlan === plan.id ? '0 8px 32px rgba(212,163,115,0.16)' : '0 2px 8px rgba(212,163,115,0.06)',
-                cursor: 'pointer',
-              }}
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <p className="label-caps mb-1" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
-                  <p className="text-3xl font-medium" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
-                  <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>{plan.description}</p>
+          {BOOK_PLAN_OPTIONS.map(plan => {
+            const isCurrentPlan = selectedBook && normalizeBookPlan(selectedBook.plan) === plan.id;
+            const isSelected = selectedPlan === plan.id;
+            const isPopular = plan.id === 'premium' && !isCurrentPlan;
+            return (
+              <button
+                key={plan.id}
+                type="button"
+                onClick={() => !isCurrentPlan && setSelectedPlan(plan.id)}
+                disabled={isCurrentPlan}
+                className="text-left rounded-2xl p-7 transition-all duration-200 relative"
+                style={{
+                  backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(204,213,174,0.12)' : 'var(--papaya)',
+                  border: isSelected ? '2px solid var(--bronze)' : isCurrentPlan ? '2px dashed rgba(212,163,115,0.35)' : '1px solid rgba(212,163,115,0.2)',
+                  boxShadow: isSelected ? '0 12px 40px rgba(212,163,115,0.2)' : isCurrentPlan ? 'none' : '0 4px 16px rgba(212,163,115,0.08)',
+                  cursor: isCurrentPlan ? 'default' : 'pointer',
+                  opacity: isCurrentPlan ? 0.75 : 1,
+                  transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+                }}
+              >
+                {/* Popular badge */}
+                {isPopular && (
+                  <div
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap"
+                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                  >
+                    Most Popular
+                  </div>
+                )}
+                {/* Current plan badge */}
+                {isCurrentPlan && (
+                  <div
+                    className="absolute top-4 right-4 flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full"
+                    style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                  >
+                    <Check size={10} strokeWidth={3} />
+                    Current
+                  </div>
+                )}
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <p className="label-caps mb-1" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--bronze)' }}>{plan.label}</p>
+                    <p className="text-3xl font-medium" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--charcoal)' }}>{plan.price}</p>
+                    <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>{plan.description}</p>
+                  </div>
+                  <div
+                    className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-1"
+                    style={{
+                      backgroundColor: isSelected ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
+                      border: isSelected ? 'none' : '1px solid rgba(212,163,115,0.3)',
+                    }}
+                  >
+                    {isSelected && (
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
+                        <path d="M20 6L9 17l-5-5"/>
+                      </svg>
+                    )}
+                  </div>
                 </div>
-                <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-1"
-                  style={{
-                    backgroundColor: selectedPlan === plan.id ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
-                    border: selectedPlan === plan.id ? 'none' : '1px solid rgba(212,163,115,0.3)',
-                  }}
-                >
-                  {selectedPlan === plan.id && (
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
-                      <path d="M20 6L9 17l-5-5"/>
-                    </svg>
-                  )}
-                </div>
-              </div>
-              <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 24 }} />
-              <ul className="space-y-2.5">
-                {plan.features.map((feat, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
-                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
-                    {feat}
-                  </li>
-                ))}
-                {plan.notFeatures.map((feat, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: '#6A6A5A' }}>
-                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#B0B09A' }}>
-                      <path d="M18 6L6 18M6 6l12 12" />
-                    </svg>
-                    {feat}
-                  </li>
-                ))}
-              </ul>
-            </button>
-          ))}
+                <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 24 }} />
+                <ul className="space-y-2.5">
+                  {plan.features.map((feat, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--charcoal)' }}>
+                      <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: isCurrentPlan ? '#B0B09A' : 'var(--bronze)' }}>
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
+                      {feat}
+                    </li>
+                  ))}
+                  {plan.notFeatures.map((feat, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: '#9A9A8A' }}>
+                      <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#C8C8B8' }}>
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+              </button>
+            );
+          })}
         </div>
 
         {/* Error */}
@@ -290,18 +319,25 @@ export default function UpgradePage() {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={submitting || !selectedBook || selectedBook.plan === selectedPlan}
-            className="rounded-full h-12 px-10 text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+            disabled={submitting || !selectedBook || (selectedBook && normalizeBookPlan(selectedBook.plan) === selectedPlan)}
+            className="rounded-full h-12 px-10 text-sm font-semibold transition-all duration-200 disabled:cursor-not-allowed gap-2"
+            style={{
+              backgroundColor: selectedBook && normalizeBookPlan(selectedBook.plan) === selectedPlan ? 'rgba(212,163,115,0.12)' : 'var(--bronze)',
+              color: selectedBook && normalizeBookPlan(selectedBook.plan) === selectedPlan ? '#6A6A5A' : 'var(--charcoal)',
+              border: selectedBook && normalizeBookPlan(selectedBook.plan) === selectedPlan ? '1px solid rgba(212,163,115,0.3)' : 'none',
+            }}
           >
             {submitting ? (
               <span className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full animate-spin" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
                 Saving...
               </span>
-            ) : selectedBook && selectedBook.plan === selectedPlan ? (
-              `${getBookPlanLabel(selectedPlan)} Plan Active`
-            ) : `Confirm ${getBookPlanLabel(selectedPlan)} Plan`}
+            ) : selectedBook && normalizeBookPlan(selectedBook.plan) === selectedPlan ? (
+              <span className="flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Current Plan
+              </span>
+            ) : `Upgrade to ${getBookPlanLabel(selectedPlan)}`}
           </button>
           <Link
             href="/dashboard"

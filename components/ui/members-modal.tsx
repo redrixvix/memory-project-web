@@ -220,13 +220,36 @@ export function MembersModal({ bookId, onClose, currentUserId, currentUserRole }
 
           {/* Members list */}
           {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="w-6 h-6 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
+            <div className="flex flex-col items-center justify-center py-12 gap-4">
+              <div className="w-10 h-10 rounded-full animate-spin" style={{ border: '3px solid rgba(212,163,115,0.2)', borderTopColor: 'var(--bronze)', borderRightColor: 'rgba(212,163,115,0.5)' }} />
+              <p className="text-sm" style={{ color: '#6A6A5A' }}>Loading members...</p>
             </div>
           ) : error ? (
-            <p className="text-sm text-center" style={{ color: '#c0392b' }}>{error}</p>
+            <div className="flex flex-col items-center justify-center py-10 gap-4 rounded-2xl" style={{ backgroundColor: 'rgba(185,28,28,0.06)', border: '1px solid rgba(169,84,60,0.15)' }}>
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: '#c0392b' }}>
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <p className="text-sm" style={{ color: '#c0392b' }}>{error}</p>
+              <button
+                type="button"
+                onClick={() => { setError(''); setLoading(true); fetch(`/api/books/${bookId}/members`).then(r => r.json()).then(d => { setMembers(d.data || []); setLoading(false); }).catch(() => { setError('Failed to load members'); setLoading(false); }); }}
+                className="text-xs font-medium px-4 py-1.5 rounded-full transition-opacity hover:opacity-80"
+                style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: 'var(--charcoal)' }}
+              >
+                Retry
+              </button>
+            </div>
           ) : members.length === 0 ? (
-            <p className="text-sm text-center py-6" style={{ color: '#6A6A5A' }}>No members yet.</p>
+            <div className="flex flex-col items-center justify-center py-10 gap-4">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(204,213,174,0.25)' }}>
+                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" style={{ color: 'var(--bronze)' }}>
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>No members yet</p>
+              <p className="text-xs text-center max-w-[220px]" style={{ color: '#6A6A5A' }}>Invite family or friends to collaborate on this memory book.</p>
+            </div>
           ) : (
             <div className="space-y-3">
               <p className="label-caps text-xs" style={{ color: 'var(--bronze)' }}>
