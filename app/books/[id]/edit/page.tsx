@@ -1287,7 +1287,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                           <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
                           Saving...
                         </>
-                      ) : hasUploadingPhotos ? 'Finishing photo uploads…' : hasBlockingRecorderState ? 'Finish recording first' : memoryId ? 'Update Memory' : 'Save Memory'}
+                      ) : hasUploadingPhotos ? 'Uploading photos…' : hasBlockingRecorderState ? 'Finish recording first' : memoryId ? 'Update Memory' : 'Save Memory'}
                     </Button>
                   </div>
                 </div>

@@ -253,21 +253,22 @@ export default function Dashboard() {
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             {books.length > 0 && (
-              <div className="flex items-center gap-1 rounded-full p-1" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.12)' }}>
+              <div className="flex items-center gap-1.5 sm:gap-1 rounded-full p-1 w-full sm:w-auto overflow-x-auto" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.12)' }}>
                 {([
                   { value: 'newest', label: 'Newest' },
                   { value: 'oldest', label: 'Oldest' },
-                  { value: 'alpha', label: 'A–Z' },
+                  { value: 'alpha', label: 'A to Z' },
                 ] as const).map(({ value, label }) => (
                   <button
                     key={value}
                     type="button"
                     onClick={() => setSortOrder(value)}
-                    className="rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200"
+                    className="rounded-full px-4 py-2 text-xs font-medium transition-all duration-200 shrink-0"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--charcoal)' : 'transparent',
                       color: sortOrder === value ? 'var(--cornsilk)' : 'var(--charcoal)',
                       fontFamily: 'var(--font-sans)',
+                      minWidth: '58px',
                     }}
                   >
                     {label}
@@ -461,7 +462,7 @@ export default function Dashboard() {
             <div className="inline-block mb-12">
               <div
                 className="relative mx-auto animate-float"
-                style={{ width: 120, height: 160, animationDuration: '5s', animationDelay: '0.5s' }}
+                style={{ width: 120, height: 160, animationDuration: '3s', animationDelay: '0.3s' }}
               >
                 {/* Book stack - bottom */}
                 <div
@@ -566,6 +567,7 @@ export default function Dashboard() {
                       style={{
                         backgroundColor: '#FFFFFF',
                         boxShadow: '0 2px 12px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.04)',
+                        borderLeft: `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`,
                       }}
                       onMouseEnter={(e) => {
                         (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 56px rgba(212,163,115,0.16), 0 4px 16px rgba(212,163,115,0.08)';
@@ -576,14 +578,6 @@ export default function Dashboard() {
                         (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
                       }}
                     >
-                      {/* Color stripe on left */}
-                      <div
-                        className="absolute left-0 top-0 bottom-0 rounded-l-3xl"
-                        style={{
-                          width: 7,
-                          backgroundColor: BOOK_COLORS[i % BOOK_COLORS.length],
-                        }}
-                      />
                       {/* Mini book cover visual */}
                       <div
                         className="absolute hidden md:flex"
@@ -605,7 +599,7 @@ export default function Dashboard() {
                           position: 'absolute',
                           left: 0, top: 0, bottom: 0,
                           width: 5,
-                          background: `linear-gradient(to right, ${BOOK_COLORS[i % BOOK_COLORS.length]}aa, ${BOOK_COLORS[i % BOOK_COLORS.length]}44)`,
+                          background: `linear-gradient(to right, ${BOOK_COLORS[book.id % BOOK_COLORS.length]}aa, ${BOOK_COLORS[book.id % BOOK_COLORS.length]}44)`,
                           borderRadius: '8px 0 0 8px',
                         }} />
                         {/* Cover content */}
@@ -624,7 +618,7 @@ export default function Dashboard() {
                           <div style={{
                             height: 3,
                             width: '75%',
-                            backgroundColor: `${BOOK_COLORS[i % BOOK_COLORS.length]}66`,
+                            backgroundColor: `${BOOK_COLORS[book.id % BOOK_COLORS.length]}66`,
                             borderRadius: 2,
                             marginTop: 8,
                           }} />
