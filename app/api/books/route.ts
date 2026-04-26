@@ -64,10 +64,11 @@ export async function GET(request: NextRequest) {
 
     // Get contributors for all books in ONE query (avoids N+1 connection problem)
     const contributors: Record<string, {id: number, name: string, profile_image_url: string, google_id: string}[]> = {};
+    const seenContributorIds: Record<string, Set<number>> = {};
     try {
       if (bookIds.length > 0) {
         const rows = await sql`
-          SELECT m.book_id, u.id, u.name, u.profile_image_url, u.google_id
+          SELECT DISTINCT m.book_id, u.id, u.name, u.profile_image_url, u.google_id
           FROM memories m
           JOIN users u ON m.user_id = u.id
           WHERE m.book_id IN (${bookIds}) AND m.user_id IS NOT NULL
@@ -75,8 +76,11 @@ export async function GET(request: NextRequest) {
         `;
         for (const row of rows as unknown as {book_id: string, id: number, name: string, profile_image_url: string, google_id: string}[]) {
           if (!contributors[row.book_id]) contributors[row.book_id] = [];
-          if (contributors[row.book_id].length < 3) {
+          if (!seenContributorIds[row.book_id]) seenContributorIds[row.book_id] = new Set();
+
+          if (!seenContributorIds[row.book_id].has(row.id) && contributors[row.book_id].length < 3) {
             contributors[row.book_id].push({ id: row.id, name: row.name, profile_image_url: row.profile_image_url, google_id: row.google_id });
+            seenContributorIds[row.book_id].add(row.id);
           }
         }
       }
