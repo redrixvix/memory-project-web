@@ -628,8 +628,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         <audio src={memory.audio_url} controls className="mt-7 w-full h-9" />
                       )}
 
-                      {/* Footer actions — visible on focus/hover, always visible on touch devices */}
-                      <div className="flex justify-end items-center mt-7 pt-5 border-t sm:opacity-0 focus-within:opacity-100 hover:opacity-100 group-hover:opacity-100 transition-all duration-200" style={{ borderColor: 'rgba(212,163,115,0.1)' }}>
+                      {/* Footer actions — always visible for usability ── */}
+                      <div className="flex justify-end items-center mt-7 pt-5 border-t transition-all duration-200" style={{ borderColor: 'rgba(212,163,115,0.1)' }}>
                         <div className="flex gap-2 items-center">
                           <Link
                             href={`/books/${id}/edit?memory=${memory.id}`}

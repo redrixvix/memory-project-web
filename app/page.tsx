@@ -3,14 +3,15 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MobileNav } from '@/components/ui/mobile-nav';
 import SeoSchema from '@/components/seo-schema';
 
 
-
 export default function Home() {
+  const router = useRouter();
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null); // null = loading
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -18,7 +19,14 @@ export default function Home() {
   useEffect(() => {
     fetch('/api/auth/me')
       .then(r => r.json())
-      .then(data => setLoggedIn(!!data.user))
+      .then(data => {
+        if (data.user) {
+          // Logged in — send to dashboard immediately
+          router.replace('/dashboard');
+        } else {
+          setLoggedIn(false);
+        }
+      })
       .catch(() => setLoggedIn(false));
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
