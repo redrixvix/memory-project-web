@@ -609,29 +609,11 @@ export default function Dashboard() {
                                     className="relative"
                                     style={{ zIndex: 3 - ci }}
                                   >
-                                    {c.profile_image_url ? (
-                                      <Image
-                                        src={c.profile_image_url}
-                                        alt={c.name}
-                                        width={20}
-                                        height={20}
-                                        className="rounded-full object-cover border-2 border-white"
-                                        style={{ borderColor: '#FFFFFF' }}
-                                      />
-                                    ) : (
-                                      <div
-                                        className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium border-2 border-white"
-                                        style={{
-                                          borderColor: '#FFFFFF',
-                                          background: 'linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%)',
-                                          color: '#2B2B2B',
-                                          fontFamily: 'var(--font-serif, Georgia, serif)',
-                                          fontSize: 9,
-                                        }}
-                                      >
-                                        {c.name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()}
-                                      </div>
-                                    )}
+                                    <Avatar
+                                      name={c.name}
+                                      imageUrl={c.profile_image_url || null}
+                                      size={20}
+                                    />
                                   </div>
                                 ))}
                                 {book.contributors.length > 3 && (
