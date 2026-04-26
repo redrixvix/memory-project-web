@@ -622,10 +622,11 @@ export default function Dashboard() {
                                           style={{ borderColor: '#FFFFFF', display: 'block' }}
                                           onError={(e) => {
                                             const target = e.currentTarget as HTMLImageElement;
-                                            // Try Google avatar as secondary fallback
-                                            if (c.google_id) {
+                                            // Use a data attribute to track if we've already tried the Google fallback
+                                            // to prevent infinite onError loops
+                                            if (c.google_id && target.dataset.googleTried !== 'true') {
+                                              target.dataset.googleTried = 'true';
                                               target.src = `https://lh3.googleusercontent.com/a/${c.google_id}/photo.jpg`;
-                                              target.onerror = null; // prevent infinite loop
                                               return;
                                             }
                                             // All image sources failed — show initials

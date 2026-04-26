@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
@@ -22,6 +22,8 @@ function getInitials(name: string): string {
 
 export function Avatar({ name, imageUrl, googleAvatarId, className, size }: AvatarProps) {
   const [imgError, setImgError] = useState(false);
+  // Prevent infinite onError loop when fallback images also fail
+  const triedGoogleFallback = useRef(false);
 
   // Build the resolved URL: imageUrl wins if set, then Google avatar, then none
   const primaryUrl = (imageUrl && imageUrl.trim())
@@ -30,10 +32,8 @@ export function Avatar({ name, imageUrl, googleAvatarId, className, size }: Avat
       ? `https://lh3.googleusercontent.com/a/${googleAvatarId}/photo.jpg`
       : null;
 
-  // If primary image fails, try Google avatar as secondary fallback (only if Google was not the primary)
-  const secondaryGoogleUrl = (imageUrl && imageUrl.trim()) && (googleAvatarId && googleAvatarId.trim())
-    ? `https://lh3.googleusercontent.com/a/${googleAvatarId}/photo.jpg`
-    : null;
+  // Secondary fallback: after primary fails, try Google if it wasn't already used as primary
+  const showGoogleFallback = (imageUrl && imageUrl.trim()) && (googleAvatarId && googleAvatarId.trim()) && !triedGoogleFallback.current;
 
   const initials = getInitials(name);
   const sizeValue = size ?? 40;
@@ -48,22 +48,29 @@ export function Avatar({ name, imageUrl, googleAvatarId, className, size }: Avat
         height={sizeValue}
         className={cn('rounded-full object-cover shrink-0', className)}
         unoptimized
-        onError={() => setImgError(true)}
+        onError={() => {
+          setImgError(true);
+          triedGoogleFallback.current = true;
+        }}
       />
     );
   }
 
-  // Primary failed and Google avatar available as secondary
-  if (secondaryGoogleUrl) {
+  // Primary failed — try Google avatar as secondary (only once)
+  if (showGoogleFallback) {
+    const googleUrl = `https://lh3.googleusercontent.com/a/${googleAvatarId}/photo.jpg`;
     return (
       <Image
-        src={secondaryGoogleUrl}
+        src={googleUrl}
         alt={name}
         width={sizeValue}
         height={sizeValue}
         className={cn('rounded-full object-cover shrink-0', className)}
         unoptimized
-        onError={() => setImgError(true)}
+        onError={() => {
+          setImgError(true);
+          triedGoogleFallback.current = true;
+        }}
       />
     );
   }
