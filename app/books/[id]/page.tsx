@@ -54,8 +54,8 @@ function getPlanBadgeStyles(plan: string) {
   }
 
   return {
-    backgroundColor: 'rgba(212,163,115,0.12)',
-    color: '#6A6A5A',
+    backgroundColor: 'rgba(212,163,115,0.25)',
+    color: '#4A4A3A',
   };
 }
 

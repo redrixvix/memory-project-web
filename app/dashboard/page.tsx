@@ -59,8 +59,8 @@ function getPlanBadgeStyles(plan: string) {
   }
 
   return {
-    backgroundColor: 'rgba(212,163,115,0.12)',
-    color: '#6A6A5A',
+    backgroundColor: 'rgba(212,163,115,0.25)',
+    color: '#4A4A3A',
   };
 }
 
@@ -266,7 +266,7 @@ export default function Dashboard() {
                     className="rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--charcoal)' : 'transparent',
-                      color: sortOrder === value ? 'var(--cornsilk)' : '#6A6A5A',
+                      color: sortOrder === value ? 'var(--cornsilk)' : 'var(--charcoal)',
                       fontFamily: 'var(--font-sans)',
                     }}
                   >
@@ -328,11 +328,11 @@ export default function Dashboard() {
                     <button
                       type="button"
                       onClick={() => { setShowCreate(false); setCreateError(''); }}
-                      className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:opacity-70 active:scale-95 shrink-0"
-                      style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}
+                      className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 hover:opacity-80 active:scale-95 shrink-0 hover:bg-[rgba(212,163,115,0.2)]"
+                      style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--charcoal)' }}
                       aria-label="Close"
                     >
-                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M18 6L6 18M6 6l12 12"/>
                       </svg>
                     </button>
