@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Lightbox } from '@/components/ui/lightbox';
 import { MembersModal } from '@/components/ui/members-modal';
+import { Avatar } from '@/components/ui/avatar';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 
 interface Memory {
@@ -382,25 +383,66 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       {/* Photo grid */}
                       {memory.photo_urls && memory.photo_urls.length > 0 && (
                         <div className="flex gap-3 mt-7 overflow-x-auto pb-2">
-                          {memory.photo_urls.map((url, i) => (
-                            <button
-                              key={i}
-                              type="button"
-                              onClick={() => setLightboxSrc(url)}
-                              className="img-frame rounded-xl overflow-hidden shrink-0 cursor-pointer transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
-                              style={{ minHeight: 200, minWidth: 200 }}
-                              aria-label={`View photo ${i + 1}`}
-                            >
-                              <Image
-                                src={url}
-                                alt={`Memory photo ${i + 1}`}
-                                width={192}
-                                height={192}
-                                className="object-cover rounded-xl"
+                          {memory.photo_urls.map((url, i) => {
+                            const [imgError, setImgError] = useState(false);
+                            return (
+                              <button
+                                key={i}
+                                type="button"
+                                onClick={() => !imgError && setLightboxSrc(url)}
+                                className="img-frame rounded-xl overflow-hidden shrink-0 cursor-pointer transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] relative"
                                 style={{ minHeight: 200, minWidth: 200 }}
-                              />
-                            </button>
-                          ))}
+                                aria-label={`View photo ${i + 1}`}
+                              >
+                                {imgError ? (
+                                  <div
+                                    className="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl"
+                                    style={{
+                                      minHeight: 200,
+                                      minWidth: 200,
+                                      backgroundColor: 'rgba(212,163,115,0.08)',
+                                    }}
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="22"
+                                      height="22"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      style={{ color: 'rgba(43,43,43,0.3)' }}
+                                    >
+                                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                      <circle cx="8.5" cy="8.5" r="1.5" />
+                                      <polyline points="21 15 16 10 5 21" />
+                                    </svg>
+                                    <span
+                                      className="text-[0.6rem] font-medium"
+                                      style={{
+                                        color: 'rgba(43,43,43,0.4)',
+                                        fontFamily: 'var(--font-sans)',
+                                      }}
+                                    >
+                                      Unavailable
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <Image
+                                    src={url}
+                                    alt={`Memory photo ${i + 1}`}
+                                    width={192}
+                                    height={192}
+                                    className="object-cover rounded-xl"
+                                    style={{ minHeight: 200, minWidth: 200 }}
+                                    onError={() => setImgError(true)}
+                                  />
+                                )}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
 
@@ -413,29 +455,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       <div className="flex justify-between items-center mt-6 pt-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
                         {memory.contributor_name ? (
                           <div className="flex items-center gap-2">
-                            {memory.contributor_avatar ? (
-                              <Image
-                                src={memory.contributor_avatar}
-                                alt={memory.contributor_name}
-                                width={24}
-                                height={24}
-                                className="rounded-full object-cover"
-                              />
-                            ) : (
-                              <div
-                                className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium"
-                                style={{
-                                  width: 24,
-                                  height: 24,
-                                  background: 'linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%)',
-                                  color: '#2B2B2B',
-                                  fontFamily: 'var(--font-serif, Georgia, serif)',
-                                  fontSize: 10,
-                                }}
-                              >
-                                {memory.contributor_name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()}
-                              </div>
-                            )}
+                            <Avatar
+                              name={memory.contributor_name}
+                              imageUrl={memory.contributor_avatar || null}
+                              size={24}
+                            />
                             <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                               {memory.contributor_name}
                             </span>

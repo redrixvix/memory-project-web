@@ -33,6 +33,7 @@ function ImageCard({
 }) {
   const [isRemoving, setIsRemoving] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const handleRemove = () => {
     setIsRemoving(true);
@@ -56,22 +57,53 @@ function ImageCard({
         }}
       >
         <div className="relative overflow-hidden img-frame" style={{ aspectRatio: "1 / 1" }}>
-          {!isLoaded && (
+          {!isLoaded && !imgError && (
             <div
               className="absolute inset-0 animate-shimmer"
               style={{ backgroundColor: "var(--beige)" }}
             />
           )}
 
-          <img
-            src={item.previewUrl}
-            alt={`Photo ${index + 1}`}
-            className={cn(
-              "h-full w-full object-cover transition-opacity duration-300",
-              isLoaded ? "opacity-100" : "opacity-0",
-            )}
-            onLoad={() => setIsLoaded(true)}
-          />
+          {imgError ? (
+            <div
+              className="absolute inset-0 flex flex-col items-center justify-center gap-2"
+              style={{ backgroundColor: "rgba(212,163,115,0.08)" }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ color: "rgba(43,43,43,0.35)" }}
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              <span
+                className="text-[0.65rem] font-medium"
+                style={{ color: "rgba(43,43,43,0.45)", fontFamily: "var(--font-sans)" }}
+              >
+                Preview unavailable
+              </span>
+            </div>
+          ) : (
+            <img
+              src={item.previewUrl}
+              alt={`Photo ${index + 1}`}
+              className={cn(
+                "h-full w-full object-cover transition-opacity duration-300",
+                isLoaded ? "opacity-100" : "opacity-0",
+              )}
+              onLoad={() => setIsLoaded(true)}
+              onError={() => setImgError(true)}
+            />
+          )}
 
           <div
             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"

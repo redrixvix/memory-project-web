@@ -32,6 +32,7 @@ interface User {
   name: string;
   email: string;
   profileImageUrl?: string | null;
+  googleId?: string | null;
 }
 
 const BOOK_COLORS = [
@@ -228,7 +229,12 @@ export default function Dashboard() {
             <div className="flex items-center gap-4">
               {user ? (
                 <>
-                  <Avatar name={user.name} imageUrl={user.profileImageUrl} className="w-10 h-10" />
+                  <Avatar
+                    name={user.name}
+                    imageUrl={user.profileImageUrl || null}
+                    googleAvatarId={user.googleId || null}
+                    className="w-10 h-10"
+                  />
                   <h1 className="display-md" style={{ color: 'var(--charcoal)' }}>
                     Your Memory Books
                   </h1>

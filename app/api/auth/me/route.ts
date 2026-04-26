@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
 
     // Get user
     const [user] = await sql`
-      SELECT id, email, name, created_at, profile_image_url
+      SELECT id, email, name, created_at, profile_image_url, google_id
       FROM users
       WHERE id = ${session.user_id}
     `;
@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
         email: user.email,
         name: user.name,
         profileImageUrl: user.profile_image_url ?? null,
+        googleId: user.google_id ?? null,
       },
     });
   } catch (error) {
