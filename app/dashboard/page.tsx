@@ -24,7 +24,7 @@ interface Book {
   role: string;
   owner_name: string;
   _count?: { memories: number };
-  contributors?: {id: number, name: string, profile_image_url: string}[];
+  contributors?: {id: number, name: string, profile_image_url: string, google_id: string}[];
 }
 
 interface User {
@@ -603,19 +603,55 @@ export default function Dashboard() {
                             {/* Contributor avatars */}
                             {book.contributors && book.contributors.length > 0 && (
                               <div className="flex items-center -space-x-1.5">
-                                {book.contributors.slice(0, 3).map((c, ci) => (
-                                  <div
-                                    key={c.id}
-                                    className="relative"
-                                    style={{ zIndex: 3 - ci }}
-                                  >
-                                    <Avatar
-                                      name={c.name}
-                                      imageUrl={c.profile_image_url || null}
-                                      size={20}
-                                    />
-                                  </div>
-                                ))}
+                                {book.contributors.slice(0, 3).map((c, ci) => {
+                                  const initials = c.name.trim().split(/\s+/).map((p: string) => p[0]).join('').slice(0, 2).toUpperCase();
+                                  const avatarUrl = c.profile_image_url || (c.google_id ? `https://lh3.googleusercontent.com/a/${c.google_id}/photo.jpg` : null);
+                                  return (
+                                    <div
+                                      key={c.id}
+                                      className="relative"
+                                      style={{ zIndex: 3 - ci }}
+                                    >
+                                      {avatarUrl ? (
+                                        <img
+                                          src={avatarUrl}
+                                          alt={c.name}
+                                          width={20}
+                                          height={20}
+                                          className="rounded-full object-cover border-2 border-white"
+                                          style={{ borderColor: '#FFFFFF', display: 'block' }}
+                                          onError={(e) => {
+                                            const target = e.currentTarget as HTMLImageElement;
+                                            target.style.display = 'none';
+                                            const parent = target.parentElement;
+                                            if (parent) {
+                                              const fallback = document.createElement('div');
+                                              fallback.className = 'rounded-full flex items-center justify-center text-xs font-medium border-2 border-white';
+                                              fallback.style.cssText = `width: 20px; height: 20px; border-color: #FFFFFF; background: linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%); color: #2B2B2B; font-family: var(--font-serif, Georgia, serif); font-size: 9px;`;
+                                              fallback.textContent = initials;
+                                              parent.appendChild(fallback);
+                                            }
+                                          }}
+                                        />
+                                      ) : (
+                                        <div
+                                          className="rounded-full flex items-center justify-center text-xs font-medium border-2 border-white"
+                                          style={{
+                                            width: 20,
+                                            height: 20,
+                                            borderColor: '#FFFFFF',
+                                            background: 'linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%)',
+                                            color: '#2B2B2B',
+                                            fontFamily: 'var(--font-serif, Georgia, serif)',
+                                            fontSize: 9,
+                                          }}
+                                        >
+                                          {initials}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
                                 {book.contributors.length > 3 && (
                                   <span className="text-xs" style={{ marginLeft: 2, color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                                     +{book.contributors.length - 3}

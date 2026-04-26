@@ -23,20 +23,26 @@ function getInitials(name: string): string {
 export function Avatar({ name, imageUrl, googleAvatarId, className, size }: AvatarProps) {
   const [imgError, setImgError] = useState(false);
 
-  // Build the resolved URL: explicit imageUrl wins, then Google avatar, then none
-  const resolvedUrl = imageUrl
+  // Build the resolved URL: imageUrl wins if set, then Google avatar, then none
+  const primaryUrl = imageUrl
     ? imageUrl
     : googleAvatarId
       ? `https://lh3.googleusercontent.com/a/${googleAvatarId}/photo.jpg`
       : null;
 
+  // If primary image fails, try Google avatar as secondary fallback (only if Google was not the primary)
+  const secondaryGoogleUrl = imageUrl && googleAvatarId
+    ? `https://lh3.googleusercontent.com/a/${googleAvatarId}/photo.jpg`
+    : null;
+
   const initials = getInitials(name);
   const sizeValue = size ?? 40;
 
-  if (resolvedUrl && !imgError) {
+  // Primary image loaded successfully
+  if (primaryUrl && !imgError) {
     return (
       <Image
-        src={resolvedUrl}
+        src={primaryUrl}
         alt={name}
         width={sizeValue}
         height={sizeValue}
@@ -47,6 +53,22 @@ export function Avatar({ name, imageUrl, googleAvatarId, className, size }: Avat
     );
   }
 
+  // Primary failed and Google avatar available as secondary
+  if (secondaryGoogleUrl) {
+    return (
+      <Image
+        src={secondaryGoogleUrl}
+        alt={name}
+        width={sizeValue}
+        height={sizeValue}
+        className={cn('rounded-full object-cover shrink-0', className)}
+        unoptimized
+        onError={() => setImgError(true)}
+      />
+    );
+  }
+
+  // All image attempts failed — show initials
   return (
     <div
       className={cn(

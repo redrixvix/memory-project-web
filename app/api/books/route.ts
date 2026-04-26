@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     // Get books owned by user and books where user is a member (via book_members)
     const books = await sql`
       SELECT DISTINCT b.id, b.title, b.description, b.storage_tier, b.plan, b.storage_used_bytes, b.created_at, b.updated_at, b.owner_id,
-             u.name as owner_name,
+             u.name as owner_name, u.google_id as owner_google_id,
              COALESCE(bm.role, 'owner') as role,
              (SELECT COUNT(*) FROM memories m WHERE m.book_id = b.id) as memory_count
       FROM books b
@@ -63,20 +63,20 @@ export async function GET(request: NextRequest) {
     }));
 
     // Get contributors for all books in ONE query (avoids N+1 connection problem)
-    const contributors: Record<string, {id: number, name: string, profile_image_url: string}[]> = {};
+    const contributors: Record<string, {id: number, name: string, profile_image_url: string, google_id: string}[]> = {};
     try {
       if (bookIds.length > 0) {
         const rows = await sql`
-          SELECT m.book_id, u.id, u.name, u.profile_image_url
+          SELECT m.book_id, u.id, u.name, u.profile_image_url, u.google_id
           FROM memories m
           JOIN users u ON m.user_id = u.id
           WHERE m.book_id IN (${bookIds}) AND m.user_id IS NOT NULL
           ORDER BY m.book_id, u.id
         `;
-        for (const row of rows as unknown as {book_id: string, id: number, name: string, profile_image_url: string}[]) {
+        for (const row of rows as unknown as {book_id: string, id: number, name: string, profile_image_url: string, google_id: string}[]) {
           if (!contributors[row.book_id]) contributors[row.book_id] = [];
           if (contributors[row.book_id].length < 3) {
-            contributors[row.book_id].push({ id: row.id, name: row.name, profile_image_url: row.profile_image_url });
+            contributors[row.book_id].push({ id: row.id, name: row.name, profile_image_url: row.profile_image_url, google_id: row.google_id });
           }
         }
       }
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
       const list = contributors[bookId] || [];
       if (list.length === 0) {
         // Fallback: show owner as contributor
-        list.push({ id: Number(b.owner_id), name: String(b.owner_name), profile_image_url: '' });
+        list.push({ id: Number(b.owner_id), name: String(b.owner_name), profile_image_url: '', google_id: String(b.owner_google_id || '') });
       }
       return { ...b, contributors: list };
     });
