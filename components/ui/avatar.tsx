@@ -1,13 +1,12 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface AvatarProps {
   name: string;
   imageUrl?: string | null;
-  googleAvatarId?: string | null;
   className?: string;
   size?: number;
 }
@@ -20,62 +19,28 @@ function getInitials(name: string): string {
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
-export function Avatar({ name, imageUrl, googleAvatarId, className, size }: AvatarProps) {
+export function Avatar({ name, imageUrl, className, size }: AvatarProps) {
   const [imgError, setImgError] = useState(false);
-  // Prevent infinite onError loop when fallback images also fail
-  const triedGoogleFallback = useRef(false);
-
-  // Build the resolved URL: imageUrl wins if set, then Google avatar, then none
-  const primaryUrl = (imageUrl && imageUrl.trim())
-    ? imageUrl
-    : (googleAvatarId && googleAvatarId.trim())
-      ? `https://lh3.googleusercontent.com/a/${googleAvatarId}/photo.jpg`
-      : null;
-
-  // Secondary fallback: after primary fails, try Google if it wasn't already used as primary
-  const showGoogleFallback = (imageUrl && imageUrl.trim()) && (googleAvatarId && googleAvatarId.trim()) && !triedGoogleFallback.current;
 
   const initials = getInitials(name);
   const sizeValue = size ?? 40;
 
-  // Primary image loaded successfully
-  if (primaryUrl && !imgError) {
+  // Use imageUrl if it's a valid non-empty string
+  if (imageUrl && imageUrl.trim() && !imgError) {
     return (
       <Image
-        src={primaryUrl}
+        src={imageUrl}
         alt={name}
         width={sizeValue}
         height={sizeValue}
         className={cn('rounded-full object-cover shrink-0', className)}
         unoptimized
-        onError={() => {
-          setImgError(true);
-          triedGoogleFallback.current = true;
-        }}
+        onError={() => setImgError(true)}
       />
     );
   }
 
-  // Primary failed — try Google avatar as secondary (only once)
-  if (showGoogleFallback) {
-    const googleUrl = `https://lh3.googleusercontent.com/a/${googleAvatarId}/photo.jpg`;
-    return (
-      <Image
-        src={googleUrl}
-        alt={name}
-        width={sizeValue}
-        height={sizeValue}
-        className={cn('rounded-full object-cover shrink-0', className)}
-        unoptimized
-        onError={() => {
-          setImgError(true);
-          triedGoogleFallback.current = true;
-        }}
-      />
-    );
-  }
-
-  // All image attempts failed — show initials
+  // Image failed to load or not provided — show initials
   return (
     <div
       className={cn(

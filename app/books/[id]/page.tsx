@@ -22,7 +22,6 @@ interface Memory {
   user_id?: number;
   contributor_name?: string;
   contributor_avatar?: string;
-  contributor_google_id?: string;
 }
 
 interface Book {
@@ -472,7 +471,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             <Avatar
                               name={memory.contributor_name}
                               imageUrl={memory.contributor_avatar || null}
-                              googleAvatarId={memory.contributor_google_id || null}
                               size={24}
                             />
                             <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
