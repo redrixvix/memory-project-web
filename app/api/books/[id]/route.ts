@@ -99,7 +99,7 @@ export async function GET(
 
     const memories = await sql`
       SELECT m.id, m.book_id, m.prompt_question, m.answer_text, m.photo_urls, m.audio_url, m.created_at,
-             u.name as contributor_name, u.profile_image_url as contributor_avatar
+             u.name as contributor_name, u.profile_image_url as contributor_avatar, u.google_id as contributor_google_id
       FROM memories m
       LEFT JOIN users u ON m.user_id = u.id
       WHERE m.book_id = ${book.id}
