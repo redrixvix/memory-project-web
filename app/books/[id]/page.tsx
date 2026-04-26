@@ -388,9 +388,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {memories.length > 0 && (
           <div className="mb-8 flex items-center justify-between flex-wrap gap-3">
-            <p className="label-caps" style={{ color: 'var(--bronze)' }}>
-              {memories.length} {memories.length === 1 ? 'memory' : 'memories'}
-            </p>
+            <div className="inline-flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--bronze)' }} />
+              <p className="label-caps" style={{ color: 'var(--bronze)' }}>
+                {memories.length} {memories.length === 1 ? 'memory' : 'memories'} in this book
+              </p>
+            </div>
             <Link
               href={`/books/${id}/preview`}
               className="text-sm flex items-center gap-2 transition-colors hover:opacity-70"

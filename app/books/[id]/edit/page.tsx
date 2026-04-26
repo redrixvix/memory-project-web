@@ -961,9 +961,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
               <section className="grid gap-6 border-t py-8 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-10 md:py-10" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
                 <div className="space-y-3">
-                  <div className="inline-flex rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(254,250,224,0.82)', color: '#7B6B56', fontFamily: 'var(--font-sans)' }}>
-                    {wordCount} {wordCount === 1 ? 'word' : 'words'}
-                  </div>
                   <div>
                     <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
                       Your memory
@@ -982,11 +979,17 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     boxShadow: '0 18px 40px rgba(212,163,115,0.08)',
                   }}
                 >
+                  <style>{`
+                    .memory-textarea::placeholder {
+                      color: rgba(107, 106, 90, 0.6);
+                      font-style: italic;
+                    }
+                  `}</style>
                   <Textarea
                     value={answer}
                     onChange={(e) => handleAnswerChange(e.target.value)}
                     required
-                    className="min-h-[340px] rounded-[1.2rem] border-0 px-5 py-5 text-base leading-[1.9] md:min-h-[380px] md:text-[1.05rem]"
+                    className="min-h-[340px] rounded-[1.2rem] border-0 px-5 py-5 text-base leading-[1.9] md:min-h-[380px] md:text-[1.05rem] memory-textarea"
                     rows={14}
                     placeholder="Take your time. There is no perfect way to tell a memory, only your way."
                     style={{
@@ -996,6 +999,15 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       boxShadow: 'inset 0 0 0 1px rgba(212,163,115,0.18)',
                     }}
                   />
+                  <div className="flex items-center justify-between mt-3 px-1">
+                    <p className="text-xs" style={{ color: '#8E8478', fontFamily: 'var(--font-sans)' }}>
+                      Autosaves as you write
+                    </p>
+                    <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.12em]" style={{ backgroundColor: 'rgba(254,250,224,0.82)', color: '#7B6B56', fontFamily: 'var(--font-sans)' }}>
+                      <span style={{ color: 'var(--bronze)' }}>✎</span>
+                      {wordCount} {wordCount === 1 ? 'word' : 'words'}
+                    </div>
+                  </div>
                 </div>
               </section>
 
@@ -1220,14 +1232,22 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     </div>
                   ) : (
                     <div
-                      className="rounded-[1.5rem] px-5 py-6"
+                      className="rounded-[1.5rem] px-5 py-6 relative overflow-hidden"
                       style={{
-                        background: 'linear-gradient(135deg, rgba(212,163,115,0.08) 0%, rgba(204,213,174,0.1) 100%)',
-                        border: '1px solid rgba(212,163,115,0.2)',
+                        background: 'linear-gradient(160deg, rgba(212,163,115,0.06) 0%, rgba(204,213,174,0.08) 100%)',
+                        border: '1px solid rgba(212,163,115,0.18)',
                       }}
                     >
-                      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                      {/* Decorative corner accent */}
+                      <div className="absolute top-0 right-0 w-24 h-24 opacity-[0.07]" style={{ background: 'radial-gradient(circle at 100% 0%, var(--bronze) 0%, transparent 70%)' }} />
+                      
+                      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between relative">
                         <div className="max-w-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-[0.65rem] font-semibold px-2.5 py-1 rounded-full uppercase tracking-[0.1em]" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}>
+                              Plus Feature
+                            </span>
+                          </div>
                           <p className="text-sm font-medium mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                             Add photos &amp; voice recordings
                           </p>
@@ -1237,7 +1257,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         </div>
                         <Link
                           href={`/upgrade?book=${id}`}
-                          className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200 hover:opacity-90"
+                          className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200 hover:opacity-90 shrink-0"
                           style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
                         >
                           Upgrade this book

@@ -235,7 +235,7 @@ export default function UpgradePage() {
                 key={plan.id}
                 type="button"
                 onClick={() => !isCurrentPlan && setSelectedPlan(plan.id)}
-                disabled={isCurrentPlan}
+                disabled={!!isCurrentPlan}
                 className="text-left rounded-2xl p-7 transition-all duration-200 relative"
                 style={{
                   backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(204,213,174,0.12)' : 'var(--papaya)',
