@@ -19,6 +19,22 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '**.cloudflarestorage.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'workoscdn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.uploadthing.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'utfs.io',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ufs.sh',
+      },
     ],
   },
 };
