@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,20 +23,48 @@ const KeyIcon = () => (
 );
 
 export default function Login() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [magicLoading, setMagicLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
 
   const handleGoogleLogin = () => {
     window.location.href = '/api/auth/google';
   };
 
+  const handlePasswordLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Unable to sign in with that email and password.');
+        return;
+      }
+
+      window.location.href = '/dashboard';
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setMagicLoading(true);
     setError('');
     try {
       const res = await fetch('/api/auth/magic', {
@@ -54,7 +81,7 @@ export default function Login() {
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
-      setLoading(false);
+      setMagicLoading(false);
     }
   };
 
@@ -192,7 +219,7 @@ export default function Login() {
               </div>
 
               {!sent ? (
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="space-y-5">
                   {error && (
                     <div
                       role="alert"
@@ -219,14 +246,49 @@ export default function Login() {
                     />
                   </div>
 
-                  <Button
-                    type="submit" disabled={loading}
-                    className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
-                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-                  >
-                    {loading ? 'Sending...' : 'Send code'}
-                  </Button>
-                </form>
+                  <form onSubmit={handlePasswordLogin} className="space-y-5">
+                    <div className="space-y-2">
+                      <Label htmlFor="password" className="text-sm" style={{ color: 'var(--charcoal)' }}>Password</Label>
+                      <Input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        autoComplete="current-password"
+                        placeholder="Enter your password"
+                        className="text-sm rounded-xl h-11"
+                        style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
+                      />
+                    </div>
+
+                    <Button
+                      type="submit"
+                      disabled={passwordLoading}
+                      className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
+                      style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+                    >
+                      {passwordLoading ? 'Signing in...' : 'Sign in with password'}
+                    </Button>
+                  </form>
+
+                  <div className="flex items-center gap-3 py-1">
+                    <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
+                    <span className="text-xs" style={{ color: '#7A7A6A' }}>or</span>
+                    <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
+                  </div>
+
+                  <form onSubmit={handleSubmit}>
+                    <Button
+                      type="submit"
+                      disabled={magicLoading}
+                      className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
+                      style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                    >
+                      {magicLoading ? 'Sending...' : 'Send email code'}
+                    </Button>
+                  </form>
+                </div>
               ) : (
                 <div className="space-y-5">
                   <div
@@ -262,9 +324,9 @@ export default function Login() {
                   )}
 
                   <Button
-                    disabled={loading || code.length < 6}
+                    disabled={verifyLoading || code.length < 6}
                     onClick={async () => {
-                      setLoading(true);
+                      setVerifyLoading(true);
                       setError('');
                       try {
                         const res = await fetch('/api/auth/verify', {
@@ -276,12 +338,12 @@ export default function Login() {
                         if (!res.ok) { setError(data.error || 'Invalid code.'); return; }
                         window.location.href = '/dashboard';
                       } catch { setError('Something went wrong.'); }
-                      finally { setLoading(false); }
+                      finally { setVerifyLoading(false); }
                     }}
                     className="w-full h-11 rounded-full text-sm font-medium"
                     style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
                   >
-                    {loading ? 'Verifying...' : 'Sign in'}
+                    {verifyLoading ? 'Verifying...' : 'Sign in'}
                   </Button>
 
                   <button
