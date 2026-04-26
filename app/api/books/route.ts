@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     // Get books owned by user and books where user is a member (via book_members)
     const books = await sql`
       SELECT DISTINCT b.id, b.title, b.description, b.storage_tier, b.plan, b.storage_used_bytes, b.created_at, b.updated_at, b.owner_id,
-             u.name as owner_name, u.google_id as owner_google_id,
+             u.name as owner_name, u.google_id as owner_google_id, u.profile_image_url as owner_profile_image_url,
              COALESCE(bm.role, 'owner') as role,
              (SELECT COUNT(*) FROM memories m WHERE m.book_id = b.id) as memory_count
       FROM books b
@@ -91,7 +91,12 @@ export async function GET(request: NextRequest) {
       const list = contributors[bookId] || [];
       if (list.length === 0) {
         // Fallback: show owner as contributor
-        list.push({ id: Number(b.owner_id), name: String(b.owner_name), profile_image_url: '', google_id: String(b.owner_google_id || '') });
+        list.push({
+          id: Number(b.owner_id),
+          name: String(b.owner_name),
+          profile_image_url: typeof b.owner_profile_image_url === 'string' ? b.owner_profile_image_url : '',
+          google_id: String(b.owner_google_id || ''),
+        });
       }
       return { ...b, contributors: list };
     });

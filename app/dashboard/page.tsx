@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 
 interface Book {
@@ -42,21 +40,6 @@ const BOOK_COLORS = [
   'rgba(212,163,115,0.5)',
   'var(--tea-green)',
 ];
-
-function getGreeting() {
-  return 'Welcome back';
-}
-
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const days = Math.floor(diff / 86400000);
-  if (days === 0) return 'today';
-  if (days === 1) return 'yesterday';
-  if (days < 7) return `${days} days ago`;
-  if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
-  if (days < 365) return `${Math.floor(days / 30)} months ago`;
-  return `${Math.floor(days / 365)} years ago`;
-}
 
 function getPlanBadgeStyles(plan: string) {
   const normalizedPlan = normalizeBookPlan(plan);
@@ -95,45 +78,32 @@ export default function Dashboard() {
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
 
   useEffect(() => {
-    fetchUserAndBooks();
-  }, []);
+    async function fetchUserAndBooks() {
+      try {
+        const [userRes, booksRes] = await Promise.all([
+          fetch('/api/auth/me'),
+          fetch('/api/books'),
+        ]);
 
-  const fetchUserAndBooks = async () => {
-    try {
-      const [userRes, booksRes] = await Promise.all([
-        fetch('/api/auth/me'),
-        fetch('/api/books'),
-      ]);
+        if (userRes.status === 401) { router.push('/login'); return; }
+        setLoggedIn(true);
 
-      if (userRes.status === 401) { router.push('/login'); return; }
-      setLoggedIn(true);
+        const userData = await userRes.json();
+        setUser(userData.user);
 
-      const userData = await userRes.json();
-      setUser(userData.user);
-
-      if (booksRes.status === 401) { router.push('/login'); return; }
-      const booksData = await booksRes.json();
-      setBooks(booksData.books || []);
-    } catch {
-      console.error('Failed to fetch data');
-      setLoggedIn(false);
-    } finally {
-      setLoading(false);
+        if (booksRes.status === 401) { router.push('/login'); return; }
+        const booksData = await booksRes.json();
+        setBooks(booksData.books || []);
+      } catch {
+        console.error('Failed to fetch data');
+        setLoggedIn(false);
+      } finally {
+        setLoading(false);
+      }
     }
-  };
 
-  const fetchBooks = async () => {
-    try {
-      const res = await fetch('/api/books');
-      if (res.status === 401) { router.push('/login'); return; }
-      const data = await res.json();
-      setBooks(data.books || []);
-    } catch {
-      console.error('Failed to fetch books');
-    } finally {
-      setLoading(false);
-    }
-  };
+    void fetchUserAndBooks();
+  }, [router]);
 
   const createBook = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -602,56 +572,20 @@ export default function Dashboard() {
                             {/* Contributor avatars */}
                             {book.contributors && book.contributors.length > 0 && (
                               <div className="flex items-center -space-x-1.5">
-                                {book.contributors.slice(0, 3).map((c, ci) => {
-                                  const initials = c.name.trim().split(/\s+/).map((p: string) => p[0]).join('').slice(0, 2).toUpperCase();
-                                  const avatarUrl = c.profile_image_url && c.profile_image_url.trim() ? c.profile_image_url : null;
-                                  return (
-                                    <div
-                                      key={c.id}
-                                      className="relative"
-                                      style={{ zIndex: 3 - ci }}
-                                    >
-                                      {avatarUrl ? (
-                                        <img
-                                          src={avatarUrl}
-                                          alt={c.name}
-                                          width={20}
-                                          height={20}
-                                          className="rounded-full object-cover border-2 border-white"
-                                          style={{ borderColor: '#FFFFFF', display: 'block' }}
-                                          onError={(e) => {
-                                            const target = e.currentTarget as HTMLImageElement;
-                                            // Profile image failed — show initials
-                                            target.style.display = 'none';
-                                            const parent = target.parentElement;
-                                            if (parent) {
-                                              const fallback = document.createElement('div');
-                                              fallback.className = 'rounded-full flex items-center justify-center text-xs font-medium border-2 border-white';
-                                              fallback.style.cssText = `width: 20px; height: 20px; border-color: #FFFFFF; background: linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%); color: #2B2B2B; font-family: var(--font-serif, Georgia, serif); font-size: 9px;`;
-                                              fallback.textContent = initials;
-                                              parent.appendChild(fallback);
-                                            }
-                                          }}
-                                        />
-                                      ) : (
-                                        <div
-                                          className="rounded-full flex items-center justify-center text-xs font-medium border-2 border-white"
-                                          style={{
-                                            width: 20,
-                                            height: 20,
-                                            borderColor: '#FFFFFF',
-                                            background: 'linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%)',
-                                            color: '#2B2B2B',
-                                            fontFamily: 'var(--font-serif, Georgia, serif)',
-                                            fontSize: 9,
-                                          }}
-                                        >
-                                          {initials}
-                                        </div>
-                                      )}
-                                    </div>
-                                  );
-                                })}
+                                {book.contributors.slice(0, 3).map((c, ci) => (
+                                  <div
+                                    key={c.id}
+                                    className="relative"
+                                    style={{ zIndex: 3 - ci }}
+                                  >
+                                    <Avatar
+                                      name={c.name}
+                                      imageUrl={c.profile_image_url || null}
+                                      size={20}
+                                      className="border-2 border-white"
+                                    />
+                                  </div>
+                                ))}
                                 {book.contributors.length > 3 && (
                                   <span className="text-xs" style={{ marginLeft: 2, color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                                     +{book.contributors.length - 3}
