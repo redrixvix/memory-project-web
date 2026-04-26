@@ -605,7 +605,7 @@ export default function Dashboard() {
                               <div className="flex items-center -space-x-1.5">
                                 {book.contributors.slice(0, 3).map((c, ci) => {
                                   const initials = c.name.trim().split(/\s+/).map((p: string) => p[0]).join('').slice(0, 2).toUpperCase();
-                                  const avatarUrl = c.profile_image_url || (c.google_id ? `https://lh3.googleusercontent.com/a/${c.google_id}/photo.jpg` : null);
+                                  const avatarUrl = (c.profile_image_url && c.profile_image_url.trim()) ? c.profile_image_url : (c.google_id ? `https://lh3.googleusercontent.com/a/${c.google_id}/photo.jpg` : null);
                                   return (
                                     <div
                                       key={c.id}
@@ -622,6 +622,13 @@ export default function Dashboard() {
                                           style={{ borderColor: '#FFFFFF', display: 'block' }}
                                           onError={(e) => {
                                             const target = e.currentTarget as HTMLImageElement;
+                                            // Try Google avatar as secondary fallback
+                                            if (c.google_id) {
+                                              target.src = `https://lh3.googleusercontent.com/a/${c.google_id}/photo.jpg`;
+                                              target.onerror = null; // prevent infinite loop
+                                              return;
+                                            }
+                                            // All image sources failed — show initials
                                             target.style.display = 'none';
                                             const parent = target.parentElement;
                                             if (parent) {

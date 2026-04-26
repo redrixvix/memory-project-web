@@ -24,14 +24,14 @@ export function Avatar({ name, imageUrl, googleAvatarId, className, size }: Avat
   const [imgError, setImgError] = useState(false);
 
   // Build the resolved URL: imageUrl wins if set, then Google avatar, then none
-  const primaryUrl = imageUrl
+  const primaryUrl = (imageUrl && imageUrl.trim())
     ? imageUrl
-    : googleAvatarId
+    : (googleAvatarId && googleAvatarId.trim())
       ? `https://lh3.googleusercontent.com/a/${googleAvatarId}/photo.jpg`
       : null;
 
   // If primary image fails, try Google avatar as secondary fallback (only if Google was not the primary)
-  const secondaryGoogleUrl = imageUrl && googleAvatarId
+  const secondaryGoogleUrl = (imageUrl && imageUrl.trim()) && (googleAvatarId && googleAvatarId.trim())
     ? `https://lh3.googleusercontent.com/a/${googleAvatarId}/photo.jpg`
     : null;
 
