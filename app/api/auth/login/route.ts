@@ -49,13 +49,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedEmail = String(email).trim().toLowerCase();
     const passwordHash = hashPassword(password);
 
     // Find user
     const [user] = await sql`
       SELECT id, email, name, password_hash
       FROM users
-      WHERE email = ${email}
+      WHERE LOWER(email) = ${normalizedEmail}
     `;
 
     if (!user) {

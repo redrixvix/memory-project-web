@@ -49,12 +49,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const normalizedName = String(name).trim();
     const passwordHash = hashPassword(password);
 
     // Create user in database
     const [user] = await sql`
       INSERT INTO users (email, name, password_hash)
-      VALUES (${email}, ${name}, ${passwordHash})
+      VALUES (${normalizedEmail}, ${normalizedName}, ${passwordHash})
       RETURNING id, email, name, created_at
     `;
 
