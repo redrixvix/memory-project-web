@@ -267,7 +267,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       {currentUserId && (
         <Link
           href={`/books/${id}/edit`}
-          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-105 active:scale-95 animate-fade-up hover:shadow-2xl"
+          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-105 active:scale-95 animate-fade-up hover:shadow-2xl group"
           style={{
             backgroundColor: 'var(--bronze)',
             color: 'var(--charcoal)',
@@ -275,7 +275,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           }}
           aria-label="Add a memory"
         >
-          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg className="w-6 h-6 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M12 5v14M5 12h14"/>
           </svg>
         </Link>

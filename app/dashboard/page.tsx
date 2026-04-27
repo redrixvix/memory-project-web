@@ -293,7 +293,9 @@ export default function Dashboard() {
                 Your Memory Books
               </h1>
               <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                {user.name.endsWith('s') ? `${user.name}'` : `${user.name}'s`} collection — {filteredBooks.length} {filteredBooks.length === 1 ? 'book' : 'books'} {searchQuery ? `matching "${searchQuery}"` : 'in the library'}
+                {filteredBooks.length === 0 
+                  ? 'Your library is waiting — create your first book and start capturing stories.'
+                  : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'book' : 'books'} in your library${searchQuery ? ` matching "${searchQuery}"` : ''}`}
               </p>
             </div>
           )}
