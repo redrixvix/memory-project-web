@@ -298,26 +298,21 @@ export default function SettingsPage() {
                     {user?.email}
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploadingImage}
-                      className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all disabled:opacity-50 hover:opacity-90 active:scale-[0.98]"
-                      style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
-                    >
-                      <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                        <circle cx="12" cy="13" r="4"/>
-                      </svg>
-                      {profileImageUrl ? 'Change photo' : 'Upload photo'}
-                    </button>
-                    {profileImageUrl && (
+                    {profileImageUrl ? (
                       <button
                         onClick={() => setProfileImageUrl(null)}
                         className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:opacity-70"
                         style={{ color: '#8A6A5A', backgroundColor: 'rgba(212,163,115,0.06)' }}
                       >
-                        Remove
+                        <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                        Remove photo
                       </button>
+                    ) : (
+                      <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                        Click the circle above to upload a photo
+                      </p>
                     )}
                   </div>
                   {imageError && (

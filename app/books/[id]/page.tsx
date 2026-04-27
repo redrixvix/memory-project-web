@@ -79,6 +79,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [toastVisible, setToastVisible] = useState(false);
   // Delete confirm state
   const [deleteConfirm, setDeleteConfirm] = useState<{ memoryId: number } | null>(null);
+  // Memory sort order
+  const [memorySort, setMemorySort] = useState<'newest' | 'oldest'>('newest');
+
+  // Computed sorted memories
+  const sortedMemories = [...memories].sort((a, b) => {
+    if (memorySort === 'newest') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+  });
 
   useEffect(() => {
     fetchBook();
@@ -379,10 +387,24 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       <main className="px-6 md:px-10 py-12 max-w-5xl mx-auto w-full">
 
         {/* Book hero — full-width title block */}
-        <div className="mb-10">
-          <h1 className="text-4xl md:text-5xl font-medium mb-4 leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+        <div
+          className="mb-12 rounded-3xl p-8 md:p-10 relative overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, rgba(212,163,115,0.07) 0%, rgba(204,213,174,0.05) 100%)',
+            border: '1px solid rgba(212,163,115,0.14)',
+          }}
+        >
+          {/* Decorative corner accent */}
+          <div
+            className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-20 pointer-events-none"
+            style={{ background: 'radial-gradient(circle, rgba(212,163,115,0.3) 0%, transparent 70%)' }}
+          />
+          <h1 className="text-4xl md:text-5xl font-medium mb-5 leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
             {book.title}
           </h1>
+          {book.description && (
+            <p className="text-base leading-relaxed max-w-2xl mb-6" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>{book.description}</p>
+          )}
           <div className="flex items-center gap-4 flex-wrap">
             {book.plan && book.plan !== 'free' && (
               <span className="text-xs font-semibold px-3 py-1 rounded-full" style={getPlanBadgeStyles(book.plan)}>
@@ -398,16 +420,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         </div>
 
-        {book.description && (
-          <div className="mb-10">
-            <p className="text-base leading-relaxed max-w-2xl" style={{ color: '#6A6A5A' }}>{book.description}</p>
-            <div className="rule mt-8" />
-          </div>
-        )}
-
         {/* Memory section header — editorial horizontal rule */}
         {memories.length > 0 && (
-          <div className="mb-10">
+          <div className="mb-8">
             <div className="flex items-center gap-4">
               <div
                 className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center"
@@ -421,6 +436,34 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 Memories
               </h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.35), transparent)' }} />
+              {/* Sort controls */}
+              <div className="flex items-center gap-1">
+                <span className="text-xs hidden sm:inline" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>Sort:</span>
+                <button
+                  type="button"
+                  onClick={() => setMemorySort('newest')}
+                  className="inline-flex items-center gap-1 text-xs font-medium rounded-full px-3 py-1.5 transition-all duration-200"
+                  style={{
+                    backgroundColor: memorySort === 'newest' ? 'rgba(212,163,115,0.15)' : 'transparent',
+                    color: memorySort === 'newest' ? 'var(--charcoal)' : '#9A9A8A',
+                    border: `1px solid ${memorySort === 'newest' ? 'rgba(212,163,115,0.3)' : 'rgba(212,163,115,0.12)'}`,
+                  }}
+                >
+                  Newest
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMemorySort('oldest')}
+                  className="inline-flex items-center gap-1 text-xs font-medium rounded-full px-3 py-1.5 transition-all duration-200"
+                  style={{
+                    backgroundColor: memorySort === 'oldest' ? 'rgba(212,163,115,0.15)' : 'transparent',
+                    color: memorySort === 'oldest' ? 'var(--charcoal)' : '#9A9A8A',
+                    border: `1px solid ${memorySort === 'oldest' ? 'rgba(212,163,115,0.3)' : 'rgba(212,163,115,0.12)'}`,
+                  }}
+                >
+                  Oldest
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -482,7 +525,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         ) : (
           /* ── Memory list with lightbox ── */
           <div className="space-y-8">
-            {memories.map((memory, memoryIndex) => {
+            {sortedMemories.map((memory, memoryIndex) => {
               const accentColor = ACCENT_COLORS[memoryIndex % ACCENT_COLORS.length];
               return (
                 <div
@@ -570,9 +613,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               imageUrl={memory.contributor_avatar || null}
                               size={22}
                             />
-                            <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                              {memory.contributor_name}
-                            </span>
                           </div>
                         ) : null}
                         <p className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>
@@ -690,8 +730,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       >
                         <Link
                           href={`/books/${id}/edit?memory=${memory.id}`}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 active:scale-95"
-                          style={{ color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.1)' }}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:opacity-80 active:scale-95"
+                          style={{ color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.18)' }}
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -702,8 +742,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         <button
                           type="button"
                           onClick={() => setDeleteConfirm({ memoryId: memory.id })}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 active:scale-95"
-                          style={{ color: '#8B6B5A', backgroundColor: 'rgba(212,163,115,0.06)' }}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:opacity-80"
+                          style={{ color: '#B4503C', backgroundColor: 'rgba(180,80,60,0.08)' }}
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>

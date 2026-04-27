@@ -202,7 +202,7 @@ export default function UpgradePage() {
               value={selectedBookId}
               onChange={(e) => updateSelectedBook(e.target.value, books)}
               className="w-full rounded-xl px-4 py-3 text-base"
-              style={{ border: '1px solid rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)', color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
+              style={{ border: '1px solid rgba(212,163,115,0.35)', backgroundColor: '#FDFCF5', color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
             >
               {books.map(b => (
                 <option key={b.id} value={b.id}>
@@ -248,7 +248,7 @@ export default function UpgradePage() {
                 className="text-left rounded-2xl p-7 transition-all duration-200 relative cursor-pointer"
                 style={cardStyles}
                 aria-pressed={isSelected}
-                aria-disabled={isCurrentPlan}
+                aria-disabled={isCurrentPlan ? true : undefined}
               >
                 {/* Popular badge */}
                 {isPopular && (
@@ -388,7 +388,7 @@ export default function UpgradePage() {
                   value={selectedBookId}
                   onChange={(e) => updateSelectedBook(e.target.value, books)}
                   className="rounded-xl px-4 py-2 text-sm"
-                  style={{ border: '1px solid rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)', color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
+                  style={{ border: '1px solid rgba(212,163,115,0.35)', backgroundColor: '#FDFCF5', color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
                 >
                   {books.map(b => (
                     <option key={b.id} value={b.id}>{b.title}</option>
