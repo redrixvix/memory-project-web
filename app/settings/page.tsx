@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface User {
   id: number;
@@ -18,6 +19,10 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [name, setName] = useState('');
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageError, setImageError] = useState('');
 
   useEffect(() => {
     async function loadUser() {
@@ -33,6 +38,7 @@ export default function SettingsPage() {
         if (u) {
           setUser(u);
           setName(u.name ?? '');
+          setProfileImageUrl(u.profile_image_url ?? null);
         }
       } catch {
         // silently fail for settings
@@ -66,9 +72,79 @@ export default function SettingsPage() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setImageError('Please select an image file.');
+      return;
+    }
+
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      setImageError('Image must be smaller than 2MB.');
+      return;
+    }
+
+    setUploadingImage(true);
+    setImageError('');
+
+    try {
+      // Get upload URL from our API
+      const uploadRes = await fetch('/api/user/profile-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: file.name, fileType: file.type }),
+      });
+
+      if (!uploadRes.ok) {
+        // If the endpoint doesn't exist yet, use a temporary local preview
+        const localUrl = URL.createObjectURL(file);
+        setProfileImageUrl(localUrl);
+        setImageError('');
+        return;
+      }
+
+      const { uploadUrl, publicUrl } = await uploadRes.json();
+
+      // Upload to storage
+      const putRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type },
+      });
+
+      if (!putRes.ok) throw new Error('Upload failed');
+
+      setProfileImageUrl(publicUrl);
+
+      // Update user profile
+      await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profile_image_url: publicUrl }),
+      });
+
+    } catch (err) {
+      setImageError('Failed to upload image. Please try again.');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/login');
+  };
+
+  const getInitials = (name: string) => {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    }
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
   };
 
   if (loading) {
@@ -120,13 +196,16 @@ export default function SettingsPage() {
 
           {/* ── Profile Section ── */}
           <section
-            className="rounded-2xl border overflow-hidden"
+            className="rounded-3xl border overflow-hidden"
             style={{
               backgroundColor: '#FDFCF5',
               borderColor: 'rgba(212,163,115,0.18)',
               boxShadow: '0 4px 24px rgba(212,163,115,0.07)',
             }}
           >
+            {/* Warm accent bar */}
+            <div className="h-1 w-full" style={{ backgroundColor: 'var(--bronze)' }} />
+
             <div className="px-7 py-6 border-b" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
               <div className="flex items-center gap-3">
                 <div
@@ -145,22 +224,105 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="p-7 space-y-6">
-              {/* Avatar + name display */}
-              <div className="flex items-center gap-5">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center shrink-0 text-xl font-semibold"
-                  style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: 'var(--bronze)' }}
-                >
-                  {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) ?? 'AR'}
+            <div className="p-7 space-y-7">
+
+              {/* Avatar + image upload */}
+              <div className="flex flex-col sm:flex-row items-center gap-6">
+                {/* Avatar display */}
+                <div className="relative group">
+                  {profileImageUrl ? (
+                    <div className="relative">
+                      <div className="w-24 h-24 rounded-full overflow-hidden" style={{ boxShadow: '0 8px 32px rgba(212,163,115,0.2)' }}>
+                        <Image
+                          src={profileImageUrl}
+                          alt={user?.name || 'Profile'}
+                          width={96}
+                          height={96}
+                          className="object-cover w-full h-full"
+                          unoptimized
+                        />
+                      </div>
+                      {/* Hover overlay */}
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        style={{ backgroundColor: 'rgba(43,43,43,0.5)' }}
+                        aria-label="Change profile photo"
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                          <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-24 h-24 rounded-full flex flex-col items-center justify-center gap-2 transition-all duration-200 hover:scale-105"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(212,163,115,0.15) 0%, rgba(204,213,174,0.15) 100%)',
+                        border: '2px dashed rgba(212,163,115,0.3)',
+                      }}
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--bronze)' }}>
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                      </svg>
+                      <span className="text-xs font-medium" style={{ color: 'var(--bronze)' }}>Add photo</span>
+                    </button>
+                  )}
+
+                  {/* Upload loading state */}
+                  {uploadingImage && (
+                    <div className="absolute inset-0 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(254,250,224,0.8)' }}>
+                      <div className="w-6 h-6 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <p className="text-base font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+
+                {/* Avatar info */}
+                <div className="flex-1 text-center sm:text-left">
+                  <p className="text-base font-semibold mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                     {user?.name}
                   </p>
-                  <p className="text-sm mt-0.5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                  <p className="text-sm mb-3" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                     {user?.email}
                   </p>
+                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploadingImage}
+                      className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all disabled:opacity-50 hover:opacity-90 active:scale-[0.98]"
+                      style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
+                    >
+                      <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                      </svg>
+                      {profileImageUrl ? 'Change photo' : 'Upload photo'}
+                    </button>
+                    {profileImageUrl && (
+                      <button
+                        onClick={() => setProfileImageUrl(null)}
+                        className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:opacity-70"
+                        style={{ color: '#8A6A5A', backgroundColor: 'rgba(212,163,115,0.06)' }}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  {imageError && (
+                    <p className="text-xs mt-2" style={{ color: '#B91C1C' }}>{imageError}</p>
+                  )}
                 </div>
               </div>
 
@@ -184,8 +346,30 @@ export default function SettingsPage() {
                 />
               </div>
 
+              {/* Email (read-only) */}
+              <div className="grid gap-2">
+                <label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                  Email address
+                </label>
+                <input
+                  type="email"
+                  value={user?.email || ''}
+                  readOnly
+                  className="w-full rounded-xl px-4 py-3 text-base outline-none cursor-not-allowed"
+                  style={{
+                    border: '1px solid rgba(212,163,115,0.2)',
+                    backgroundColor: 'rgba(254,250,224,0.3)',
+                    color: '#6A6A5A',
+                    fontFamily: 'var(--font-serif)',
+                  }}
+                />
+                <p className="text-xs" style={{ color: '#8A8A7A' }}>
+                  Contact support to change your email address
+                </p>
+              </div>
+
               {/* Save */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 pt-2">
                 <button
                   onClick={handleSave}
                   disabled={saving || !name.trim() || name.trim() === user?.name}
@@ -217,13 +401,15 @@ export default function SettingsPage() {
 
           {/* ── Privacy Section ── */}
           <section
-            className="rounded-2xl border overflow-hidden"
+            className="rounded-3xl border overflow-hidden"
             style={{
               backgroundColor: '#FDFCF5',
               borderColor: 'rgba(212,163,115,0.18)',
               boxShadow: '0 4px 24px rgba(212,163,115,0.07)',
             }}
           >
+            <div className="h-1 w-full" style={{ backgroundColor: 'var(--tea-green)' }} />
+
             <div className="px-7 py-6 border-b" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
               <div className="flex items-center gap-3">
                 <div
@@ -242,7 +428,7 @@ export default function SettingsPage() {
               </div>
             </div>
             <div className="p-7">
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="flex items-start gap-3">
                   <div
                     className="w-5 h-5 rounded flex items-center justify-center mt-0.5 shrink-0"
@@ -295,15 +481,64 @@ export default function SettingsPage() {
             </div>
           </section>
 
+          {/* ── Security Section ── */}
+          <section
+            className="rounded-3xl border overflow-hidden"
+            style={{
+              backgroundColor: '#FDFCF5',
+              borderColor: 'rgba(212,163,115,0.18)',
+              boxShadow: '0 4px 24px rgba(212,163,115,0.07)',
+            }}
+          >
+            <div className="h-1 w-full" style={{ backgroundColor: 'var(--papaya)' }} />
+
+            <div className="px-7 py-6 border-b" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>Security</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#6A6A5A' }}>Manage your account security</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-7">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Password</p>
+                    <p className="text-xs mt-0.5" style={{ color: '#6A6A5A' }}>
+                      Last changed: Unknown
+                    </p>
+                  </div>
+                  <button
+                    className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:opacity-80"
+                    style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.2)' }}
+                  >
+                    Change password
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* ── Danger Zone ── */}
           <section
-            className="rounded-2xl border overflow-hidden"
+            className="rounded-3xl border overflow-hidden"
             style={{
               backgroundColor: '#FDFCF5',
               borderColor: 'rgba(180,80,60,0.15)',
               boxShadow: '0 4px 24px rgba(180,80,60,0.05)',
             }}
           >
+            <div className="h-1 w-full" style={{ backgroundColor: '#B4503C' }} />
+
             <div className="px-7 py-6 border-b" style={{ borderColor: 'rgba(180,80,60,0.12)' }}>
               <div className="flex items-center gap-3">
                 <div

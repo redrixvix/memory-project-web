@@ -1232,36 +1232,70 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     </div>
                   ) : (
                     <div
-                      className="rounded-[1.5rem] px-5 py-6 relative overflow-hidden"
+                      className="rounded-[1.5rem] px-6 py-7 relative overflow-hidden"
                       style={{
-                        background: 'linear-gradient(160deg, rgba(212,163,115,0.06) 0%, rgba(204,213,174,0.08) 100%)',
-                        border: '1px solid rgba(212,163,115,0.18)',
+                        background: 'linear-gradient(145deg, rgba(250,237,205,0.5) 0%, rgba(204,213,174,0.12) 50%, rgba(212,163,115,0.06) 100%)',
+                        border: '1.5px solid rgba(212,163,115,0.25)',
+                        boxShadow: '0 8px 32px rgba(212,163,115,0.08), inset 0 1px 0 rgba(255,255,255,0.5)',
                       }}
                     >
-                      {/* Decorative corner accent */}
-                      <div className="absolute top-0 right-0 w-24 h-24 opacity-[0.07]" style={{ background: 'radial-gradient(circle at 100% 0%, var(--bronze) 0%, transparent 70%)' }} />
+                      {/* Decorative elements */}
+                      <div className="absolute top-0 right-0 w-40 h-40 opacity-[0.06]" style={{ background: 'radial-gradient(circle at 100% 0%, var(--bronze) 0%, transparent 60%)' }} />
+                      <div className="absolute -bottom-6 -left-6 w-24 h-24 opacity-[0.05]" style={{ background: 'radial-gradient(circle, var(--tea-green) 0%, transparent 70%)' }} />
                       
-                      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between relative">
-                        <div className="max-w-lg">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-[0.65rem] font-semibold px-2.5 py-1 rounded-full uppercase tracking-[0.1em]" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}>
+                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 relative">
+                        <div className="flex-1 max-w-lg">
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--charcoal)' }}>
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                              </svg>
+                            </div>
+                            <span className="text-[0.7rem] font-bold px-3 py-1 rounded-full uppercase tracking-[0.12em]" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}>
                               Plus Feature
                             </span>
                           </div>
-                          <p className="text-sm font-medium mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                            Add photos &amp; voice recordings
+                          <p className="text-lg font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                            Bring your memories to life with photos &amp; voice
                           </p>
-                          <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
-                            Upgrade to Plus or Premium to preserve photos and audio alongside each memory.
+                          <p className="text-sm leading-relaxed mb-4" style={{ color: '#6A6A5A' }}>
+                            Upgrade to Plus to attach photos and record voice notes to each memory. Your stories become richer, more vivid, impossible to forget.
                           </p>
+                          {/* Feature bullets */}
+                          <div className="flex flex-wrap gap-x-6 gap-y-2">
+                            <div className="flex items-center gap-2">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                              </svg>
+                              <span className="text-xs font-medium" style={{ color: 'var(--charcoal)' }}>Photo albums</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                              </svg>
+                              <span className="text-xs font-medium" style={{ color: 'var(--charcoal)' }}>Voice recordings</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                              </svg>
+                              <span className="text-xs font-medium" style={{ color: 'var(--charcoal)' }}>5GB storage</span>
+                            </div>
+                          </div>
                         </div>
-                        <Link
-                          href={`/upgrade?book=${id}`}
-                          className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200 hover:opacity-90 shrink-0"
-                          style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-                        >
-                          Upgrade this book
-                        </Link>
+                        <div className="shrink-0 lg:ml-8">
+                          <Link
+                            href={`/upgrade?book=${id}`}
+                            className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-200 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
+                            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.3)' }}
+                          >
+                            <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            Upgrade this book
+                          </Link>
+                          <p className="text-xs text-center mt-2" style={{ color: '#8A8A7A' }}>Starting at $50 for 5 years</p>
+                        </div>
                       </div>
                     </div>
                   )}
