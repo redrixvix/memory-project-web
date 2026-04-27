@@ -387,23 +387,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         )}
 
         {memories.length > 0 && (
-          <div className="mb-8 flex items-center justify-between flex-wrap gap-3">
-            <div className="inline-flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--bronze)' }} />
-              <p className="label-caps" style={{ color: 'var(--bronze)' }}>
-                {memories.length} {memories.length === 1 ? 'memory' : 'memories'} in this book
-              </p>
-            </div>
-            <Link
-              href={`/books/${id}/preview`}
-              className="text-sm flex items-center gap-2 transition-colors hover:opacity-70"
-              style={{ color: 'var(--charcoal)' }}
-            >
-              Preview book
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </Link>
+          <div className="mb-8 inline-flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--bronze)' }} />
+            <p className="label-caps" style={{ color: 'var(--bronze)' }}>
+              {memories.length} {memories.length === 1 ? 'memory' : 'memories'} in this book
+            </p>
           </div>
         )}
 
@@ -628,15 +616,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         <audio src={memory.audio_url} controls className="mt-7 w-full h-9" />
                       )}
 
-                      {/* Footer actions — always visible for usability ── */}
-                      <div className="flex justify-end items-center mt-7 pt-5 border-t transition-all duration-200" style={{ borderColor: 'rgba(212,163,115,0.1)' }}>
+                      {/* Footer actions — visible on hover ── */}
+                      <div className="flex items-center justify-between mt-7 pt-5 border-t opacity-60 group-hover:opacity-100 transition-all duration-300" style={{ borderColor: 'rgba(212,163,115,0.1)' }}>
+                        <p className="text-[0.65rem] italic" style={{ color: '#C0B09A', fontFamily: 'var(--font-sans)' }}>
+                          {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </p>
                         <div className="flex gap-2 items-center">
                           <Link
                             href={`/books/${id}/edit?memory=${memory.id}`}
-                            className="text-xs font-medium flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all duration-200 hover:bg-amber-50"
-                            style={{ color: 'var(--bronze)' }}
+                            className="text-xs font-semibold flex items-center gap-1.5 rounded-full px-4 py-1.5 transition-all duration-200 hover:scale-105 active:scale-95"
+                            style={{ color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.1)' }}
                           >
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                             </svg>
@@ -645,10 +636,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                           <button
                             type="button"
                             onClick={() => setDeleteConfirm({ memoryId: memory.id })}
-                            className="text-xs flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all duration-200 hover:bg-red-50"
-                            style={{ color: '#B09888' }}
+                            className="text-xs font-semibold flex items-center gap-1.5 rounded-full px-4 py-1.5 transition-all duration-200 hover:scale-105 active:scale-95"
+                            style={{ color: '#8B6B5A', backgroundColor: 'rgba(212,163,115,0.06)' }}
                           >
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
                             </svg>
                             Delete

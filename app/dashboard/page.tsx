@@ -663,7 +663,7 @@ export default function Dashboard() {
                                 </svg>
                                 <span className="text-xs font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
                                   {book._count.memories === 0
-                                    ? 'No memories yet'
+                                    ? 'Start adding memories'
                                     : `${book._count.memories} ${book._count.memories === 1 ? 'memory' : 'memories'}`}
                                 </span>
                               </div>
