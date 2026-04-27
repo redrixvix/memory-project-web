@@ -299,10 +299,10 @@ export default function Dashboard() {
               <h1 className="display-md mb-2" style={{ color: 'var(--charcoal)' }}>
                 Your Memory Books
               </h1>
-              <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+              <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
                 {filteredBooks.length === 0 
                   ? 'Your library is waiting — create your first book and start capturing stories.'
-                  : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'book' : 'books'} in your library${searchQuery ? ` matching "${searchQuery}"` : ''}`}
+                  : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'chapter' : 'chapters'} in your library${searchQuery ? ` matching "${searchQuery}"` : ''}`}
               </p>
             </div>
           )}
@@ -819,7 +819,15 @@ export default function Dashboard() {
                           {/* Right side: updated time + arrow */}
                           <div className="flex items-center gap-3">
                             <p className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
-                              Updated {new Date(lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                              {(() => {
+                                const diff = Date.now() - new Date(lastUpdated).getTime();
+                                const days = Math.floor(diff / 86400000);
+                                if (days === 0) return 'Touched today';
+                                if (days === 1) return 'Touched yesterday';
+                                if (days < 7) return `Touched ${days} days ago`;
+                                if (days < 30) return `Touched ${Math.floor(days / 7)}w ago`;
+                                return `Last touched ${new Date(lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+                              })()}
                             </p>
                             <div
                               className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"

@@ -1036,17 +1036,29 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       <span style={{ color: '#8E8478', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>Autosaves as you write</span>
                     </p>
                     <div 
-                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.12em] transition-all duration-300"
+                      className="inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs transition-all duration-300"
                       style={{ 
                         backgroundColor: wordCount > 0 ? 'rgba(212,163,115,0.12)' : 'rgba(254,250,224,0.82)', 
-                        color: '#7B6B56', 
-                        fontFamily: 'var(--font-sans)',
-                        boxShadow: wordCount > 0 ? '0 2px 8px rgba(212,163,115,0.15)' : 'none',
+                        boxShadow: wordCount > 0 ? '0 2px 10px rgba(212,163,115,0.15)' : 'none',
+                        border: '1px solid rgba(212,163,115,0.12)',
                       }}
                     >
-                      <span style={{ color: 'var(--bronze)', transition: 'color 0.3s' }}>✎</span>
-                      <span className="font-semibold" style={{ color: wordCount > 0 ? 'var(--bronze)' : '#9A8A7A' }}>{wordCount}</span>
-                      <span style={{ color: '#9A8A7A' }}>{wordCount === 1 ? 'word' : 'words'}</span>
+                      {/* Pencil icon */}
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                      </svg>
+                      <span className="font-semibold" style={{ color: wordCount > 0 ? 'var(--charcoal)' : '#9A8A7A', fontFamily: 'var(--font-sans)' }}>
+                        {wordCount.toLocaleString()}
+                      </span>
+                      <span style={{ color: '#9A8A7A', fontFamily: 'var(--font-sans)' }}>{wordCount === 1 ? 'word' : 'words'}</span>
+                      {wordCount >= 20 && (
+                        <>
+                          <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
+                          <span style={{ color: '#8A7A6A', fontFamily: 'var(--font-sans)' }}>
+                            ~{Math.max(1, Math.round(wordCount / 200))} min read
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1273,35 +1285,38 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     </div>
                   ) : (
                     <div
-                      className="rounded-[1rem] px-4 py-3.5 relative overflow-hidden"
+                      className="rounded-[1.5rem] p-6 relative overflow-hidden"
                       style={{
-                        background: 'linear-gradient(145deg, rgba(250,237,205,0.5) 0%, rgba(204,213,174,0.12) 100%)',
-                        border: '1px solid rgba(212,163,115,0.18)',
+                        background: 'linear-gradient(145deg, rgba(250,237,205,0.65) 0%, rgba(204,213,174,0.18) 100%)',
+                        border: '1px solid rgba(212,163,115,0.22)',
+                        boxShadow: '0 4px 20px rgba(212,163,115,0.08)',
                       }}
                     >
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 relative">
-                        <div className="flex-1 min-w-0 flex items-center gap-3">
-                          <div className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      {/* Decorative top gradient line */}
+                      <div className="absolute top-0 left-0 right-0 h-1 rounded-t-[1.5rem]" style={{ background: 'linear-gradient(to right, var(--bronze), var(--tea-green), var(--papaya))' }} />
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
+                        <div className="flex-1 min-w-0 flex items-start gap-4">
+                          <div className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--bronze)' }}>
+                              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
                             </svg>
                           </div>
                           <div>
-                            <p className="text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                              Bring your memories to life with photos &amp; voice
+                            <p className="text-sm font-semibold mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                              Add photos and voice notes
                             </p>
-                            <p className="text-xs" style={{ color: '#6A6A5A' }}>
-                              Photos &amp; audio require a Plus or Premium plan
+                            <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                              Upgrade to preserve moments in full — photos and audio bring memories to life in ways text alone cannot.
                             </p>
                           </div>
                         </div>
                         <div className="shrink-0">
                           <Link
                             href={`/upgrade?book=${id}`}
-                            className="inline-flex h-9 items-center justify-center rounded-full px-5 text-xs font-semibold transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
-                            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                            className="inline-flex h-10 items-center justify-center rounded-2xl px-6 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-[0.98] shadow-sm"
+                            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 16px rgba(212,163,115,0.25)' }}
                           >
-                            Upgrade
+                            See plans
                           </Link>
                         </div>
                       </div>

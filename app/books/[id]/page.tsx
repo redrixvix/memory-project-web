@@ -594,13 +594,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     style={{
                       backgroundColor: '#FDFCF5',
                       border: hoveredCard === memoryIndex ? '1px solid rgba(212,163,115,0.18)' : '1px solid rgba(212,163,115,0.06)',
-                      boxShadow: hoveredCard === memoryIndex 
-                        ? '0 32px 80px rgba(212,163,115,0.26), 0 16px 40px rgba(212,163,115,0.14), 0 1px 0 rgba(212,163,115,0.12) inset' 
-                        : '0 6px 28px rgba(212,163,115,0.10), 0 2px 8px rgba(212,163,115,0.06)',
-                      transform: hoveredCard === memoryIndex 
-                        ? 'translateY(-10px) scale(1.015)' 
-                        : 'translateY(0) scale(1)',
-                      backgroundImage: 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.10) 0%, transparent 50%)',
+                      boxShadow: hoveredCard === memoryIndex
+                        ? '0 16px 48px rgba(212,163,115,0.22), 0 8px 24px rgba(212,163,115,0.12), 0 1px 0 rgba(212,163,115,0.15) inset'
+                        : '0 4px 20px rgba(212,163,115,0.08), 0 1px 4px rgba(212,163,115,0.05)',
+                      backgroundImage: hoveredCard === memoryIndex
+                        ? 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.10) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.12) 0%, transparent 50%)'
+                        : 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.08) 0%, transparent 50%)',
                     }}
                   >
                     {/* Warm page-edge accent — left side with book spine feel */}
@@ -842,40 +841,42 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Footer actions — minimal, icon-only for premium feel */}
+                      {/* Footer actions — larger buttons for better accessibility */}
                       <div
                         className="flex items-center justify-end gap-2 mt-7 pt-5 border-t transition-all duration-300"
                         style={{ borderColor: 'rgba(212,163,115,0.08)' }}
                       >
                         <Link
                           href={`/books/${id}/edit?memory=${memory.id}`}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200 hover:bg-[rgba(212,163,115,0.12)] active:scale-90"
+                          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 active:scale-95"
                           style={{
-                            color: '#7A7A6A',
-                            backgroundColor: 'transparent',
+                            color: 'var(--charcoal)',
+                            backgroundColor: 'rgba(212,163,115,0.08)',
+                            border: '1px solid rgba(212,163,115,0.15)',
                           }}
                           aria-label="Edit memory"
-                          title="Edit memory"
                         >
-                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                           </svg>
+                          Edit
                         </Link>
                         <button
                           type="button"
                           onClick={() => setDeleteConfirm({ memoryId: memory.id })}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200 hover:brightness-110 active:scale-90"
+                          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:brightness-110 active:scale-95"
                           style={{
                             color: '#B07070',
-                            backgroundColor: 'transparent',
+                            backgroundColor: 'rgba(212,163,115,0.06)',
+                            border: '1px solid rgba(212,163,115,0.12)',
                           }}
                           aria-label="Delete memory"
-                          title="Delete memory"
                         >
-                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#B07070' }}>
                             <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
                           </svg>
+                          Delete
                         </button>
                       </div>
                     </CardContent>
