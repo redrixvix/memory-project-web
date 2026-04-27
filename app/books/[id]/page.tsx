@@ -533,8 +533,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 >
                   {/* Chapter tab strip — subtle accent above card */}
                   <div
-                    className="absolute -top-3 left-10 right-0 h-3 rounded-t-2xl pointer-events-none z-10 overflow-hidden"
-                    style={{ background: `linear-gradient(to bottom, ${accentColor}18, transparent)` }}
+                    className="absolute -top-3 left-10 right-0 h-4 rounded-t-2xl pointer-events-none z-10 overflow-hidden transition-all duration-300"
+                    style={{ background: `linear-gradient(to bottom, ${accentColor}28, transparent)` }}
                   />
                   <Card
                     className="rounded-2xl overflow-hidden relative transition-all duration-500 ease-out"
@@ -542,14 +542,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     onMouseLeave={() => setHoveredCard(null)}
                     style={{
                       backgroundColor: '#FDFCF5',
-                      border: 'none',
+                      border: '1px solid rgba(212,163,115,0.06)',
                       boxShadow: hoveredCard === memoryIndex 
-                        ? '0 24px 64px rgba(212,163,115,0.18), 0 8px 24px rgba(212,163,115,0.1), 0 1px 0 rgba(212,163,115,0.08) inset' 
-                        : '0 4px 24px rgba(212,163,115,0.08), 0 1px 0 rgba(212,163,115,0.04) inset',
+                        ? '0 28px 72px rgba(212,163,115,0.22), 0 12px 32px rgba(212,163,115,0.12), 0 1px 0 rgba(212,163,115,0.10) inset' 
+                        : '0 6px 28px rgba(212,163,115,0.10), 0 2px 8px rgba(212,163,115,0.06)',
                       transform: hoveredCard === memoryIndex 
-                        ? 'translateY(-6px) scale(1.008)' 
+                        ? 'translateY(-8px) scale(1.01)' 
                         : 'translateY(0) scale(1)',
-                      backgroundImage: 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.04) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.05) 0%, transparent 50%)',
+                      backgroundImage: 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.08) 0%, transparent 50%)',
                     }}
                   >
                     {/* Warm page-edge accent — left side with book spine feel */}
@@ -791,7 +791,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
                       {/* Footer actions — visible on hover, elegant reveal */}
                       <div
-                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t transition-all duration-300"
+                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t transition-all duration-300 opacity-0 group-hover:opacity-100"
                         style={{ borderColor: 'rgba(212,163,115,0.1)' }}
                       >
                         <Link

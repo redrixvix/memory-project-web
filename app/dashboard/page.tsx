@@ -607,15 +607,15 @@ export default function Dashboard() {
                       className="relative h-full rounded-3xl overflow-hidden group cursor-pointer transition-all duration-500"
                       style={{
                         backgroundColor: '#FFFDF8',
-                        boxShadow: '0 4px 20px rgba(212,163,115,0.10), 0 1px 6px rgba(212,163,115,0.06)',
+                        boxShadow: '0 6px 28px rgba(212,163,115,0.12), 0 2px 8px rgba(212,163,115,0.06)',
                         borderLeft: `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`,
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 28px 72px rgba(212,163,115,0.22), 0 8px 28px rgba(212,163,115,0.12)';
-                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-6px) scale(1.008)';
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 32px 80px rgba(212,163,115,0.24), 0 12px 36px rgba(212,163,115,0.14)';
+                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-8px) scale(1.012)';
                       }}
                       onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.04)';
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 6px 28px rgba(212,163,115,0.12), 0 2px 8px rgba(212,163,115,0.06)';
                         (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0) scale(1)';
                       }}
                     >
