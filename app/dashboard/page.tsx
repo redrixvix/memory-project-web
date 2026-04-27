@@ -319,8 +319,9 @@ export default function Dashboard() {
                     placeholder="Search books..."
                     className="w-full h-10 pl-10 pr-4 rounded-full text-sm outline-none transition-all duration-200"
                     style={{
-                      backgroundColor: 'rgba(212,163,115,0.08)',
-                      border: '1px solid rgba(212,163,115,0.2)',
+                      backgroundColor: 'rgba(255,253,246,0.95)',
+                      border: '1px solid rgba(212,163,115,0.30)',
+                      boxShadow: '0 4px 16px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.06)',
                       color: 'var(--charcoal)',
                       fontFamily: 'var(--font-sans)',
                     }}
@@ -351,8 +352,8 @@ export default function Dashboard() {
                     onClick={() => setSortOrder(value)}
                     className="rounded-full px-4 py-2 text-xs font-medium transition-all duration-200 shrink-0"
                     style={{
-                      backgroundColor: sortOrder === value ? 'var(--bronze)' : 'transparent',
-                      color: sortOrder === value ? 'var(--charcoal)' : '#7A7A6A',
+                      backgroundColor: sortOrder === value ? 'var(--charcoal)' : 'rgba(255,253,246,0.92)',
+                      color: sortOrder === value ? 'var(--cornsilk)' : '#6A6A5A',
                       fontFamily: 'var(--font-sans)',
                       minWidth: '58px',
                       boxShadow: sortOrder === value ? '0 2px 8px rgba(212,163,115,0.2)' : 'none',

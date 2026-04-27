@@ -1283,8 +1283,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 className="sticky bottom-0 z-10 -mx-5 px-5 py-4 md:-mx-9 md:px-9 md:py-4"
                 style={{
                   background: 'linear-gradient(to top, rgba(253,252,245,0.98) 0%, rgba(253,252,245,0.95) 100%)',
-                  backdropFilter: 'blur(12px)',
-                  borderTop: '1px solid rgba(212,163,115,0.14)',
+                  backdropFilter: 'blur(20px)',
+                  borderTop: '1px solid rgba(212,163,115,0.22)',
                   boxShadow: '0 -8px 32px rgba(212,163,115,0.08)',
                 }}
               >
@@ -1320,10 +1320,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <Button
                       type="submit"
                       disabled={isSubmitDisabled}
-                      className="h-10 rounded-full px-6 text-sm disabled:cursor-not-allowed disabled:opacity-100 transition-all duration-300 hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(212,163,115,0.3)] active:scale-[0.98]"
+                      className="h-11 rounded-full px-8 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(196,148,106,0.4)] hover:-translate-y-0.5"
                       style={{
-                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.4)' : 'var(--bronze)',
-                        color: 'var(--charcoal)',
+                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.35)' : 'var(--bronze)',
+                        color: isSubmitDisabled ? 'rgba(43,43,43,0.6)' : 'var(--charcoal)',
+                        boxShadow: isSubmitDisabled ? 'none' : '0 6px 24px rgba(212,163,115,0.3)',
                       }}
                     >
                       {loading ? (
