@@ -500,7 +500,7 @@ export default function Dashboard() {
                               </svg>
                             </div>
                           )}
-                          <div className="flex items-baseline gap-2 flex-wrap">
+                          <div className="flex items-baseline gap-2 flex-wrap mb-2">
                             <p className="label-caps" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
                             <p className="text-base font-semibold" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
                             {plan.id === 'free' && (
@@ -513,17 +513,31 @@ export default function Dashboard() {
                               <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>One-time</span>
                             )}
                           </div>
-                          <p className="text-xs mt-2 leading-relaxed" style={{ color: '#6A6A5A' }}>
-                            {plan.description}
-                          </p>
-                          {plan.id === 'plus' && (
-                            <div className="mt-2 flex items-center gap-1">
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                              </svg>
-                              <span className="text-xs font-medium" style={{ color: 'var(--bronze)' }}>Most storage</span>
-                            </div>
-                          )}
+                          <div className="space-y-1.5">
+                            {(plan.id === 'free' ? [
+                              'Unlimited text memories',
+                              'Basic guided prompts',
+                              'One memory book',
+                              'Print from $99',
+                            ] : plan.id === 'premium' ? [
+                              'Everything in Free',
+                              '5GB photo & audio storage',
+                              'Printed books from $99',
+                              'Family collaboration',
+                            ] : [
+                              'Everything in Premium',
+                              '15GB photo & audio storage',
+                              'Priority support',
+                              'Largest print runs',
+                            ]).map((feat, fi) => (
+                              <div key={fi} className="flex items-center gap-2">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: plan.id === 'free' && fi > 2 ? '#9A9A7A' : 'var(--bronze)', opacity: plan.id === 'free' && fi > 2 ? 0.5 : 1 }}>
+                                  <path d="M20 6L9 17l-5-5"/>
+                                </svg>
+                                <span className="text-xs" style={{ color: plan.id === 'free' && fi > 2 ? '#9A9A7A' : '#6A6A5A' }}>{feat}</span>
+                              </div>
+                            ))}
+                          </div>
                         </button>
                       ))}
                     </div>
