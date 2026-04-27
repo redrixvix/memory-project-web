@@ -384,10 +384,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Book hero — compact when empty, expanded when has memories */}
         <div
-          className={`rounded-3xl p-6 md:p-8 relative overflow-hidden mb-${memories.length === 0 ? '8' : '10'} transition-all duration-500`}
+          className="rounded-3xl p-6 md:p-8 relative overflow-hidden transition-all duration-500"
           style={{
             background: 'linear-gradient(135deg, rgba(212,163,115,0.07) 0%, rgba(204,213,174,0.05) 100%)',
             border: '1px solid rgba(212,163,115,0.14)',
+            marginBottom: memories.length === 0 ? '2rem' : '2.5rem',
           }}
         >
           {/* Decorative corner accent */}
@@ -527,7 +528,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               return (
                 <div
                   key={memory.id}
-                  className="animate-fade-up relative"
+                  className="animate-fade-up relative group/card"
                   style={{ animationDelay: `${memoryIndex * 0.07}s` }}
                 >
                   {/* Chapter tab strip — subtle accent above card */}
@@ -536,38 +537,62 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     style={{ background: `linear-gradient(to bottom, ${accentColor}18, transparent)` }}
                   />
                   <Card
-                    className="rounded-2xl overflow-hidden relative group transition-transform duration-300"
+                    className="rounded-2xl overflow-hidden relative transition-all duration-500 ease-out"
                     onMouseEnter={() => setHoveredCard(memoryIndex)}
                     onMouseLeave={() => setHoveredCard(null)}
                     style={{
                       backgroundColor: '#FDFCF5',
                       border: 'none',
-                      boxShadow: hoveredCard === memoryIndex ? '0 20px 56px rgba(212,163,115,0.16), 0 4px 16px rgba(212,163,115,0.08)' : '0 4px 24px rgba(212,163,115,0.08)',
-                      transform: hoveredCard === memoryIndex ? 'translateY(-4px) scale(1.005)' : 'translateY(0) scale(1)',
-                      backgroundImage: 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.03) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.04) 0%, transparent 50%)',
-                      transition: 'box-shadow 0.4s ease, transform 0.4s ease',
+                      boxShadow: hoveredCard === memoryIndex 
+                        ? '0 24px 64px rgba(212,163,115,0.18), 0 8px 24px rgba(212,163,115,0.1), 0 1px 0 rgba(212,163,115,0.08) inset' 
+                        : '0 4px 24px rgba(212,163,115,0.08), 0 1px 0 rgba(212,163,115,0.04) inset',
+                      transform: hoveredCard === memoryIndex 
+                        ? 'translateY(-6px) scale(1.008)' 
+                        : 'translateY(0) scale(1)',
+                      backgroundImage: 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.04) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.05) 0%, transparent 50%)',
                     }}
                   >
-                    {/* Warm page-edge accent — left side */}
+                    {/* Warm page-edge accent — left side with book spine feel */}
                     <div
-                      className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
-                      style={{ background: `linear-gradient(to bottom, ${accentColor}cc, ${accentColor}55, transparent)`, }}
+                      className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-2xl"
+                      style={{ 
+                        background: `linear-gradient(to bottom, ${accentColor}, ${accentColor}88 40%, ${accentColor}44 60%, transparent)`,
+                        boxShadow: hoveredCard === memoryIndex ? `4px 0 16px ${accentColor}33` : 'none',
+                        transition: 'box-shadow 0.4s ease',
+                      }}
                     />
                     <CardContent className="pt-8 pb-8 px-6 pl-8">
 
-                      {/* Prompt question as chapter opener */}
+                      {/* Prompt question as elegant chapter opener */}
                       {memory.prompt_question && (
-                        <p
-                          className="text-base md:text-lg italic mb-6 leading-relaxed"
-                          style={{ 
-                            color: 'var(--bronze)', 
-                            fontFamily: 'var(--font-serif)',
-                            borderLeft: '3px solid rgba(212,163,115,0.25)',
-                            paddingLeft: '1.1rem',
-                          }}
-                        >
-                          {memory.prompt_question}
-                        </p>
+                        <div className="mb-6">
+                          <div className="flex items-start gap-3">
+                            {/* Decorative quote mark */}
+                            <span 
+                              className="text-3xl leading-none mt-[-4px] shrink-0"
+                              style={{ color: 'rgba(212,163,115,0.35)', fontFamily: 'Georgia, serif' }}
+                            >
+                              "
+                            </span>
+                            <p
+                              className="text-base md:text-lg italic leading-relaxed"
+                              style={{ 
+                                color: 'var(--bronze)', 
+                                fontFamily: 'var(--font-serif)',
+                              }}
+                            >
+                              {memory.prompt_question}
+                            </p>
+                          </div>
+                          {/* Subtle rule below */}
+                          <div 
+                            className="h-px mt-4 rounded-full"
+                            style={{ 
+                              background: `linear-gradient(to right, ${accentColor}44, transparent)`,
+                              maxWidth: '120px',
+                            }}
+                          />
+                        </div>
                       )}
 
                       {/* Media chips */}
@@ -617,7 +642,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </p>
                       </div>
 
-                      {/* Photo grid — warm card frame with inset shadow */}
+                      {/* Photo grid — premium album-style with hover reveal */}
                       {memory.photo_urls && memory.photo_urls.length > 0 && (
                         <div
                           className="mt-7 grid gap-3 p-4 rounded-2xl"
@@ -635,25 +660,23 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             const globalIndex = memoryIndex * 100 + photoIndex;
                             const hasError = !!imageErrors[globalIndex];
                             return (
-                              <button
+                              <div
                                 key={photoIndex}
-                                type="button"
-                                onClick={() => handlePhotoClick(globalIndex, url)}
-                                className="img-frame rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.04] hover:brightness-105 active:scale-[0.98] relative aspect-square group"
-                                aria-label={`View photo ${photoIndex + 1}`}
+                                className="relative img-frame rounded-xl overflow-hidden cursor-pointer group"
                                 style={{
-                                  boxShadow: '0 4px 12px rgba(212,163,115,0.1)',
+                                  aspectRatio: '1',
+                                  boxShadow: '0 4px 16px rgba(212,163,115,0.12), 0 1px 4px rgba(43,43,43,0.06)',
                                 }}
                               >
                                 {hasError ? (
                                   <div
-                                    className="w-full h-full flex flex-col items-center justify-center gap-1 rounded-xl"
+                                    className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl"
                                     style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}
                                   >
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
-                                      width="22"
-                                      height="22"
+                                      width="24"
+                                      height="24"
                                       viewBox="0 0 24 24"
                                       fill="none"
                                       stroke="currentColor"
@@ -667,56 +690,102 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                       <polyline points="21 15 16 10 5 21" />
                                     </svg>
                                     <span
-                                      className="text-[0.6rem] font-medium"
+                                      className="text-[0.65rem] font-medium"
                                       style={{ color: 'rgba(43,43,43,0.4)', fontFamily: 'var(--font-sans)' }}
                                     >
                                       Unavailable
                                     </span>
                                   </div>
                                 ) : (
-                                  <Image
-                                    src={url}
-                                    alt={`Memory photo ${photoIndex + 1}`}
-                                    fill
-                                    unoptimized={true}
-                                    className="object-cover rounded-xl"
-                                    onError={() => handlePhotoError(globalIndex)}
-                                  />
+                                  <>
+                                    <Image
+                                      src={url}
+                                      alt={`Memory photo ${photoIndex + 1}`}
+                                      fill
+                                      unoptimized={true}
+                                      className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"
+                                      onError={() => handlePhotoError(globalIndex)}
+                                    />
+                                    {/* Hover overlay with expand hint */}
+                                    <button
+                                      type="button"
+                                      onClick={() => handlePhotoClick(globalIndex, url)}
+                                      className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-xl"
+                                      aria-label={`View photo ${photoIndex + 1} fullscreen`}
+                                      style={{
+                                        background: 'linear-gradient(to top, rgba(43,43,43,0.45) 0%, rgba(43,43,43,0.1) 50%, transparent 100%)',
+                                      }}
+                                    >
+                                      <div
+                                        className="w-10 h-10 rounded-full flex items-center justify-center mb-1 transition-transform duration-300 group-hover:scale-110"
+                                        style={{ backgroundColor: 'rgba(254,250,224,0.95)', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
+                                      >
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
+                                          <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                                        </svg>
+                                      </div>
+                                    </button>
+                                    {/* Photo index badge */}
+                                    {memory.photo_urls.length > 1 && (
+                                      <div
+                                        className="absolute bottom-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                        style={{ backgroundColor: 'rgba(254,250,224,0.9)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                                      >
+                                        {photoIndex + 1} / {memory.photo_urls.length}
+                                      </div>
+                                    )}
+                                  </>
                                 )}
-                              </button>
+                              </div>
                             );
                           })}
                         </div>
                       )}
 
-                      {/* Audio — warm styled card with icon */}
+                      {/* Audio — premium styled card with waveform icon */}
                       {memory.audio_url && (
                         <div
-                          className="mt-7 p-5 rounded-2xl"
+                          className="mt-7 p-5 rounded-2xl relative overflow-hidden"
                           style={{
-                            background: 'linear-gradient(135deg, rgba(204,213,174,0.12) 0%, rgba(212,163,115,0.08) 100%)',
-                            border: '1px solid rgba(212,163,115,0.18)',
+                            background: 'linear-gradient(135deg, rgba(204,213,174,0.15) 0%, rgba(212,163,115,0.1) 100%)',
+                            border: '1px solid rgba(212,163,115,0.2)',
+                            boxShadow: '0 4px 20px rgba(212,163,115,0.08), inset 0 1px 0 rgba(255,255,255,0.5)',
                           }}
                         >
-                          <div className="flex items-center gap-2 mb-4">
+                          {/* Subtle decorative waveform lines */}
+                          <div className="absolute inset-0 opacity-[0.06] pointer-events-none flex items-center justify-center gap-0.5">
+                            {[...Array(30)].map((_, i) => (
+                              <div
+                                key={i}
+                                className="w-0.5 rounded-full"
+                                style={{
+                                  height: `${8 + Math.sin(i * 0.5) * 6 + Math.random() * 4}px`,
+                                  backgroundColor: 'var(--bronze)',
+                                }}
+                              />
+                            ))}
+                          </div>
+                          <div className="relative flex items-center gap-3">
                             <div
-                              className="w-8 h-8 rounded-full flex items-center justify-center"
-                              style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}
+                              className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+                              style={{ backgroundColor: 'var(--bronze)', boxShadow: '0 4px 12px rgba(212,163,115,0.3)' }}
                             >
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
                                 <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
                               </svg>
                             </div>
-                            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
-                              Voice Note
-                            </span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
+                                Voice Note
+                              </p>
+                              <audio
+                                src={memory.audio_url}
+                                controls
+                                className="w-full rounded-xl audio-player"
+                                style={{ height: '40px', borderRadius: '10px' }}
+                              />
+                            </div>
                           </div>
-                          <audio
-                            src={memory.audio_url}
-                            controls
-                            className="w-full rounded-xl audio-player"
-                            style={{ height: '44px', borderRadius: '12px' }}
-                          />
                         </div>
                       )}
 
@@ -757,11 +826,24 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         )}
 
         {memories.length > 0 && (
-          <div className="mt-12 text-center">
+          <div className="mt-16 text-center">
+            {/* Decorative divider */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="h-px w-12 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
+              <svg width="16" height="16" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)', opacity: 0.5 }}>
+                <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
+                <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+              </svg>
+              <div className="h-px w-12 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
+            </div>
             <Link
               href={`/books/${id}/preview`}
-              className="inline-flex h-11 items-center justify-center rounded-full border px-7 text-sm font-medium transition-all duration-200 hover:opacity-80"
-              style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)' }}
+              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-300 hover:brightness-105 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.25)] hover:-translate-y-0.5 active:scale-95"
+              style={{ 
+                backgroundColor: 'var(--bronze)', 
+                color: 'var(--charcoal)',
+                boxShadow: '0 4px 20px rgba(212,163,115,0.2)',
+              }}
             >
               <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
@@ -769,6 +851,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </svg>
               Preview your book
             </Link>
+            <p className="mt-4 text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>
+              See how your memories will look printed
+            </p>
           </div>
         )}
       </main>
