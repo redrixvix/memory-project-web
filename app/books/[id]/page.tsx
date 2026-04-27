@@ -263,8 +263,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         </div>
       )}
 
-      {/* Floating action button — Add Memory (only show when book has content) */}
-      {memories.length > 0 && (
+      {/* Floating action button — Add Memory (always visible for authenticated users) */}
+      {currentUserId && (
         <Link
           href={`/books/${id}/edit`}
           className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-105 active:scale-95 animate-fade-up hover:shadow-2xl"

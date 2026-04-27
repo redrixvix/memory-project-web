@@ -102,6 +102,13 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
               >
                 Settings
               </Link>
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: '#B4503C' }}
+              >
+                Sign out
+              </button>
             </>
           ) : loggedIn === false ? (
             <>
