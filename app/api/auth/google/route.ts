@@ -10,11 +10,18 @@ function getScreenHint(request: NextRequest): 'sign-in' | 'sign-up' {
 
 export async function GET(request: NextRequest) {
   try {
+    const params: Record<string, string> = {};
+    const screenHint = getScreenHint(request);
+    if (screenHint) {
+      // Only pass screenHint for non-Google providers (authkit supports it, Google does not)
+      params.screen_hint = screenHint;
+    }
+
     const { url, codeVerifier, state } = await workos.userManagement.getAuthorizationUrlWithPKCE({
       clientId: WORKOS_CLIENT_ID,
       provider: 'GoogleOAuth',
       redirectUri: CALLBACK_URL,
-      screenHint: getScreenHint(request),
+      ...(Object.keys(params).length > 0 ? { providerQueryParams: params } : {}),
     });
 
     const response = NextResponse.redirect(url);
