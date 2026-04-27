@@ -26,14 +26,15 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
-  const [sent, setSent] = useState(false);
+  const [codeFlow, setCodeFlow] = useState<'magic' | 'email_verification' | null>(null);
+  const [pendingAuthenticationToken, setPendingAuthenticationToken] = useState('');
   const [error, setError] = useState('');
   const [magicLoading, setMagicLoading] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
 
   const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/google';
+    window.location.href = '/api/auth/google?screen_hint=sign-in';
   };
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
@@ -49,12 +50,20 @@ export default function Login() {
       });
       const data = await res.json();
 
+      if (res.status === 202 && data.requires_email_verification) {
+        setPendingAuthenticationToken(data.pending_authentication_token || '');
+        setCode('');
+        setCodeFlow('email_verification');
+        setError('');
+        return;
+      }
+
       if (!res.ok) {
         setError(data.error || 'Unable to sign in with that email and password.');
         return;
       }
 
-      window.location.href = '/dashboard';
+      window.location.href = data.redirect_url || '/dashboard';
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
@@ -77,7 +86,8 @@ export default function Login() {
         setError(data.error || 'Something went wrong. Please try again.');
         return;
       }
-      setSent(true);
+      setCode('');
+      setCodeFlow('magic');
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
@@ -205,7 +215,7 @@ export default function Login() {
                   border: '1px solid rgba(212,163,115,0.2)',
                   backgroundColor: 'transparent',
                 }}
-                onClick={() => window.location.href = '/api/auth/passkey'}
+                onClick={() => window.location.href = '/api/auth/passkey?screen_hint=sign-in'}
               >
                 <KeyIcon />
                 Sign in with passkey
@@ -218,7 +228,7 @@ export default function Login() {
                 <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
               </div>
 
-              {!sent ? (
+              {!codeFlow ? (
                 <div className="space-y-5">
                   {error && (
                     <div
@@ -300,9 +310,13 @@ export default function Login() {
                         <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
                       </svg>
                       <div>
-                        <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Code sent to {email}</p>
+                        <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                          {codeFlow === 'email_verification' ? `Verification code sent to ${email}` : `Code sent to ${email}`}
+                        </p>
                         <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>
-                          Enter the 6-digit code from your email to sign in.
+                          {codeFlow === 'email_verification'
+                            ? 'Enter the 6-digit verification code from your email to finish signing in.'
+                            : 'Enter the 6-digit code from your email to sign in.'}
                         </p>
                       </div>
                     </div>
@@ -329,26 +343,42 @@ export default function Login() {
                       setVerifyLoading(true);
                       setError('');
                       try {
-                        const res = await fetch('/api/auth/verify', {
+                        const endpoint = codeFlow === 'email_verification'
+                          ? '/api/auth/email-verification'
+                          : '/api/auth/verify';
+                        const payload = codeFlow === 'email_verification'
+                          ? { code, pendingAuthenticationToken }
+                          : { code, email };
+                        const res = await fetch(endpoint, {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ code, email }),
+                          body: JSON.stringify(payload),
                         });
                         const data = await res.json();
                         if (!res.ok) { setError(data.error || 'Invalid code.'); return; }
-                        window.location.href = '/dashboard';
+                        window.location.href = data.redirect_url || '/dashboard';
                       } catch { setError('Something went wrong.'); }
                       finally { setVerifyLoading(false); }
                     }}
                     className="w-full h-11 rounded-full text-sm font-medium"
                     style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
                   >
-                    {verifyLoading ? 'Verifying...' : 'Sign in'}
+                    {verifyLoading
+                      ? 'Verifying...'
+                      : codeFlow === 'email_verification'
+                        ? 'Verify email and sign in'
+                        : 'Sign in'}
                   </Button>
 
                   <button
                     type="button"
-                    onClick={() => { setSent(false); setEmail(''); setCode(''); setError(''); }}
+                    onClick={() => {
+                      setCodeFlow(null);
+                      setPendingAuthenticationToken('');
+                      setEmail('');
+                      setCode('');
+                      setError('');
+                    }}
                     className="w-full h-9 text-xs"
                     style={{ color: '#6A6A5A' }}
                   >

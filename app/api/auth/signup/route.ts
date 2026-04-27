@@ -1,41 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sql from '@/lib/db';
-import crypto from 'crypto';
+import { getWorkOS, WORKOS_CLIENT_ID } from '@/lib/workos';
+import {
+  applyAppCors,
+  attachSessionCookie,
+  completeAuth,
+  getRequestMetadata,
+  normalizeEmail,
+  splitName,
+} from '@/lib/auth';
 
-function hashPassword(password: string): string {
-  return crypto.createHash('sha256').update(password).digest('hex');
+interface WorkOSAuthError {
+  code?: string;
+  error?: string;
+  error_description?: string;
+  message?: string;
+  pending_authentication_token?: string;
+  email?: string;
+  errors?: Array<{ field?: string; message?: string; code?: string }>;
 }
 
-function generateSessionId(): string {
-  return crypto.randomBytes(32).toString('hex');
+function getErrorCode(error: WorkOSAuthError): string | undefined {
+  return error.code || error.error;
 }
 
-function hashSessionId(sessionId: string): string {
-  return crypto.createHash('sha256').update(sessionId).digest('hex');
-}
+function isDuplicateEmailError(error: WorkOSAuthError): boolean {
+  if (error.errors?.some((entry) => entry.field === 'email')) {
+    return true;
+  }
 
-async function getUserFromSession(request: NextRequest) {
-  const sessionId = request.cookies.get('session')?.value;
-  if (!sessionId) return null;
-
-  const sessionIdHash = hashSessionId(sessionId);
-
-  const [session] = await sql`
-    SELECT user_id, expires_at
-    FROM auth_sessions
-    WHERE workos_session_id = ${sessionIdHash}
-  `;
-
-  if (!session) return null;
-  if (new Date(session.expires_at) < new Date()) return null;
-
-  const [user] = await sql`
-    SELECT id, email, name, created_at, profile_image_url
-    FROM users
-    WHERE id = ${session.user_id}
-  `;
-
-  return user;
+  const message = `${error.message ?? ''} ${error.error_description ?? ''}`.toLowerCase();
+  return message.includes('already exists') || message.includes('already been taken');
 }
 
 export async function POST(request: NextRequest) {
@@ -49,54 +43,64 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const normalizedEmail = String(email).trim().toLowerCase();
+    const normalizedEmail = normalizeEmail(email);
     const normalizedName = String(name).trim();
-    const passwordHash = hashPassword(password);
+    const { firstName, lastName } = splitName(normalizedName);
+    const workos = getWorkOS();
 
-    // Create user in database
-    const [user] = await sql`
-      INSERT INTO users (email, name, password_hash)
-      VALUES (${normalizedEmail}, ${normalizedName}, ${passwordHash})
-      RETURNING id, email, name, created_at
-    `;
-
-    // Create session — store the HASH of the session ID, never the raw value
-    const sessionId = generateSessionId();
-    const sessionIdHash = hashSessionId(sessionId);
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-    await sql`
-      INSERT INTO auth_sessions (user_id, workos_session_id, expires_at)
-      VALUES (${user.id}, ${sessionIdHash}, ${expiresAt})
-    `;
-
-    // CORS for Expo app
-    const response = NextResponse.json({ user }, { status: 201 });
-
-    response.headers.set('Access-Control-Allow-Origin', 'https://web-redrixvixs-projects.vercel.app');
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Cookie');
-    response.headers.set('Access-Control-Allow-Credentials', 'true');
-
-    response.cookies.set('session', sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60,
-      path: '/',
+    await workos.userManagement.createUser({
+      email: normalizedEmail,
+      password: String(password),
+      firstName,
+      lastName,
     });
 
+    const result = await workos.userManagement.authenticateWithPassword({
+      clientId: WORKOS_CLIENT_ID,
+      email: normalizedEmail,
+      password: String(password),
+      ...getRequestMetadata(request),
+    });
+
+    const { user, redirectUrl, sessionId } = await completeAuth({
+      workosUser: {
+        id: result.user.id,
+        email: result.user.email,
+        firstName: result.user.firstName,
+        lastName: result.user.lastName,
+        profilePictureUrl: result.user.profilePictureUrl ?? null,
+      },
+      clearLegacyPassword: true,
+    });
+
+    const response = NextResponse.json({ user, redirect_url: redirectUrl }, { status: 201 });
+    applyAppCors(response);
+    attachSessionCookie(response, sessionId);
+
     return response;
-  } catch (error: any) {
-    if (error.code === '23505') {
+  } catch (error) {
+    const authError = error as WorkOSAuthError;
+    const code = getErrorCode(authError);
+
+    if (isDuplicateEmailError(authError)) {
+      return NextResponse.json({ error: 'Email already exists' }, { status: 409 });
+    }
+
+    if (code === 'email_verification_required' && authError.pending_authentication_token) {
       return NextResponse.json(
-        { error: 'Email already exists' },
-        { status: 409 }
+        {
+          requires_email_verification: true,
+          pending_authentication_token: authError.pending_authentication_token,
+          email: authError.email,
+          error: 'Check your email for a verification code to finish creating your account.',
+        },
+        { status: 202 }
       );
     }
+
     console.error('Signup error:', error);
     return NextResponse.json(
-      { error: 'Failed to create account' },
+      { error: authError.error_description || authError.message || 'Failed to create account' },
       { status: 500 }
     );
   }

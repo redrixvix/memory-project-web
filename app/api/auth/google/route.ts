@@ -1,26 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { workos, APP_URL } from '@/lib/workos';
-import crypto from 'crypto';
+import { CALLBACK_URL, workos, WORKOS_CLIENT_ID } from '@/lib/workos';
+
+const PKCE_VERIFIER_COOKIE = 'workos_pkce_verifier';
+const AUTH_STATE_COOKIE = 'workos_auth_state';
+
+function getScreenHint(request: NextRequest): 'sign-in' | 'sign-up' {
+  return request.nextUrl.searchParams.get('screen_hint') === 'sign-up' ? 'sign-up' : 'sign-in';
+}
 
 export async function GET(request: NextRequest) {
   try {
-    // Generate PKCE pair manually: store verifier as state (not cookie)
-    const codeVerifier = crypto.randomBytes(32).toString('base64url');
-    const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url');
-    const state = crypto.randomBytes(16).toString('hex');
-    
-    const authUrl = new URL('https://api.workos.com/user_management/authorize');
-    authUrl.searchParams.set('client_id', process.env.WORKOS_CLIENT_ID!);
-    authUrl.searchParams.set('redirect_uri', `${APP_URL}/api/auth/callback`);
-    authUrl.searchParams.set('response_type', 'code');
-    authUrl.searchParams.set('code_challenge', codeChallenge);
-    authUrl.searchParams.set('code_challenge_method', 'S256');
-    authUrl.searchParams.set('provider', 'GoogleOAuth');
-    authUrl.searchParams.set('state', JSON.stringify({ ver: state, cv: codeVerifier }));
+    const { url, codeVerifier, state } = await workos.userManagement.getAuthorizationUrlWithPKCE({
+      clientId: WORKOS_CLIENT_ID,
+      provider: 'GoogleOAuth',
+      redirectUri: CALLBACK_URL,
+      screenHint: getScreenHint(request),
+    });
 
-    return NextResponse.redirect(authUrl.toString());
-  } catch (error: any) {
-    console.error('Google auth error:', error?.message, error?.code);
+    const response = NextResponse.redirect(url);
+    const secure = process.env.NODE_ENV === 'production';
+
+    response.cookies.set(PKCE_VERIFIER_COOKIE, codeVerifier, {
+      httpOnly: true,
+      secure,
+      sameSite: 'lax',
+      maxAge: 300,
+      path: '/',
+    });
+
+    response.cookies.set(AUTH_STATE_COOKIE, state, {
+      httpOnly: true,
+      secure,
+      sameSite: 'lax',
+      maxAge: 300,
+      path: '/',
+    });
+
+    return response;
+  } catch (error: unknown) {
+    console.error('Google auth error:', error);
     return NextResponse.redirect(new URL('/login?error=google_failed', request.url));
   }
 }

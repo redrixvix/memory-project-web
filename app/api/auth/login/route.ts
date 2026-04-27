@@ -1,41 +1,95 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import crypto from 'crypto';
+import { getWorkOS, WORKOS_CLIENT_ID } from '@/lib/workos';
+import {
+  applyAppCors,
+  attachSessionCookie,
+  completeAuth,
+  getRequestMetadata,
+  hashLegacyPassword,
+  normalizeEmail,
+  splitName,
+} from '@/lib/auth';
 
-function hashPassword(password: string): string {
-  return crypto.createHash('sha256').update(password).digest('hex');
+interface WorkOSAuthError {
+  code?: string;
+  error?: string;
+  error_description?: string;
+  message?: string;
+  pending_authentication_token?: string;
+  email?: string;
 }
 
-function generateSessionId(): string {
-  return crypto.randomBytes(32).toString('hex');
+interface LegacyUserRecord {
+  id: number;
+  email: string;
+  name: string;
+  password_hash: string | null;
+  google_id: string | null;
 }
 
-function hashSessionId(sessionId: string): string {
-  return crypto.createHash('sha256').update(sessionId).digest('hex');
+function getErrorCode(error: WorkOSAuthError): string | undefined {
+  return error.code || error.error;
 }
 
-async function getUserFromSession(request: NextRequest) {
-  const sessionId = request.cookies.get('session')?.value;
-  if (!sessionId) return null;
+function isInvalidCredentialsError(error: WorkOSAuthError): boolean {
+  const code = getErrorCode(error);
+  if (code === 'invalid_credentials') {
+    return true;
+  }
 
-  const sessionIdHash = hashSessionId(sessionId);
+  const message = `${error.message ?? ''} ${error.error_description ?? ''}`.toLowerCase();
+  return message.includes('invalid credentials');
+}
 
-  const [session] = await sql`
-    SELECT user_id, expires_at
-    FROM auth_sessions
-    WHERE workos_session_id = ${sessionIdHash}
-  `;
-
-  if (!session) return null;
-  if (new Date(session.expires_at) < new Date()) return null;
-
-  const [user] = await sql`
-    SELECT id, email, name, created_at, profile_image_url
+async function migrateLegacyPasswordUser(
+  email: string,
+  password: string,
+  metadata: { ipAddress?: string; userAgent?: string }
+) {
+  const [legacyUser] = await sql<LegacyUserRecord[]>`
+    SELECT id, email, name, password_hash, google_id
     FROM users
-    WHERE id = ${session.user_id}
+    WHERE LOWER(email) = ${email}
   `;
 
-  return user;
+  if (!legacyUser?.password_hash) {
+    return null;
+  }
+
+  if (legacyUser.password_hash !== hashLegacyPassword(password)) {
+    return null;
+  }
+
+  const workos = getWorkOS();
+  const { firstName, lastName } = splitName(legacyUser.name);
+  const users = await workos.userManagement.listUsers({ email, limit: 1 });
+  const existingWorkOSUser = users.data[0];
+
+  if (existingWorkOSUser) {
+    await workos.userManagement.updateUser({
+      userId: existingWorkOSUser.id,
+      password,
+      emailVerified: true,
+      firstName: existingWorkOSUser.firstName ?? firstName,
+      lastName: existingWorkOSUser.lastName ?? lastName,
+    });
+  } else {
+    await workos.userManagement.createUser({
+      email,
+      password,
+      firstName,
+      lastName,
+      emailVerified: true,
+    });
+  }
+
+  return workos.userManagement.authenticateWithPassword({
+    clientId: WORKOS_CLIENT_ID,
+    email,
+    password,
+    ...metadata,
+  });
 }
 
 export async function POST(request: NextRequest) {
@@ -49,64 +103,74 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const normalizedEmail = String(email).trim().toLowerCase();
-    const passwordHash = hashPassword(password);
+    const normalizedEmail = normalizeEmail(email);
+    const metadata = getRequestMetadata(request);
+    const workos = getWorkOS();
 
-    // Find user
-    const [user] = await sql`
-      SELECT id, email, name, password_hash
-      FROM users
-      WHERE LOWER(email) = ${normalizedEmail}
-    `;
+    let result;
 
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      );
+    try {
+      result = await workos.userManagement.authenticateWithPassword({
+        clientId: WORKOS_CLIENT_ID,
+        email: normalizedEmail,
+        password: String(password),
+        ...metadata,
+      });
+    } catch (error) {
+      const authError = error as WorkOSAuthError;
+
+      if (isInvalidCredentialsError(authError)) {
+        result = await migrateLegacyPasswordUser(normalizedEmail, String(password), metadata);
+      }
+
+      if (!result) {
+        throw error;
+      }
     }
 
-    // Check password
-    if (user.password_hash !== passwordHash) {
-      return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      );
-    }
+    const { user, redirectUrl, sessionId } = await completeAuth({
+      workosUser: {
+        id: result.user.id,
+        email: result.user.email,
+        firstName: result.user.firstName,
+        lastName: result.user.lastName,
+        profilePictureUrl: result.user.profilePictureUrl ?? null,
+      },
+      clearLegacyPassword: true,
+    });
 
-    // Create session — store the HASH of the session ID, never the raw value
-    const sessionId = generateSessionId();
-    const sessionIdHash = hashSessionId(sessionId);
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-    await sql`
-      INSERT INTO auth_sessions (user_id, workos_session_id, expires_at)
-      VALUES (${user.id}, ${sessionIdHash}, ${expiresAt})
-    `;
-
-    // CORS for Expo app
     const response = NextResponse.json({
-      user: { id: user.id, email: user.email, name: user.name }
+      user: { id: user.id, email: user.email, name: user.name },
+      redirect_url: redirectUrl,
     });
 
-    response.headers.set('Access-Control-Allow-Origin', 'https://web-redrixvixs-projects.vercel.app');
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Cookie');
-    response.headers.set('Access-Control-Allow-Credentials', 'true');
-
-    response.cookies.set('session', sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60,
-      path: '/',
-    });
+    applyAppCors(response);
+    attachSessionCookie(response, sessionId);
 
     return response;
   } catch (error) {
+    const authError = error as WorkOSAuthError;
+    const code = getErrorCode(authError);
+
+    if (code === 'email_verification_required' && authError.pending_authentication_token) {
+      return NextResponse.json(
+        {
+          requires_email_verification: true,
+          pending_authentication_token: authError.pending_authentication_token,
+          email: authError.email,
+          error: 'Check your email for a verification code to finish signing in.',
+        },
+        { status: 202 }
+      );
+    }
+
+    if (isInvalidCredentialsError(authError)) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }
+
     console.error('Login error:', error);
     return NextResponse.json(
-      { error: 'Failed to login', detail: error instanceof Error ? error.message : String(error) },
+      { error: authError.error_description || authError.message || 'Failed to login' },
       { status: 500 }
     );
   }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -42,15 +42,18 @@ function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [sent, setSent] = useState(false);
+  const [code, setCode] = useState('');
+  const [flowStep, setFlowStep] = useState<'entry' | 'magic_sent' | 'email_verification'>('entry');
+  const [pendingAuthenticationToken, setPendingAuthenticationToken] = useState('');
   const [error, setError] = useState('');
   const [magicLoading, setMagicLoading] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get('invite_token');
 
   const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/google';
+    window.location.href = '/api/auth/google?screen_hint=sign-up';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,7 +71,8 @@ function Signup() {
         setError(data.error || 'Something went wrong. Please try again.');
         return;
       }
-      setSent(true);
+      setCode('');
+      setFlowStep('magic_sent');
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
@@ -88,12 +92,20 @@ function Signup() {
         body: JSON.stringify({ name, email, password }),
       });
       const data = await res.json();
+      if (res.status === 202 && data.requires_email_verification) {
+        setPendingAuthenticationToken(data.pending_authentication_token || '');
+        setCode('');
+        setFlowStep('email_verification');
+        setError('');
+        return;
+      }
+
       if (!res.ok) {
         setError(data.error || 'Unable to create your account.');
         return;
       }
 
-      window.location.href = '/dashboard';
+      window.location.href = data.redirect_url || '/dashboard';
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
@@ -220,7 +232,7 @@ function Signup() {
                   border: '1px solid rgba(212,163,115,0.2)',
                   backgroundColor: 'transparent',
                 }}
-                onClick={() => window.location.href = '/api/auth/passkey'}
+                onClick={() => window.location.href = '/api/auth/passkey?screen_hint=sign-up'}
               >
                 <KeyIcon />
                 Sign up with passkey
@@ -247,7 +259,7 @@ function Signup() {
                 </div>
               )}
 
-              {!sent ? (
+              {flowStep === 'entry' ? (
                 <div className="space-y-5">
                   {error && (
                     <div
@@ -339,30 +351,125 @@ function Signup() {
                 </div>
               ) : (
                 <div className="space-y-5">
-                  <div
-                    className="p-4 rounded-xl"
-                    style={{ backgroundColor: 'rgba(204,213,174,0.2)', border: '1px solid rgba(204,213,174,0.4)' }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
-                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                      </svg>
-                      <div>
-                        <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Check your email</p>
-                        <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>
-                          We sent a magic link to <strong>{email}</strong>. Click it to activate your account.
-                        </p>
+                  {flowStep === 'magic_sent' ? (
+                    <>
+                      <div
+                        className="p-4 rounded-xl"
+                        style={{ backgroundColor: 'rgba(204,213,174,0.2)', border: '1px solid rgba(204,213,174,0.4)' }}
+                      >
+                        <div className="flex items-start gap-3">
+                          <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                          </svg>
+                          <div>
+                            <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Check your email</p>
+                            <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>
+                              We sent a magic link to <strong>{email}</strong>. Click it to activate your account.
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => { setSent(false); setEmail(''); setError(''); }}
-                    className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
-                    style={{ border: '1.5px solid rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
-                  >
-                    Use a different email
-                  </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFlowStep('entry');
+                          setEmail('');
+                          setError('');
+                        }}
+                        className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
+                        style={{ border: '1.5px solid rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
+                      >
+                        Use a different email
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        className="p-4 rounded-xl"
+                        style={{ backgroundColor: 'rgba(204,213,174,0.2)', border: '1px solid rgba(204,213,174,0.4)' }}
+                      >
+                        <div className="flex items-start gap-3">
+                          <svg className="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                          </svg>
+                          <div>
+                            <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Verify your email</p>
+                            <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>
+                              Enter the 6-digit code we sent to <strong>{email}</strong> to finish creating your account.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="verification-code" className="text-sm" style={{ color: 'var(--charcoal)' }}>Verification code</Label>
+                        <Input
+                          type="text"
+                          id="verification-code"
+                          value={code}
+                          onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                          autoComplete="one-time-code"
+                          placeholder="123456"
+                          className="text-sm rounded-xl h-12 text-center"
+                          style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)', fontSize: '1.25rem', letterSpacing: '0.2em' }}
+                        />
+                      </div>
+
+                      {error && (
+                        <div
+                          role="alert"
+                          aria-live="polite"
+                          className="p-3.5 rounded-xl text-sm"
+                          style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.25)' }}
+                        >
+                          {error}
+                        </div>
+                      )}
+
+                      <Button
+                        disabled={verifyLoading || code.length < 6}
+                        onClick={async () => {
+                          setVerifyLoading(true);
+                          setError('');
+                          try {
+                            const res = await fetch('/api/auth/email-verification', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ code, pendingAuthenticationToken }),
+                            });
+                            const data = await res.json();
+                            if (!res.ok) {
+                              setError(data.error || 'Invalid code.');
+                              return;
+                            }
+                            window.location.href = data.redirect_url || '/dashboard';
+                          } catch {
+                            setError('Something went wrong.');
+                          } finally {
+                            setVerifyLoading(false);
+                          }
+                        }}
+                        className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
+                        style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                      >
+                        {verifyLoading ? 'Verifying...' : 'Verify email and create account'}
+                      </Button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFlowStep('entry');
+                          setPendingAuthenticationToken('');
+                          setCode('');
+                          setError('');
+                        }}
+                        className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
+                        style={{ border: '1.5px solid rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
+                      >
+                        Start over
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </CardContent>

@@ -1,52 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { workos } from '@/lib/workos';
-import sql from '@/lib/db';
-import crypto from 'crypto';
+import { workos, WORKOS_CLIENT_ID } from '@/lib/workos';
+import {
+  attachSessionCookie,
+  completeAuth,
+  getRequestMetadata,
+} from '@/lib/auth';
 
-function generateSessionId(): string {
-  return crypto.randomBytes(32).toString('hex');
-}
+const PKCE_VERIFIER_COOKIE = 'workos_pkce_verifier';
+const AUTH_STATE_COOKIE = 'workos_auth_state';
+const LEGACY_PKCE_COOKIE = 'pkce_verifier';
 
-function hashSessionId(sessionId: string): string {
-  return crypto.createHash('sha256').update(sessionId).digest('hex');
-}
-
-async function upsertUserFromOAuth(workosUser: {
-  id: string;
-  email: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  profilePictureUrl?: string | null;
-}) {
-  const name = [workosUser.firstName, workosUser.lastName]
-    .filter(Boolean)
-    .join(' ') || workosUser.email.split('@')[0];
-
-  const [existing] = await sql`
-    SELECT id, email, name, invite_pending
-    FROM users
-    WHERE email = ${workosUser.email.toLowerCase()}
-  `;
-
-  if (existing) {
-    await sql`
-      UPDATE users
-      SET
-        name = COALESCE(${name}, name),
-        google_id = ${workosUser.id},
-        profile_image_url = ${workosUser.profilePictureUrl ?? null}
-      WHERE id = ${existing.id}
-    `;
-    return existing;
+function getCodeVerifier(request: NextRequest, rawState: string | null): string | undefined {
+  if (rawState) {
+    try {
+      const parsed = JSON.parse(rawState) as { cv?: string };
+      if (parsed.cv) {
+        return parsed.cv;
+      }
+    } catch {
+      // Not a legacy JSON state payload.
+    }
   }
 
-  const [newUser] = await sql`
-    INSERT INTO users (email, name, password_hash, google_id, profile_image_url)
-    VALUES (${workosUser.email.toLowerCase()}, ${name}, NULL, ${workosUser.id}, ${workosUser.profilePictureUrl ?? null})
-    RETURNING id, email, name, invite_pending
-  `;
+  return (
+    request.cookies.get(PKCE_VERIFIER_COOKIE)?.value ||
+    request.cookies.get(LEGACY_PKCE_COOKIE)?.value ||
+    undefined
+  );
+}
 
-  return newUser;
+function isStateValid(request: NextRequest, rawState: string | null): boolean {
+  const expectedState = request.cookies.get(AUTH_STATE_COOKIE)?.value;
+  if (!expectedState) {
+    return true;
+  }
+
+  return rawState === expectedState;
 }
 
 export async function GET(request: NextRequest) {
@@ -57,74 +46,54 @@ export async function GET(request: NextRequest) {
   if (!code) {
     return NextResponse.redirect(new URL('/login?error=missing_code', request.url));
   }
-  if (!rawState) {
-    return NextResponse.redirect(new URL('/login?error=missing_state', request.url));
-  }
 
-  let codeVerifier: string | undefined;
-  try {
-    const parsed = JSON.parse(rawState);
-    codeVerifier = parsed.cv;
-  } catch {
+  if (!isStateValid(request, rawState)) {
     return NextResponse.redirect(new URL('/login?error=invalid_state', request.url));
   }
 
+  const codeVerifier = getCodeVerifier(request, rawState);
   if (!codeVerifier) {
     return NextResponse.redirect(new URL('/login?error=missing_verifier', request.url));
   }
 
   try {
-    // Exchange code for tokens using PKCE verifier
     const result = await workos.userManagement.authenticateWithCode({
+      clientId: WORKOS_CLIENT_ID,
       code,
       codeVerifier,
+      ...getRequestMetadata(request),
     });
+
     if (!result.user) {
       return NextResponse.redirect(new URL('/login?error=invalid_token', request.url));
     }
 
-    // Upsert user in our DB with OAuth profile info
-    const user = await upsertUserFromOAuth({
-      id: result.user.id,
-      email: result.user.email,
-      firstName: result.user.firstName,
-      lastName: result.user.lastName,
-      profilePictureUrl: (result.user.profilePictureUrl as string | null) ?? null,
+    const { redirectUrl, sessionId } = await completeAuth({
+      workosUser: {
+        id: result.user.id,
+        email: result.user.email,
+        firstName: result.user.firstName,
+        lastName: result.user.lastName,
+        profilePictureUrl: result.user.profilePictureUrl ?? null,
+      },
     });
 
-    if (!user?.id) {
-      return NextResponse.redirect(new URL('/login?error=user_create_failed', request.url));
-    }
-
-    // Create session — store the HASH of the session ID, never the raw value
-    const sessionId = generateSessionId();
-    const sessionIdHash = hashSessionId(sessionId);
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-    await sql`
-      INSERT INTO auth_sessions (user_id, workos_session_id, expires_at)
-      VALUES (${user.id}, ${sessionIdHash}, ${expiresAt})
-    `;
-
-    // Build response with session cookie, then redirect to dashboard
-    const redirectResponse = NextResponse.redirect(new URL('/dashboard', request.url));
-    redirectResponse.cookies.set('session', sessionId, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      maxAge: 7 * 24 * 60 * 60,
-      path: '/',
-    });
+    const redirectResponse = NextResponse.redirect(new URL(redirectUrl, request.url));
+    attachSessionCookie(redirectResponse, sessionId);
+    redirectResponse.cookies.delete(PKCE_VERIFIER_COOKIE);
+    redirectResponse.cookies.delete(AUTH_STATE_COOKIE);
+    redirectResponse.cookies.delete(LEGACY_PKCE_COOKIE);
 
     return redirectResponse;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('OAuth callback error:', error);
-    return NextResponse.redirect(new URL(`/login?error=callback_failed&detail=${encodeURIComponent(message)}`, request.url));
+    return NextResponse.redirect(
+      new URL(`/login?error=callback_failed&detail=${encodeURIComponent(message)}`, request.url)
+    );
   }
 }
 
-// Support both GET and POST for WorkOS webhooks / compatibility
 export async function POST(request: NextRequest) {
   return GET(request);
 }

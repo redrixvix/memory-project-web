@@ -1,29 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { workos, APP_URL } from '@/lib/workos';
+import { CALLBACK_URL, workos, WORKOS_CLIENT_ID } from '@/lib/workos';
 
-// Passkey authentication via WorkOS AuthKit
-// AuthKit is WorkOS's embedded identity platform that supports passkeys natively.
-// The hosted UI handles passkey registration and authentication via WebAuthn.
+const PKCE_VERIFIER_COOKIE = 'workos_pkce_verifier';
+const AUTH_STATE_COOKIE = 'workos_auth_state';
+
+function getScreenHint(request: NextRequest): 'sign-in' | 'sign-up' {
+  return request.nextUrl.searchParams.get('screen_hint') === 'sign-up' ? 'sign-up' : 'sign-in';
+}
+
 export async function GET(request: NextRequest) {
   try {
-    const { url, codeVerifier } = await workos.userManagement.getAuthorizationUrlWithPKCE({
+    const { url, codeVerifier, state } = await workos.userManagement.getAuthorizationUrlWithPKCE({
+      clientId: WORKOS_CLIENT_ID,
       provider: 'authkit',
-      redirectUri: `${APP_URL}/api/auth/callback`,
-      clientId: process.env.WORKOS_CLIENT_ID || 'client_01KPTJ9V6VTS6BEPNHFAKBJQB1',
+      redirectUri: CALLBACK_URL,
+      screenHint: getScreenHint(request),
     });
 
-    // Store codeVerifier for callback verification (5 min TTL)
     const response = NextResponse.redirect(url);
-    response.cookies.set('pkce_verifier', codeVerifier, {
+    const secure = process.env.NODE_ENV === 'production';
+
+    response.cookies.set(PKCE_VERIFIER_COOKIE, codeVerifier, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure,
+      sameSite: 'lax',
+      maxAge: 300,
+      path: '/',
+    });
+
+    response.cookies.set(AUTH_STATE_COOKIE, state, {
+      httpOnly: true,
+      secure,
       sameSite: 'lax',
       maxAge: 300,
       path: '/',
     });
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Passkey/AuthKit auth error:', error);
     return NextResponse.redirect(new URL('/login?error=authkit_failed', request.url));
   }

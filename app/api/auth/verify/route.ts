@@ -1,91 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { workos } from '@/lib/workos';
-import sql from '@/lib/db';
-import crypto from 'crypto';
+import { workos, WORKOS_CLIENT_ID } from '@/lib/workos';
+import {
+  applyAppCors,
+  attachSessionCookie,
+  completeAuth,
+  getRequestMetadata,
+  normalizeEmail,
+} from '@/lib/auth';
 
-function generateSessionId(): string {
-  return crypto.randomBytes(32).toString('hex');
+interface WorkOSAuthError {
+  code?: string;
+  error?: string;
+  error_description?: string;
+  message?: string;
 }
 
-function hashSessionId(sessionId: string): string {
-  return crypto.createHash('sha256').update(sessionId).digest('hex');
-}
-
-async function authenticateMagic(code: string, email: string) {
-  const result = await workos.userManagement.authenticateWithMagicAuth({
+async function authenticateMagic(code: string, email: string, request: NextRequest) {
+  return workos.userManagement.authenticateWithMagicAuth({
+    clientId: WORKOS_CLIENT_ID,
     code,
     email,
+    ...getRequestMetadata(request),
   });
-  return result;
-}
-
-async function upsertUser(workosUser: {
-  id: string;
-  email: string;
-  firstName?: string | null;
-  lastName?: string | null;
-}) {
-  const [existing] = await sql`
-    SELECT id, email, name, invite_pending
-    FROM users
-    WHERE email = ${workosUser.email.toLowerCase()}
-  `;
-
-  if (existing) {
-    if (existing.invite_pending) {
-      await sql`
-        UPDATE users
-        SET invite_pending = false
-        WHERE id = ${existing.id}
-      `;
-    }
-    return existing;
-  }
-
-  const name = [workosUser.firstName, workosUser.lastName]
-    .filter(Boolean)
-    .join(' ') || workosUser.email.split('@')[0];
-
-  const [newUser] = await sql`
-    INSERT INTO users (email, name, password_hash)
-    VALUES (${workosUser.email.toLowerCase()}, ${name}, NULL)
-    RETURNING id, email, name, invite_pending
-  `;
-
-  return newUser;
-}
-
-async function createSession(userId: number): Promise<string> {
-  const sessionId = generateSessionId();
-  const sessionIdHash = hashSessionId(sessionId);
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-  await sql`
-    INSERT INTO auth_sessions (user_id, workos_session_id, expires_at)
-    VALUES (${userId}, ${sessionIdHash}, ${expiresAt})
-  `;
-
-  return sessionId;
-}
-
-async function acceptPendingInvites(email: string): Promise<number | null> {
-  // Accept all pending book_members invites for this email
-  // Match by invite_email, update user_id from placeholder to real user, set joined_at
-  const pending = await sql`
-    UPDATE book_members
-    SET user_id = (
-      SELECT id FROM users WHERE email = ${email.toLowerCase()}
-    ), joined_at = CURRENT_TIMESTAMP, invite_token = NULL
-    WHERE invite_email = ${email.toLowerCase()}
-      AND joined_at IS NULL
-    RETURNING book_id
-  `;
-
-  // Return the first book_id to redirect to (if any)
-  if (pending && pending.length > 0) {
-    return pending[0].book_id;
-  }
-  return null;
 }
 
 export async function POST(request: NextRequest) {
@@ -96,61 +32,43 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Code and email are required' }, { status: 400 });
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = normalizeEmail(email);
+    const result = await authenticateMagic(String(code).trim(), normalizedEmail, request);
 
-    const result = await authenticateMagic(code, normalizedEmail);
-
-    if (!result.user) {
-      return NextResponse.json({ error: 'Invalid or expired magic link' }, { status: 401 });
-    }
-
-    const user = await upsertUser({
-      id: result.user.id,
-      email: result.user.email,
-      firstName: result.user.firstName,
-      lastName: result.user.lastName,
+    const { user, redirectUrl, sessionId } = await completeAuth({
+      workosUser: {
+        id: result.user.id,
+        email: result.user.email,
+        firstName: result.user.firstName,
+        lastName: result.user.lastName,
+        profilePictureUrl: result.user.profilePictureUrl ?? null,
+      },
     });
-
-    // Accept any pending invites for this email
-    const bookId = await acceptPendingInvites(normalizedEmail);
-
-    const sessionId = await createSession(Number(user.id));
-
-    const redirectUrl = bookId ? `/books/${bookId}` : '/dashboard';
 
     const response = NextResponse.json({
       user: { id: user.id, email: user.email, name: user.name },
       redirect_url: redirectUrl,
     });
 
-    response.headers.set('Access-Control-Allow-Origin', 'https://web-redrixvixs-projects.vercel.app');
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Cookie');
-    response.headers.set('Access-Control-Allow-Credentials', 'true');
-
-    response.cookies.set('session', sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60,
-      path: '/',
-    });
+    applyAppCors(response);
+    attachSessionCookie(response, sessionId);
 
     return response;
-  } catch (error: any) {
+  } catch (error) {
+    const authError = error as WorkOSAuthError;
     console.error('Magic verify error:', error);
-    const message = error instanceof Error ? error.message : String(error);
-    if (message.includes('invalid') || message.includes('expired') || message.includes('code')) {
-      return NextResponse.json({ error: 'Invalid or expired magic link. Please request a new one.' }, { status: 401 });
-    }
     return NextResponse.json(
-      { error: 'Failed to verify magic link', detail: message },
-      { status: 500 }
+      {
+        error:
+          authError.error_description ||
+          authError.message ||
+          'Invalid or expired magic link. Please request a new one.',
+      },
+      { status: 401 }
     );
   }
 }
 
-// GET handler: magic link click redirects here from the email
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -161,42 +79,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/login?error=missing_params', request.url));
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = normalizeEmail(email);
+    const result = await authenticateMagic(code, normalizedEmail, request);
 
-    const result = await authenticateMagic(code, normalizedEmail);
-
-    if (!result.user) {
-      return NextResponse.redirect(new URL('/login?error=invalid_link', request.url));
-    }
-
-    const user = await upsertUser({
-      id: result.user.id,
-      email: result.user.email,
-      firstName: result.user.firstName,
-      lastName: result.user.lastName,
+    const { redirectUrl, sessionId } = await completeAuth({
+      workosUser: {
+        id: result.user.id,
+        email: result.user.email,
+        firstName: result.user.firstName,
+        lastName: result.user.lastName,
+        profilePictureUrl: result.user.profilePictureUrl ?? null,
+      },
     });
 
-    // Accept any pending invites for this email
-    const bookId = await acceptPendingInvites(normalizedEmail);
-
-    const sessionId = await createSession(Number(user.id));
-
-    const redirectUrl = bookId ? `/books/${bookId}` : '/dashboard';
-
-    // Build response with session cookie, then redirect
-    // Must do this BEFORE calling redirect() — NextResponse.redirect() returns
-    // an immutable redirect Response, so we cannot set cookies after
     const redirectResponse = NextResponse.redirect(new URL(redirectUrl, request.url));
-    redirectResponse.cookies.set('session', sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60,
-      path: '/',
-    });
+    attachSessionCookie(redirectResponse, sessionId);
 
     return redirectResponse;
-  } catch (error: any) {
+  } catch (error) {
     console.error('Magic verify GET error:', error);
     return NextResponse.redirect(new URL('/login?error=verify_failed', request.url));
   }
