@@ -269,9 +269,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           href={`/books/${id}/edit`}
           className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-105 active:scale-95 animate-fade-up hover:shadow-2xl"
           style={{
-            backgroundColor: '#C4946A',
+            backgroundColor: 'var(--bronze)',
             color: 'var(--charcoal)',
-            boxShadow: '0 8px 32px rgba(196,148,106,0.45), 0 0 0 4px rgba(212,163,115,0.15)',
+            boxShadow: '0 8px 32px rgba(212,163,115,0.45), 0 0 0 4px rgba(212,163,115,0.15)',
           }}
           aria-label="Add a memory"
         >
@@ -809,7 +809,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                 key={i}
                                 className="w-0.5 rounded-full"
                                 style={{
-                                  height: `${8 + Math.sin(i * 0.5) * 6 + Math.random() * 4}px`,
+                                  height: `${8 + Math.abs(Math.sin(i * 0.8) * 10 + Math.cos(i * 1.4) * 6)}px`,
                                   backgroundColor: 'var(--bronze)',
                                 }}
                               />
@@ -839,9 +839,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Footer actions — visible on hover, refined reveal */}
+                      {/* Footer actions — always visible for easy access */}
                       <div
-                        className="flex items-center justify-end gap-2.5 mt-7 pt-5 border-t transition-all duration-300 opacity-0 group-hover:opacity-100"
+                        className="flex items-center justify-end gap-2.5 mt-7 pt-5 border-t transition-all duration-300"
                         style={{ borderColor: 'rgba(212,163,115,0.1)' }}
                       >
                         <Link

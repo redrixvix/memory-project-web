@@ -332,10 +332,19 @@ export default function SettingsPage() {
                   onChange={e => setName(e.target.value)}
                   className="w-full rounded-xl px-4 py-3 text-base transition-all outline-none"
                   style={{
-                    border: '1px solid rgba(212,163,115,0.3)',
+                    border: '1.5px solid rgba(212,163,115,0.3)',
                     backgroundColor: 'rgba(254,250,224,0.6)',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-serif)',
+                    transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+                  }}
+                  onFocus={e => {
+                    e.target.style.borderColor = 'var(--bronze)';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.15)';
+                  }}
+                  onBlur={e => {
+                    e.target.style.borderColor = 'rgba(212,163,115,0.3)';
+                    e.target.style.boxShadow = 'none';
                   }}
                   placeholder="Your name"
                 />
