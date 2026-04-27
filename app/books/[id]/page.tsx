@@ -263,8 +263,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         </div>
       )}
 
-      {/* Floating action button — Add Memory (always visible for authenticated users) */}
-      {currentUserId && (
+      {/* Floating action button — Add Memory (editor+ only, hidden on empty to avoid triple CTA) */}
+      {currentUserRole && currentUserRole !== 'viewer' && memories.length > 0 && (
         <Link
           href={`/books/${id}/edit`}
           className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-105 active:scale-95 animate-fade-up hover:shadow-2xl group"
@@ -317,6 +317,21 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             >
               Members
             </button>
+
+            {/* Add Memory button */}
+            <Link
+              href={`/books/${id}/edit`}
+              className="inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95"
+              style={{
+                backgroundColor: 'var(--bronze)',
+                color: 'var(--charcoal)',
+              }}
+            >
+              <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Add Memory
+            </Link>
 
             {/* Share button */}
             <button
