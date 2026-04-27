@@ -232,6 +232,12 @@ export default function Dashboard() {
                 </svg>
                 Upgrade plan
               </DropdownItem>
+              <DropdownItem href="/settings">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                Settings
+              </DropdownItem>
               <DropdownDivider />
               <DropdownItem onClick={handleLogout} danger icon={
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -595,12 +601,12 @@ export default function Dashboard() {
                       className="relative h-full rounded-3xl overflow-hidden group cursor-pointer transition-all duration-500"
                       style={{
                         backgroundColor: '#FFFFFF',
-                        boxShadow: '0 2px 12px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.04)',
+                        boxShadow: '0 4px 20px rgba(212,163,115,0.10), 0 1px 6px rgba(212,163,115,0.06)',
                         borderLeft: `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`,
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 24px 64px rgba(212,163,115,0.18), 0 6px 20px rgba(212,163,115,0.10)';
-                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)';
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 28px 72px rgba(212,163,115,0.22), 0 8px 28px rgba(212,163,115,0.12)';
+                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)';
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.04)';

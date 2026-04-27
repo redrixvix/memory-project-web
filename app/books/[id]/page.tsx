@@ -664,9 +664,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Footer actions — always visible, opacity on hover */}
+                      {/* Footer actions — always visible, subtle at rest */}
                       <div
-                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t opacity-40 group-hover:opacity-100 transition-all duration-300"
+                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t opacity-75 group-hover:opacity-100 transition-all duration-300"
                         style={{ borderColor: 'rgba(212,163,115,0.1)' }}
                       >
                         <Link

@@ -85,14 +85,24 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
             Home
           </Link>
           {loggedIn ? (
-            <Link
-              href="/dashboard"
-              onClick={onClose}
-              className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-              style={{ color: 'var(--charcoal)' }}
-            >
-              Dashboard
-            </Link>
+            <>
+              <Link
+                href="/dashboard"
+                onClick={onClose}
+                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)' }}
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/settings"
+                onClick={onClose}
+                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)' }}
+              >
+                Settings
+              </Link>
+            </>
           ) : loggedIn === false ? (
             <>
               <Link
