@@ -79,6 +79,7 @@ export default function Dashboard() {
   const [createError, setCreateError] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
   const [showFab, setShowFab] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     async function fetchUserAndBooks() {
@@ -189,6 +190,14 @@ export default function Dashboard() {
     );
   }
 
+  // Filter books by search query
+  const filteredBooks = searchQuery.trim()
+    ? books.filter(book =>
+        book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (book.description && book.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : books;
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
@@ -284,7 +293,7 @@ export default function Dashboard() {
                 Your Memory Books
               </h1>
               <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                {user.name.endsWith('s') ? `${user.name}'` : `${user.name}'s`} collection — {books.length} {books.length === 1 ? 'book' : 'books'} in the library
+                {user.name.endsWith('s') ? `${user.name}'` : `${user.name}'s`} collection — {filteredBooks.length} {filteredBooks.length === 1 ? 'book' : 'books'} {searchQuery ? `matching "${searchQuery}"` : 'in the library'}
               </p>
             </div>
           )}
@@ -297,7 +306,40 @@ export default function Dashboard() {
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             {books.length > 0 && (
-              <div className="flex items-center gap-1 rounded-full p-1 w-full sm:w-auto overflow-x-auto" style={{ backgroundColor: 'rgba(212,163,115,0.06)', border: '1px solid rgba(212,163,115,0.1)' }}>
+              <div className="flex items-center gap-3 w-full">
+                {/* Search input */}
+                <div className="relative flex-1 max-w-xs">
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#7A7A6A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                  </svg>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search books..."
+                    className="w-full h-10 pl-10 pr-4 rounded-full text-sm outline-none transition-all duration-200"
+                    style={{
+                      backgroundColor: 'rgba(212,163,115,0.08)',
+                      border: '1px solid rgba(212,163,115,0.2)',
+                      color: 'var(--charcoal)',
+                      fontFamily: 'var(--font-sans)',
+                    }}
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 flex items-center justify-center rounded-full hover:opacity-70"
+                      style={{ color: '#7A7A6A' }}
+                    >
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                {/* Sort controls */}
+                <div className="flex items-center gap-1 rounded-full p-1 shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.06)', border: '1px solid rgba(212,163,115,0.1)' }}>
                 {([
                   { value: 'newest', label: 'Newest' },
                   { value: 'oldest', label: 'Oldest' },
@@ -321,6 +363,7 @@ export default function Dashboard() {
                   </button>
                 ))}
               </div>
+            </div>
             )}
             <Button
               onClick={() => setShowCreate(true)}
@@ -612,7 +655,7 @@ export default function Dashboard() {
         ) : (
           /* ── Book grid ── */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {books
+            {filteredBooks
               .slice()
               .sort((a, b) => {
                 if (sortOrder === 'newest') return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
