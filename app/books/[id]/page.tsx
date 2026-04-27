@@ -565,8 +565,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                 key={photoIndex}
                                 type="button"
                                 onClick={() => handlePhotoClick(globalIndex, url)}
-                                className="img-frame rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] relative aspect-square"
+                                className="img-frame rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.04] hover:brightness-105 active:scale-[0.98] relative aspect-square group"
                                 aria-label={`View photo ${photoIndex + 1}`}
+                                style={{
+                                  boxShadow: '0 4px 12px rgba(212,163,115,0.1)',
+                                }}
                               >
                                 {hasError ? (
                                   <div
@@ -613,11 +616,29 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
                       {/* Audio */}
                       {memory.audio_url && (
-                        <audio src={memory.audio_url} controls className="mt-7 w-full h-9" />
+                        <div className="mt-7">
+                          <div className="flex items-center gap-2 mb-3">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                              <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+                            </svg>
+                            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
+                              Voice Note
+                            </span>
+                          </div>
+                          <audio 
+                            src={memory.audio_url} 
+                            controls 
+                            className="w-full rounded-xl audio-player" 
+                            style={{ 
+                              height: '44px',
+                              borderRadius: '12px',
+                            }} 
+                          />
+                        </div>
                       )}
 
                       {/* Footer actions — visible on hover ── */}
-                      <div className="flex items-center justify-between mt-7 pt-5 border-t opacity-60 group-hover:opacity-100 transition-all duration-300" style={{ borderColor: 'rgba(212,163,115,0.1)' }}>
+                      <div className="flex items-center justify-between mt-7 pt-5 border-t opacity-60 group-hover:opacity-100 transition-all duration-300 rounded-b-2xl" style={{ borderColor: 'rgba(212,163,115,0.1)', marginBottom: '-1.5rem' }}>
                         <p className="text-[0.65rem] italic" style={{ color: '#C0B09A', fontFamily: 'var(--font-sans)' }}>
                           {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>

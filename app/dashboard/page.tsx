@@ -570,14 +570,19 @@ export default function Dashboard() {
                         borderLeft: `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`,
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 56px rgba(212,163,115,0.16), 0 4px 16px rgba(212,163,115,0.08)';
-                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)';
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 24px 64px rgba(212,163,115,0.18), 0 6px 20px rgba(212,163,115,0.10)';
+                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)';
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.04)';
                         (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
                       }}
                     >
+                      {/* Subtle warm overlay on hover */}
+                      <div 
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                        style={{ background: 'linear-gradient(135deg, rgba(212,163,115,0.03) 0%, rgba(204,213,174,0.04) 50%, transparent 100%)' }}
+                      />
                       {/* Mini book cover visual */}
                       <div
                         className="absolute hidden md:flex"
@@ -701,10 +706,10 @@ export default function Dashboard() {
                               Updated {new Date(lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                             </p>
                             <div
-                              className="w-9 h-9 rounded-full flex items-center justify-center"
+                              className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
                               style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}
                             >
-                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                              <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
                                 <path d="M5 12h14M12 5l7 7-7 7"/>
                               </svg>
                             </div>
