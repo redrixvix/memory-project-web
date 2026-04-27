@@ -269,9 +269,17 @@ export default function Dashboard() {
         <div className="mb-10">
           {user && (
             <div className="flex flex-col mb-8">
-              <p className="label-caps mb-2" style={{ color: 'var(--bronze)' }}>
-                Welcome back
-              </p>
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                  <svg width="16" height="16" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
+                    <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
+                    <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+                  </svg>
+                </div>
+                <p className="label-caps" style={{ color: 'var(--bronze)' }}>
+                  Welcome back
+                </p>
+              </div>
               <h1 className="display-md mb-2" style={{ color: 'var(--charcoal)' }}>
                 Your Memory Books
               </h1>

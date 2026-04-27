@@ -412,7 +412,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 </span>
               )}
               {memories.length > 0 && (
-                <span className="text-sm" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+                  style={{
+                    backgroundColor: memories.length > 0 ? 'rgba(212,163,115,0.14)' : 'rgba(212,163,115,0.08)',
+                    color: '#6A6A5A',
+                    fontFamily: 'var(--font-sans)',
+                    border: '1px solid rgba(212,163,115,0.15)',
+                  }}
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                  </svg>
                   {memories.length} {memories.length === 1 ? 'memory' : 'memories'}
                 </span>
               )}
@@ -561,7 +572,23 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         transition: 'box-shadow 0.4s ease',
                       }}
                     />
-                    <CardContent className="pt-8 pb-8 px-6 pl-8">
+                    <CardContent className="pt-8 pb-8 px-6 pl-8 relative">
+
+                      {/* Chapter number badge */}
+                      <div
+                        className="absolute top-5 right-5 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+                        style={{
+                          backgroundColor: `${accentColor}18`,
+                          color: accentColor,
+                          fontFamily: 'var(--font-sans)',
+                          border: `1px solid ${accentColor}33`,
+                        }}
+                      >
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                        </svg>
+                        Chapter {memoryIndex + 1}
+                      </div>
 
                       {/* Prompt question as elegant chapter opener */}
                       {memory.prompt_question && (
