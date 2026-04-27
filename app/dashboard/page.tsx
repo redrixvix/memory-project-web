@@ -706,8 +706,8 @@ export default function Dashboard() {
 
                         {/* Footer row */}
                         <div className="flex items-center justify-between" style={{ paddingBottom: 4 }}>
-                          {/* Left side: memory count */}
-                          <div className="flex items-center gap-2">
+                          {/* Left side: memory count + contributor avatar */}
+                          <div className="flex items-center gap-3">
                             {book._count && (
                               <div
                                 className="rounded-full px-3 py-1 flex items-center gap-1.5"
@@ -730,6 +730,13 @@ export default function Dashboard() {
                                     : `${book._count.memories} ${book._count.memories === 1 ? 'memory' : 'memories'}`}
                                 </span>
                               </div>
+                            )}
+                            {book.contributors && book.contributors.length > 0 && (
+                              <Avatar
+                                name={book.contributors[0].name}
+                                imageUrl={book.contributors[0].profile_image_url || null}
+                                className="w-7 h-7"
+                              />
                             )}
                           </div>
 
