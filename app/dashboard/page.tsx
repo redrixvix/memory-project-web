@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
+import { Dropdown, DropdownItem, DropdownDivider } from '@/components/ui/dropdown';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -202,20 +203,45 @@ export default function Dashboard() {
             <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Dashboard</span>
           </div>
 
-          {/* Right: Actions */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="h-9 px-4 rounded-full text-sm font-medium transition-all duration-200 hover:opacity-70 flex items-center gap-2"
-              style={{ color: '#6A6A5A', backgroundColor: 'rgba(212,163,115,0.08)' }}
+          {/* Right: User menu */}
+          {user && (
+            <Dropdown
+              trigger={
+                <div className="flex items-center gap-2 cursor-pointer group">
+                  <Avatar name={user.name} imageUrl={user.profileImageUrl || null} className="w-9 h-9" />
+                  <svg className="w-3.5 h-3.5 shrink-0 transition-transform duration-200" style={{ color: '#6A6A5A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </div>
+              }
+              align="right"
             >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-              </svg>
-              <span className="hidden sm:inline">Sign out</span>
-            </button>
-          </div>
+              <div className="px-4 py-3 border-b" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
+                <p className="text-xs font-medium" style={{ color: 'var(--bronze)' }}>{user.name.split(' ')[0]}</p>
+                <p className="text-xs mt-0.5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>{user.email}</p>
+              </div>
+              <DropdownItem href="/dashboard">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+                </svg>
+                Dashboard
+              </DropdownItem>
+              <DropdownItem href="/upgrade">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                Upgrade plan
+              </DropdownItem>
+              <DropdownDivider />
+              <DropdownItem onClick={handleLogout} danger icon={
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+              }>
+                Sign out
+              </DropdownItem>
+            </Dropdown>
+          )}
         </div>
       </header>
 
