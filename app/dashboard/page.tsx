@@ -298,10 +298,10 @@ export default function Dashboard() {
             aria-modal="true"
             aria-labelledby="create-book-title"
           >
-            {/* Backdrop */}
+            {/* Backdrop — use opacity overlay instead of blur to avoid rendering artifacts on form elements */}
             <div
               className="absolute inset-0"
-              style={{ backgroundColor: 'rgba(43,43,43,0.55)', backdropFilter: 'blur(6px)' }}
+              style={{ backgroundColor: 'rgba(43,43,43,0.50)' }}
               onClick={() => { if (!creating) { setShowCreate(false); setCreateError(''); } }}
             />
 
@@ -391,18 +391,21 @@ export default function Dashboard() {
                             backgroundColor: newPlan === plan.id ? '#FFFDF8' : 'rgba(212,163,115,0.04)',
                             borderColor: newPlan === plan.id ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
                             boxShadow: newPlan === plan.id ? '0 6px 20px rgba(212,163,115,0.14)' : 'none',
+                            minHeight: '88px',
                           }}
                         >
                           {newPlan === plan.id && (
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
+                            <div className="absolute right-4 top-4 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
                               <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
                                 <path d="M20 6L9 17l-5-5"/>
                               </svg>
                             </div>
                           )}
-                          <p className="label-caps mb-1" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
-                          <p className="text-base font-medium" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
-                          <p className="text-xs mt-2 leading-relaxed" style={{ color: '#6A6A5A' }}>
+                          <div className="flex items-baseline gap-2">
+                            <p className="label-caps" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
+                            <p className="text-base font-medium" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
+                          </div>
+                          <p className="text-xs mt-1 leading-relaxed" style={{ color: '#6A6A5A' }}>
                             {plan.description}
                           </p>
                         </button>
