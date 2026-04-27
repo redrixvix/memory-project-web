@@ -78,6 +78,7 @@ export default function Dashboard() {
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
+  const [showFab, setShowFab] = useState(false);
 
   useEffect(() => {
     async function fetchUserAndBooks() {
@@ -106,6 +107,16 @@ export default function Dashboard() {
 
     void fetchUserAndBooks();
   }, [router]);
+
+  // Show FAB when scrolling past the header section
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowFab(window.scrollY > 280);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Check initial position
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Close modal on Escape
   useEffect(() => {
@@ -257,23 +268,16 @@ export default function Dashboard() {
         {/* Greeting + header */}
         <div className="mb-10">
           {user && (
-            <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-8">
-              <Avatar
-                name={user.name}
-                imageUrl={user.profileImageUrl || null}
-                className="w-14 h-14 shrink-0"
-              />
-              <div className="flex flex-col">
-                <p className="label-caps mb-1.5" style={{ color: 'var(--bronze)' }}>
-                  Welcome back
-                </p>
-                <h1 className="display-md mb-2" style={{ color: 'var(--charcoal)' }}>
-                  Your Memory Books
-                </h1>
-                <p className="text-sm mb-5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                  {user.name.endsWith('s') ? `${user.name}'` : `${user.name}'s`} collection — {books.length} {books.length === 1 ? 'book' : 'books'} in the library
-                </p>
-              </div>
+            <div className="flex flex-col mb-8">
+              <p className="label-caps mb-2" style={{ color: 'var(--bronze)' }}>
+                Welcome back
+              </p>
+              <h1 className="display-md mb-2" style={{ color: 'var(--charcoal)' }}>
+                Your Memory Books
+              </h1>
+              <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                {user.name.endsWith('s') ? `${user.name}'` : `${user.name}'s`} collection — {books.length} {books.length === 1 ? 'book' : 'books'} in the library
+              </p>
             </div>
           )}
 
@@ -666,17 +670,19 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <CardContent className="p-8 pr-24 md:pr-28" style={{ paddingLeft: 28 }}>
-                        {/* Title + plan badge */}
+                        {/* Title + plan badge (only show for premium/plus) */}
                         <div className="flex items-center gap-2 mb-2">
                           <h3 className="text-2xl font-medium leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                             {book.title}
                           </h3>
-                          <span
-                            className="text-xs font-semibold px-2.5 py-0.5 rounded-full shrink-0"
-                            style={getPlanBadgeStyles(book.plan)}
-                          >
-                            {getBookPlanLabel(book.plan, book.storage_tier)}
-                          </span>
+                          {book.plan && book.plan !== 'free' && (
+                            <span
+                              className="text-xs font-semibold px-2.5 py-0.5 rounded-full shrink-0"
+                              style={getPlanBadgeStyles(book.plan)}
+                            >
+                              {getBookPlanLabel(book.plan, book.storage_tier)}
+                            </span>
+                          )}
                         </div>
 
                         {/* Description */}
@@ -691,8 +697,8 @@ export default function Dashboard() {
 
                         {/* Footer row */}
                         <div className="flex items-center justify-between" style={{ paddingBottom: 4 }}>
-                          {/* Left side: memory count + contributors */}
-                          <div className="flex items-center gap-3">
+                          {/* Left side: memory count */}
+                          <div className="flex items-center gap-2">
                             {book._count && (
                               <div
                                 className="rounded-full px-3 py-1 flex items-center gap-1.5"
@@ -704,34 +710,9 @@ export default function Dashboard() {
                                 </svg>
                                 <span className="text-xs font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
                                   {book._count.memories === 0
-                                    ? 'Start adding memories'
+                                    ? 'Empty'
                                     : `${book._count.memories} ${book._count.memories === 1 ? 'memory' : 'memories'}`}
                                 </span>
-                              </div>
-                            )}
-
-                            {/* Contributor avatars */}
-                            {book.contributors && book.contributors.length > 0 && (
-                              <div className="flex items-center -space-x-1.5">
-                                {book.contributors.slice(0, 3).map((c, ci) => (
-                                  <div
-                                    key={c.id}
-                                    className="relative"
-                                    style={{ zIndex: 3 - ci }}
-                                  >
-                                    <Avatar
-                                      name={c.name}
-                                      imageUrl={c.profile_image_url || null}
-                                      size={20}
-                                      className="border-2 border-white"
-                                    />
-                                  </div>
-                                ))}
-                                {book.contributors.length > 3 && (
-                                  <span className="text-xs" style={{ marginLeft: 2, color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                                    +{book.contributors.length - 3}
-                                  </span>
-                                )}
                               </div>
                             )}
                           </div>
@@ -760,6 +741,25 @@ export default function Dashboard() {
           </div>
         )}
       </main>
+
+      {/* Floating Action Button - New Book (appears on scroll) */}
+      {showFab && (
+        <button
+          type="button"
+          onClick={() => setShowCreate(true)}
+          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-110 active:scale-95 animate-fade-up hover:shadow-2xl"
+          style={{
+            backgroundColor: 'var(--bronze)',
+            color: 'var(--charcoal)',
+            boxShadow: '0 8px 32px rgba(212,163,115,0.35), 0 0 0 0 rgba(212,163,115,0.4)',
+          }}
+          aria-label="Create new book"
+        >
+          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+        </button>
+      )}
     </div>
   );
 }

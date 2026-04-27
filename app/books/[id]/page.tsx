@@ -306,10 +306,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </svg>
               <span>Dashboard</span>
             </Link>
-            <span style={{ color: 'rgba(212,163,115,0.3)' }} className="shrink-0">·</span>
-            <h1 className="text-base md:text-lg font-medium truncate max-w-[10rem] sm:max-w-[14rem] md:max-w-none" style={{ color: 'var(--charcoal)' }}>
-              {book.title}
-            </h1>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {/* Members button */}
@@ -437,16 +433,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.35), transparent)' }} />
               {/* Sort controls */}
-              <div className="flex items-center gap-1">
-                <span className="text-xs hidden sm:inline" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>Sort:</span>
+              <div className="flex items-center gap-1 rounded-full p-1" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.12)' }}>
                 <button
                   type="button"
                   onClick={() => setMemorySort('newest')}
-                  className="inline-flex items-center gap-1 text-xs font-medium rounded-full px-3 py-1.5 transition-all duration-200"
+                  className="rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
                   style={{
-                    backgroundColor: memorySort === 'newest' ? 'rgba(212,163,115,0.15)' : 'transparent',
-                    color: memorySort === 'newest' ? 'var(--charcoal)' : '#9A9A8A',
-                    border: `1px solid ${memorySort === 'newest' ? 'rgba(212,163,115,0.3)' : 'rgba(212,163,115,0.12)'}`,
+                    backgroundColor: memorySort === 'newest' ? 'var(--charcoal)' : 'transparent',
+                    color: memorySort === 'newest' ? 'var(--cornsilk)' : '#8A8A7A',
                   }}
                 >
                   Newest
@@ -454,11 +448,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <button
                   type="button"
                   onClick={() => setMemorySort('oldest')}
-                  className="inline-flex items-center gap-1 text-xs font-medium rounded-full px-3 py-1.5 transition-all duration-200"
+                  className="rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
                   style={{
-                    backgroundColor: memorySort === 'oldest' ? 'rgba(212,163,115,0.15)' : 'transparent',
-                    color: memorySort === 'oldest' ? 'var(--charcoal)' : '#9A9A8A',
-                    border: `1px solid ${memorySort === 'oldest' ? 'rgba(212,163,115,0.3)' : 'rgba(212,163,115,0.12)'}`,
+                    backgroundColor: memorySort === 'oldest' ? 'var(--charcoal)' : 'transparent',
+                    color: memorySort === 'oldest' ? 'var(--cornsilk)' : '#8A8A7A',
                   }}
                 >
                   Oldest
@@ -723,15 +716,15 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Footer actions — always visible, clean and refined */}
+                      {/* Footer actions — visible on hover, elegant reveal */}
                       <div
-                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t"
+                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t transition-all duration-300"
                         style={{ borderColor: 'rgba(212,163,115,0.1)' }}
                       >
                         <Link
                           href={`/books/${id}/edit?memory=${memory.id}`}
                           className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:opacity-80 active:scale-95"
-                          style={{ color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.18)' }}
+                          style={{ color: 'var(--charcoal)', backgroundColor: 'rgba(184,137,90,0.22)' }}
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -743,7 +736,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                           type="button"
                           onClick={() => setDeleteConfirm({ memoryId: memory.id })}
                           className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:opacity-80"
-                          style={{ color: '#B4503C', backgroundColor: 'rgba(180,80,60,0.08)' }}
+                          style={{ color: '#922c22', backgroundColor: 'rgba(180,80,60,0.14)' }}
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
