@@ -267,11 +267,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       {memories.length > 0 && (
         <Link
           href={`/books/${id}/edit`}
-          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-110 active:scale-95 animate-fade-up hover:shadow-2xl"
+          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-105 active:scale-95 animate-fade-up hover:shadow-2xl"
           style={{
-            backgroundColor: 'var(--bronze)',
+            backgroundColor: '#C4946A',
             color: 'var(--charcoal)',
-            boxShadow: '0 8px 32px rgba(212,163,115,0.35), 0 0 0 0 rgba(212,163,115,0.4)',
+            boxShadow: '0 8px 32px rgba(196,148,106,0.45), 0 0 0 4px rgba(212,163,115,0.15)',
           }}
           aria-label="Add a memory"
         >

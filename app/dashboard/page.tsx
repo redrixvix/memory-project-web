@@ -289,7 +289,7 @@ export default function Dashboard() {
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             {books.length > 0 && (
-              <div className="flex items-center gap-1.5 sm:gap-1 rounded-full p-1 w-full sm:w-auto overflow-x-auto" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.12)' }}>
+              <div className="flex items-center gap-1 rounded-full p-1 w-full sm:w-auto overflow-x-auto" style={{ backgroundColor: 'rgba(212,163,115,0.06)', border: '1px solid rgba(212,163,115,0.1)' }}>
                 {([
                   { value: 'newest', label: 'Newest' },
                   { value: 'oldest', label: 'Oldest' },
@@ -301,11 +301,12 @@ export default function Dashboard() {
                     onClick={() => setSortOrder(value)}
                     className="rounded-full px-4 py-2 text-xs font-medium transition-all duration-200 shrink-0"
                     style={{
-                      backgroundColor: sortOrder === value ? 'var(--charcoal)' : 'transparent',
-                      color: sortOrder === value ? 'var(--cornsilk)' : '#6A6A5A',
+                      backgroundColor: sortOrder === value ? 'var(--bronze)' : 'transparent',
+                      color: sortOrder === value ? 'var(--charcoal)' : '#7A7A6A',
                       fontFamily: 'var(--font-sans)',
                       minWidth: '58px',
-                      boxShadow: sortOrder === value ? '0 2px 8px rgba(43,43,43,0.12)' : 'none',
+                      boxShadow: sortOrder === value ? '0 2px 8px rgba(212,163,115,0.2)' : 'none',
+                      fontWeight: sortOrder === value ? '600' : '500',
                     }}
                   >
                     {label}
@@ -316,8 +317,8 @@ export default function Dashboard() {
             <Button
               onClick={() => setShowCreate(true)}
               type="button"
-              className="rounded-full shrink-0 h-12 px-7 text-sm font-medium transition-all duration-300 active:scale-95 hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(212,163,115,0.25)]"
-              style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+              className="rounded-full shrink-0 h-12 px-8 text-sm font-semibold transition-all duration-300 active:scale-95 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.35)] hover:-translate-y-0.5"
+              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.25)' }}
             >
               <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M12 5v14M5 12h14"/>

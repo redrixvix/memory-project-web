@@ -1235,42 +1235,34 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     </div>
                   ) : (
                     <div
-                      className="rounded-[1.2rem] px-5 py-4 relative overflow-hidden"
+                      className="rounded-[1rem] px-4 py-3.5 relative overflow-hidden"
                       style={{
-                        background: 'linear-gradient(145deg, rgba(250,237,205,0.6) 0%, rgba(204,213,174,0.15) 100%)',
-                        border: '1.5px solid rgba(212,163,115,0.22)',
-                        boxShadow: '0 4px 16px rgba(212,163,115,0.06), inset 0 1px 0 rgba(255,255,255,0.5)',
+                        background: 'linear-gradient(145deg, rgba(250,237,205,0.5) 0%, rgba(204,213,174,0.12) 100%)',
+                        border: '1px solid rgba(212,163,115,0.18)',
                       }}
                     >
-                      {/* Decorative accent */}
-                      <div className="absolute top-0 right-0 w-28 h-28 rounded-full opacity-[0.07]" style={{ background: 'radial-gradient(circle at 100% 0%, var(--bronze) 0%, transparent 60%)' }} />
-                      
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 relative">
+                        <div className="flex-1 min-w-0 flex items-center gap-3">
+                          <div className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
                               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                             </svg>
-                            <span className="text-[0.65rem] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-[0.1em]" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}>
-                              Plus Feature
-                            </span>
                           </div>
-                          <p className="text-sm font-medium mb-1.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                            Bring your memories to life with photos &amp; voice
-                          </p>
-                          <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A' }}>
-                            Upgrade to attach photos and record voice notes.
-                          </p>
+                          <div>
+                            <p className="text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                              Bring your memories to life with photos &amp; voice
+                            </p>
+                            <p className="text-xs" style={{ color: '#6A6A5A' }}>
+                              Photos &amp; audio require a Plus or Premium plan
+                            </p>
+                          </div>
                         </div>
                         <div className="shrink-0">
                           <Link
                             href={`/upgrade?book=${id}`}
-                            className="inline-flex h-10 items-center justify-center rounded-full px-6 text-xs font-semibold transition-all duration-300 hover:opacity-90 hover:shadow-lg hover:shadow-[rgba(212,163,115,0.3)] active:scale-[0.98]"
-                            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 16px rgba(212,163,115,0.25)' }}
+                            className="inline-flex h-9 items-center justify-center rounded-full px-5 text-xs font-semibold transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
                           >
-                            <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
                             Upgrade
                           </Link>
                         </div>
