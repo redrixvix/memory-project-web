@@ -679,15 +679,18 @@ export default function Dashboard() {
                       style={{
                         backgroundColor: '#FFFDF8',
                         boxShadow: '0 6px 28px rgba(212,163,115,0.12), 0 2px 8px rgba(212,163,115,0.06)',
+                        border: '1px solid rgba(212,163,115,0.08)',
                         borderLeft: `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`,
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 32px 80px rgba(212,163,115,0.24), 0 12px 36px rgba(212,163,115,0.14)';
-                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-8px) scale(1.012)';
+                        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 32px 80px rgba(212,163,115,0.26), 0 12px 36px rgba(212,163,115,0.16)';
+                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-10px) scale(1.015)';
+                        (e.currentTarget as HTMLDivElement).style.borderColor = `${BOOK_COLORS[book.id % BOOK_COLORS.length]}44`;
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLDivElement).style.boxShadow = '0 6px 28px rgba(212,163,115,0.12), 0 2px 8px rgba(212,163,115,0.06)';
                         (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0) scale(1)';
+                        (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(212,163,115,0.08)';
                       }}
                     >
                       {/* Subtle warm overlay on hover */}

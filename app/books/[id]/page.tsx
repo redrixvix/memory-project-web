@@ -578,14 +578,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     onMouseLeave={() => setHoveredCard(null)}
                     style={{
                       backgroundColor: '#FDFCF5',
-                      border: '1px solid rgba(212,163,115,0.06)',
+                      border: hoveredCard === memoryIndex ? '1px solid rgba(212,163,115,0.18)' : '1px solid rgba(212,163,115,0.06)',
                       boxShadow: hoveredCard === memoryIndex 
-                        ? '0 28px 72px rgba(212,163,115,0.22), 0 12px 32px rgba(212,163,115,0.12), 0 1px 0 rgba(212,163,115,0.10) inset' 
+                        ? '0 32px 80px rgba(212,163,115,0.26), 0 16px 40px rgba(212,163,115,0.14), 0 1px 0 rgba(212,163,115,0.12) inset' 
                         : '0 6px 28px rgba(212,163,115,0.10), 0 2px 8px rgba(212,163,115,0.06)',
                       transform: hoveredCard === memoryIndex 
-                        ? 'translateY(-8px) scale(1.01)' 
+                        ? 'translateY(-10px) scale(1.015)' 
                         : 'translateY(0) scale(1)',
-                      backgroundImage: 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.08) 0%, transparent 50%)',
+                      backgroundImage: 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.10) 0%, transparent 50%)',
                     }}
                   >
                     {/* Warm page-edge accent — left side with book spine feel */}
