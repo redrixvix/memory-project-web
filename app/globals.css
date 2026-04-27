@@ -806,3 +806,126 @@ body {
 .photo-grid--2 { grid-template-columns: repeat(2, 1fr); }
 .photo-grid--3 { grid-template-columns: repeat(3, 1fr); }
 .photo-grid--4 { grid-template-columns: repeat(2, 1fr); }
+
+/* ─────────────────────────────────────────
+   Global input focus states — warm and inviting
+   Replaces scattered inline onFocus/onBlur handlers
+───────────────────────────────────────── */
+
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="url"],
+input[type="number"],
+textarea,
+select {
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="search"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--bronze) !important;
+  box-shadow: 0 0 0 3px rgba(212,163,115,0.18) !important;
+  background-color: #FFFDF8 !important;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="search"]::placeholder,
+textarea::placeholder {
+  color: #9A9A7A;
+  font-style: italic;
+}
+
+/* ─────────────────────────────────────────
+   Audio player styling — warm custom look
+───────────────────────────────────────── */
+
+.audio-player {
+  background-color: rgba(212,163,115,0.06) !important;
+  border: 1px solid rgba(212,163,115,0.15) !important;
+  filter: sepia(0.08) hue-rotate(5deg);
+}
+
+.audio-player::-webkit-media-controls-panel {
+  background-color: rgba(254,250,224,0.6) !important;
+}
+
+/* ─────────────────────────────────────────
+   Book card hover lift — premium micro-interaction
+───────────────────────────────────────── */
+
+.book-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease,
+              border-color 0.3s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 24px 60px rgba(212,163,115,0.22), 0 8px 24px rgba(212,163,115,0.12) !important;
+  border-color: rgba(212,163,115,0.22) !important;
+}
+
+/* ─────────────────────────────────────────
+   Settings save button — satisfying success pulse
+───────────────────────────────────────── */
+
+button:has(svg[data-saved="true"]) {
+  animation: savePulse 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes savePulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.96); }
+  70% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+/* ─────────────────────────────────────────
+   Premium plan card — spring animation on selection
+───────────────────────────────────────── */
+
+.plan-card-spring {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.25s ease,
+              border-color 0.2s ease;
+}
+
+/* ─────────────────────────────────────────
+   Scrollbar styling — warm and minimal
+───────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(212,163,115,0.06);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212,163,115,0.25);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212,163,115,0.4);
+}
+
+/* ─────────────────────────────────────────
+   Selection color — warm gold
+───────────────────────────────────────── */
+
+::selection {
+  background-color: rgba(212,163,115,0.25);
+  color: var(--charcoal);
+}

@@ -883,15 +883,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         fontFamily: 'var(--font-sans)',
                         boxShadow: '0 10px 24px rgba(212,163,115,0.06)',
                       }}
-                      onFocus={e => {
-                        e.target.style.borderColor = 'var(--bronze)';
-                        e.target.style.boxShadow = '0 10px 24px rgba(212,163,115,0.06), 0 0 0 3px rgba(212,163,115,0.15)';
-                        e.target.style.outline = 'none';
-                      }}
-                      onBlur={e => {
-                        e.target.style.borderColor = 'rgba(212,163,115,0.24)';
-                        e.target.style.boxShadow = '0 10px 24px rgba(212,163,115,0.06)';
-                      }}
                       onMouseEnter={e => {
                         e.target.style.borderColor = 'rgba(212,163,115,0.38)';
                       }}
@@ -1092,7 +1083,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               <p className="text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                                 Photo attachments
                               </p>
-                              <p className="mt-1 text-xs leading-5" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
+                              <p className="mt-1 text-xs leading-5" style={{ color: '#8A8075', fontFamily: 'var(--font-sans)' }}>
                                 Add photos from your device. Images must be under 4MB, and previews appear immediately.
                               </p>
                             </div>

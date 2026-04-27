@@ -310,8 +310,8 @@ export default function SettingsPage() {
                         Remove photo
                       </button>
                     ) : (
-                      <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
-                        Click the circle above to upload a photo
+                      <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                        Click the circle to upload a photo
                       </p>
                     )}
                   </div>
@@ -330,21 +330,12 @@ export default function SettingsPage() {
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full rounded-xl px-4 py-3 text-base transition-all outline-none"
+                  className="w-full rounded-xl px-4 py-3 text-base"
                   style={{
                     border: '1.5px solid rgba(212,163,115,0.3)',
                     backgroundColor: '#FFFDF8',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-serif)',
-                    transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
-                  }}
-                  onFocus={e => {
-                    e.target.style.borderColor = 'var(--bronze)';
-                    e.target.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.15)';
-                  }}
-                  onBlur={e => {
-                    e.target.style.borderColor = 'rgba(212,163,115,0.3)';
-                    e.target.style.boxShadow = 'none';
                   }}
                   placeholder="Your name"
                 />

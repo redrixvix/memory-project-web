@@ -505,7 +505,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   className="rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
                   style={{
                     backgroundColor: memorySort === 'oldest' ? 'var(--charcoal)' : 'transparent',
-                    color: memorySort === 'oldest' ? 'var(--cornsilk)' : '#8A8A7A',
+                    color: memorySort === 'oldest' ? 'var(--cornsilk)' : '#6A6A5A',
                   }}
                 >
                   Oldest
@@ -618,8 +618,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       <div
                         className="absolute top-5 right-5 flex items-center gap-2 rounded-2xl px-4 py-2 shadow-sm"
                         style={{
-                          backgroundColor: `${accentColor}22`,
-                          color: accentColor,
+                          backgroundColor: `${accentColor}18`,
+                          color: accentColor === 'var(--tea-green)' ? '#5A6B3A' : accentColor === 'var(--papaya)' ? '#8A6A3A' : accentColor,
                           fontFamily: 'var(--font-sans)',
                           border: `1px solid ${accentColor}40`,
                           backdropFilter: 'blur(8px)',
@@ -709,7 +709,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             />
                           </div>
                         ) : null}
-                        <p className="text-xs tracking-wide" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                        <p className="text-xs tracking-wide" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                           {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
@@ -923,7 +923,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               Preview your book
             </Link>
             <p className="mt-4 text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
-              See how your memories will look printed
+              Print preview — see your book before ordering
             </p>
           </div>
         )}

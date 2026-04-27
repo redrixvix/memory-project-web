@@ -168,24 +168,31 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="w-full max-w-3xl px-6">
-          {/* Auth loading skeleton — matches dashboard layout */}
+          {/* Auth loading skeleton — warm shimmer that matches dashboard layout */}
           <div className="mb-10">
-            <div className="h-9 w-56 rounded-xl mb-2 animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
-            <div className="h-4 w-40 rounded-lg animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.07)' }} />
+            <div className="h-9 w-56 rounded-xl mb-2 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.22)' }} />
+            <div className="h-4 w-40 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
           </div>
           <div className="space-y-4">
             {[1,2,3].map(i => (
-              <div key={i} className="rounded-2xl p-6 flex items-center gap-5" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)' }}>
-                <div className="w-12 h-18 rounded-xl shrink-0 animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+              <div key={i} className="rounded-2xl p-6 flex items-center gap-5" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.12)' }}>
+                <div className="w-12 h-18 rounded-xl shrink-0 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
                 <div className="flex-1 space-y-2.5">
-                  <div className="h-5 w-48 rounded-lg animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
-                  <div className="h-3 w-32 rounded-md animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.07)' }} />
+                  <div className="h-5 w-48 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                  <div className="h-3 w-32 rounded-md skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
                 </div>
               </div>
             ))}
           </div>
         </div>
-        <style>{`@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.85; } } .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }`}</style>
+        <style>{`
+          @keyframes skeleton-shimmer {
+            0% { opacity: 0.45; }
+            50% { opacity: 0.85; }
+            100% { opacity: 0.45; }
+          }
+          .skeleton-pulse { animation: skeleton-shimmer 1.8s ease-in-out infinite; }
+        `}</style>
       </div>
     );
   }

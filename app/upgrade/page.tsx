@@ -233,9 +233,14 @@ export default function UpgradePage() {
             const cardStyles = {
               backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(204,213,174,0.12)' : 'var(--papaya)',
               border: isSelected ? '2px solid var(--bronze)' : isCurrentPlan ? '2px dashed rgba(212,163,115,0.35)' : '1px solid rgba(212,163,115,0.2)',
-              boxShadow: isSelected ? '0 12px 40px rgba(212,163,115,0.2)' : isCurrentPlan ? 'none' : '0 4px 16px rgba(212,163,115,0.08)',
+              boxShadow: isSelected 
+                ? '0 16px 48px rgba(212,163,115,0.28), 0 0 0 4px rgba(212,163,115,0.1)' 
+                : isCurrentPlan 
+                  ? 'none' 
+                  : '0 4px 16px rgba(212,163,115,0.08)',
               opacity: isCurrentPlan ? 0.75 : 1,
-              transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+              transform: isSelected ? 'scale(1.03)' : 'scale(1)',
+              transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
             };
             const handleCardClick = () => { if (!isCurrentPlan) setSelectedPlan(plan.id); };
             return (
@@ -245,7 +250,9 @@ export default function UpgradePage() {
                 tabIndex={isCurrentPlan ? -1 : 0}
                 onClick={handleCardClick}
                 onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !isCurrentPlan) { e.preventDefault(); handleCardClick(); }}}
-                className="text-left rounded-2xl p-7 transition-all duration-200 relative cursor-pointer"
+                onMouseEnter={(e) => { if (!isCurrentPlan && !isSelected) { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(212,163,115,0.14)'; } }}
+                onMouseLeave={(e) => { if (!isCurrentPlan && !isSelected) { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(212,163,115,0.08)'; } }}
+                className="text-left rounded-2xl p-7 relative cursor-pointer"
                 style={cardStyles}
                 aria-pressed={isSelected}
                 aria-disabled={isCurrentPlan ? true : undefined}
