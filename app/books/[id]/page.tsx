@@ -287,8 +287,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       )}
 
       {/* ── TOP NAV ── */}
-      <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
-        <div className="flex items-center justify-between w-full max-w-3xl mx-auto gap-3">
+      <header className="sticky top-0 z-30 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.96)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.18)', boxShadow: '0 1px 0 rgba(212,163,115,0.08), 0 4px 24px rgba(212,163,115,0.04)' }}>
+        <div className="flex items-center justify-between w-full max-w-5xl mx-auto gap-3">
           <div className="flex items-center gap-2 min-w-0">
             <Link href="/dashboard" className="text-sm shrink-0 flex items-center gap-1.5 transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -297,12 +297,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <span>Dashboard</span>
             </Link>
             <span style={{ color: 'rgba(212,163,115,0.3)' }} className="shrink-0">·</span>
-            <h1 className="text-base md:text-lg font-medium truncate max-w-[8rem] sm:max-w-[12rem] md:max-w-none" style={{ color: 'var(--charcoal)' }}>
+            <h1 className="text-base md:text-lg font-medium truncate max-w-[10rem] sm:max-w-[14rem] md:max-w-none" style={{ color: 'var(--charcoal)' }}>
               {book.title}
             </h1>
-            <span className="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full" style={getPlanBadgeStyles(book.plan)}>
-              {getBookPlanLabel(book.plan, book.storage_tier)}
-            </span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {/* Members button */}
@@ -377,12 +374,32 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       </header>
 
       {/* ── MAIN ── */}
-      <main className="px-6 md:px-10 py-12 max-w-3xl mx-auto w-full">
+      <main className="px-6 md:px-10 py-12 max-w-5xl mx-auto w-full">
+
+        {/* Book hero — full-width title block */}
+        <div className="mb-10">
+          <h1 className="text-4xl md:text-5xl font-medium mb-4 leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+            {book.title}
+          </h1>
+          <div className="flex items-center gap-4 flex-wrap">
+            {book.plan && book.plan !== 'free' && (
+              <span className="text-xs font-semibold px-3 py-1 rounded-full" style={getPlanBadgeStyles(book.plan)}>
+                {getBookPlanLabel(book.plan, book.storage_tier)}
+              </span>
+            )}
+            <div className="flex-1 h-px max-w-2xl" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.45), transparent)' }} />
+            {memories.length > 0 && (
+              <p className="text-sm shrink-0" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                {memories.length} {memories.length === 1 ? 'memory' : 'memories'}
+              </p>
+            )}
+          </div>
+        </div>
 
         {book.description && (
-          <div className="mb-8">
-            <p className="text-base leading-relaxed" style={{ color: '#6A6A5A' }}>{book.description}</p>
-            <div className="rule mt-6" />
+          <div className="mb-10">
+            <p className="text-base leading-relaxed max-w-2xl" style={{ color: '#6A6A5A' }}>{book.description}</p>
+            <div className="rule mt-8" />
           </div>
         )}
 
@@ -398,8 +415,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                 </svg>
               </div>
-              <h2 className="text-lg font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                {memories.length} {memories.length === 1 ? 'Memory' : 'Memories'}
+              <h2 className="text-xl font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                Memories
               </h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.35), transparent)' }} />
             </div>

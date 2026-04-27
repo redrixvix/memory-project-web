@@ -265,28 +265,36 @@ export default function UpgradePage() {
                     Current
                   </div>
                 )}
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <p className="label-caps mb-1" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--bronze)' }}>{plan.label}</p>
+                <div className="flex items-start justify-between mb-5">
+                  <div className="flex-1 min-w-0">
+                    <p className="label-caps mb-1.5" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--bronze)' }}>{plan.label}</p>
                     <p className="text-3xl font-medium" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--charcoal)' }}>{plan.price}</p>
                     <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>{plan.description}</p>
                   </div>
-                  <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-1"
-                    style={{
-                      backgroundColor: isSelected ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
-                      border: isSelected ? 'none' : '1px solid rgba(212,163,115,0.3)',
-                    }}
-                  >
-                    {isSelected && (
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
+                  {/* Selection indicator */}
+                  {isSelected && !isCurrentPlan && (
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 ml-3 mt-1"
+                      style={{ backgroundColor: 'var(--charcoal)' }}
+                    >
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--cornsilk)' }}>
                         <path d="M20 6L9 17l-5-5"/>
                       </svg>
-                    )}
-                  </div>
+                    </div>
+                  )}
+                  {isCurrentPlan && (
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 ml-3 mt-1"
+                      style={{ backgroundColor: 'rgba(204,213,174,0.3)', border: '1px solid rgba(212,163,115,0.25)' }}
+                    >
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#6A6A5A' }}>
+                        <path d="M20 6L9 17l-5-5"/>
+                      </svg>
+                    </div>
+                  )}
                 </div>
-                <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 24 }} />
-                <ul className="space-y-2.5">
+                <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 20 }} />
+                <ul className="space-y-2.5 mb-7">
                   {plan.features.map((feat, i) => (
                     <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--charcoal)' }}>
                       <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: isCurrentPlan ? '#B0B09A' : 'var(--bronze)' }}>
@@ -304,6 +312,38 @@ export default function UpgradePage() {
                     </li>
                   ))}
                 </ul>
+                {/* CTA button per card — high contrast, always visible */}
+                {!isCurrentPlan ? (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPlan(plan.id)}
+                    className="w-full h-12 rounded-full text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
+                    style={{
+                      backgroundColor: isSelected ? 'var(--charcoal)' : 'var(--bronze)',
+                      color: isSelected ? 'var(--cornsilk)' : 'var(--charcoal)',
+                      boxShadow: isSelected ? '0 4px 16px rgba(43,43,43,0.25)' : '0 4px 16px rgba(212,163,115,0.2)',
+                    }}
+                  >
+                    {isSelected ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path d="M20 6L9 17l-5-5"/>
+                        </svg>
+                        Selected
+                      </span>
+                    ) : `Select ${plan.label}`}
+                  </button>
+                ) : (
+                  <div
+                    className="w-full h-12 rounded-full flex items-center justify-center text-sm font-medium"
+                    style={{ backgroundColor: 'rgba(204,213,174,0.15)', color: '#6A6A5A', border: '1px solid rgba(212,163,115,0.2)' }}
+                  >
+                    <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                    Current Plan
+                  </div>
+                )}
               </button>
             );
           })}
@@ -314,37 +354,58 @@ export default function UpgradePage() {
           <p className="text-sm text-center mb-6" style={{ color: '#C0392B' }}>{error}</p>
         )}
 
-        {/* Confirm */}
-        <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={submitting || !selectedBook || (selectedBook && normalizeBookPlan(selectedBook.plan) === selectedPlan)}
-            className="rounded-full h-12 px-10 text-sm font-semibold transition-all duration-200 disabled:cursor-not-allowed gap-2"
-            style={{
-              backgroundColor: selectedBook && normalizeBookPlan(selectedBook.plan) === selectedPlan ? 'rgba(212,163,115,0.12)' : 'var(--bronze)',
-              color: selectedBook && normalizeBookPlan(selectedBook.plan) === selectedPlan ? '#6A6A5A' : 'var(--charcoal)',
-              border: selectedBook && normalizeBookPlan(selectedBook.plan) === selectedPlan ? '1px solid rgba(212,163,115,0.3)' : 'none',
-            }}
-          >
-            {submitting ? (
-              <span className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full animate-spin" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
-                Saving...
-              </span>
-            ) : selectedBook && normalizeBookPlan(selectedBook.plan) === selectedPlan ? (
-              <span className="flex items-center gap-1.5">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                Current Plan
-              </span>
-            ) : `Upgrade to ${getBookPlanLabel(selectedPlan)}`}
-          </button>
+        {/* Confirm — shown only when user has selected a non-current plan */}
+        {selectedBook && normalizeBookPlan(selectedBook.plan) !== selectedPlan && (
+          <div className="flex flex-col sm:flex-row gap-3 items-center justify-center mb-4">
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="rounded-full h-12 px-10 text-sm font-semibold transition-all duration-200 disabled:opacity-60 active:scale-[0.98]"
+              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.25)' }}
+            >
+              {submitting ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full animate-spin" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                  Saving...
+                </span>
+              ) : `Upgrade to ${getBookPlanLabel(selectedPlan)}`}
+            </button>
+          </div>
+        )}
+
+        {/* Book selector */}
+        {books.length > 0 && (
+          <div className="mt-6 text-center">
+            {books.length > 1 ? (
+              <div className="flex items-center justify-center gap-3">
+                <label className="text-sm" style={{ color: '#6A6A5A' }}>Upgrading:</label>
+                <select
+                  value={selectedBookId}
+                  onChange={(e) => updateSelectedBook(e.target.value, books)}
+                  className="rounded-xl px-4 py-2 text-sm"
+                  style={{ border: '1px solid rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)', color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
+                >
+                  {books.map(b => (
+                    <option key={b.id} value={b.id}>{b.title}</option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <p className="text-sm" style={{ color: '#6A6A5A' }}>
+                Upgrading: <span className="font-medium" style={{ color: 'var(--charcoal)' }}>{books[0].title}</span>
+              </p>
+            )}
+          </div>
+        )}
+
+        <div className="mt-8 text-center">
           <Link
             href="/dashboard"
             className="text-sm transition-colors hover:opacity-70"
             style={{ color: '#6A6A5A' }}
           >
-            Cancel
+            Back to dashboard
           </Link>
         </div>
       </main>

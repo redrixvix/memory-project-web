@@ -271,7 +271,7 @@ export default function Dashboard() {
                   Your Memory Books
                 </h1>
                 <p className="text-sm mb-5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                  {user.name.split(' ')[0]}'s collection — {books.length} {books.length === 1 ? 'book' : 'books'} in the library
+                  {user.name.endsWith('s') ? `${user.name}'` : `${user.name}'s`} collection — {books.length} {books.length === 1 ? 'book' : 'books'} in the library
                 </p>
               </div>
             </div>
