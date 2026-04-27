@@ -298,9 +298,10 @@ export default function Dashboard() {
                     className="rounded-full px-4 py-2 text-xs font-medium transition-all duration-200 shrink-0"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--charcoal)' : 'transparent',
-                      color: sortOrder === value ? 'var(--cornsilk)' : 'var(--charcoal)',
+                      color: sortOrder === value ? 'var(--cornsilk)' : '#6A6A5A',
                       fontFamily: 'var(--font-sans)',
                       minWidth: '58px',
+                      boxShadow: sortOrder === value ? '0 2px 8px rgba(43,43,43,0.12)' : 'none',
                     }}
                   >
                     {label}
@@ -311,7 +312,7 @@ export default function Dashboard() {
             <Button
               onClick={() => setShowCreate(true)}
               type="button"
-              className="rounded-full shrink-0 h-12 px-7 text-sm font-medium transition-all duration-200 active:scale-95"
+              className="rounded-full shrink-0 h-12 px-7 text-sm font-medium transition-all duration-300 active:scale-95 hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(212,163,115,0.25)]"
               style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
             >
               <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -566,7 +567,7 @@ export default function Dashboard() {
             <Button
               onClick={() => setShowCreate(true)}
               type="button"
-              className="rounded-full h-12 px-8 text-sm font-medium"
+              className="rounded-full h-12 px-8 text-sm font-medium transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.3)] active:scale-95"
               style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
             >
               <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -606,11 +607,11 @@ export default function Dashboard() {
                       }}
                       onMouseEnter={(e) => {
                         (e.currentTarget as HTMLDivElement).style.boxShadow = '0 28px 72px rgba(212,163,115,0.22), 0 8px 28px rgba(212,163,115,0.12)';
-                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)';
+                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-6px) scale(1.008)';
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.04)';
-                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
+                        (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0) scale(1)';
                       }}
                     >
                       {/* Subtle warm overlay on hover */}

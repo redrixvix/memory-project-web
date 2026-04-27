@@ -362,7 +362,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving || !name.trim() || name.trim() === user?.name}
-                  className="inline-flex items-center justify-center h-11 rounded-full px-8 text-sm font-semibold shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm"
+                  className="inline-flex items-center justify-center h-11 rounded-full px-8 text-sm font-semibold shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 active:shadow-sm"
                   style={{
                     backgroundColor: 'var(--bronze)',
                     color: 'var(--charcoal)',

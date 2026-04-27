@@ -267,11 +267,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       {memories.length > 0 && (
         <Link
           href={`/books/${id}/edit`}
-          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 animate-fade-up"
+          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-110 active:scale-95 animate-fade-up hover:shadow-2xl"
           style={{
             backgroundColor: 'var(--bronze)',
             color: 'var(--charcoal)',
-            boxShadow: '0 8px 32px rgba(212,163,115,0.35)',
+            boxShadow: '0 8px 32px rgba(212,163,115,0.35), 0 0 0 0 rgba(212,163,115,0.4)',
           }}
           aria-label="Add a memory"
         >
@@ -513,7 +513,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             </p>
             <Link
               href={`/books/${id}/edit`}
-              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
+              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.3)] hover:-translate-y-0.5 active:scale-95"
               style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
             >
               <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -546,9 +546,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       backgroundColor: '#FDFCF5',
                       border: 'none',
                       boxShadow: hoveredCard === memoryIndex ? '0 20px 56px rgba(212,163,115,0.16), 0 4px 16px rgba(212,163,115,0.08)' : '0 4px 24px rgba(212,163,115,0.08)',
-                      transform: hoveredCard === memoryIndex ? 'translateY(-3px)' : 'translateY(0)',
+                      transform: hoveredCard === memoryIndex ? 'translateY(-4px) scale(1.005)' : 'translateY(0) scale(1)',
                       backgroundImage: 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.03) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.04) 0%, transparent 50%)',
-                      transition: 'box-shadow 0.3s ease, transform 0.3s ease',
+                      transition: 'box-shadow 0.4s ease, transform 0.4s ease',
                     }}
                   >
                     {/* Warm page-edge accent — left side */}

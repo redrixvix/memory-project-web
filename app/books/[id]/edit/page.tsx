@@ -1286,7 +1286,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <div className="shrink-0 lg:ml-8">
                           <Link
                             href={`/upgrade?book=${id}`}
-                            className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-200 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
+                            className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-300 hover:opacity-90 hover:scale-[1.03] hover:shadow-xl hover:shadow-[rgba(212,163,115,0.35)] hover:-translate-y-0.5 active:scale-[0.98]"
                             style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.3)' }}
                           >
                             <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1330,7 +1330,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <Button
                       type="submit"
                       disabled={isSubmitDisabled}
-                      className="h-11 rounded-full px-7 disabled:cursor-not-allowed disabled:opacity-100"
+                      className="h-11 rounded-full px-7 disabled:cursor-not-allowed disabled:opacity-100 transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.3)] active:scale-[0.98]"
                       style={{
                         backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.4)' : 'var(--bronze)',
                         color: 'var(--charcoal)',
