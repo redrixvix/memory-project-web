@@ -267,7 +267,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       {currentUserRole && currentUserRole !== 'viewer' && memories.length > 0 && (
         <Link
           href={`/books/${id}/edit`}
-          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-105 active:scale-95 animate-fade-up hover:shadow-2xl group"
+          className="fab-new fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center animate-fade-up group"
           style={{
             backgroundColor: 'var(--bronze)',
             color: 'var(--charcoal)',
@@ -286,8 +286,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         <button
           type="button"
           onClick={scrollToTop}
-          className="fixed bottom-7 left-7 z-30 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 active:scale-95 animate-fade-up"
-          style={{ backgroundColor: '#FDFCF5', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.2)' }}
+          className="scroll-top-btn fixed bottom-7 left-7 z-30 w-11 h-11 rounded-full flex items-center justify-center animate-fade-up"
+          style={{ backgroundColor: '#FDFCF5', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.2)', boxShadow: '0 4px 16px rgba(212,163,115,0.12)' }}
           aria-label="Scroll to top"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -717,16 +717,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       {/* Photo grid — premium album-style with hover reveal */}
                       {memory.photo_urls && memory.photo_urls.length > 0 && (
                         <div
-                          className="mt-7 grid gap-3 p-4 rounded-2xl"
-                          style={{
-                            gridTemplateColumns: memory.photo_urls.length === 1
-                              ? '1fr'
-                              : memory.photo_urls.length === 2
-                                ? 'repeat(2, 1fr)'
-                                : 'repeat(3, 1fr)',
-                            backgroundColor: 'rgba(212,163,115,0.04)',
-                            border: '1px solid rgba(212,163,115,0.1)',
-                          }}
+                          className={`mt-7 photo-grid photo-grid--${Math.min(memory.photo_urls.length, 4)}`}
                         >
                           {memory.photo_urls.map((url, photoIndex) => {
                             const globalIndex = memoryIndex * 100 + photoIndex;
@@ -861,40 +852,40 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Footer actions — always visible for easy access */}
+                      {/* Footer actions — minimal, icon-only for premium feel */}
                       <div
-                        className="flex items-center justify-end gap-2.5 mt-7 pt-5 border-t transition-all duration-300"
-                        style={{ borderColor: 'rgba(212,163,115,0.1)' }}
+                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t transition-all duration-300"
+                        style={{ borderColor: 'rgba(212,163,115,0.08)' }}
                       >
                         <Link
                           href={`/books/${id}/edit?memory=${memory.id}`}
-                          className="inline-flex items-center gap-2 text-xs font-semibold rounded-2xl px-5 py-2.5 shadow-sm transition-all duration-200 hover:brightness-105 active:scale-95"
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200 hover:bg-[rgba(212,163,115,0.12)] active:scale-90"
                           style={{
-                            color: 'var(--charcoal)',
-                            backgroundColor: 'rgba(212,163,115,0.18)',
-                            border: '1px solid rgba(212,163,115,0.25)',
+                            color: '#7A7A6A',
+                            backgroundColor: 'transparent',
                           }}
+                          aria-label="Edit memory"
+                          title="Edit memory"
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                           </svg>
-                          Edit memory
                         </Link>
                         <button
                           type="button"
                           onClick={() => setDeleteConfirm({ memoryId: memory.id })}
-                          className="inline-flex items-center gap-2 text-xs font-semibold rounded-2xl px-5 py-2.5 shadow-sm transition-all duration-200 hover:brightness-105 active:scale-95"
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200 hover:brightness-110 active:scale-90"
                           style={{
-                            color: '#922c22',
-                            backgroundColor: 'rgba(180,80,60,0.10)',
-                            border: '1px solid rgba(180,80,60,0.2)',
+                            color: '#B07070',
+                            backgroundColor: 'transparent',
                           }}
+                          aria-label="Delete memory"
+                          title="Delete memory"
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
                           </svg>
-                          Delete
                         </button>
                       </div>
                     </CardContent>

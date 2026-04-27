@@ -333,7 +333,7 @@ export default function SettingsPage() {
                   className="w-full rounded-xl px-4 py-3 text-base transition-all outline-none"
                   style={{
                     border: '1.5px solid rgba(212,163,115,0.3)',
-                    backgroundColor: 'rgba(254,250,224,0.6)',
+                    backgroundColor: '#FFFDF8',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-serif)',
                     transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
@@ -350,18 +350,26 @@ export default function SettingsPage() {
                 />
               </div>
 
-              {/* Email (read-only — displayed as plain text, not a form field) */}
+              {/* Email (read-only — styled as a subtle info field) */}
               <div className="grid gap-2">
                 <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                   Email address
                 </span>
-                <p
-                  className="text-base py-3"
-                  style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}
+                <div
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                  style={{
+                    backgroundColor: 'rgba(204,213,174,0.08)',
+                    border: '1px solid rgba(212,163,115,0.15)',
+                  }}
                 >
-                  {user?.email}
-                </p>
-                <p className="text-xs" style={{ color: '#8A8A7A' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#8A8A7A', marginTop: '1px' }}>
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                  <p className="text-sm flex-1" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
+                    {user?.email}
+                  </p>
+                </div>
+                <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
                   Contact support to change your email address
                 </p>
               </div>
@@ -371,11 +379,12 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving || !name.trim() || name.trim() === user?.name}
-                  className="inline-flex items-center justify-center h-11 rounded-full px-8 text-sm font-semibold shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 active:shadow-sm"
+                  className="inline-flex items-center justify-center h-11 rounded-xl px-8 text-sm font-semibold shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.98]"
                   style={{
-                    backgroundColor: 'var(--bronze)',
-                    color: 'var(--charcoal)',
-                    boxShadow: '0 4px 16px rgba(212,163,115,0.25)',
+                    backgroundColor: 'var(--charcoal)',
+                    color: 'var(--cornsilk)',
+                    fontFamily: 'var(--font-sans)',
+                    boxShadow: '0 4px 16px rgba(43,43,43,0.18)',
                   }}
                 >
                   {saving ? (

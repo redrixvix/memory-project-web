@@ -642,3 +642,167 @@ body {
     @apply font-sans overflow-x-hidden scroll-smooth;
   }
 }
+
+/* ─────────────────────────────────────────
+   Premium book card — smooth CSS hover
+───────────────────────────────────────── */
+
+.book-card {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-8px) scale(1.012);
+  box-shadow: 0 32px 80px rgba(212,163,115,0.22), 0 12px 36px rgba(212,163,115,0.14) !important;
+}
+
+/* ─────────────────────────────────────────
+   Memory count badge variants
+───────────────────────────────────────── */
+
+.memory-badge {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.2rem 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.memory-badge--empty {
+  background-color: rgba(212,163,115,0.12);
+  border: 1px dashed rgba(212,163,115,0.4);
+  color: #8A7A5A;
+  font-style: italic;
+}
+
+.memory-badge--filled {
+  background-color: rgba(184,137,90,0.10);
+  border: 1px solid rgba(212,163,115,0.18);
+  color: var(--charcoal);
+}
+
+/* ─────────────────────────────────────────
+   Floating new-memory FAB — warm styling
+───────────────────────────────────────── */
+
+.fab-new {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease,
+              background-color 0.2s ease;
+}
+
+.fab-new:hover {
+  transform: scale(1.08);
+  box-shadow: 0 16px 48px rgba(212,163,115,0.35), 0 4px 16px rgba(0,0,0,0.12) !important;
+}
+
+.fab-new:active {
+  transform: scale(0.94);
+}
+
+/* ─────────────────────────────────────────
+   Empty state — warm editorial illustration
+───────────────────────────────────────── */
+
+.empty-state-illustration {
+  position: relative;
+  width: 160px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+.empty-state-illustration .book-base {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: #FDFCF5;
+  border: 1px solid rgba(212,163,115,0.3);
+  box-shadow: 4px 6px 0 rgba(212,163,115,0.12), 8px 12px 24px rgba(212,163,115,0.08);
+  overflow: hidden;
+}
+
+.empty-state-illustration .book-spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background: linear-gradient(to right, var(--bronze), rgba(212,163,115,0.4));
+  border-radius: 12px 0 0 12px;
+}
+
+.empty-state-illustration .book-lines {
+  padding: 24px 16px 16px 14px;
+}
+
+.empty-state-illustration .book-lines::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: rgba(212,163,115,0.25);
+  margin-bottom: 14px;
+}
+
+.empty-state-illustration .book-shadow {
+  position: absolute;
+  bottom: -16px;
+  left: 12px;
+  right: -8px;
+  height: 16px;
+  background: radial-gradient(ellipse, rgba(43,43,43,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.empty-state-illustration .photo-icon {
+  position: absolute;
+  bottom: 20px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(204,213,174,0.4), rgba(212,163,115,0.3));
+  border: 1px solid rgba(212,163,115,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ─────────────────────────────────────────
+   Scroll-to-top button — elegant minimal
+───────────────────────────────────────── */
+
+.scroll-top-btn {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.3s ease,
+              box-shadow 0.2s ease;
+}
+
+.scroll-top-btn:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212,163,115,0.2) !important;
+}
+
+/* ─────────────────────────────────────────
+   Photo grid — tighter gap, better framing
+───────────────────────────────────────── */
+
+.photo-grid {
+  display: grid;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 16px;
+  background-color: rgba(212,163,115,0.04);
+  border: 1px solid rgba(212,163,115,0.1);
+}
+
+.photo-grid--1 { grid-template-columns: 1fr; }
+.photo-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.photo-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.photo-grid--4 { grid-template-columns: repeat(2, 1fr); }

@@ -188,31 +188,31 @@ export default function Login() {
           </div>
 
           <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 4px 24px rgba(212,163,115,0.08)' }}>
-            <CardContent className="pt-0 space-y-4">
+            <CardContent className="pt-0 space-y-5">
 
-              {/* ── Google sign-in button ── */}
+              {/* ── Google sign-in button — styled as a real button ── */}
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="w-full h-11 rounded-full text-sm font-medium flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-95"
+                className="w-full h-11 rounded-xl text-sm font-medium flex items-center justify-center gap-2.5 transition-all duration-200 hover:brightness-95 active:scale-[0.98]"
                 style={{
                   backgroundColor: '#ffffff',
                   color: '#3c4043',
-                  border: '1px solid rgba(212,163,115,0.25)',
-                  boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+                  border: '1px solid rgba(212,163,115,0.3)',
+                  boxShadow: '0 2px 8px rgba(212,163,115,0.10), 0 1px 2px rgba(0,0,0,0.04)',
                 }}
               >
                 <GoogleIcon />
                 Continue with Google
               </button>
 
-              {/* Passkey option */}
+              {/* Passkey option — ghost/outlined style */}
               <button
                 type="button"
-                className="w-full h-9 rounded-full text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 active:scale-95"
+                className="w-full h-9 rounded-xl text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[rgba(212,163,115,0.06)] active:scale-[0.98]"
                 style={{
                   color: '#6A6A5A',
-                  border: '1px solid rgba(212,163,115,0.2)',
+                  border: '1px solid rgba(212,163,115,0.22)',
                   backgroundColor: 'transparent',
                 }}
                 onClick={() => window.location.href = '/api/auth/passkey?screen_hint=sign-in'}
@@ -222,9 +222,9 @@ export default function Login() {
               </button>
 
               {/* Divider */}
-              <div className="flex items-center gap-3 py-1">
+              <div className="flex items-center gap-3 py-0.5">
                 <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
-                <span className="text-xs" style={{ color: '#7A7A6A' }}>or continue with email</span>
+                <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>or continue with email</span>
                 <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
               </div>
 
@@ -246,17 +246,17 @@ export default function Login() {
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm" style={{ color: 'var(--charcoal)' }}>Email</Label>
+                    <Label htmlFor="email" className="text-sm" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Email</Label>
                     <Input
                       type="email" id="email" value={email}
                       onChange={(e) => setEmail(e.target.value)} required
-                      autoComplete="email" placeholder="ruth@example.com"
+                      autoComplete="email" placeholder="you@example.com"
                       className="text-sm rounded-xl h-11"
-                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
+                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FFFDF8' }}
                     />
                   </div>
 
-                  <form onSubmit={handlePasswordLogin} className="space-y-5">
+                  <form onSubmit={handlePasswordLogin} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="password" className="text-sm" style={{ color: 'var(--charcoal)' }}>Password</Label>
                       <Input
@@ -266,25 +266,25 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         autoComplete="current-password"
-                        placeholder="Enter your password"
+                        placeholder="Your password"
                         className="text-sm rounded-xl h-11"
-                        style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
+                        style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FFFDF8' }}
                       />
                     </div>
 
                     <Button
                       type="submit"
                       disabled={passwordLoading}
-                      className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
-                      style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+                      className="w-full h-11 rounded-xl text-sm font-semibold transition-all duration-200 hover:brightness-110 active:scale-[0.98] shadow-md"
+                      style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}
                     >
                       {passwordLoading ? 'Signing in...' : 'Sign in with password'}
                     </Button>
                   </form>
 
-                  <div className="flex items-center gap-3 py-1">
+                  <div className="flex items-center gap-3 py-0.5">
                     <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
-                    <span className="text-xs" style={{ color: '#7A7A6A' }}>or</span>
+                    <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>or</span>
                     <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
                   </div>
 
@@ -292,10 +292,10 @@ export default function Login() {
                     <Button
                       type="submit"
                       disabled={magicLoading}
-                      className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
-                      style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                      className="w-full h-11 rounded-xl text-sm font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
+                      style={{ backgroundColor: 'transparent', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.35)', fontFamily: 'var(--font-sans)' }}
                     >
-                      {magicLoading ? 'Sending...' : 'Send email code'}
+                      {magicLoading ? 'Sending...' : 'Send email code instead'}
                     </Button>
                   </form>
                 </div>
@@ -323,13 +323,13 @@ export default function Login() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="code" className="text-sm" style={{ color: 'var(--charcoal)' }}>Your code</Label>
+                    <Label htmlFor="code" className="text-sm" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Your code</Label>
                     <Input
                       type="text" id="code" value={code}
                       onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                       autoComplete="one-time-code" placeholder="123456"
                       className="text-sm rounded-xl h-12 text-center"
-                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)', fontSize: '1.25rem', letterSpacing: '0.2em' }}
+                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FFFDF8', fontSize: '1.25rem', letterSpacing: '0.2em' }}
                     />
                   </div>
 
