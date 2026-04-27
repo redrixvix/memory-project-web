@@ -865,7 +865,21 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         fontFamily: 'var(--font-sans)',
                         boxShadow: '0 10px 24px rgba(212,163,115,0.06)',
                       }}
-                      aria-label="Choose a writing prompt"
+                      onFocus={e => {
+                        e.target.style.borderColor = 'var(--bronze)';
+                        e.target.style.boxShadow = '0 10px 24px rgba(212,163,115,0.06), 0 0 0 3px rgba(212,163,115,0.15)';
+                        e.target.style.outline = 'none';
+                      }}
+                      onBlur={e => {
+                        e.target.style.borderColor = 'rgba(212,163,115,0.24)';
+                        e.target.style.boxShadow = '0 10px 24px rgba(212,163,115,0.06)';
+                      }}
+                      onMouseEnter={e => {
+                        e.target.style.borderColor = 'rgba(212,163,115,0.38)';
+                      }}
+                      onMouseLeave={e => {
+                        e.target.style.borderColor = 'rgba(212,163,115,0.24)';
+                      }}
                     >
                       {promptLoadState === 'loading' && (
                         <option value={NO_PROMPT_VALUE}>Loading prompts…</option>
@@ -1325,6 +1339,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.35)' : 'var(--bronze)',
                         color: isSubmitDisabled ? 'rgba(43,43,43,0.6)' : 'var(--charcoal)',
                         boxShadow: isSubmitDisabled ? 'none' : '0 6px 24px rgba(212,163,115,0.3)',
+                      }}
+                      onMouseEnter={e => {
+                        if (!isSubmitDisabled) {
+                          e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.45)';
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (!isSubmitDisabled) {
+                          e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.3)';
+                        }
                       }}
                     >
                       {loading ? (
