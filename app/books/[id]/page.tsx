@@ -380,11 +380,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       </header>
 
       {/* ── MAIN ── */}
-      <main className="px-6 md:px-10 py-12 max-w-5xl mx-auto w-full">
+      <main className="px-6 md:px-10 py-8 md:py-10 max-w-5xl mx-auto w-full">
 
-        {/* Book hero — full-width title block */}
+        {/* Book hero — compact when empty, expanded when has memories */}
         <div
-          className="mb-12 rounded-3xl p-8 md:p-10 relative overflow-hidden"
+          className={`rounded-3xl p-6 md:p-8 relative overflow-hidden mb-${memories.length === 0 ? '8' : '10'} transition-all duration-500`}
           style={{
             background: 'linear-gradient(135deg, rgba(212,163,115,0.07) 0%, rgba(204,213,174,0.05) 100%)',
             border: '1px solid rgba(212,163,115,0.14)',
@@ -392,27 +392,30 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         >
           {/* Decorative corner accent */}
           <div
-            className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-20 pointer-events-none"
+            className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20 pointer-events-none"
             style={{ background: 'radial-gradient(circle, rgba(212,163,115,0.3) 0%, transparent 70%)' }}
           />
-          <h1 className="text-4xl md:text-5xl font-medium mb-5 leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
-            {book.title}
-          </h1>
-          {book.description && (
-            <p className="text-base leading-relaxed max-w-2xl mb-6" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>{book.description}</p>
-          )}
-          <div className="flex items-center gap-4 flex-wrap">
-            {book.plan && book.plan !== 'free' && (
-              <span className="text-xs font-semibold px-3 py-1 rounded-full" style={getPlanBadgeStyles(book.plan)}>
-                {getBookPlanLabel(book.plan, book.storage_tier)}
-              </span>
-            )}
-            <div className="flex-1 h-px max-w-2xl" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.45), transparent)' }} />
-            {memories.length > 0 && (
-              <p className="text-sm shrink-0" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
-                {memories.length} {memories.length === 1 ? 'memory' : 'memories'}
-              </p>
-            )}
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl md:text-3xl font-medium leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+                {book.title}
+              </h1>
+              {book.description && (
+                <p className="text-sm leading-relaxed max-w-2xl mt-2" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>{book.description}</p>
+              )}
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              {book.plan && book.plan !== 'free' && (
+                <span className="text-xs font-semibold px-3 py-1 rounded-full" style={getPlanBadgeStyles(book.plan)}>
+                  {getBookPlanLabel(book.plan, book.storage_tier)}
+                </span>
+              )}
+              {memories.length > 0 && (
+                <span className="text-sm" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                  {memories.length} {memories.length === 1 ? 'memory' : 'memories'}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -461,52 +464,53 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
-        {/* Empty state */}
+        {/* Empty state — warm and inviting */}
         {memories.length === 0 ? (
-          <div className="text-center py-24 animate-fade-up">
+          <div className="text-center py-16 md:py-20 animate-fade-up">
             {/* Warm illustrated open-book icon */}
-            <div className="inline-block mb-10 relative">
+            <div className="inline-block mb-8 relative">
               <div
-                className="w-28 h-28 rounded-full flex items-center justify-center animate-float"
+                className="w-24 h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center animate-float"
                 style={{
-                  background: 'radial-gradient(circle, rgba(204,213,174,0.4) 0%, rgba(204,213,174,0.1) 70%, transparent 100%)',
-                  animationDuration: '2.5s',
-                  animationDelay: '0.2s',
+                  background: 'radial-gradient(circle, rgba(204,213,174,0.5) 0%, rgba(204,213,174,0.15) 70%, transparent 100%)',
+                  animationDuration: '3s',
+                  animationDelay: '0.3s',
                 }}
               >
-                <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="48" height="48" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
                   {/* Open book */}
-                  <path d="M8 38V16C8 14.895 8.895 14 10 14H20C21.657 14 23 15.343 23 17V35" stroke="#D4A373" strokeWidth="2" strokeLinecap="round"/>
-                  <path d="M44 38V16C44 14.895 43.105 14 42 14H32C30.343 14 29 15.343 29 17V35" stroke="#D4A373" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M8 38V16C8 14.895 8.895 14 10 14H20C21.657 14 23 15.343 23 17V35" stroke="#D4A373" strokeWidth="2.2" strokeLinecap="round"/>
+                  <path d="M44 38V16C44 14.895 43.105 14 42 14H32C30.343 14 29 15.343 29 17V35" stroke="#D4A373" strokeWidth="2.2" strokeLinecap="round"/>
                   {/* Book pages */}
-                  <path d="M23 17C23 18.657 21.657 20 20 20H10" stroke="#D4A373" strokeWidth="1.5" strokeLinecap="round"/>
-                  <path d="M29 17C29 18.657 30.343 20 32 20H42" stroke="#D4A373" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M23 17C23 18.657 21.657 20 20 20H10" stroke="#D4A373" strokeWidth="1.8" strokeLinecap="round"/>
+                  <path d="M29 17C29 18.657 30.343 20 32 20H42" stroke="#D4A373" strokeWidth="1.8" strokeLinecap="round"/>
                   {/* Spine shadow */}
-                  <ellipse cx="26" cy="38" rx="18" ry="4" fill="rgba(212,163,115,0.15)"/>
+                  <ellipse cx="26" cy="38" rx="18" ry="4" fill="rgba(212,163,115,0.2)"/>
                   {/* Left page lines */}
-                  <line x1="13" y1="24" x2="21" y2="24" stroke="#CCD5AE" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="13" y1="28" x2="20" y2="28" stroke="#CCD5AE" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="13" y1="32" x2="18" y2="32" stroke="#CCD5AE" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="13" y1="24" x2="21" y2="24" stroke="#CCD5AE" strokeWidth="1.8" strokeLinecap="round"/>
+                  <line x1="13" y1="28" x2="20" y2="28" stroke="#CCD5AE" strokeWidth="1.8" strokeLinecap="round"/>
+                  <line x1="13" y1="32" x2="18" y2="32" stroke="#CCD5AE" strokeWidth="1.8" strokeLinecap="round"/>
                   {/* Right page lines */}
-                  <line x1="31" y1="24" x2="39" y2="24" stroke="#CCD5AE" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="31" y1="28" x2="38" y2="28" stroke="#CCD5AE" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="31" y1="32" x2="35" y2="32" stroke="#CCD5AE" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="31" y1="24" x2="39" y2="24" stroke="#CCD5AE" strokeWidth="1.8" strokeLinecap="round"/>
+                  <line x1="31" y1="28" x2="38" y2="28" stroke="#CCD5AE" strokeWidth="1.8" strokeLinecap="round"/>
+                  <line x1="31" y1="32" x2="35" y2="32" stroke="#CCD5AE" strokeWidth="1.8" strokeLinecap="round"/>
                   {/* Decorative pen */}
-                  <path d="M38 10L40 8M40 8L42 10M40 8L38 12" stroke="#D4A373" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M37 11.5L35 15" stroke="#D4A373" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M38 10L40 8M40 8L42 10M40 8L38 12" stroke="#D4A373" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M37 11.5L35 15" stroke="#D4A373" strokeWidth="1.8" strokeLinecap="round"/>
                 </svg>
               </div>
               {/* Subtle floating sparkle dots */}
-              <div className="absolute -top-1 -right-2 w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--bronze)', opacity: 0.4 }} />
-              <div className="absolute top-4 -left-3 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--tea-green)', opacity: 0.5 }} />
+              <div className="absolute -top-1 -right-2 w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--bronze)', opacity: 0.5 }} />
+              <div className="absolute top-6 -left-3 w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--tea-green)', opacity: 0.6 }} />
+              <div className="absolute bottom-2 left-0 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--bronze)', opacity: 0.3 }} />
             </div>
-            <h2 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>Start your memory book</h2>
-            <p className="text-sm max-w-xs mx-auto leading-relaxed mb-10" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
+            <h2 className="text-2xl md:text-3xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>Start your memory book</h2>
+            <p className="text-sm max-w-sm mx-auto leading-relaxed mb-8" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
               Every great story starts with a single memory. Add your first one — you can use a prompt or write freely.
             </p>
             <Link
               href={`/books/${id}/edit`}
-              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.3)] hover:-translate-y-0.5 active:scale-95"
+              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.35)] hover:-translate-y-0.5 active:scale-95"
               style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
             >
               <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

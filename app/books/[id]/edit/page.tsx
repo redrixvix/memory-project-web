@@ -786,7 +786,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl px-5 py-8 md:px-10 md:py-12">
+      <main className="mx-auto w-full max-w-5xl px-5 py-6 md:px-10 md:py-8">
         <article
           className="relative overflow-hidden rounded-[2.25rem] border"
           style={{
@@ -797,26 +797,29 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         >
           <div className="hero-ambient" />
 
-          <div className="relative px-5 py-6 md:px-9 md:py-9">
-            <div className="grid gap-6 border-b pb-8 md:grid-cols-[minmax(0,1.55fr)_minmax(15rem,0.85fr)] md:gap-10 md:pb-10" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+          <div className="relative px-5 py-5 md:px-8 md:py-6">
+            <div className="grid gap-5 border-b pb-6 md:grid-cols-[minmax(0,1.55fr)_minmax(15rem,0.85fr)] md:gap-8 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
               <div>
-                <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>
+                <p className="label-caps mb-2" style={{ color: 'var(--bronze)' }}>
                   Memory entry
                 </p>
-                <h1 className="display-md mb-3" style={{ color: 'var(--charcoal)' }}>
+                <h1 className="text-xl md:text-2xl font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
-                <p className="max-w-2xl text-[0.98rem] leading-7 md:text-[1.02rem]" style={{ color: '#6A6A5A' }}>
-                  Capture one story at a time. Start with a guided question, skip it, or write in your own voice. Photos and a voice note can help preserve the texture of the moment.
+                <p className="max-w-2xl text-sm leading-relaxed" style={{ color: '#6A6A5A' }}>
+                  Capture one story at a time. Use a prompt or write freely.
                 </p>
               </div>
 
-              <aside className="self-start rounded-[1.3rem] px-4 py-4" style={{ backgroundColor: 'rgba(255,253,246,0.76)', border: '1px solid rgba(212,163,115,0.14)' }}>
-                <span className="label-caps block mb-2" style={{ color: 'var(--bronze)' }}>
-                  Kept private
-                </span>
-                <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
-                  This memory stays private until you decide to share it, print it, or include it in a keepsake.
+              <aside className="self-start rounded-[1.1rem] px-4 py-3" style={{ backgroundColor: 'rgba(255,253,246,0.76)', border: '1px solid rgba(212,163,115,0.14)' }}>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  <span className="label-caps" style={{ color: 'var(--bronze)' }}>Kept private</span>
+                </div>
+                <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A' }}>
+                  This memory stays private until you decide to share it.
                 </p>
               </aside>
             </div>
@@ -1232,69 +1235,44 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     </div>
                   ) : (
                     <div
-                      className="rounded-[1.5rem] px-6 py-7 relative overflow-hidden"
+                      className="rounded-[1.2rem] px-5 py-4 relative overflow-hidden"
                       style={{
-                        background: 'linear-gradient(145deg, rgba(250,237,205,0.5) 0%, rgba(204,213,174,0.12) 50%, rgba(212,163,115,0.06) 100%)',
-                        border: '1.5px solid rgba(212,163,115,0.25)',
-                        boxShadow: '0 8px 32px rgba(212,163,115,0.08), inset 0 1px 0 rgba(255,255,255,0.5)',
+                        background: 'linear-gradient(145deg, rgba(250,237,205,0.6) 0%, rgba(204,213,174,0.15) 100%)',
+                        border: '1.5px solid rgba(212,163,115,0.22)',
+                        boxShadow: '0 4px 16px rgba(212,163,115,0.06), inset 0 1px 0 rgba(255,255,255,0.5)',
                       }}
                     >
-                      {/* Decorative elements */}
-                      <div className="absolute top-0 right-0 w-40 h-40 opacity-[0.06]" style={{ background: 'radial-gradient(circle at 100% 0%, var(--bronze) 0%, transparent 60%)' }} />
-                      <div className="absolute -bottom-6 -left-6 w-24 h-24 opacity-[0.05]" style={{ background: 'radial-gradient(circle, var(--tea-green) 0%, transparent 70%)' }} />
+                      {/* Decorative accent */}
+                      <div className="absolute top-0 right-0 w-28 h-28 rounded-full opacity-[0.07]" style={{ background: 'radial-gradient(circle at 100% 0%, var(--bronze) 0%, transparent 60%)' }} />
                       
-                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 relative">
-                        <div className="flex-1 max-w-lg">
-                          <div className="flex items-center gap-2 mb-3">
-                            <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--charcoal)' }}>
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                              </svg>
-                            </div>
-                            <span className="text-[0.7rem] font-bold px-3 py-1 rounded-full uppercase tracking-[0.12em]" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <span className="text-[0.65rem] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-[0.1em]" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}>
                               Plus Feature
                             </span>
                           </div>
-                          <p className="text-lg font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                          <p className="text-sm font-medium mb-1.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                             Bring your memories to life with photos &amp; voice
                           </p>
-                          <p className="text-sm leading-relaxed mb-4" style={{ color: '#6A6A5A' }}>
-                            Upgrade to Plus to attach photos and record voice notes to each memory. Your stories become richer, more vivid, impossible to forget.
+                          <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A' }}>
+                            Upgrade to attach photos and record voice notes.
                           </p>
-                          {/* Feature bullets */}
-                          <div className="flex flex-wrap gap-x-6 gap-y-2">
-                            <div className="flex items-center gap-2">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-                              </svg>
-                              <span className="text-xs font-medium" style={{ color: 'var(--charcoal)' }}>Photo albums</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                              </svg>
-                              <span className="text-xs font-medium" style={{ color: 'var(--charcoal)' }}>Voice recordings</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                              </svg>
-                              <span className="text-xs font-medium" style={{ color: 'var(--charcoal)' }}>5GB storage</span>
-                            </div>
-                          </div>
                         </div>
-                        <div className="shrink-0 lg:ml-8">
+                        <div className="shrink-0">
                           <Link
                             href={`/upgrade?book=${id}`}
-                            className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-300 hover:opacity-90 hover:scale-[1.03] hover:shadow-xl hover:shadow-[rgba(212,163,115,0.35)] hover:-translate-y-0.5 active:scale-[0.98]"
-                            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.3)' }}
+                            className="inline-flex h-10 items-center justify-center rounded-full px-6 text-xs font-semibold transition-all duration-300 hover:opacity-90 hover:shadow-lg hover:shadow-[rgba(212,163,115,0.3)] active:scale-[0.98]"
+                            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 16px rgba(212,163,115,0.25)' }}
                           >
-                            <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                             </svg>
-                            Upgrade this book
+                            Upgrade
                           </Link>
-                          <p className="text-xs text-center mt-2" style={{ color: '#8A8A7A' }}>Starting at $50 for 5 years</p>
                         </div>
                       </div>
                     </div>
@@ -1302,35 +1280,49 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </div>
               </section>
 
-              <section className="border-t pt-6 md:pt-7" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div
-                    className="rounded-[1.2rem] border px-4 py-3 text-sm"
-                    style={{
-                      backgroundColor: 'rgba(212,163,115,0.08)',
-                      borderColor: 'rgba(212,163,115,0.14)',
-                      color: '#6A6A5A',
-                    }}
-                  >
-                    <svg className="inline w-3.5 h-3.5 mr-1.5 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                    Your draft autosaves while you write. Uploaded photos stay attached if you come back later, and audio uploads when you save.
+              {/* Sticky save bar */}
+              <div
+                className="sticky bottom-0 z-10 -mx-5 px-5 py-4 md:-mx-9 md:px-9 md:py-4"
+                style={{
+                  background: 'linear-gradient(to top, rgba(253,252,245,0.98) 0%, rgba(253,252,245,0.95) 100%)',
+                  backdropFilter: 'blur(12px)',
+                  borderTop: '1px solid rgba(212,163,115,0.14)',
+                  boxShadow: '0 -8px 32px rgba(212,163,115,0.08)',
+                }}
+              >
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: '#6A6A5A' }}>
+                    {saveState === 'saving' && (
+                      <>
+                        <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
+                        <span>Saving draft...</span>
+                      </>
+                    )}
+                    {saveState === 'saved' && (
+                      <>
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                        <span>Draft saved</span>
+                      </>
+                    )}
+                    {saveState === 'idle' && (
+                      <span className="text-xs" style={{ color: '#8A8A7A' }}>Draft autosaves as you write</span>
+                    )}
                   </div>
 
-                  <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+                  <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:items-center">
                     <Link
                       href={`/books/${id}`}
-                      className="inline-flex h-11 items-center justify-center rounded-full border px-6 text-sm font-medium transition-colors"
-                      style={{ borderColor: 'rgba(212,163,115,0.26)', color: 'var(--charcoal)', backgroundColor: 'rgba(255,253,246,0.82)' }}
+                      className="inline-flex h-10 items-center justify-center rounded-full border px-5 text-sm font-medium transition-colors"
+                      style={{ borderColor: 'rgba(212,163,115,0.26)', color: 'var(--charcoal)', backgroundColor: 'rgba(255,253,246,0.9)' }}
                     >
                       Cancel
                     </Link>
                     <Button
                       type="submit"
                       disabled={isSubmitDisabled}
-                      className="h-11 rounded-full px-7 disabled:cursor-not-allowed disabled:opacity-100 transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.3)] active:scale-[0.98]"
+                      className="h-10 rounded-full px-6 text-sm disabled:cursor-not-allowed disabled:opacity-100 transition-all duration-300 hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(212,163,115,0.3)] active:scale-[0.98]"
                       style={{
                         backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.4)' : 'var(--bronze)',
                         color: 'var(--charcoal)',
@@ -1345,7 +1337,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     </Button>
                   </div>
                 </div>
-              </section>
+              </div>
             </form>
           </div>
         </article>

@@ -605,7 +605,7 @@ export default function Dashboard() {
                     <div
                       className="relative h-full rounded-3xl overflow-hidden group cursor-pointer transition-all duration-500"
                       style={{
-                        backgroundColor: '#FFFFFF',
+                        backgroundColor: '#FFFDF8',
                         boxShadow: '0 4px 20px rgba(212,163,115,0.10), 0 1px 6px rgba(212,163,115,0.06)',
                         borderLeft: `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`,
                       }}
@@ -687,7 +687,7 @@ export default function Dashboard() {
 
                         {/* Description */}
                         {book.description && (
-                          <p className="text-sm leading-relaxed line-clamp-2 mb-6" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
+                          <p className="text-sm leading-relaxed line-clamp-2 mb-5" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
                             {book.description}
                           </p>
                         )}
@@ -702,15 +702,22 @@ export default function Dashboard() {
                             {book._count && (
                               <div
                                 className="rounded-full px-3 py-1 flex items-center gap-1.5"
-                                style={{ backgroundColor: 'rgba(184,137,90,0.12)' }}
+                                style={{
+                                  backgroundColor: book._count.memories === 0 ? 'rgba(212,163,115,0.18)' : 'rgba(184,137,90,0.12)',
+                                  border: book._count.memories === 0 ? '1px dashed rgba(212,163,115,0.35)' : 'none',
+                                }}
                               >
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
                                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
                                   <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                                 </svg>
-                                <span className="text-xs font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                                <span className="text-xs font-semibold" style={{
+                                  color: book._count.memories === 0 ? '#8A7A5A' : 'var(--charcoal)',
+                                  fontFamily: 'var(--font-sans)',
+                                  fontStyle: book._count.memories === 0 ? 'italic' : 'normal',
+                                }}>
                                   {book._count.memories === 0
-                                    ? 'Empty'
+                                    ? 'Empty — start adding'
                                     : `${book._count.memories} ${book._count.memories === 1 ? 'memory' : 'memories'}`}
                                 </span>
                               </div>
@@ -719,7 +726,7 @@ export default function Dashboard() {
 
                           {/* Right side: updated time + arrow */}
                           <div className="flex items-center gap-3">
-                            <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                            <p className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
                               Updated {new Date(lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                             </p>
                             <div
