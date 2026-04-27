@@ -604,6 +604,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                     src={url}
                                     alt={`Memory photo ${photoIndex + 1}`}
                                     fill
+                                    unoptimized={true}
                                     className="object-cover rounded-xl"
                                     onError={() => handlePhotoError(globalIndex)}
                                   />
