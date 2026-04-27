@@ -174,7 +174,7 @@ export default function SettingsPage() {
             </svg>
             <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
           </Link>
-          <Link href="/dashboard" className="text-sm transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>
+          <Link href="/dashboard" className="text-sm transition-colors hover:opacity-70" style={{ color: '#5A5A4A' }}>
             Back to dashboard
           </Link>
         </div>
@@ -187,7 +187,7 @@ export default function SettingsPage() {
         <div className="mb-10">
           <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Account</p>
           <h1 className="display-md mb-3" style={{ color: 'var(--charcoal)' }}>Settings</h1>
-          <p className="text-base" style={{ color: '#6A6A5A' }}>
+          <p className="text-base" style={{ color: '#5A5A4A' }}>
             Manage your profile and preferences.
           </p>
         </div>
@@ -219,7 +219,7 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>Profile</p>
-                  <p className="text-xs mt-0.5" style={{ color: '#6A6A5A' }}>How you appear across Memory Project</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#5A5A4A' }}>How you appear across Memory Project</p>
                 </div>
               </div>
             </div>
@@ -260,15 +260,15 @@ export default function SettingsPage() {
                       onClick={() => fileInputRef.current?.click()}
                       className="w-24 h-24 rounded-full flex flex-col items-center justify-center gap-2 transition-all duration-200 hover:scale-105"
                       style={{
-                        background: 'linear-gradient(135deg, rgba(212,163,115,0.15) 0%, rgba(204,213,174,0.15) 100%)',
-                        border: '2px dashed rgba(212,163,115,0.3)',
+                        background: 'linear-gradient(135deg, rgba(212,163,115,0.12) 0%, rgba(204,213,174,0.12) 100%)',
+                        border: '2px dashed rgba(212,163,115,0.45)',
                       }}
                     >
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--bronze)' }}>
                         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                         <circle cx="12" cy="13" r="4"/>
                       </svg>
-                      <span className="text-xs font-medium" style={{ color: 'var(--bronze)' }}>Add photo</span>
+                      <span className="text-xs font-semibold" style={{ color: 'var(--bronze)' }}>Add photo</span>
                     </button>
                   )}
 
@@ -294,7 +294,7 @@ export default function SettingsPage() {
                   <p className="text-base font-semibold mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                     {user?.name}
                   </p>
-                  <p className="text-sm mb-3" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                  <p className="text-sm mb-3" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                     {user?.email}
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
@@ -310,7 +310,7 @@ export default function SettingsPage() {
                         Remove photo
                       </button>
                     ) : (
-                      <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                      <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                         Click the circle to upload a photo
                       </p>
                     )}
@@ -356,11 +356,11 @@ export default function SettingsPage() {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#8A8A7A', marginTop: '1px' }}>
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
                   </svg>
-                  <p className="text-sm flex-1" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
+                  <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
                     {user?.email}
                   </p>
                 </div>
-                <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                   Contact support to change your email address
                 </p>
               </div>

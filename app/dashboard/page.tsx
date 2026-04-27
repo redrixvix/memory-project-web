@@ -329,7 +329,7 @@ export default function Dashboard() {
                     className="w-full h-10 pl-10 pr-4 rounded-full text-sm outline-none transition-all duration-200"
                     style={{
                       backgroundColor: 'rgba(255,253,246,0.95)',
-                      border: '1px solid rgba(212,163,115,0.30)',
+                      border: '1.5px solid rgba(212,163,115,0.40)',
                       boxShadow: '0 4px 16px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.06)',
                       color: 'var(--charcoal)',
                       fontFamily: 'var(--font-sans)',
@@ -797,10 +797,9 @@ export default function Dashboard() {
                                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
                                   <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                                 </svg>
-                                <span className="text-xs font-semibold" style={{
-                                  color: book._count.memories === 0 ? '#8A7A5A' : 'var(--charcoal)',
+                                <span className="text-xs font-medium" style={{
+                                  color: book._count.memories === 0 ? '#6A6A5A' : 'var(--charcoal)',
                                   fontFamily: 'var(--font-sans)',
-                                  fontStyle: book._count.memories === 0 ? 'italic' : 'normal',
                                 }}>
                                   {book._count.memories === 0
                                     ? 'Empty — start adding'

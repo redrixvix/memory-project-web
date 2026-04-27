@@ -572,7 +572,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         ) : (
           /* ── Memory list with lightbox ── */
-          <div className="space-y-10 md:space-y-12">
+          <div className="space-y-8 md:space-y-10">
             {sortedMemories.map((memory, memoryIndex) => {
               const accentColor = ACCENT_COLORS[memoryIndex % ACCENT_COLORS.length];
               const isEven = memoryIndex % 2 === 0;
@@ -612,20 +612,19 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         transition: 'box-shadow 0.4s ease',
                       }}
                     />
-                    <CardContent className="pt-8 pb-8 px-6 pl-8 relative">
+                    <CardContent className="pt-6 pb-6 px-5 pl-7 relative">
 
-                      {/* Chapter number badge — elevated design */}
+                      {/* Chapter number badge — positioned near the content */}
                       <div
-                        className="absolute top-5 right-5 flex items-center gap-2 rounded-2xl px-4 py-2 shadow-sm"
+                        className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-1.5 shadow-sm mb-4"
                         style={{
                           backgroundColor: `${accentColor}18`,
                           color: accentColor === 'var(--tea-green)' ? '#5A6B3A' : accentColor === 'var(--papaya)' ? '#8A6A3A' : accentColor,
                           fontFamily: 'var(--font-sans)',
                           border: `1px solid ${accentColor}40`,
-                          backdropFilter: 'blur(8px)',
                         }}
                       >
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                         </svg>
                         <span className="text-xs font-semibold tracking-wide">Chapter {memoryIndex + 1}</span>
@@ -633,17 +632,17 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
                       {/* Prompt question as elegant chapter opener */}
                       {memory.prompt_question && (
-                        <div className="mb-6">
+                        <div className="mb-5">
                           <div className="flex items-start gap-3">
                             {/* Decorative quote mark */}
                             <span 
-                              className="text-3xl leading-none mt-[-4px] shrink-0"
-                              style={{ color: 'rgba(212,163,115,0.35)', fontFamily: 'Georgia, serif' }}
+                              className="text-2xl leading-none mt-[-2px] shrink-0"
+                              style={{ color: 'rgba(212,163,115,0.4)', fontFamily: 'Georgia, serif' }}
                             >
                               "
                             </span>
                             <p
-                              className="text-base md:text-lg italic leading-relaxed"
+                              className="text-sm md:text-base italic leading-relaxed"
                               style={{ 
                                 color: 'var(--bronze)', 
                                 fontFamily: 'var(--font-serif)',
@@ -652,20 +651,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               {memory.prompt_question}
                             </p>
                           </div>
-                          {/* Subtle rule below */}
-                          <div 
-                            className="h-px mt-4 rounded-full"
-                            style={{ 
-                              background: `linear-gradient(to right, ${accentColor}44, transparent)`,
-                              maxWidth: '120px',
-                            }}
-                          />
                         </div>
                       )}
 
                       {/* Media chips */}
                       {(memory.photo_urls?.length > 0 || memory.audio_url) && (
-                        <div className="flex flex-wrap items-center gap-2 mb-5">
+                        <div className="flex flex-wrap items-center gap-2 mb-4">
                           {memory.photo_urls?.length > 0 && (
                             <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}>
                               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
@@ -687,19 +678,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
                       {/* Memory text — journal feel, constrained width */}
                       <p
-                        className="text-base md:text-lg leading-[1.9] whitespace-pre-wrap"
+                        className="text-sm md:text-base leading-[1.85] whitespace-pre-wrap"
                         style={{
                           color: 'var(--charcoal)',
                           fontFamily: 'var(--font-serif)',
-                          maxWidth: '68ch',
+                          maxWidth: '72ch',
                         }}
                       >
                         {memory.answer_text}
                       </p>
 
-
-                      {/* Date + contributor */}
-                      <div className="flex items-center gap-3 mt-6 pt-5 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
+                      {/* Date + contributor — tightly grouped below content */}
+                      <div className="flex items-center gap-3 mt-5 pt-4 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
                         {memory.contributor_name ? (
                           <div className="flex items-center gap-2">
                             <Avatar
@@ -717,7 +707,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       {/* Photo grid — premium album-style with hover reveal */}
                       {memory.photo_urls && memory.photo_urls.length > 0 && (
                         <div
-                          className={`mt-7 photo-grid photo-grid--${Math.min(memory.photo_urls.length, 4)}`}
+                          className={`mt-5 photo-grid photo-grid--${Math.min(memory.photo_urls.length, 4)}`}
                         >
                           {memory.photo_urls.map((url, photoIndex) => {
                             const globalIndex = memoryIndex * 100 + photoIndex;
