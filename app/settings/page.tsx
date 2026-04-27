@@ -424,11 +424,11 @@ export default function SettingsPage() {
               <div className="space-y-5">
                 <div className="flex items-start gap-3">
                   <div
-                    className="w-5 h-5 rounded flex items-center justify-center mt-0.5 shrink-0"
-                    style={{ backgroundColor: 'rgba(204,213,174,0.25)', color: '#5F6650' }}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center mt-0.5 shrink-0"
+                    style={{ backgroundColor: 'rgba(204,213,174,0.15)' }}
                   >
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <polyline points="20 6 9 17 4 12"/>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     </svg>
                   </div>
                   <div>
@@ -440,11 +440,11 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex items-start gap-3">
                   <div
-                    className="w-5 h-5 rounded flex items-center justify-center mt-0.5 shrink-0"
-                    style={{ backgroundColor: 'rgba(204,213,174,0.25)', color: '#5F6650' }}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center mt-0.5 shrink-0"
+                    style={{ backgroundColor: 'rgba(204,213,174,0.15)' }}
                   >
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <polyline points="20 6 9 17 4 12"/>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
                     </svg>
                   </div>
                   <div>
@@ -456,11 +456,11 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex items-start gap-3">
                   <div
-                    className="w-5 h-5 rounded flex items-center justify-center mt-0.5 shrink-0"
-                    style={{ backgroundColor: 'rgba(204,213,174,0.25)', color: '#5F6650' }}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center mt-0.5 shrink-0"
+                    style={{ backgroundColor: 'rgba(204,213,174,0.15)' }}
                   >
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <polyline points="20 6 9 17 4 12"/>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
+                      <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                     </svg>
                   </div>
                   <div>
