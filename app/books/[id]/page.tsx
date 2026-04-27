@@ -255,21 +255,23 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         </div>
       )}
 
-      {/* Floating action button — Add Memory */}
-      <Link
-        href={`/books/${id}/edit`}
-        className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 animate-fade-up"
-        style={{
-          backgroundColor: 'var(--bronze)',
-          color: 'var(--charcoal)',
-          boxShadow: '0 8px 32px rgba(212,163,115,0.35)',
-        }}
-        aria-label="Add a memory"
-      >
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M12 5v14M5 12h14"/>
-        </svg>
-      </Link>
+      {/* Floating action button — Add Memory (only show when book has content) */}
+      {memories.length > 0 && (
+        <Link
+          href={`/books/${id}/edit`}
+          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 animate-fade-up"
+          style={{
+            backgroundColor: 'var(--bronze)',
+            color: 'var(--charcoal)',
+            boxShadow: '0 8px 32px rgba(212,163,115,0.35)',
+          }}
+          aria-label="Add a memory"
+        >
+          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+        </Link>
+      )}
 
       {/* Scroll-to-top button */}
       {showTopBtn && (
@@ -681,9 +683,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Footer actions — always visible, subtle at rest */}
+                      {/* Footer actions — always visible, clean and refined */}
                       <div
-                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t opacity-75 group-hover:opacity-100 transition-all duration-300"
+                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t"
                         style={{ borderColor: 'rgba(212,163,115,0.1)' }}
                       >
                         <Link

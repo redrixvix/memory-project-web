@@ -346,23 +346,17 @@ export default function SettingsPage() {
                 />
               </div>
 
-              {/* Email (read-only) */}
+              {/* Email (read-only — displayed as plain text, not a form field) */}
               <div className="grid gap-2">
-                <label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                   Email address
-                </label>
-                <input
-                  type="email"
-                  value={user?.email || ''}
-                  readOnly
-                  className="w-full rounded-xl px-4 py-3 text-base outline-none cursor-not-allowed"
-                  style={{
-                    border: '1px solid rgba(212,163,115,0.2)',
-                    backgroundColor: 'rgba(254,250,224,0.3)',
-                    color: '#6A6A5A',
-                    fontFamily: 'var(--font-serif)',
-                  }}
-                />
+                </span>
+                <p
+                  className="text-base py-3"
+                  style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}
+                >
+                  {user?.email}
+                </p>
                 <p className="text-xs" style={{ color: '#8A8A7A' }}>
                   Contact support to change your email address
                 </p>
@@ -373,8 +367,12 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving || !name.trim() || name.trim() === user?.name}
-                  className="inline-flex items-center justify-center h-11 rounded-full px-7 text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 active:scale-[0.98]"
-                  style={{ backgroundColor: saving ? 'rgba(212,163,115,0.5)' : 'var(--bronze)', color: 'var(--charcoal)' }}
+                  className="inline-flex items-center justify-center h-11 rounded-full px-8 text-sm font-semibold shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm"
+                  style={{
+                    backgroundColor: 'var(--bronze)',
+                    color: 'var(--charcoal)',
+                    boxShadow: '0 4px 16px rgba(212,163,115,0.25)',
+                  }}
                 >
                   {saving ? (
                     <>

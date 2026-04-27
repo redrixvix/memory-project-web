@@ -449,7 +449,7 @@ export default function Dashboard() {
                   {createError && (
                     <div
                       className="rounded-xl px-4 py-3 text-sm"
-                      style={{ backgroundColor: 'rgba(185,28,28,0.08)', border: '1px solid rgba(185,28,28,0.2)', color: '#7C2D12' }}
+                      style={{ backgroundColor: 'rgba(212,163,115,0.1)', border: '1px solid rgba(212,163,115,0.25)', color: '#6B3A2A' }}
                     >
                       {createError}
                     </div>

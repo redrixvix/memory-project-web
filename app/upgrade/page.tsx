@@ -230,21 +230,25 @@ export default function UpgradePage() {
             const isCurrentPlan = selectedBook && normalizeBookPlan(selectedBook.plan) === plan.id;
             const isSelected = selectedPlan === plan.id;
             const isPopular = plan.id === 'premium' && !isCurrentPlan;
+            const cardStyles = {
+              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(204,213,174,0.12)' : 'var(--papaya)',
+              border: isSelected ? '2px solid var(--bronze)' : isCurrentPlan ? '2px dashed rgba(212,163,115,0.35)' : '1px solid rgba(212,163,115,0.2)',
+              boxShadow: isSelected ? '0 12px 40px rgba(212,163,115,0.2)' : isCurrentPlan ? 'none' : '0 4px 16px rgba(212,163,115,0.08)',
+              opacity: isCurrentPlan ? 0.75 : 1,
+              transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+            };
+            const handleCardClick = () => { if (!isCurrentPlan) setSelectedPlan(plan.id); };
             return (
-              <button
+              <div
                 key={plan.id}
-                type="button"
-                onClick={() => !isCurrentPlan && setSelectedPlan(plan.id)}
-                disabled={!!isCurrentPlan}
-                className="text-left rounded-2xl p-7 transition-all duration-200 relative"
-                style={{
-                  backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(204,213,174,0.12)' : 'var(--papaya)',
-                  border: isSelected ? '2px solid var(--bronze)' : isCurrentPlan ? '2px dashed rgba(212,163,115,0.35)' : '1px solid rgba(212,163,115,0.2)',
-                  boxShadow: isSelected ? '0 12px 40px rgba(212,163,115,0.2)' : isCurrentPlan ? 'none' : '0 4px 16px rgba(212,163,115,0.08)',
-                  cursor: isCurrentPlan ? 'default' : 'pointer',
-                  opacity: isCurrentPlan ? 0.75 : 1,
-                  transform: isSelected ? 'scale(1.02)' : 'scale(1)',
-                }}
+                role="button"
+                tabIndex={isCurrentPlan ? -1 : 0}
+                onClick={handleCardClick}
+                onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !isCurrentPlan) { e.preventDefault(); handleCardClick(); }}}
+                className="text-left rounded-2xl p-7 transition-all duration-200 relative cursor-pointer"
+                style={cardStyles}
+                aria-pressed={isSelected}
+                aria-disabled={isCurrentPlan}
               >
                 {/* Popular badge */}
                 {isPopular && (
@@ -344,7 +348,7 @@ export default function UpgradePage() {
                     Current Plan
                   </div>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
