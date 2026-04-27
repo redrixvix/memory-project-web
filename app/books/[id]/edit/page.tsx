@@ -168,6 +168,24 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     };
   }, []);
 
+  // Keyboard shortcut: Cmd+S / Ctrl+S to save
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (!isSubmitDisabled && saveState === 'idle') {
+          const form = document.querySelector('form');
+          if (form) {
+            const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+            form.dispatchEvent(submitEvent);
+          }
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSubmitDisabled, saveState]);
+
   useEffect(() => {
     fetch('/api/auth/me')
       .then((response) => {
@@ -1024,11 +1042,20 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   />
                   <div className="flex items-center justify-between mt-3 px-1">
                     <p className="text-xs" style={{ color: '#8E8478', fontFamily: 'var(--font-sans)' }}>
-                      Autosaves as you write
+                      <span style={{ color: '#8E8478', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>Autosaves as you write</span>
                     </p>
-                    <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.12em]" style={{ backgroundColor: 'rgba(254,250,224,0.82)', color: '#7B6B56', fontFamily: 'var(--font-sans)' }}>
-                      <span style={{ color: 'var(--bronze)' }}>✎</span>
-                      {wordCount} {wordCount === 1 ? 'word' : 'words'}
+                    <div 
+                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.12em] transition-all duration-300"
+                      style={{ 
+                        backgroundColor: wordCount > 0 ? 'rgba(212,163,115,0.12)' : 'rgba(254,250,224,0.82)', 
+                        color: '#7B6B56', 
+                        fontFamily: 'var(--font-sans)',
+                        boxShadow: wordCount > 0 ? '0 2px 8px rgba(212,163,115,0.15)' : 'none',
+                      }}
+                    >
+                      <span style={{ color: 'var(--bronze)', transition: 'color 0.3s' }}>✎</span>
+                      <span className="font-semibold" style={{ color: wordCount > 0 ? 'var(--bronze)' : '#9A8A7A' }}>{wordCount}</span>
+                      <span style={{ color: '#9A8A7A' }}>{wordCount === 1 ? 'word' : 'words'}</span>
                     </div>
                   </div>
                 </div>
@@ -1318,7 +1345,10 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <span>Draft saved</span>
                       </>
                     )}
-                    {saveState === 'idle' && (
+                    {saveState === 'idle' && answer.trim().length > 0 && (
+                      <span className="text-xs" style={{ color: '#8A8A7A' }}>Draft autosaves as you write <kbd className="ml-1.5 inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-[10px]" style={{ borderColor: 'rgba(212,163,115,0.25)', fontFamily: 'var(--font-sans)' }}>⌘S</kbd></span>
+                    )}
+                    {saveState === 'idle' && answer.trim().length === 0 && (
                       <span className="text-xs" style={{ color: '#8A8A7A' }}>Draft autosaves as you write</span>
                     )}
                   </div>
