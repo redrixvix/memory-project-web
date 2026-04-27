@@ -386,12 +386,23 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         )}
 
+        {/* Memory section header — editorial horizontal rule */}
         {memories.length > 0 && (
-          <div className="mb-8 inline-flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--bronze)' }} />
-            <p className="label-caps" style={{ color: 'var(--bronze)' }}>
-              {memories.length} {memories.length === 1 ? 'memory' : 'memories'} in this book
-            </p>
+          <div className="mb-10">
+            <div className="flex items-center gap-4">
+              <div
+                className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center"
+                style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+              </div>
+              <h2 className="text-lg font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                {memories.length} {memories.length === 1 ? 'Memory' : 'Memories'}
+              </h2>
+              <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.35), transparent)' }} />
+            </div>
           </div>
         )}
 
@@ -457,9 +468,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               return (
                 <div
                   key={memory.id}
-                  className="animate-fade-up"
+                  className="animate-fade-up relative"
                   style={{ animationDelay: `${memoryIndex * 0.07}s` }}
                 >
+                  {/* Chapter tab strip — subtle accent above card */}
+                  <div
+                    className="absolute -top-3 left-10 right-0 h-3 rounded-t-2xl pointer-events-none z-10 overflow-hidden"
+                    style={{ background: `linear-gradient(to bottom, ${accentColor}18, transparent)` }}
+                  />
                   <Card
                     className="rounded-2xl overflow-hidden relative group transition-transform duration-300"
                     onMouseEnter={() => setHoveredCard(memoryIndex)}
@@ -545,16 +561,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </p>
                       </div>
 
-                      {/* Photo grid — responsive grid layout */}
+                      {/* Photo grid — warm card frame with inset shadow */}
                       {memory.photo_urls && memory.photo_urls.length > 0 && (
                         <div
-                          className="mt-7 grid gap-3"
+                          className="mt-7 grid gap-3 p-4 rounded-2xl"
                           style={{
                             gridTemplateColumns: memory.photo_urls.length === 1
                               ? '1fr'
                               : memory.photo_urls.length === 2
                                 ? 'repeat(2, 1fr)'
                                 : 'repeat(3, 1fr)',
+                            backgroundColor: 'rgba(212,163,115,0.04)',
+                            border: '1px solid rgba(212,163,115,0.1)',
                           }}
                         >
                           {memory.photo_urls.map((url, photoIndex) => {
@@ -615,58 +633,64 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Audio */}
+                      {/* Audio — warm styled card with icon */}
                       {memory.audio_url && (
-                        <div className="mt-7">
-                          <div className="flex items-center gap-2 mb-3">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                              <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-                            </svg>
-                            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
+                        <div
+                          className="mt-7 p-5 rounded-2xl"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(204,213,174,0.12) 0%, rgba(212,163,115,0.08) 100%)',
+                            border: '1px solid rgba(212,163,115,0.18)',
+                          }}
+                        >
+                          <div className="flex items-center gap-2 mb-4">
+                            <div
+                              className="w-8 h-8 rounded-full flex items-center justify-center"
+                              style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}
+                            >
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+                              </svg>
+                            </div>
+                            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
                               Voice Note
                             </span>
                           </div>
-                          <audio 
-                            src={memory.audio_url} 
-                            controls 
-                            className="w-full rounded-xl audio-player" 
-                            style={{ 
-                              height: '44px',
-                              borderRadius: '12px',
-                            }} 
+                          <audio
+                            src={memory.audio_url}
+                            controls
+                            className="w-full rounded-xl audio-player"
+                            style={{ height: '44px', borderRadius: '12px' }}
                           />
                         </div>
                       )}
 
-                      {/* Footer actions — visible on hover ── */}
-                      <div className="flex items-center justify-between mt-7 pt-5 border-t opacity-60 group-hover:opacity-100 transition-all duration-300 rounded-b-2xl" style={{ borderColor: 'rgba(212,163,115,0.1)', marginBottom: '-1.5rem' }}>
-                        <p className="text-[0.65rem] italic" style={{ color: '#C0B09A', fontFamily: 'var(--font-sans)' }}>
-                          {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </p>
-                        <div className="flex gap-2 items-center">
-                          <Link
-                            href={`/books/${id}/edit?memory=${memory.id}`}
-                            className="text-xs font-semibold flex items-center gap-1.5 rounded-full px-4 py-1.5 transition-all duration-200 hover:scale-105 active:scale-95"
-                            style={{ color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.1)' }}
-                          >
-                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                            </svg>
-                            Edit
-                          </Link>
-                          <button
-                            type="button"
-                            onClick={() => setDeleteConfirm({ memoryId: memory.id })}
-                            className="text-xs font-semibold flex items-center gap-1.5 rounded-full px-4 py-1.5 transition-all duration-200 hover:scale-105 active:scale-95"
-                            style={{ color: '#8B6B5A', backgroundColor: 'rgba(212,163,115,0.06)' }}
-                          >
-                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
-                            </svg>
-                            Delete
-                          </button>
-                        </div>
+                      {/* Footer actions — always visible, opacity on hover */}
+                      <div
+                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t opacity-40 group-hover:opacity-100 transition-all duration-300"
+                        style={{ borderColor: 'rgba(212,163,115,0.1)' }}
+                      >
+                        <Link
+                          href={`/books/${id}/edit?memory=${memory.id}`}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 active:scale-95"
+                          style={{ color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.1)' }}
+                        >
+                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                          </svg>
+                          Edit
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteConfirm({ memoryId: memory.id })}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 active:scale-95"
+                          style={{ color: '#8B6B5A', backgroundColor: 'rgba(212,163,115,0.06)' }}
+                        >
+                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+                          </svg>
+                          Delete
+                        </button>
                       </div>
                     </CardContent>
                   </Card>
