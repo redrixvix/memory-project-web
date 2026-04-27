@@ -110,6 +110,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const [fetchingBook, setFetchingBook] = useState(true);
   const [wordCount, setWordCount] = useState(0);
   const [saveState, setSaveState] = useState<SaveState>('idle');
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [draftLoaded, setDraftLoaded] = useState(false);
   const [photoItems, setPhotoItems] = useState<PhotoDraftItem[]>([]);
   const [mediaErrors, setMediaErrors] = useState<string[]>([]);
@@ -719,7 +720,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       clearDraft();
       await flushRemovedUploads();
 
-      router.push(`/books/${id}`);
+      // Premium success moment — brief celebration before redirecting
+      setSaveSuccess(true);
+      setSaveState('saved');
+      setTimeout(() => {
+        router.push(`/books/${id}`);
+      }, 1600);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to save memory.';
       setAudioDraft((current) => current && current.sourceFile
@@ -1331,6 +1337,101 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </div>
               </div>
             </form>
+
+            {/* ── Premium save success overlay ── */}
+            {saveSuccess && (
+              <div
+                className="absolute inset-0 z-30 flex flex-col items-center justify-center rounded-[2.25rem] animate-fade-up"
+                style={{
+                  background: 'linear-gradient(160deg, rgba(253,252,245,0.97) 0%, rgba(250,237,205,0.94) 100%)',
+                  animation: 'fadeInScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+                }}
+              >
+                <style>{`
+                  @keyframes fadeInScale {
+                    from { opacity: 0; transform: scale(0.92); }
+                    to { opacity: 1; transform: scale(1); }
+                  }
+                  @keyframes drawCheck {
+                    to { stroke-dashoffset: 0; }
+                  }
+                  @keyframes popIn {
+                    0% { transform: scale(0) rotate(-12deg); opacity: 0; }
+                    60% { transform: scale(1.15) rotate(3deg); }
+                    80% { transform: scale(0.95) rotate(-1deg); }
+                    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+                  }
+                  @keyframes shimmer {
+                    0% { opacity: 0.4; }
+                    50% { opacity: 0.8; }
+                    100% { opacity: 0.4; }
+                  }
+                  .check-circle {
+                    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+                  }
+                  .check-path {
+                    stroke-dasharray: 30;
+                    stroke-dashoffset: 30;
+                    animation: drawCheck 0.4s ease-out 0.45s forwards;
+                  }
+                  .success-text {
+                    animation: fadeInScale 0.3s ease-out 0.55s both;
+                  }
+                  .success-sub {
+                    animation: fadeInScale 0.3s ease-out 0.7s both;
+                  }
+                `}</style>
+
+                {/* Animated success circle */}
+                <div
+                  className="check-circle w-20 h-20 rounded-full flex items-center justify-center mb-6"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--tea-green) 0%, #8BAF6A 100%)',
+                    boxShadow: '0 12px 40px rgba(95,102,80,0.35), 0 4px 12px rgba(95,102,80,0.2), inset 0 1px 0 rgba(255,255,255,0.3)',
+                  }}
+                >
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                    <path
+                      className="check-path"
+                      d="M5 12l5 5L19 7"
+                      stroke="#FDFCF5"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+
+                {/* Success text */}
+                <p
+                  className="success-text text-2xl font-medium mb-2"
+                  style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
+                >
+                  {memoryId ? 'Memory updated' : 'Memory saved'}
+                </p>
+                <p
+                  className="success-sub text-sm"
+                  style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}
+                >
+                  Returning to your book…
+                </p>
+
+                {/* Decorative dots */}
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
+                  {[0, 1, 2].map(i => (
+                    <div
+                      key={i}
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{
+                        backgroundColor: 'var(--bronze)',
+                        opacity: 0.4,
+                        animation: `shimmer 1.2s ease-in-out ${i * 0.2}s infinite`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </article>
       </main>

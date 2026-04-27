@@ -386,17 +386,23 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         <div
           className="rounded-3xl p-6 md:p-8 relative overflow-hidden transition-all duration-500"
           style={{
-            background: 'linear-gradient(135deg, rgba(212,163,115,0.07) 0%, rgba(204,213,174,0.05) 100%)',
+            background: 'linear-gradient(135deg, rgba(212,163,115,0.09) 0%, rgba(204,213,174,0.06) 100%)',
             border: '1px solid rgba(212,163,115,0.14)',
             marginBottom: memories.length === 0 ? '2rem' : '2.5rem',
+            boxShadow: '0 4px 24px rgba(212,163,115,0.06), inset 0 1px 0 rgba(255,255,255,0.6)',
           }}
         >
           {/* Decorative corner accent */}
           <div
-            className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20 pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(212,163,115,0.3) 0%, transparent 70%)' }}
+            className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-25 pointer-events-none"
+            style={{ background: 'radial-gradient(circle, rgba(212,163,115,0.4) 0%, transparent 70%)' }}
           />
-          <div className="flex items-start justify-between gap-4 flex-wrap">
+          {/* Warm left stripe */}
+          <div
+            className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-3xl"
+            style={{ background: 'linear-gradient(to bottom, var(--bronze), var(--tea-green), transparent)' }}
+          />
+          <div className="flex items-start justify-between gap-4 flex-wrap pl-3">
             <div className="flex-1 min-w-0">
               <h1 className="text-2xl md:text-3xl font-medium leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
                 {book.title}
@@ -413,12 +419,13 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               )}
               {memories.length > 0 && (
                 <span
-                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+                  className="inline-flex items-center gap-1.5 rounded-2xl px-3.5 py-1.5 text-xs font-semibold shadow-sm"
                   style={{
-                    backgroundColor: memories.length > 0 ? 'rgba(212,163,115,0.14)' : 'rgba(212,163,115,0.08)',
-                    color: '#6A6A5A',
+                    backgroundColor: 'rgba(253,252,245,0.9)',
+                    color: 'var(--bronze)',
                     fontFamily: 'var(--font-sans)',
-                    border: '1px solid rgba(212,163,115,0.15)',
+                    border: '1px solid rgba(212,163,115,0.22)',
+                    backdropFilter: 'blur(8px)',
                   }}
                 >
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
@@ -433,20 +440,20 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Memory section header — editorial horizontal rule */}
         {memories.length > 0 && (
-          <div className="mb-8">
+          <div className="mb-10">
             <div className="flex items-center gap-4">
               <div
-                className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center"
-                style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}
+                className="w-9 h-9 rounded-2xl shrink-0 flex items-center justify-center shadow-sm"
+                style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--bronze)' }}>
                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                 </svg>
               </div>
-              <h2 className="text-xl font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                Memories
+              <h2 className="text-xl md:text-2xl font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                Your Memories
               </h2>
-              <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.35), transparent)' }} />
+              <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.4), transparent)' }} />
               {/* Sort controls */}
               <div className="flex items-center gap-1 rounded-full p-1" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.12)' }}>
                 <button
@@ -533,9 +540,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         ) : (
           /* ── Memory list with lightbox ── */
-          <div className="space-y-8">
+          <div className="space-y-10 md:space-y-12">
             {sortedMemories.map((memory, memoryIndex) => {
               const accentColor = ACCENT_COLORS[memoryIndex % ACCENT_COLORS.length];
+              const isEven = memoryIndex % 2 === 0;
               return (
                 <div
                   key={memory.id}
@@ -574,20 +582,21 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     />
                     <CardContent className="pt-8 pb-8 px-6 pl-8 relative">
 
-                      {/* Chapter number badge */}
+                      {/* Chapter number badge — elevated design */}
                       <div
-                        className="absolute top-5 right-5 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+                        className="absolute top-5 right-5 flex items-center gap-2 rounded-2xl px-4 py-2 shadow-sm"
                         style={{
-                          backgroundColor: `${accentColor}18`,
+                          backgroundColor: `${accentColor}22`,
                           color: accentColor,
                           fontFamily: 'var(--font-sans)',
-                          border: `1px solid ${accentColor}33`,
+                          border: `1px solid ${accentColor}40`,
+                          backdropFilter: 'blur(8px)',
                         }}
                       >
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                         </svg>
-                        Chapter {memoryIndex + 1}
+                        <span className="text-xs font-semibold tracking-wide">Chapter {memoryIndex + 1}</span>
                       </div>
 
                       {/* Prompt question as elegant chapter opener */}
@@ -644,27 +653,31 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Memory text — journal feel */}
+                      {/* Memory text — journal feel, constrained width */}
                       <p
                         className="text-base md:text-lg leading-[1.9] whitespace-pre-wrap"
-                        style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
+                        style={{
+                          color: 'var(--charcoal)',
+                          fontFamily: 'var(--font-serif)',
+                          maxWidth: '68ch',
+                        }}
                       >
                         {memory.answer_text}
                       </p>
 
 
                       {/* Date + contributor */}
-                      <div className="flex items-center gap-3 mt-6 flex-wrap">
+                      <div className="flex items-center gap-3 mt-6 pt-5 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
                         {memory.contributor_name ? (
                           <div className="flex items-center gap-2">
                             <Avatar
                               name={memory.contributor_name}
                               imageUrl={memory.contributor_avatar || null}
-                              size={22}
+                              size={24}
                             />
                           </div>
                         ) : null}
-                        <p className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>
+                        <p className="text-xs tracking-wide" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
                           {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
@@ -816,27 +829,35 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Footer actions — visible on hover, elegant reveal */}
+                      {/* Footer actions — visible on hover, refined reveal */}
                       <div
-                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t transition-all duration-300 opacity-0 group-hover:opacity-100"
+                        className="flex items-center justify-end gap-2.5 mt-7 pt-5 border-t transition-all duration-300 opacity-0 group-hover:opacity-100"
                         style={{ borderColor: 'rgba(212,163,115,0.1)' }}
                       >
                         <Link
                           href={`/books/${id}/edit?memory=${memory.id}`}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:opacity-80 active:scale-95"
-                          style={{ color: 'var(--charcoal)', backgroundColor: 'rgba(184,137,90,0.22)' }}
+                          className="inline-flex items-center gap-2 text-xs font-semibold rounded-2xl px-5 py-2.5 shadow-sm transition-all duration-200 hover:brightness-105 active:scale-95"
+                          style={{
+                            color: 'var(--charcoal)',
+                            backgroundColor: 'rgba(212,163,115,0.18)',
+                            border: '1px solid rgba(212,163,115,0.25)',
+                          }}
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                           </svg>
-                          Edit
+                          Edit memory
                         </Link>
                         <button
                           type="button"
                           onClick={() => setDeleteConfirm({ memoryId: memory.id })}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:opacity-80"
-                          style={{ color: '#922c22', backgroundColor: 'rgba(180,80,60,0.14)' }}
+                          className="inline-flex items-center gap-2 text-xs font-semibold rounded-2xl px-5 py-2.5 shadow-sm transition-all duration-200 hover:brightness-105 active:scale-95"
+                          style={{
+                            color: '#922c22',
+                            backgroundColor: 'rgba(180,80,60,0.10)',
+                            border: '1px solid rgba(180,80,60,0.2)',
+                          }}
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
