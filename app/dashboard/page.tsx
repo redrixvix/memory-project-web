@@ -730,7 +730,7 @@ export default function Dashboard() {
                             {book.description}
                           </p>
                         ) : (
-                          <p className="text-sm leading-relaxed mb-5 italic" style={{ color: 'rgba(106,106,90,0.40)', fontFamily: 'var(--font-serif)' }}>
+                          <p className="text-sm leading-relaxed mb-5 italic" style={{ color: '#8A8A7A', fontFamily: 'var(--font-serif)' }}>
                             No description yet — tap to add one
                           </p>
                         )}

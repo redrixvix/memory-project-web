@@ -349,14 +349,16 @@ export default function SettingsPage() {
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full rounded-xl px-4 py-3 text-base"
+                  className="w-full rounded-xl px-4 py-3 text-base outline-none transition-all duration-200"
                   style={{
-                    border: '1.5px solid rgba(212,163,115,0.3)',
+                    border: '1.5px solid rgba(212,163,115,0.45)',
                     backgroundColor: '#FFFDF8',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-serif)',
                   }}
                   placeholder="Your name"
+                  onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--bronze)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.18)'; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.45)'; e.currentTarget.style.boxShadow = 'none'; }}
                 />
               </div>
 
@@ -394,10 +396,10 @@ export default function SettingsPage() {
                   disabled={saving || !name.trim() || name.trim() === user?.name}
                   className="inline-flex items-center justify-center h-11 rounded-full px-8 text-sm font-semibold shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-105 active:scale-[0.97] hover:shadow-lg"
                   style={{
-                    backgroundColor: '#B8896A',
-                    color: '#FDFCF5',
+                    backgroundColor: 'var(--bronze)',
+                    color: 'var(--charcoal)',
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: '0 4px 16px rgba(184,137,106,0.35)',
+                    boxShadow: '0 4px 16px rgba(212,163,115,0.35)',
                   }}
                 >
                   {saving ? (
