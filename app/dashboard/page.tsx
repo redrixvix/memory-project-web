@@ -80,6 +80,9 @@ export default function Dashboard() {
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
   const [showFab, setShowFab] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const BOOKS_PER_PAGE = 12;
 
   useEffect(() => {
     async function fetchUserAndBooks() {
@@ -131,6 +134,11 @@ export default function Dashboard() {
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   }, [showCreate, creating]);
+
+  // Reset to page 1 whenever the filtered list changes — must be before early return
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, sortOrder]);
 
   const createBook = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -204,6 +212,17 @@ export default function Dashboard() {
         (book.description && book.description.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     : books;
+
+  const totalPages = Math.max(1, Math.ceil(filteredBooks.length / BOOKS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedBooks = filteredBooks
+    .slice()
+    .sort((a, b) => {
+      if (sortOrder === 'newest') return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+      if (sortOrder === 'oldest') return new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
+      return a.title.localeCompare(b.title);
+    })
+    .slice((safePage - 1) * BOOKS_PER_PAGE, safePage * BOOKS_PER_PAGE);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
@@ -282,10 +301,10 @@ export default function Dashboard() {
       <main className="px-6 md:px-10 py-12 max-w-5xl mx-auto w-full">
 
         {/* Greeting + header */}
-        <div className="mb-10">
+        <div className="mb-6">
           {user && (
-            <div className="flex flex-col mb-8">
-              <div className="flex items-center gap-2.5 mb-3">
+            <div className="flex flex-col mb-4">
+              <div className="flex items-center gap-2 mb-1.5">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
                   <svg width="16" height="16" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
                     <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
@@ -302,7 +321,7 @@ export default function Dashboard() {
               <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
                 {filteredBooks.length === 0 
                   ? 'Your library is waiting — create your first book and start capturing stories.'
-                  : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'chapter' : 'chapters'} in your library${searchQuery ? ` matching "${searchQuery}"` : ''}`}
+                  : `${filteredBooks.length === 1 ? '1 chapter' : `${filteredBooks.length} chapters`} in your library${searchQuery ? ` matching "${searchQuery}"` : ''}${totalPages > 1 ? ` — page ${safePage} of ${totalPages}` : ''}`}
               </p>
             </div>
           )}
@@ -317,7 +336,7 @@ export default function Dashboard() {
             {books.length > 0 && (
               <div className="flex items-center gap-3 w-full">
                 {/* Search input */}
-                <div className="relative flex-1 max-w-xs">
+                <div className="relative flex-1">
                   <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#7A7A6A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                   </svg>
@@ -679,14 +698,7 @@ export default function Dashboard() {
         ) : (
           /* ── Book grid ── */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filteredBooks
-              .slice()
-              .sort((a, b) => {
-                if (sortOrder === 'newest') return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-                if (sortOrder === 'oldest') return new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
-                return a.title.localeCompare(b.title);
-              })
-              .map((book, i) => {
+            {paginatedBooks.map((book, i) => {
               const lastUpdated = book.updated_at || book.created_at;
               return (
                 <div
@@ -696,7 +708,7 @@ export default function Dashboard() {
                 >
                   <Link href={`/books/${book.id}`} className="block h-full group">
                     <div
-                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer"
+                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 group/card hover:-translate-y-1.5 hover:shadow-2xl"
                       style={{
                         backgroundColor: '#FFFDF8',
                         boxShadow: '0 6px 28px rgba(212,163,115,0.12), 0 2px 8px rgba(212,163,115,0.06)',

@@ -263,23 +263,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         </div>
       )}
 
-      {/* Floating action button — Add Memory (editor+ only, hidden on empty to avoid triple CTA) */}
-      {currentUserRole && currentUserRole !== 'viewer' && memories.length > 0 && (
-        <Link
-          href={`/books/${id}/edit`}
-          className="fab-new fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center animate-fade-up group"
-          style={{
-            backgroundColor: 'var(--bronze)',
-            color: 'var(--charcoal)',
-            boxShadow: '0 8px 32px rgba(212,163,115,0.45), 0 0 0 4px rgba(212,163,115,0.15)',
-          }}
-          aria-label="Add a memory"
-        >
-          <svg className="w-6 h-6 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="M12 5v14M5 12h14"/>
-          </svg>
-        </Link>
-      )}
+      {/* Floating action button — removed. The inline "Add Memory" button in the header serves
+         the same purpose without visual clutter or a redundant scroll-linked element. */}
 
       {/* Scroll-to-top button */}
       {showTopBtn && (
@@ -561,10 +546,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             </p>
             <Link
               href={`/books/${id}/edit`}
-              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.35)] hover:-translate-y-0.5 active:scale-95"
-              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+              className="inline-flex h-14 items-center justify-center rounded-full px-10 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-2xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-1 active:scale-95 group"
+              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 6px 28px rgba(212,163,115,0.35)' }}
             >
-              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M12 5v14M5 12h14"/>
               </svg>
               Add your first memory

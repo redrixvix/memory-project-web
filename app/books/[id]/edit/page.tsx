@@ -810,7 +810,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl px-5 py-6 md:px-10 md:py-8">
+      <main className="mx-auto w-full max-w-5xl px-5 py-4 md:px-10 md:py-6">
         <article
           className="relative overflow-hidden rounded-[2.25rem] border"
           style={{
@@ -821,7 +821,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         >
           <div className="hero-ambient" />
 
-          <div className="relative px-5 py-5 md:px-8 md:py-6">
+          <div className="relative px-5 py-4 md:px-8 md:py-5">
             <div className="grid gap-5 border-b pb-6 md:grid-cols-[minmax(0,1.55fr)_minmax(15rem,0.85fr)] md:gap-8 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
               <div>
                 <p className="label-caps mb-2" style={{ color: 'var(--bronze)' }}>
@@ -849,7 +849,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             </div>
 
             <form onSubmit={handleSubmit} className="relative">
-              <section className="grid gap-6 py-8 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-10 md:py-10">
+              <section className="grid gap-5 py-5 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-7 md:py-6">
                 <div className="space-y-3">
                   <div className="flex flex-wrap gap-2">
                     <span className="rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#7B6B56', fontFamily: 'var(--font-sans)' }}>
@@ -991,7 +991,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </div>
               </section>
 
-              <section className="grid gap-6 border-t py-8 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-10 md:py-10" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+              <section className="grid gap-5 border-t py-5 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-7 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
                 <div className="space-y-3">
                   <div>
                     <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
@@ -1064,7 +1064,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </div>
               </section>
 
-              <section className="grid gap-6 border-t py-8 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-10 md:py-10" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+              <section className="grid gap-5 border-t py-5 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-7 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
                 <div className="space-y-3">
                   <div className="inline-flex rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: '#5F6650', fontFamily: 'var(--font-sans)' }}>
                     Optional

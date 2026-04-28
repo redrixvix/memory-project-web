@@ -52,8 +52,8 @@ export async function GET(request: NextRequest) {
       ORDER BY b.created_at DESC
     `;
 
-    // Collect book IDs for contributor query
-    const bookIds = books.map((b: Record<string, unknown>) => Number(b.id));
+    // Collect book IDs for contributor query — filter out any NaN values from bad data
+    const bookIds = books.map((b: Record<string, unknown>) => Number(b.id)).filter((id): id is number => Number.isInteger(id));
 
     const booksWithCount = books.map((b: Record<string, unknown>) => ({
       ...b,
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
           SELECT DISTINCT m.book_id, u.id, u.name, u.profile_image_url, u.google_id
           FROM memories m
           JOIN users u ON m.user_id = u.id
-          WHERE m.book_id IN (${bookIds}) AND m.user_id IS NOT NULL
+          WHERE m.book_id = ANY(${sql.array(bookIds)}) AND m.user_id IS NOT NULL
           ORDER BY m.book_id, u.id
         `;
         for (const row of rows as unknown as {book_id: string, id: number, name: string, profile_image_url: string, google_id: string}[]) {
