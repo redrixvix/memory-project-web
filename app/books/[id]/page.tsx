@@ -734,11 +734,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             return (
                               <div
                                 key={photoIndex}
-                                className="relative img-frame rounded-xl overflow-hidden cursor-pointer group"
+                                className="relative img-frame overflow-hidden cursor-pointer group"
                                 style={{
                                   aspectRatio: photoIndex === 0 && memory.photo_urls.length === 1 ? '4/3' : photoIndex === 0 && memory.photo_urls.length >= 3 ? '2/1.3' : '1',
-                                  boxShadow: '0 4px 16px rgba(212,163,115,0.12), 0 1px 4px rgba(43,43,43,0.06)',
-                                  height: photoIndex === 0 && memory.photo_urls.length >= 3 ? '260px' : '100%',
                                 }}
                               >
                                 {hasError ? (

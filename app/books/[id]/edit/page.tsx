@@ -904,16 +904,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         </>
                       )}
                     </select>
-                    <svg
-                      className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.2"
-                      style={{ color: '#8E7861' }}
-                    >
-                      <path d="m6 9 6 6 6-6" />
-                    </svg>
+                    <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}>
+                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--bronze)' }}>
+                          <path d="m6 9 6 6 6-6"/>
+                        </svg>
+                      </div>
+                    </div>
                   </div>
 
                   {useCustomPrompt && (

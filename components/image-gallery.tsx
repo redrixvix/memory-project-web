@@ -233,9 +233,15 @@ function ImageCard({
 export function ImageGallery({ items, onRemove, onRetry }: ImageGalleryProps) {
   if (items.length === 0) return null;
 
+  const gridClass =
+    items.length === 1 ? 'photo-grid--1' :
+    items.length === 2 ? 'photo-grid--2' :
+    items.length === 3 ? 'photo-grid--3' :
+    'photo-grid--4';
+
   return (
     <div className="mt-6">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div className={`photo-grid ${gridClass}`}>
         {items.map((item, index) => (
           <ImageCard
             key={item.id}

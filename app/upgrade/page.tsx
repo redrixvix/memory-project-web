@@ -250,9 +250,7 @@ export default function UpgradePage() {
                 tabIndex={isCurrentPlan ? -1 : 0}
                 onClick={handleCardClick}
                 onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !isCurrentPlan) { e.preventDefault(); handleCardClick(); }}}
-                onMouseEnter={(e) => { if (!isCurrentPlan && !isSelected) { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(212,163,115,0.14)'; } }}
-                onMouseLeave={(e) => { if (!isCurrentPlan && !isSelected) { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(212,163,115,0.08)'; } }}
-                className="text-left rounded-2xl p-7 relative cursor-pointer"
+                className="text-left rounded-2xl p-7 relative cursor-pointer plan-card"
                 style={cardStyles}
                 aria-pressed={isSelected}
                 aria-disabled={isCurrentPlan ? true : undefined}
