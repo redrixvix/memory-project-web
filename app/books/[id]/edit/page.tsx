@@ -95,6 +95,10 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const router = useRouter();
   const searchParams = useSearchParams();
   const memoryId = searchParams.get('memory');
+  const urlPrompt = searchParams.get('prompt');
+
+  // Set initial prompt from URL param when creating a new memory (no memoryId, no draft)
+  const [initialPromptSet, setInitialPromptSet] = useState(false);
 
   const [book, setBook] = useState<Book | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -227,8 +231,14 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       } catch {}
     }
 
+    // If no memoryId, no draft, but URL has a prompt param, use it
+    if (!memoryId && urlPrompt && !draft) {
+      setPrompt(urlPrompt);
+      setInitialPromptSet(true);
+    }
+
     setDraftLoaded(true);
-  }, [draftKey, id, memoryId, router]);
+  }, [draftKey, id, memoryId, router, urlPrompt]);
 
   useEffect(() => {
     if (!prompt) {
