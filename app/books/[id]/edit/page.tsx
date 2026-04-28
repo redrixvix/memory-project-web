@@ -1291,7 +1291,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                             Add photos &amp; voice notes
                           </p>
                           <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                            Upgrade your plan to preserve moments with images and audio.
+                            Tuck away photos & voice notes alongside your words — they become part of the story.
                           </p>
                         </div>
                       </div>

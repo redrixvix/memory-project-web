@@ -269,7 +269,7 @@ export default function SettingsPage() {
                           className="text-2xl font-semibold tracking-tight"
                           style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)' }}
                         >
-                          {getInitials(user?.name || '')}
+                          {getInitials(name || user?.name || '')}
                         </span>
                         {/* Camera icon overlay at bottom */}
                         <div 
