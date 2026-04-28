@@ -748,23 +748,30 @@ export default function Dashboard() {
 
                         {/* Footer row */}
                         <div className="flex items-center justify-end" style={{ paddingBottom: 2 }}>
+                          {/* Decorative corner line for empty books */}
+                          {book._count?.memories === 0 && (
+                            <div
+                              className="absolute top-4 right-4 w-8 h-px opacity-25"
+                              style={{ backgroundColor: 'var(--bronze)' }}
+                            />
+                          )}
                           <div
                             className="flex items-center gap-2 rounded-full px-3.5 py-2 transition-all duration-300 group-hover:gap-3"
-                            style={{ 
-                              backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.18)' : 'rgba(212,163,115,0.08)',
-                              border: book._count?.memories === 0 ? '1px solid rgba(212,163,115,0.40)' : '1px solid rgba(212,163,115,0.08)',
-                              boxShadow: book._count?.memories === 0 ? '0 2px 8px rgba(212,163,115,0.12)' : 'none',
+                            style={{
+                              backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.22)' : 'rgba(212,163,115,0.10)',
+                              border: book._count?.memories === 0 ? '1px solid rgba(212,163,115,0.45)' : '1px solid rgba(212,163,115,0.14)',
+                              boxShadow: book._count?.memories === 0 ? '0 2px 10px rgba(212,163,115,0.16)' : 'none',
                             }}
                           >
                             <span className="text-xs font-semibold" style={{ 
-                              color: book._count?.memories === 0 ? 'var(--charcoal)' : '#6A6A5A', 
+                              color: book._count?.memories === 0 ? 'rgba(43,43,43,0.85)' : 'rgba(90,90,80,0.9)', 
                               fontFamily: 'var(--font-sans)',
                             }}>
                               {book._count?.memories === 0
                                 ? 'Start writing'
                                 : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'}`}
                             </span>
-                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: book._count?.memories === 0 ? 'var(--charcoal)' : 'var(--bronze)' }}>
+                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: book._count?.memories === 0 ? 'rgba(43,43,43,0.7)' : 'rgba(212,163,115,0.8)' }}>
                               <path d="M5 12h14M12 5l7 7-7 7"/>
                             </svg>
                           </div>

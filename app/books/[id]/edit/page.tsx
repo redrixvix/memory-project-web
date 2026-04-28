@@ -855,7 +855,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
               <section className="py-5 md:py-6">
                 <div className="mb-4 flex flex-wrap items-center gap-3">
-                  <span className="text-xs font-medium uppercase tracking-[0.12em]" style={{ color: '#8A6A4A', fontFamily: 'var(--font-sans)' }}>
+                  <span className="text-xs font-medium uppercase tracking-[0.12em]" style={{ color: '#6A5A4A', fontFamily: 'var(--font-sans)' }}>
                     Guided prompt
                   </span>
                   {promptOptionCount > 0 && (
@@ -878,11 +878,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         fontFamily: 'var(--font-sans)',
                         boxShadow: '0 10px 24px rgba(212,163,115,0.06)',
                       }}
-                      onMouseEnter={e => {
-                        ((e.target as HTMLElement).style).borderColor = 'rgba(212,163,115,0.38)';
+                      onFocus={e => {
+                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.55)';
+                        (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(212,163,115,0.12), 0 10px 24px rgba(212,163,115,0.08)';
                       }}
-                      onMouseLeave={e => {
-                        ((e.target as HTMLElement).style).borderColor = 'rgba(212,163,115,0.24)';
+                      onBlur={e => {
+                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.24)';
+                        (e.target as HTMLElement).style.boxShadow = '0 10px 24px rgba(212,163,115,0.06)';
                       }}
                     >
                       {promptLoadState === 'loading' && (
@@ -1010,7 +1012,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       backgroundColor: '#FFFDF6',
                       fontFamily: 'var(--font-serif)',
                       resize: 'vertical',
-                      boxShadow: 'inset 0 0 0 1px rgba(212,163,115,0.28), inset 0 2px 12px rgba(212,163,115,0.04), inset 0 0 40px rgba(212,163,115,0.03)',
+                      boxShadow: 'inset 0 0 0 1.5px rgba(212,163,115,0.38), inset 0 2px 12px rgba(212,163,115,0.05), inset 0 0 40px rgba(212,163,115,0.03), 0 0 0 0px transparent',
                     }}
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
@@ -1123,7 +1125,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                           {photoItems.length > 0 && (
                             <div className="mt-5">
                               <div className="flex flex-wrap items-center justify-between gap-2">
-                                <p className="text-xs font-medium uppercase tracking-[0.16em]" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                                <p className="text-xs font-medium uppercase tracking-[0.16em]" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                                   {photoItems.length} {photoItems.length === 1 ? 'photo' : 'photos'} attached
                                 </p>
                                 <p className="text-xs" style={{ color: hasErroredPhotos ? '#9A5A4A' : '#8E8478', fontFamily: 'var(--font-sans)' }}>
