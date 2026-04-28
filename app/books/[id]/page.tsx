@@ -394,7 +394,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         >
           {/* Decorative corner accent */}
           <div
-            className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-25 pointer-events-none"
+            className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-20 pointer-events-none"
             style={{ background: 'radial-gradient(circle, rgba(212,163,115,0.4) 0%, transparent 70%)' }}
           />
           {/* Warm left stripe */}
@@ -402,20 +402,30 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-3xl"
             style={{ background: 'linear-gradient(to bottom, var(--bronze), var(--tea-green), transparent)' }}
           />
-          <div className="flex items-start justify-between gap-4 flex-wrap pl-3">
-            <div className="flex flex-col gap-1 flex-1 min-w-0">
-              <div className="flex items-center gap-3">
-                <h1 className="text-2xl md:text-3xl font-medium leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+          {/* Bottom warm fade */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none"
+            style={{ background: 'linear-gradient(to top, rgba(212,163,115,0.04), transparent)' }}
+          />
+          <div className="flex items-start justify-between gap-5 flex-wrap pl-3">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl md:text-3xl font-medium tracking-tight leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
                   {book.title}
                 </h1>
+                {book.plan && book.plan !== 'free' && (
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full shrink-0" style={getPlanBadgeStyles(book.plan)}>
+                    {getBookPlanLabel(book.plan, book.storage_tier)}
+                  </span>
+                )}
                 {currentUserRole === 'owner' && (
                   <Link
                     href={`/books/${book.id}/edit/book`}
-                    className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
-                    style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--bronze)', border: '1px solid rgba(212,163,115,0.2)' }}
+                    className="shrink-0 w-9 h-9 rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                    style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: 'var(--bronze)', border: '1px solid rgba(212,163,115,0.18)' }}
                     aria-label="Edit book details"
                   >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                     </svg>
@@ -423,35 +433,31 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 )}
               </div>
               {book.description && (
-                <p className="text-sm leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)', maxWidth: '52ch' }}>
+                <p className="text-base leading-relaxed" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)', maxWidth: '56ch', fontStyle: 'italic' }}>
                   {book.description}
                 </p>
               )}
             </div>
-            <div className="flex items-center gap-3 shrink-0">
-              {book.plan && book.plan !== 'free' && (
-                <span className="text-xs font-semibold px-3 py-1 rounded-full" style={getPlanBadgeStyles(book.plan)}>
-                  {getBookPlanLabel(book.plan, book.storage_tier)}
-                </span>
-              )}
-              {memories.length > 0 && (
+            {memories.length > 0 && (
+              <div className="flex items-center shrink-0">
                 <span
-                  className="inline-flex items-center gap-1.5 rounded-2xl px-3.5 py-1.5 text-xs font-semibold shadow-sm"
+                  className="inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-semibold shadow-sm"
                   style={{
-                    backgroundColor: 'rgba(253,252,245,0.9)',
+                    backgroundColor: 'rgba(253,252,245,0.92)',
                     color: 'var(--bronze)',
                     fontFamily: 'var(--font-sans)',
                     border: '1px solid rgba(212,163,115,0.22)',
                     backdropFilter: 'blur(8px)',
+                    boxShadow: '0 2px 12px rgba(212,163,115,0.10)',
                   }}
                 >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                   </svg>
                   {memories.length} {memories.length === 1 ? 'memory' : 'memories'}
                 </span>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
