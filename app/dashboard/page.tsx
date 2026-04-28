@@ -801,8 +801,8 @@ export default function Dashboard() {
                               <div
                                 className="rounded-full px-3 py-1 flex items-center gap-1.5"
                                 style={{
-                                  backgroundColor: book._count.memories === 0 ? 'rgba(212,163,115,0.18)' : 'rgba(184,137,90,0.12)',
-                                  border: book._count.memories === 0 ? '1px dashed rgba(212,163,115,0.35)' : 'none',
+                                  backgroundColor: book._count.memories === 0 ? 'rgba(212,163,115,0.1)' : 'rgba(184,137,90,0.12)',
+                                  border: book._count.memories === 0 ? '1px solid rgba(212,163,115,0.2)' : 'none',
                                 }}
                               >
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
@@ -810,11 +810,11 @@ export default function Dashboard() {
                                   <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                                 </svg>
                                 <span className="text-xs font-medium" style={{
-                                  color: book._count.memories === 0 ? '#6A6A5A' : 'var(--charcoal)',
+                                  color: book._count.memories === 0 ? '#7A7A6A' : 'var(--charcoal)',
                                   fontFamily: 'var(--font-sans)',
                                 }}>
                                   {book._count.memories === 0
-                                    ? 'Empty — start adding'
+                                    ? 'Ready for memories'
                                     : `${book._count.memories} ${book._count.memories === 1 ? 'memory' : 'memories'}`}
                                 </span>
                               </div>

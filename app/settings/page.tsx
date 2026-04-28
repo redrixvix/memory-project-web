@@ -294,31 +294,28 @@ export default function SettingsPage() {
                   <p className="text-base font-semibold mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                     {user?.name}
                   </p>
-                  <p className="text-sm mb-3" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                    {user?.email}
-                  </p>
-                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                    {profileImageUrl ? (
-                      <button
-                        onClick={() => setProfileImageUrl(null)}
-                        className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:opacity-70"
-                        style={{ color: '#8A6A5A', backgroundColor: 'rgba(212,163,115,0.06)' }}
-                      >
-                        <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M18 6L6 18M6 6l12 12"/>
-                        </svg>
-                        Remove photo
-                      </button>
-                    ) : (
-                      <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                        Click the circle to upload a photo
-                      </p>
-                    )}
-                  </div>
-                  {imageError && (
-                    <p className="text-xs mt-2" style={{ color: '#B91C1C' }}>{imageError}</p>
-                  )}
+                  {profileImageUrl ? (
+                    <button
+                      onClick={() => setProfileImageUrl(null)}
+                      className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:opacity-70"
+                      style={{ color: '#8A6A5A', backgroundColor: 'rgba(212,163,115,0.06)' }}
+                    >
+                      <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                      </svg>
+                      Remove photo
+                    </button>
+                  ) : null}
                 </div>
+                {/* Upload hint — only when no photo */}
+                {!profileImageUrl && (
+                  <p className="text-xs mt-3 text-center sm:text-left" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                    A photo helps family members recognize you in shared books
+                  </p>
+                )}
+                {imageError && (
+                  <p className="text-xs mt-2" style={{ color: '#B91C1C' }}>{imageError}</p>
+                )}
               </div>
 
               {/* Name field */}
@@ -341,24 +338,27 @@ export default function SettingsPage() {
                 />
               </div>
 
-              {/* Email (read-only — styled as a subtle info field) */}
+              {/* Email (read-only — clearly non-editable) */}
               <div className="grid gap-2">
                 <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                   Email address
                 </span>
                 <div
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-default select-none"
                   style={{
-                    backgroundColor: 'rgba(204,213,174,0.08)',
-                    border: '1px solid rgba(212,163,115,0.15)',
+                    backgroundColor: 'rgba(204,213,174,0.06)',
+                    border: '1px solid rgba(212,163,115,0.12)',
                   }}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#8A8A7A', marginTop: '1px' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#8A8A7A', marginTop: '1px', flexShrink: 0 }}>
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
                   </svg>
                   <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
                     {user?.email}
                   </p>
+                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.15)', color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                    read-only
+                  </span>
                 </div>
                 <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                   Contact support to change your email address
