@@ -149,8 +149,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     setImageErrors(prev => ({ ...prev, [memoryIndex]: true }));
   };
 
-  const handlePhotoClick = (memoryIndex: number, url: string) => {
-    if (!imageErrors[memoryIndex]) {
+  const handlePhotoClick = (globalIndex: number, url: string) => {
+    if (!imageErrors[globalIndex]) {
       setLightboxSrc(url);
     }
   };
@@ -158,7 +158,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   if (loading) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
-        <div className="max-w-3xl mx-auto px-6 py-12">
+        <div className="max-w-5xl mx-auto px-6 py-12">
           {/* Header skeleton */}
           <div className="mb-8">
             <div className="h-8 w-64 rounded-xl mb-3 animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
@@ -681,6 +681,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               imageUrl={memory.contributor_avatar || null}
                               size={24}
                             />
+                            <span className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                              {memory.contributor_name}
+                            </span>
                           </div>
                         ) : null}
                         <p className="text-xs tracking-wide" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
