@@ -405,21 +405,50 @@ export default function SettingsPage() {
                       <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
                       Saving…
                     </>
-                  ) : saved ? (
-                    <>
-                      <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <polyline points="20 6 9 17 4 12"/>
-                      </svg>
-                      Saved
-                    </>
                   ) : (
                     'Save changes'
                   )}
                 </button>
                 {saved && !saving && (
-                  <p className="text-sm" style={{ color: '#5F6650' }}>Changes saved successfully.</p>
+                  <div className="flex items-center gap-2 animate-fade-up" style={{ color: '#4A7C59' }}>
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: 'rgba(74,124,89,0.12)' }}
+                    >
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    </div>
+                    <span className="text-sm font-medium" style={{ fontFamily: 'var(--font-sans)' }}>
+                      Changes saved
+                    </span>
+                  </div>
                 )}
               </div>
+
+              {/* Saved toast — slides in from bottom-right */}
+              {saved && !saving && (
+                <div
+                  className="fixed bottom-8 right-8 z-50 flex items-center gap-3 rounded-2xl px-5 py-3.5 shadow-xl animate-fade-up"
+                  style={{
+                    backgroundColor: 'var(--charcoal)',
+                    color: 'var(--cornsilk)',
+                    fontFamily: 'var(--font-sans)',
+                    boxShadow: '0 8px 32px rgba(43,43,43,0.28), 0 2px 8px rgba(43,43,43,0.12)',
+                    animation: 'toast-in 0.35s cubic-bezier(0.34,1.56,0.64,1)',
+                  }}
+                >
+                  <div
+                    className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: 'rgba(74,124,89,0.85)' }}
+                  >
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium">Profile updated</span>
+                </div>
+              )}
             </div>
           </section>
 

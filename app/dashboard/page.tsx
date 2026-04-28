@@ -298,94 +298,89 @@ export default function Dashboard() {
       </header>
 
       {/* ── MAIN CONTENT ── */}
-      <main className="px-6 md:px-10 py-12 max-w-5xl mx-auto w-full">
+      <main className="px-6 md:px-10 py-10 max-w-5xl mx-auto w-full">
 
-        {/* Greeting + header */}
-        <div className="mb-6">
-          {user && (
-            <div className="flex flex-col mb-5">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }}>
-                  <svg width="14" height="14" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
-                    <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
-                    <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
-                  </svg>
-                </div>
-                <p className="text-sm" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                  Welcome back, {user?.name ? user.name.split(' ').slice(0, 2).join(' ') : 'friend'}
-                </p>
-              </div>
-              <h1 className="display-md mb-2" style={{ color: 'var(--charcoal)' }}>
-                Your Memory Books
+        {/* Header row — compact, editorial */}
+        <div className="mb-8">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-medium tracking-tight mb-1.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                Your Library
               </h1>
-              <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                {filteredBooks.length === 0 
-                  ? 'Your library is waiting — create your first book and start capturing stories.'
-                  : `${filteredBooks.length === 1 ? '1 chapter' : `${filteredBooks.length} chapters`} in your library${searchQuery ? ` matching "${searchQuery}"` : ''}${totalPages > 1 ? ` — page ${safePage} of ${totalPages}` : ''}`}
+              <p style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
+                {filteredBooks.length === 0
+                  ? 'Your stories are waiting to be captured.'
+                  : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'book' : 'books'}${searchQuery ? ` matching "${searchQuery}"` : ''}${totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ''}`}
               </p>
             </div>
-          )}
-
-          {!user && (
-            <h1 className="display-md mb-6" style={{ color: 'var(--charcoal)' }}>
-              Your Memory Books
-            </h1>
-          )}
-
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             {books.length > 0 && (
-              <div className="flex items-center gap-3 w-full">
-                {/* Search input */}
-                <div className="relative flex-1">
-                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#7A7A6A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-                  </svg>
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search books..."
-                    className="w-full h-10 pl-10 pr-4 rounded-full text-sm outline-none transition-all duration-200"
-                    style={{
-                      backgroundColor: 'rgba(255,253,246,0.95)',
-                      border: '1.5px solid rgba(212,163,115,0.40)',
-                      boxShadow: '0 4px 16px rgba(212,163,115,0.08), 0 1px 3px rgba(212,163,115,0.06)',
-                      color: 'var(--charcoal)',
-                      fontFamily: 'var(--font-sans)',
-                    }}
-                  />
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setSearchQuery('')}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 flex items-center justify-center rounded-full hover:opacity-70"
-                      style={{ color: '#7A7A6A' }}
-                    >
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="M18 6L6 18M6 6l12 12"/>
-                      </svg>
-                    </button>
-                  )}
-                </div>
-                {/* Sort controls */}
-                <div className="flex items-center gap-1 rounded-full p-1 shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.06)', border: '1px solid rgba(212,163,115,0.1)' }}>
+              <Button
+                onClick={() => setShowCreate(true)}
+                type="button"
+                className="rounded-full shrink-0 h-11 px-6 text-sm font-semibold transition-all duration-300 active:scale-95 hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(212,163,115,0.3)] hover:-translate-y-0.5"
+                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.25)' }}
+              >
+                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                New Book
+              </Button>
+            )}
+          </div>
+
+          {/* Search + sort — only shown when books exist */}
+          {books.length > 0 && (
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-5">
+              <div className="relative flex-1">
+                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#8A8A7A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search your books..."
+                  className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200"
+                  style={{
+                    backgroundColor: 'rgba(255,253,246,0.92)',
+                    border: '1.5px solid rgba(212,163,115,0.30)',
+                    color: 'var(--charcoal)',
+                    fontFamily: 'var(--font-sans)',
+                  }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.65)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.12)'; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.30)'; e.currentTarget.style.boxShadow = 'none'; }}
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-full transition-opacity hover:opacity-70"
+                    style={{ color: '#7A7A6A', backgroundColor: 'rgba(212,163,115,0.1)' }}
+                    aria-label="Clear search"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                  </button>
+                )}
+              </div>
+              {/* Sort controls */}
+              <div className="flex items-center gap-1 rounded-2xl p-1.5 shrink-0" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)' }}>
                 {([
                   { value: 'newest', label: 'Newest' },
                   { value: 'oldest', label: 'Oldest' },
-                  { value: 'alpha', label: 'A to Z' },
+                  { value: 'alpha', label: 'A–Z' },
                 ] as const).map(({ value, label }) => (
                   <button
                     key={value}
                     type="button"
                     onClick={() => setSortOrder(value)}
-                    className="rounded-full px-4 py-2 text-xs font-medium transition-all duration-200 shrink-0"
+                    className="rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
                     style={{
-                      backgroundColor: sortOrder === value ? 'var(--charcoal)' : 'rgba(255,253,246,0.92)',
+                      backgroundColor: sortOrder === value ? 'var(--charcoal)' : 'transparent',
                       color: sortOrder === value ? 'var(--cornsilk)' : '#6A6A5A',
                       fontFamily: 'var(--font-sans)',
-                      minWidth: '58px',
-                      boxShadow: sortOrder === value ? '0 2px 8px rgba(212,163,115,0.2)' : 'none',
-                      fontWeight: sortOrder === value ? '600' : '500',
+                      minWidth: '50px',
                     }}
                   >
                     {label}
@@ -393,19 +388,7 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
-            )}
-            <Button
-              onClick={() => setShowCreate(true)}
-              type="button"
-              className="rounded-full shrink-0 h-12 px-8 text-sm font-semibold transition-all duration-300 active:scale-95 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.35)] hover:-translate-y-0.5"
-              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.25)' }}
-            >
-              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              New Book
-            </Button>
-          </div>
+          )}
         </div>
 
         {/* ── Create book modal ── */}
@@ -606,94 +589,49 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ── Empty state ── */}
+        {/* ── Empty state — editorial card style ── */}
         {books.length === 0 && !showCreate ? (
-          <div
-            className="text-center py-24 animate-fade-up"
-          >
-            {/* Elegant empty-state illustration */}
-            <div className="inline-block mb-12">
-              <div
-                className="relative mx-auto animate-float"
-                style={{ width: 120, height: 160, animationDuration: '3s', animationDelay: '0.3s' }}
-              >
-                {/* Book stack - bottom */}
-                <div
-                  className="absolute rounded-xl"
-                  style={{
-                    bottom: 0,
-                    left: 20,
-                    right: -12,
-                    height: 36,
-                    backgroundColor: 'rgba(204,213,174,0.25)',
-                    border: '1px solid rgba(212,163,115,0.15)',
-                    transform: 'rotate(-3deg)',
-                  }}
-                />
-                {/* Book stack - middle */}
-                <div
-                  className="absolute rounded-xl"
-                  style={{
-                    bottom: 8,
-                    left: 12,
-                    right: -6,
-                    height: 36,
-                    backgroundColor: 'rgba(212,163,115,0.2)',
-                    border: '1px solid rgba(212,163,115,0.2)',
-                    transform: 'rotate(2deg)',
-                  }}
-                />
-                {/* Main book */}
-                <div
-                  className="absolute rounded-xl"
-                  style={{
-                    inset: 0,
-                    backgroundColor: '#FDFCF5',
-                    border: '1px solid rgba(212,163,115,0.3)',
-                    boxShadow: '4px 6px 0 rgba(212,163,115,0.12), 8px 12px 24px rgba(212,163,115,0.08)',
-                  }}
-                >
-                  {/* Book spine */}
-                  <div
-                    className="absolute left-0 top-0 bottom-0 rounded-l-xl"
-                    style={{
-                      width: 10,
-                      backgroundColor: 'var(--bronze)',
-                      opacity: 0.6,
-                    }}
-                  />
-                  {/* Placeholder lines */}
-                  <div className="pt-6 px-5 pl-6">
-                    <div className="h-px mb-5" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
-                    {[1,2,3,4].map((_, i) => (
-                      <div key={i} className="rounded-full mb-2.5" style={{
-                        height: 3,
-                        width: `${60 + i * 10}%`,
-                        backgroundColor: i % 2 === 0 ? 'rgba(212,163,115,0.2)' : 'rgba(204,213,174,0.35)',
-                      }} />
-                    ))}
-                  </div>
+          <div className="flex flex-col items-center justify-center py-20 animate-fade-up">
+            {/* Elegant book illustration */}
+            <div className="relative mb-10" style={{ width: 100, height: 130 }}>
+              <div className="absolute inset-0 rounded-2xl" style={{
+                backgroundColor: '#FDFCF5',
+                border: '1.5px solid rgba(212,163,115,0.28)',
+                boxShadow: '0 12px 40px rgba(212,163,115,0.14), 4px 6px 0 rgba(212,163,115,0.10)',
+                transform: 'rotate(-2deg)',
+              }}>
+                <div className="absolute left-0 top-0 bottom-0 rounded-l-2xl" style={{ width: 8, backgroundColor: 'var(--bronze)', opacity: 0.55 }} />
+                <div className="pt-5 px-4 pl-5">
+                  <div className="h-px mb-4" style={{ backgroundColor: 'rgba(212,163,115,0.22)' }} />
+                  {[1,2,3].map((_, i) => (
+                    <div key={i} className="rounded-full mb-2.5" style={{
+                      height: 2.5,
+                      width: `${50 + i * 15}%`,
+                      backgroundColor: i % 2 === 0 ? 'rgba(212,163,115,0.22)' : 'rgba(204,213,174,0.4)',
+                    }} />
+                  ))}
                 </div>
               </div>
             </div>
-
-            <h2 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>Your library is empty</h2>
-            <p className="text-base max-w-sm mx-auto leading-relaxed mb-10" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+            <h2 className="text-3xl font-medium tracking-tight mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+              Your library is empty
+            </h2>
+            <p className="text-base max-w-sm mx-auto leading-relaxed mb-8 text-center" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
               Every family has stories worth preserving. Create your first book and start capturing the moments that matter.
             </p>
             <Button
               onClick={() => setShowCreate(true)}
               type="button"
-              className="rounded-full h-12 px-8 text-sm font-medium transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.3)] active:scale-95"
-              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+              className="rounded-full h-12 px-8 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.3)] active:scale-95"
+              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.25)' }}
             >
               <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M12 5v14M5 12h14"/>
               </svg>
               Create your first book
             </Button>
-            <p className="text-xs mt-6 max-w-xs mx-auto leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-              Takes about 5 minutes — and it&apos;s free to start.
+            <p className="text-xs mt-5 max-w-xs mx-auto leading-relaxed text-center" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+              Free to start — takes about 5 minutes.
             </p>
           </div>
         ) : (
@@ -709,20 +647,22 @@ export default function Dashboard() {
                 >
                   <Link href={`/books/${book.id}`} className="block h-full group">
                     <div
-                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 group/card hover:-translate-y-1.5 hover:shadow-2xl"
+                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 group/card hover:-translate-y-1.5"
                       style={{
                         backgroundColor: '#FFFDF8',
-                        boxShadow: '0 6px 28px rgba(212,163,115,0.12), 0 2px 8px rgba(212,163,115,0.06)',
-                        border: '1px solid rgba(212,163,115,0.08)',
+                        boxShadow: '0 2px 8px rgba(212,163,115,0.07), 0 8px 24px rgba(212,163,115,0.09), 0 20px 48px rgba(212,163,115,0.05)',
+                        border: '1px solid rgba(212,163,115,0.10)',
                         borderLeft: `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`,
                       }}
+                      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(212,163,115,0.12), 0 16px 40px rgba(212,163,115,0.14), 0 32px 72px rgba(212,163,115,0.07)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.07), 0 8px 24px rgba(212,163,115,0.09), 0 20px 48px rgba(212,163,115,0.05)'; }}
                     >
                       {/* Subtle warm overlay on hover */}
                       <div 
                         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                        style={{ background: 'linear-gradient(135deg, rgba(212,163,115,0.03) 0%, rgba(204,213,174,0.04) 50%, transparent 100%)' }}
+                        style={{ background: 'linear-gradient(135deg, rgba(212,163,115,0.025) 0%, rgba(204,213,174,0.035) 50%, transparent 100%)' }}
                       />
-                      {/* Mini book cover visual */}
+                      {/* Mini book cover visual — refined */}
                       <div
                         className="absolute hidden md:flex"
                         style={{
@@ -733,8 +673,8 @@ export default function Dashboard() {
                           height: 82,
                           borderRadius: 8,
                           background: `linear-gradient(160deg, #FDFCF5 0%, #F8F5E8 55%, #F0EBD5 100%)`,
-                          border: '1px solid rgba(212,163,115,0.35)',
-                          boxShadow: '3px 4px 12px rgba(43,43,43,0.10), inset 0 0 0 0.5px rgba(255,255,255,0.6)',
+                          border: '1px solid rgba(212,163,115,0.30)',
+                          boxShadow: '2px 3px 10px rgba(43,43,43,0.09), 4px 6px 20px rgba(212,163,115,0.08), inset 0 0 0 0.5px rgba(255,255,255,0.7)',
                           overflow: 'hidden',
                         }}
                       >
@@ -743,17 +683,17 @@ export default function Dashboard() {
                           position: 'absolute',
                           left: 0, top: 0, bottom: 0,
                           width: 5,
-                          background: `linear-gradient(to right, ${BOOK_COLORS[book.id % BOOK_COLORS.length]}aa, ${BOOK_COLORS[book.id % BOOK_COLORS.length]}44)`,
+                          background: `linear-gradient(to right, ${BOOK_COLORS[book.id % BOOK_COLORS.length]}cc, ${BOOK_COLORS[book.id % BOOK_COLORS.length]}33)`,
                           borderRadius: '8px 0 0 8px',
                         }} />
                         {/* Cover content */}
                         <div className="pt-4 px-3 pl-3">
-                          <div style={{ height: 1, backgroundColor: 'rgba(212,163,115,0.28)', marginBottom: 6 }} />
+                          <div style={{ height: 1, backgroundColor: 'rgba(212,163,115,0.25)', marginBottom: 6 }} />
                           {[1,2,3,4].map((_, li) => (
                             <div key={li} style={{
                               height: 2.5,
                               width: `${55 + li * 10}%`,
-                              backgroundColor: li % 2 === 0 ? 'rgba(212,163,115,0.25)' : 'rgba(204,213,174,0.38)',
+                              backgroundColor: li % 2 === 0 ? 'rgba(212,163,115,0.22)' : 'rgba(204,213,174,0.38)',
                               borderRadius: 2,
                               marginBottom: 4,
                             }} />
@@ -769,8 +709,8 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <CardContent className="p-8 pr-24 md:pr-28" style={{ paddingLeft: 28 }}>
-                        {/* Title + plan badge (only show for premium/plus) */}
-                        <div className="flex items-center gap-2 mb-2">
+                        {/* Title + plan badge */}
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
                           <h3 className="text-2xl font-medium leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                             {book.title}
                           </h3>
@@ -795,10 +735,10 @@ export default function Dashboard() {
                           </p>
                         )}
 
-                        {/* Rule */}
-                        <div className="rule mb-5" />
+                        {/* Divider */}
+                        <div className="mb-5" style={{ height: 1, backgroundColor: 'rgba(212,163,115,0.10)' }} />
 
-                        {/* Footer row — consistent pill CTA for all states */}
+                        {/* Footer row */}
                         <div className="flex items-center justify-end" style={{ paddingBottom: 4 }}>
                           <div
                             className="flex items-center gap-2 rounded-full px-3 py-1.5 transition-all duration-300 group-hover:gap-3"
