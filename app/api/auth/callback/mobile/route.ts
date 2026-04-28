@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   if (idToken) {
     // --- Native Credential Manager flow: verify Google ID token directly ---
     try {
-      const result = await workos.userManagement.authenticateWithGoogleToken({
+      const result = await (workos.userManagement as any).authenticateWithGoogleToken({
         googleOAuthClientId: process.env.WORKOS_CLIENT_ID!,
         idToken,
         ...getRequestMetadata(request),

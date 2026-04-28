@@ -859,6 +859,51 @@ export default function Dashboard() {
             })}
           </div>
         )}
+
+          <div className="flex items-center justify-center gap-2 mt-10">
+            <button
+              type="button"
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
+              style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
+              aria-label="Previous page"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M15 18l-6-6 6-6"/>
+              </svg>
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                type="button"
+                onClick={() => setCurrentPage(page)}
+                className="w-9 h-9 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+                style={{
+                  backgroundColor: currentPage === page ? 'var(--charcoal)' : 'rgba(212,163,115,0.10)',
+                  color: currentPage === page ? 'var(--cornsilk)' : 'var(--charcoal)',
+                }}
+                aria-label={`Page ${page}`}
+                aria-current={currentPage === page ? 'page' : undefined}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
+              style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
+              aria-label="Next page"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </button>
+          </div>
       </main>
 
       {/* Floating Action Button - New Book (appears on scroll) */}

@@ -884,10 +884,10 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         boxShadow: '0 10px 24px rgba(212,163,115,0.06)',
                       }}
                       onMouseEnter={e => {
-                        e.target.style.borderColor = 'rgba(212,163,115,0.38)';
+                        ((e.target as HTMLElement).style).borderColor = 'rgba(212,163,115,0.38)';
                       }}
                       onMouseLeave={e => {
-                        e.target.style.borderColor = 'rgba(212,163,115,0.24)';
+                        ((e.target as HTMLElement).style).borderColor = 'rgba(212,163,115,0.24)';
                       }}
                     >
                       {promptLoadState === 'loading' && (
