@@ -74,8 +74,7 @@ export async function GET(request: NextRequest) {
 
   const idToken = searchParams.get('id_token');
   const code = searchParams.get('code');
-  const state = searchParams.get('state');
-  const codeVerifier = state || searchParams.get('code_verifier');
+  const codeVerifier = searchParams.get('code_verifier');
 
   if (!code && !idToken) {
     return NextResponse.json({ error: 'missing_code_or_id_token' }, { status: 400 });
@@ -118,7 +117,7 @@ export async function GET(request: NextRequest) {
       });
 
       // Accept any pending invites for this email
-      const bookId = await acceptPendingInvites(workosUser.email);
+      await acceptPendingInvites(workosUser.email);
 
       // Create local session
       const sessionId = await createLocalSession(localUser.id);
@@ -197,7 +196,7 @@ export async function POST(request: NextRequest) {
 
   const idToken = body.id_token || new URL(request.url).searchParams.get('id_token');
   const code = body.code || new URL(request.url).searchParams.get('code');
-  const codeVerifier = body.code_verifier || body.state;
+  const codeVerifier = body.code_verifier || new URL(request.url).searchParams.get('code_verifier');
 
   if (!code && !idToken) {
     return NextResponse.json({ error: 'missing_code_or_id_token' }, { status: 400 });
