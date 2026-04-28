@@ -280,6 +280,11 @@ export default function UpgradePage() {
                   <div className="flex-1 min-w-0">
                     <p className="label-caps mb-1.5" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--bronze)' }}>{plan.label}</p>
                     <p className="text-3xl font-medium" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--charcoal)' }}>{plan.price}</p>
+                    {plan.id !== 'free' && (
+                      <span className="inline-block mt-1.5 text-[0.65rem] font-semibold px-2.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: 'var(--bronze)', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.22)' }}>
+                        Lifetime access
+                      </span>
+                    )}
                     <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>{plan.description}</p>
                   </div>
                   {/* Selection indicator */}
@@ -315,8 +320,8 @@ export default function UpgradePage() {
                     </li>
                   ))}
                   {plan.notFeatures.map((feat, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: 'rgba(90,90,80,0.5)' }}>
-                      <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'rgba(150,145,135,0.4)' }}>
+                    <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: 'rgba(90,90,80,0.72)' }}>
+                      <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'rgba(150,145,135,0.6)' }}>
                         <path d="M5 12h14" />
                       </svg>
                       {feat}

@@ -849,27 +849,22 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             </div>
 
             <form onSubmit={handleSubmit} className="relative">
-              <section className="grid gap-5 py-5 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-7 md:py-6">
-                <div className="space-y-3">
-                  <div className="flex flex-wrap gap-2">
-                    <span className="rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#7B6B56', fontFamily: 'var(--font-sans)' }}>
-                      Optional
+              {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
+              <section className="py-5 md:py-6">
+                <div className="mb-4 flex flex-wrap items-center gap-3">
+                  <span className="text-xs font-medium uppercase tracking-[0.12em]" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
+                    Guided prompt
+                  </span>
+                  {promptOptionCount > 0 && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.7rem] font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.22)', color: '#4A5A35', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.35)' }}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#5F6650' }}>
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                      </svg>
+                      {promptOptionCount} available — or write freely
                     </span>
-                    <span className="rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: '#5F6650', fontFamily: 'var(--font-sans)' }}>
-                      {promptOptionCount} guided prompts ready
-                    </span>
-                  </div>
-                  <div>
-                    <Label className="mb-2 block" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                      Looking for inspiration?
-                    </Label>
-                    <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
-                      Choose a prompt to help you begin, or leave it open and let the memory unfold naturally.
-                    </p>
-                  </div>
+                  )}
                 </div>
-
-                <div>
+                <div className="relative max-w-2xl">
                   <div className="relative">
                     <select
                       value={promptLoadState === 'ready' || useCustomPrompt ? promptSelectValue : NO_PROMPT_VALUE}
@@ -991,18 +986,10 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </div>
               </section>
 
-              <section className="grid gap-5 border-t py-5 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-7 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
-                <div>
-                  <Label className="mb-2 block" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                    Your story, your words
-                  </Label>
-                  <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
-                    Write with as much detail as feels right. You can return later and revise, but start with what you remember now.
-                  </p>
-                </div>
-
+              {/* Writing section — single column, full-width writing area */}
+              <section className="border-t py-5 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
                 <div
-                  className="rounded-[1.5rem] border p-3 md:p-4"
+                  className="rounded-[1.5rem] border p-3 md:p-5"
                   style={{
                     backgroundColor: 'rgba(255,253,246,0.78)',
                     borderColor: 'rgba(212,163,115,0.18)',
@@ -1011,7 +998,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 >
                   <style>{`
                     .memory-textarea::placeholder {
-                      color: rgba(107, 106, 90, 0.6);
+                      color: rgba(120, 115, 100, 0.65);
                       font-style: italic;
                     }
                   `}</style>
@@ -1019,7 +1006,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     value={answer}
                     onChange={(e) => handleAnswerChange(e.target.value)}
                     required
-                    className="min-h-[340px] rounded-[1.2rem] border-0 px-5 py-5 text-base leading-[1.9] md:min-h-[380px] md:text-[1.05rem] memory-textarea"
+                    className="min-h-[320px] rounded-[1.2rem] border-0 px-5 py-5 text-base leading-[1.9] md:min-h-[360px] md:text-[1.05rem] memory-textarea"
                     rows={14}
                     placeholder="Take your time. There is no perfect way to tell a memory, only your way."
                     style={{
@@ -1031,17 +1018,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
                     <p className="text-xs" style={{ color: '#8E8478', fontFamily: 'var(--font-sans)' }}>
-                      <span style={{ color: '#8E8478', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>Autosaves as you write</span>
+                      Autosaves as you write
                     </p>
-                    <div 
+                    <div
                       className="inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs transition-all duration-300"
-                      style={{ 
-                        backgroundColor: wordCount > 0 ? 'rgba(212,163,115,0.12)' : 'rgba(254,250,224,0.82)', 
+                      style={{
+                        backgroundColor: wordCount > 0 ? 'rgba(212,163,115,0.12)' : 'rgba(254,250,224,0.82)',
                         boxShadow: wordCount > 0 ? '0 2px 10px rgba(212,163,115,0.15)' : 'none',
                         border: '1px solid rgba(212,163,115,0.12)',
                       }}
                     >
-                      {/* Pencil icon */}
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
                       </svg>
@@ -1060,38 +1046,9 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     </div>
                   </div>
                 </div>
-
-                {/* Prominent preserve button — creates ceremony around saving */}
-                <div className="flex justify-end pt-2">
-                  <button
-                    type="submit"
-                    disabled={isSubmitDisabled || loading}
-                    className="inline-flex h-13 items-center justify-center gap-3 rounded-full px-10 text-base font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.4)] hover:-translate-y-0.5 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
-                    style={{
-                      backgroundColor: 'var(--bronze)',
-                      color: 'var(--charcoal)',
-                      boxShadow: '0 6px 28px rgba(212,163,115,0.3), 0 2px 8px rgba(212,163,115,0.15)',
-                    }}
-                  >
-                    {loading ? (
-                      <>
-                        <div className="w-4 h-4 rounded-full animate-spin" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
-                        Preserving...
-                      </>
-                    ) : (
-                      <>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                          <path d="M9 12l2 2 4-4"/>
-                        </svg>
-                        Preserve this memory
-                      </>
-                    )}
-                  </button>
-                </div>
               </section>
 
-              <section className="grid gap-5 border-t py-5 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-7 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+              <section className="border-t py-5 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
                 <div className="space-y-3">
                   <div className="inline-flex rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: '#5F6650', fontFamily: 'var(--font-sans)' }}>
                     Optional

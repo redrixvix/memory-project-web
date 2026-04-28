@@ -378,7 +378,7 @@ export default function SettingsPage() {
                   <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
                     {user?.email}
                   </p>
-                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.15)', color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                  <span className="text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#5A5040', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.2)' }}>
                     read-only
                   </span>
                 </div>
@@ -392,12 +392,12 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving || !name.trim() || name.trim() === user?.name}
-                  className="inline-flex items-center justify-center h-11 rounded-xl px-8 text-sm font-semibold shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.98]"
+                  className="inline-flex items-center justify-center h-11 rounded-full px-8 text-sm font-semibold shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-105 active:scale-[0.97] hover:shadow-lg"
                   style={{
-                    backgroundColor: 'var(--charcoal)',
-                    color: 'var(--cornsilk)',
+                    backgroundColor: 'var(--bronze)',
+                    color: 'var(--charcoal)',
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: '0 4px 16px rgba(43,43,43,0.18)',
+                    boxShadow: '0 4px 16px rgba(212,163,115,0.28)',
                   }}
                 >
                   {saving ? (

@@ -411,11 +411,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 {currentUserRole === 'owner' && (
                   <Link
                     href={`/books/${book.id}/edit/book`}
-                    className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
-                    style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--bronze)' }}
+                    className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                    style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--bronze)', border: '1px solid rgba(212,163,115,0.2)' }}
                     aria-label="Edit book details"
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                     </svg>
