@@ -798,16 +798,20 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs" style={{ color: '#6A6A5A' }}>
+          <div className="flex items-center gap-1.5 text-xs font-medium rounded-full px-3 py-1.5 transition-all duration-300" style={{ 
+            color: saveState === 'saved' ? '#4A7C59' : '#6A6A5A',
+            backgroundColor: saveState === 'saved' ? 'rgba(74,124,89,0.10)' : 'transparent',
+            fontFamily: 'var(--font-sans)',
+          }}>
             {saveState === 'saving' && (
               <>
-                <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
+                <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.5)' }} />
                 <span>Saving...</span>
               </>
             )}
             {saveState === 'saved' && (
               <>
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#4A7C59' }}>
                   <path d="M20 6L9 17l-5-5" />
                 </svg>
                 <span>Saved</span>
@@ -842,8 +846,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 <h1 className="text-xl md:text-2xl font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
-                <p className="text-sm leading-relaxed" style={{ color: '#6A6A5A' }}>
-                  Capture one story at a time. Use a prompt or write freely.
+                <p className="text-sm leading-relaxed" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
+                  Capture one story. Use a prompt or write freely — there's no wrong way.
                 </p>
               </div>
 
@@ -1009,7 +1013,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       backgroundColor: '#FFFDF6',
                       fontFamily: 'var(--font-serif)',
                       resize: 'vertical',
-                      boxShadow: 'inset 0 0 0 1.5px rgba(212,163,115,0.32), inset 0 2px 8px rgba(212,163,115,0.06)',
+                      boxShadow: 'inset 0 0 0 1px rgba(212,163,115,0.28), inset 0 2px 12px rgba(212,163,115,0.04), inset 0 0 40px rgba(212,163,115,0.03)',
                     }}
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
@@ -1019,9 +1023,9 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <div
                       className="inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs transition-all duration-300"
                       style={{
-                        backgroundColor: wordCount > 0 ? 'rgba(212,163,115,0.12)' : 'rgba(254,250,224,0.82)',
-                        boxShadow: wordCount > 0 ? '0 2px 10px rgba(212,163,115,0.15)' : 'none',
-                        border: '1px solid rgba(212,163,115,0.12)',
+                        backgroundColor: wordCount > 0 ? 'rgba(212,163,115,0.15)' : 'rgba(254,250,224,0.82)',
+                        boxShadow: wordCount > 0 ? '0 2px 12px rgba(212,163,115,0.18)' : 'none',
+                        border: wordCount > 0 ? '1px solid rgba(212,163,115,0.30)' : '1px solid rgba(212,163,115,0.08)',
                       }}
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>

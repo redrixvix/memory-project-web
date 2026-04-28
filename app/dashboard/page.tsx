@@ -479,44 +479,48 @@ export default function Dashboard() {
                   </div>
 
                   {/* Plan selection */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
-                      Plan
-                    </Label>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                        Plan
+                      </Label>
+                      <span className="text-xs" style={{ color: '#7A7A6A' }}>— select below</span>
+                    </div>
                     <div className="grid gap-2">
                       {BOOK_PLAN_OPTIONS.map((plan) => (
                         <button
                           key={plan.id}
                           type="button"
                           onClick={() => setNewPlan(plan.id)}
-                          className="rounded-2xl border px-4 py-2 text-left transition-all duration-200 relative"
+                          className="rounded-2xl border px-4 py-3 text-left transition-all duration-200 relative hover:border-opacity-80"
                           style={{
-                            backgroundColor: newPlan === plan.id ? '#FFFDF8' : 'rgba(212,163,115,0.04)',
+                            backgroundColor: newPlan === plan.id ? 'rgba(212,163,115,0.06)' : 'rgba(212,163,115,0.02)',
                             borderColor: newPlan === plan.id ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
-                            boxShadow: newPlan === plan.id ? '0 4px 16px rgba(212,163,115,0.14)' : 'none',
+                            borderWidth: newPlan === plan.id ? '2px' : '1px',
+                            boxShadow: newPlan === plan.id ? '0 4px 20px rgba(212,163,115,0.18)' : 'none',
                           }}
                         >
                           {newPlan === plan.id && (
-                            <div className="absolute right-3 top-3 w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
                               <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
                                 <path d="M20 6L9 17l-5-5"/>
                               </svg>
                             </div>
                           )}
-                          <div className="flex items-baseline gap-1.5 flex-wrap mb-0.5">
-                            <p className="label-caps text-sm" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
-                            <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
+                          <div className="flex items-baseline gap-2 flex-wrap pr-7">
+                            <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
+                            <p className="text-sm font-semibold" style={{ color: 'var(--bronze)' }}>{plan.price}</p>
                             {plan.id === 'free' && (
-                              <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.2)', color: '#5F6650' }}>Free</span>
+                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.2)', color: '#5F6650', fontFamily: 'var(--font-sans)' }}>Free</span>
                             )}
                             {plan.id === 'premium' && (
-                              <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>One-time</span>
+                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#6A5A4A', fontFamily: 'var(--font-sans)' }}>One-time</span>
                             )}
                             {plan.id === 'plus' && (
-                              <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>One-time</span>
+                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#6A5A4A', fontFamily: 'var(--font-sans)' }}>One-time</span>
                             )}
                           </div>
-                          <div className="space-y-0">
+                          <div className="mt-1.5 space-y-0.5">
                             {(plan.id === 'free' ? [
                               'Unlimited text memories',
                               'Basic guided prompts',
@@ -573,15 +577,22 @@ export default function Dashboard() {
                     type="submit"
                     form="create-book-form"
                     disabled={creating || !newTitle.trim()}
-                    className="flex-1 rounded-full h-11 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50"
-                    style={{ backgroundColor: creating ? 'rgba(212,163,115,0.5)' : 'var(--bronze)', color: 'var(--charcoal)', boxShadow: !creating && newTitle.trim() ? '0 4px 16px rgba(212,163,115,0.25)' : 'none' }}
+                    className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-300 active:scale-[0.97] disabled:opacity-50 hover:brightness-105 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.4)] hover:-translate-y-0.5"
+                    style={{ backgroundColor: creating ? 'rgba(212,163,115,0.5)' : 'var(--bronze)', color: 'var(--charcoal)', boxShadow: !creating && newTitle.trim() ? '0 6px 24px rgba(212,163,115,0.35)' : 'none' }}
                   >
                     {creating ? (
                       <>
                         <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
                         Creating...
                       </>
-                    ) : 'Create Book'}
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                        Create Book
+                      </>
+                    )}
                   </Button>
                 </div>
               </div>
@@ -726,11 +737,11 @@ export default function Dashboard() {
 
                         {/* Description */}
                         {book.description ? (
-                          <p className="text-sm leading-relaxed line-clamp-2 mb-4" style={{ color: '#4A4A3A', fontFamily: 'var(--font-serif)' }}>
+                          <p className="text-sm leading-relaxed line-clamp-2 mb-4" style={{ color: '#3A3A32', fontFamily: 'var(--font-serif)' }}>
                             {book.description}
                           </p>
                         ) : (
-                          <p className="text-sm leading-relaxed mb-4 italic" style={{ color: '#8A8A7A', fontFamily: 'var(--font-serif)' }}>
+                          <p className="text-sm leading-relaxed mb-4" style={{ color: '#7A7A6A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
                             No description yet — begin your story
                           </p>
                         )}
@@ -738,22 +749,22 @@ export default function Dashboard() {
                         {/* Footer row */}
                         <div className="flex items-center justify-end" style={{ paddingBottom: 2 }}>
                           <div
-                            className="flex items-center gap-2 rounded-full px-3 py-1.5 transition-all duration-300 group-hover:gap-3"
+                            className="flex items-center gap-2 rounded-full px-3.5 py-2 transition-all duration-300 group-hover:gap-3"
                             style={{ 
-                              backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.15)' : 'rgba(212,163,115,0.08)',
-                              border: book._count?.memories === 0 ? '1px dashed rgba(212,163,115,0.35)' : '1px solid rgba(212,163,115,0.08)',
+                              backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.18)' : 'rgba(212,163,115,0.08)',
+                              border: book._count?.memories === 0 ? '1px solid rgba(212,163,115,0.40)' : '1px solid rgba(212,163,115,0.08)',
+                              boxShadow: book._count?.memories === 0 ? '0 2px 8px rgba(212,163,115,0.12)' : 'none',
                             }}
                           >
-                            <span className="text-xs font-medium" style={{ 
-                              color: book._count?.memories === 0 ? 'var(--bronze)' : '#7A7A6A', 
+                            <span className="text-xs font-semibold" style={{ 
+                              color: book._count?.memories === 0 ? 'var(--charcoal)' : '#6A6A5A', 
                               fontFamily: 'var(--font-sans)',
-                              fontStyle: book._count?.memories === 0 ? 'italic' : 'normal',
                             }}>
                               {book._count?.memories === 0
                                 ? 'Start writing'
                                 : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'}`}
                             </span>
-                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: book._count?.memories === 0 ? 'var(--charcoal)' : 'var(--bronze)' }}>
                               <path d="M5 12h14M12 5l7 7-7 7"/>
                             </svg>
                           </div>

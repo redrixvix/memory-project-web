@@ -312,8 +312,8 @@ export default function SettingsPage() {
                 />
 
                 {/* Avatar info */}
-                <div className="flex-1 text-center sm:text-left">
-                  <p className="text-base font-semibold mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                <div className="flex-1 sm:pl-4">
+                  <p className="text-lg font-semibold mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                     {user?.name}
                   </p>
                   {profileImageUrl ? (
@@ -389,17 +389,17 @@ export default function SettingsPage() {
                 </p>
               </div>
 
-              {/* Save */}
-              <div className="flex items-center gap-4 pt-2">
+              {/* Save — sticky at bottom when scrolling */}
+              <div className="sticky bottom-0 flex items-center justify-between gap-4 py-4 mt-2 border-t -mx-7 px-7" style={{ borderColor: 'rgba(212,163,115,0.12)', backgroundColor: '#FDFCF5' }}>
                 <button
                   onClick={handleSave}
                   disabled={saving || !name.trim() || name.trim() === user?.name}
-                  className="inline-flex items-center justify-center h-11 rounded-full px-8 text-sm font-semibold shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-105 active:scale-[0.97] hover:shadow-lg"
+                  className="inline-flex items-center justify-center h-12 rounded-full px-8 text-sm font-semibold shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.97] hover:shadow-xl hover:shadow-[rgba(212,163,115,0.4)] hover:-translate-y-0.5"
                   style={{
                     backgroundColor: 'var(--bronze)',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: '0 4px 16px rgba(212,163,115,0.35)',
+                    boxShadow: '0 6px 24px rgba(212,163,115,0.35)',
                   }}
                 >
                   {saving ? (
@@ -408,7 +408,12 @@ export default function SettingsPage() {
                       Saving…
                     </>
                   ) : (
-                    'Save changes'
+                    <>
+                      <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+                      </svg>
+                      Save changes
+                    </>
                   )}
                 </button>
                 {saved && !saving && (
