@@ -860,8 +860,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     </span>
                   </div>
                   <div>
-                    <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
-                      Writing prompt
+                    <Label className="mb-2 block" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                      Looking for inspiration?
                     </Label>
                     <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
                       Choose a prompt to help you begin, or leave it open and let the memory unfold naturally.
@@ -992,15 +992,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               </section>
 
               <section className="grid gap-5 border-t py-5 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-7 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
-                <div className="space-y-3">
-                  <div>
-                    <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
-                      Your memory
-                    </Label>
-                    <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
-                      Write with as much detail as feels right. You can return later and revise, but start with what you remember now.
-                    </p>
-                  </div>
+                <div>
+                  <Label className="mb-2 block" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                    Your story, your words
+                  </Label>
+                  <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
+                    Write with as much detail as feels right. You can return later and revise, but start with what you remember now.
+                  </p>
                 </div>
 
                 <div
@@ -1031,7 +1029,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       boxShadow: 'inset 0 0 0 1px rgba(212,163,115,0.18)',
                     }}
                   />
-                  <div className="flex items-center justify-between mt-3 px-1">
+                  <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
                     <p className="text-xs" style={{ color: '#8E8478', fontFamily: 'var(--font-sans)' }}>
                       <span style={{ color: '#8E8478', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>Autosaves as you write</span>
                     </p>
@@ -1061,6 +1059,35 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       )}
                     </div>
                   </div>
+                </div>
+
+                {/* Prominent preserve button — creates ceremony around saving */}
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    disabled={isSubmitDisabled || loading}
+                    className="inline-flex h-13 items-center justify-center gap-3 rounded-full px-10 text-base font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.4)] hover:-translate-y-0.5 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                    style={{
+                      backgroundColor: 'var(--bronze)',
+                      color: 'var(--charcoal)',
+                      boxShadow: '0 6px 28px rgba(212,163,115,0.3), 0 2px 8px rgba(212,163,115,0.15)',
+                    }}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-4 h-4 rounded-full animate-spin" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                        Preserving...
+                      </>
+                    ) : (
+                      <>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                          <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                        Preserve this memory
+                      </>
+                    )}
+                  </button>
                 </div>
               </section>
 

@@ -340,9 +340,9 @@ export default function UpgradePage() {
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <path d="M20 6L9 17l-5-5"/>
                         </svg>
-                        Selected
+                        Selected — Continue below
                       </span>
-                    ) : `Select ${plan.label}`}
+                    ) : `Begin with ${plan.label}`}
                   </button>
                 ) : (
                   <div
@@ -380,7 +380,7 @@ export default function UpgradePage() {
                   <div className="w-4 h-4 rounded-full animate-spin" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
                   Saving...
                 </span>
-              ) : `Upgrade to ${getBookPlanLabel(selectedPlan)}`}
+              ) : `Begin with ${getBookPlanLabel(selectedPlan)}`}
             </button>
           </div>
         )}
