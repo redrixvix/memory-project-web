@@ -315,9 +315,9 @@ export default function UpgradePage() {
                     </li>
                   ))}
                   {plan.notFeatures.map((feat, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: '#9A9A8A' }}>
-                      <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#C8C8B8' }}>
-                        <path d="M18 6L6 18M6 6l12 12" />
+                    <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: 'rgba(90,90,80,0.5)' }}>
+                      <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'rgba(150,145,135,0.4)' }}>
+                        <path d="M5 12h14" />
                       </svg>
                       {feat}
                     </li>
@@ -346,10 +346,10 @@ export default function UpgradePage() {
                   </button>
                 ) : (
                   <div
-                    className="w-full h-12 rounded-full flex items-center justify-center text-sm font-medium"
-                    style={{ backgroundColor: 'rgba(204,213,174,0.15)', color: '#6A6A5A', border: '1px solid rgba(212,163,115,0.2)' }}
+                    className="w-full h-12 rounded-full flex items-center justify-center text-sm font-semibold gap-2"
+                    style={{ backgroundColor: 'rgba(204,213,174,0.25)', color: '#5F6650', border: '1px solid rgba(204,213,174,0.4)' }}
                   >
-                    <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M20 6L9 17l-5-5"/>
                     </svg>
                     Current Plan

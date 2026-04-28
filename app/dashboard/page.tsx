@@ -784,9 +784,13 @@ export default function Dashboard() {
                         </div>
 
                         {/* Description */}
-                        {book.description && (
+                        {book.description ? (
                           <p className="text-sm leading-relaxed line-clamp-2 mb-5" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
                             {book.description}
+                          </p>
+                        ) : (
+                          <p className="text-sm leading-relaxed mb-5 italic" style={{ color: 'rgba(106,106,90,0.45)', fontFamily: 'var(--font-serif)' }}>
+                            No description yet
                           </p>
                         )}
 

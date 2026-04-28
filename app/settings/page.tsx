@@ -256,20 +256,42 @@ export default function SettingsPage() {
                       </button>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      className="w-24 h-24 rounded-full flex flex-col items-center justify-center gap-2 transition-all duration-200 hover:scale-105"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(212,163,115,0.12) 0%, rgba(204,213,174,0.12) 100%)',
-                        border: '2px dashed rgba(212,163,115,0.45)',
-                      }}
-                    >
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--bronze)' }}>
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                        <circle cx="12" cy="13" r="4"/>
-                      </svg>
-                      <span className="text-xs font-semibold" style={{ color: 'var(--bronze)' }}>Add photo</span>
-                    </button>
+                    <div className="relative group">
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-24 h-24 rounded-full flex flex-col items-center justify-center transition-all duration-200 hover:scale-105"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(212,163,115,0.18) 0%, rgba(204,213,174,0.18) 100%)',
+                          border: '2px solid rgba(212,163,115,0.35)',
+                        }}
+                      >
+                        <span 
+                          className="text-2xl font-semibold tracking-tight"
+                          style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)' }}
+                        >
+                          {getInitials(user?.name || '')}
+                        </span>
+                        {/* Camera icon overlay at bottom */}
+                        <div 
+                          className="absolute bottom-1 right-1 w-7 h-7 rounded-full flex items-center justify-center"
+                          style={{ backgroundColor: 'rgba(212,163,115,0.9)' }}
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                          </svg>
+                        </div>
+                      </button>
+                      {/* Hover overlay with "Change photo" text */}
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        style={{ backgroundColor: 'rgba(43,43,43,0.5)' }}
+                        aria-label="Add profile photo"
+                      >
+                        <span className="text-xs font-medium text-white">Add photo</span>
+                      </button>
+                    </div>
                   )}
 
                   {/* Upload loading state */}
