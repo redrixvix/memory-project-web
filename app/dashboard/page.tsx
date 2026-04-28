@@ -489,7 +489,7 @@ export default function Dashboard() {
                           key={plan.id}
                           type="button"
                           onClick={() => setNewPlan(plan.id)}
-                          className="rounded-2xl border px-4 py-2.5 text-left transition-all duration-200 relative"
+                          className="rounded-2xl border px-4 py-2 text-left transition-all duration-200 relative"
                           style={{
                             backgroundColor: newPlan === plan.id ? '#FFFDF8' : 'rgba(212,163,115,0.04)',
                             borderColor: newPlan === plan.id ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
@@ -503,7 +503,7 @@ export default function Dashboard() {
                               </svg>
                             </div>
                           )}
-                          <div className="flex items-baseline gap-1.5 flex-wrap mb-1">
+                          <div className="flex items-baseline gap-1.5 flex-wrap mb-0.5">
                             <p className="label-caps text-sm" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
                             <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
                             {plan.id === 'free' && (
@@ -516,7 +516,7 @@ export default function Dashboard() {
                               <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>One-time</span>
                             )}
                           </div>
-                          <div className="space-y-0.5">
+                          <div className="space-y-0">
                             {(plan.id === 'free' ? [
                               'Unlimited text memories',
                               'Basic guided prompts',
@@ -556,7 +556,7 @@ export default function Dashboard() {
               </div>
 
               {/* Sticky footer with actions */}
-              <div className="shrink-0 px-6 py-4 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)', backgroundColor: '#FDFCF5' }}>
+              <div className="shrink-0 px-6 py-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)', backgroundColor: '#FDFCF5' }}>
                 <div className="flex gap-3">
                   {!creating && (
                     <Button

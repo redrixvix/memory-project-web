@@ -1009,7 +1009,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       backgroundColor: '#FFFDF6',
                       fontFamily: 'var(--font-serif)',
                       resize: 'vertical',
-                      boxShadow: 'inset 0 0 0 1px rgba(212,163,115,0.18)',
+                      boxShadow: 'inset 0 0 0 1.5px rgba(212,163,115,0.32), inset 0 2px 8px rgba(212,163,115,0.06)',
                     }}
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">

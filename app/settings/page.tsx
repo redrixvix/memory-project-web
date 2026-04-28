@@ -181,10 +181,10 @@ export default function SettingsPage() {
       </header>
 
       {/* ── MAIN ── */}
-      <main className="px-6 md:px-10 py-12 max-w-3xl mx-auto w-full">
+      <main className="px-6 md:px-10 py-10 max-w-3xl mx-auto w-full">
 
         {/* Page header */}
-        <div className="mb-10">
+        <div className="mb-8">
           <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Account</p>
           <h1 className="display-md mb-3" style={{ color: 'var(--charcoal)' }}>Settings</h1>
           <p className="text-base" style={{ color: '#5A5A4A' }}>
