@@ -312,7 +312,7 @@ export default function Dashboard() {
                   </svg>
                 </div>
                 <p className="text-sm" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                  Welcome back{user?.name ? `, ${user.name.split(' ')[0]}` : ''}
+                  Welcome back, {user?.name ? user.name.split(' ').slice(0, 2).join(' ') : 'friend'}
                 </p>
               </div>
               <h1 className="display-md mb-2" style={{ color: 'var(--charcoal)' }}>
@@ -789,8 +789,8 @@ export default function Dashboard() {
                             {book.description}
                           </p>
                         ) : (
-                          <p className="text-sm leading-relaxed mb-5 italic" style={{ color: 'rgba(106,106,90,0.45)', fontFamily: 'var(--font-serif)' }}>
-                            No description yet
+                          <p className="text-sm leading-relaxed mb-5 italic" style={{ color: 'rgba(106,106,90,0.40)', fontFamily: 'var(--font-serif)' }}>
+                            No description yet — tap to add one
                           </p>
                         )}
 

@@ -10,7 +10,7 @@ export interface WorkOSUserProfile {
   profilePictureUrl?: string | null;
 }
 
-interface LocalUserRecord {
+export interface LocalUserRecord {
   id: number;
   email: string;
   name: string;
