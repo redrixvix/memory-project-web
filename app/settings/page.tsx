@@ -152,7 +152,7 @@ export default function SettingsPage() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
-          <p className="text-sm" style={{ color: '#6A6A5A' }}>Loading...</p>
+          <p className="text-sm" style={{ color: '#5A5A4A' }}>Loading...</p>
         </div>
       </div>
     );
@@ -331,7 +331,7 @@ export default function SettingsPage() {
                 </div>
                 {/* Upload hint — only when no photo */}
                 {!profileImageUrl && (
-                  <p className="text-xs mt-3 text-center sm:text-left" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                  <p className="text-xs mt-3 text-center sm:text-left" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                     A photo helps family members recognize you in shared books
                   </p>
                 )}
@@ -374,7 +374,7 @@ export default function SettingsPage() {
                     border: '1px solid rgba(212,163,115,0.12)',
                   }}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#8A8A7A', marginTop: '1px', flexShrink: 0 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#7A7A6A', marginTop: '1px', flexShrink: 0 }}>
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
                   </svg>
                   <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                     read-only
                   </span>
                 </div>
-                <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                   Contact support to change your email address
                 </p>
               </div>
@@ -478,7 +478,7 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>Privacy &amp; data</p>
-                  <p className="text-xs mt-0.5" style={{ color: '#6A6A5A' }}>Your memories stay private by default</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#5A5A4A' }}>Your memories stay private by default</p>
                 </div>
               </div>
             </div>
@@ -495,7 +495,7 @@ export default function SettingsPage() {
                   </div>
                   <div>
                     <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Memories are private by default</p>
-                    <p className="text-xs mt-1 leading-relaxed" style={{ color: '#6A6A5A' }}>
+                    <p className="text-xs mt-1 leading-relaxed" style={{ color: '#5A5A4A' }}>
                       Nothing you write is ever shared, sold, or made public unless you explicitly choose to print or share a book.
                     </p>
                   </div>
@@ -508,7 +508,7 @@ export default function SettingsPage() {
                     border: '1px dashed rgba(212,163,115,0.18)',
                   }}
                 >
-                  <p className="text-xs" style={{ color: '#8A8A7A' }}>
+                  <p className="text-xs" style={{ color: '#7A7A6A' }}>
                     Export memories &amp; delete account — available soon. We'll notify you.
                   </p>
                 </div>
@@ -539,7 +539,7 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>Security</p>
-                  <p className="text-xs mt-0.5" style={{ color: '#6A6A5A' }}>Manage your account security</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#5A5A4A' }}>Manage your account security</p>
                 </div>
               </div>
             </div>
@@ -548,7 +548,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Password</p>
-                    <p className="text-xs mt-0.5" style={{ color: '#8A8A7A' }}>
+                    <p className="text-xs mt-0.5" style={{ color: '#7A7A6A' }}>
                       You haven't changed your password yet
                     </p>
                   </div>
@@ -588,7 +588,7 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>Sign out</p>
-                  <p className="text-xs mt-0.5" style={{ color: '#6A6A5A' }}>Sign out of Memory Project on this device</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#5A5A4A' }}>Sign out of Memory Project on this device</p>
                 </div>
               </div>
             </div>
