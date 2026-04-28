@@ -298,16 +298,16 @@ export default function Dashboard() {
       </header>
 
       {/* ── MAIN CONTENT ── */}
-      <main className="px-6 md:px-10 py-10 max-w-5xl mx-auto w-full">
+      <main className="px-6 md:px-10 pt-6 pb-10 max-w-5xl mx-auto w-full">
 
         {/* Header row — compact, editorial */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h1 className="text-4xl md:text-5xl font-medium tracking-tight mb-1.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+              <h1 className="text-3xl md:text-4xl font-medium tracking-tight mb-0.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                 Your Library
               </h1>
-              <p style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
+              <p className="text-sm" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
                 {filteredBooks.length === 0
                   ? 'Your stories are waiting to be captured.'
                   : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'book' : 'books'}${searchQuery ? ` matching "${searchQuery}"` : ''}${totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ''}`}
@@ -330,7 +330,7 @@ export default function Dashboard() {
 
           {/* Search + sort — only shown when books exist */}
           {books.length > 0 && (
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-5">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4">
               <div className="relative flex-1">
                 <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#8A8A7A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -348,7 +348,7 @@ export default function Dashboard() {
                     fontFamily: 'var(--font-sans)',
                   }}
                   onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.65)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.12)'; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.30)'; e.currentTarget.style.boxShadow = 'none'; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.30)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.color = 'var(--charcoal)'; }}
                 />
                 {searchQuery && (
                   <button
@@ -377,8 +377,8 @@ export default function Dashboard() {
                     onClick={() => setSortOrder(value)}
                     className="rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
                     style={{
-                      backgroundColor: sortOrder === value ? 'var(--charcoal)' : 'transparent',
-                      color: sortOrder === value ? 'var(--cornsilk)' : '#6A6A5A',
+                      backgroundColor: sortOrder === value ? 'var(--bronze)' : 'transparent',
+                      color: sortOrder === value ? 'var(--charcoal)' : '#7A7A6A',
                       fontFamily: 'var(--font-sans)',
                       minWidth: '50px',
                     }}
@@ -708,10 +708,10 @@ export default function Dashboard() {
                           }} />
                         </div>
                       </div>
-                      <CardContent className="p-8 pr-24 md:pr-28" style={{ paddingLeft: 28 }}>
+                      <CardContent className="p-6 pr-24 md:pr-28" style={{ paddingLeft: 28 }}>
                         {/* Title + plan badge */}
                         <div className="flex items-center gap-2 mb-2 flex-wrap">
-                          <h3 className="text-2xl font-medium leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                          <h3 className="text-xl font-medium leading-snug" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                             {book.title}
                           </h3>
                           {book.plan && book.plan !== 'free' && (
@@ -726,20 +726,17 @@ export default function Dashboard() {
 
                         {/* Description */}
                         {book.description ? (
-                          <p className="text-sm leading-relaxed line-clamp-2 mb-5" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
+                          <p className="text-sm leading-relaxed line-clamp-2 mb-4" style={{ color: '#4A4A3A', fontFamily: 'var(--font-serif)' }}>
                             {book.description}
                           </p>
                         ) : (
-                          <p className="text-sm leading-relaxed mb-5 italic" style={{ color: '#8A8A7A', fontFamily: 'var(--font-serif)' }}>
-                            No description yet — tap to add one
+                          <p className="text-sm leading-relaxed mb-4 italic" style={{ color: '#8A8A7A', fontFamily: 'var(--font-serif)' }}>
+                            No description yet — begin your story
                           </p>
                         )}
 
-                        {/* Divider */}
-                        <div className="mb-5" style={{ height: 1, backgroundColor: 'rgba(212,163,115,0.10)' }} />
-
                         {/* Footer row */}
-                        <div className="flex items-center justify-end" style={{ paddingBottom: 4 }}>
+                        <div className="flex items-center justify-end" style={{ paddingBottom: 2 }}>
                           <div
                             className="flex items-center gap-2 rounded-full px-3 py-1.5 transition-all duration-300 group-hover:gap-3"
                             style={{ 

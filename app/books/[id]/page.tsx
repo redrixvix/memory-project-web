@@ -463,7 +463,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Memory section header — editorial horizontal rule */}
         {memories.length > 0 && (
-          <div className="mb-10">
+          <div className="mb-7">
             <div className="flex items-center gap-4">
               <div
                 className="w-9 h-9 rounded-2xl shrink-0 flex items-center justify-center shadow-sm"
@@ -484,8 +484,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   onClick={() => setMemorySort('newest')}
                   className="rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
                   style={{
-                    backgroundColor: memorySort === 'newest' ? 'var(--charcoal)' : 'transparent',
-                    color: memorySort === 'newest' ? 'var(--cornsilk)' : '#8A8A7A',
+                    backgroundColor: memorySort === 'newest' ? 'var(--bronze)' : 'transparent',
+                    color: memorySort === 'newest' ? 'var(--charcoal)' : '#7A7A6A',
                   }}
                 >
                   Newest
@@ -495,8 +495,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   onClick={() => setMemorySort('oldest')}
                   className="rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
                   style={{
-                    backgroundColor: memorySort === 'oldest' ? 'var(--charcoal)' : 'transparent',
-                    color: memorySort === 'oldest' ? 'var(--cornsilk)' : '#6A6A5A',
+                    backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
+                    color: memorySort === 'oldest' ? 'var(--charcoal)' : '#7A7A6A',
                   }}
                 >
                   Oldest
@@ -628,7 +628,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         transition: 'box-shadow 0.4s ease',
                       }}
                     />
-                    <CardContent className="pt-6 pb-6 px-5 pl-7 relative">
+                    <CardContent className="pt-5 pb-5 px-4 pl-6 relative" style={{ paddingRight: '1.25rem' }}>
 
                       {/* Chapter number badge — positioned near the content */}
                       <div
