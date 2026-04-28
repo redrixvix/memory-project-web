@@ -384,11 +384,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Book hero — compact when empty, expanded when has memories */}
         <div
-          className="rounded-3xl p-6 md:p-8 relative overflow-hidden transition-all duration-500"
+          className="rounded-3xl p-5 md:p-6 relative overflow-hidden transition-all duration-500"
           style={{
             background: 'linear-gradient(135deg, rgba(212,163,115,0.09) 0%, rgba(204,213,174,0.06) 100%)',
             border: '1px solid rgba(212,163,115,0.14)',
-            marginBottom: memories.length === 0 ? '2rem' : '2.5rem',
+            marginBottom: memories.length === 0 ? '1.5rem' : '2rem',
             boxShadow: '0 4px 24px rgba(212,163,115,0.06), inset 0 1px 0 rgba(255,255,255,0.6)',
           }}
         >
@@ -407,10 +407,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none"
             style={{ background: 'linear-gradient(to top, rgba(212,163,115,0.04), transparent)' }}
           />
-          <div className="flex items-start justify-between gap-5 flex-wrap pl-3">
+          <div className="flex items-start justify-between gap-4 flex-wrap pl-3">
             <div className="flex flex-col gap-2 flex-1 min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl md:text-3xl font-medium tracking-tight leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+                <h1 className="text-xl md:text-2xl font-medium tracking-tight leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
                   {book.title}
                 </h1>
                 {book.plan && book.plan !== 'free' && (
@@ -508,7 +508,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Empty state — warm and inviting */}
         {memories.length === 0 ? (
-          <div className="text-center py-16 md:py-20 animate-fade-up">
+          <div className="text-center py-12 md:py-16 animate-fade-up">
             {/* Warm illustrated open-book icon */}
             <div className="inline-block mb-8 relative">
               <div
@@ -909,7 +909,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         )}
 
         {memories.length > 0 && (
-          <div className="mt-16 text-center">
+          <div className="mt-12 text-center">
             {/* Decorative divider */}
             <div className="flex items-center justify-center gap-4 mb-8">
               <div className="h-px w-12 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
