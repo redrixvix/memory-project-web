@@ -1084,8 +1084,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               </p>
                             </div>
                             <label
-                              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
-                              style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}
+                              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200 hover:brightness-110 active:scale-[0.98] shadow-md"
+                              style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)', boxShadow: '0 4px 16px rgba(43,43,43,0.2)' }}
                             >
                               <input
                                 type="file"
@@ -1208,6 +1208,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                                     ? 'Processing…'
                                     : 'Record audio'}
                             </button>
+                            {recorderState === 'recording' && (
+                              <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#B91C1C', boxShadow: '0 0 8px rgba(185,28,28,0.5)' }} />
+                                <span className="text-xs font-medium animate-pulse" style={{ color: '#B91C1C', fontFamily: 'var(--font-sans)' }}>Recording…</span>
+                              </div>
+                            )}
                           </div>
 
                           <p className="mt-3 text-xs leading-5" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
@@ -1458,10 +1464,58 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   className="success-sub text-sm"
                   style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}
                 >
-                  Returning to your book…
+                  See it in your book, or keep building.
                 </p>
 
-                {/* Decorative dots */}
+                <div className="success-sub mt-8 flex flex-col sm:flex-row gap-3 items-center">
+                  {!memoryId && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSaveSuccess(false);
+                        setSaveState('idle');
+                        setAnswer('');
+                        setWordCount(0);
+                        setPrompt('');
+                        setUseCustomPrompt(false);
+                        setCustomPrompt('');
+                        clearDraft();
+                        setAudioDraft(null);
+                        router.refresh();
+                      }}
+                      className="inline-flex items-center gap-2 h-11 rounded-full px-6 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                      style={{
+                        backgroundColor: 'var(--charcoal)',
+                        color: 'var(--cornsilk)',
+                        fontFamily: 'var(--font-sans)',
+                        boxShadow: '0 4px 20px rgba(43,43,43,0.22)',
+                      }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 5v14M5 12h14"/>
+                      </svg>
+                      Add another
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/books/${id}`)}
+                    className="inline-flex items-center gap-2 h-11 rounded-full px-6 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                    style={{
+                      backgroundColor: 'rgba(212,163,115,0.12)',
+                      color: 'var(--charcoal)',
+                      fontFamily: 'var(--font-sans)',
+                      border: '1px solid rgba(212,163,115,0.22)',
+                    }}
+                  >
+                    View book
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Progress dots */}
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
                   {[0, 1, 2].map(i => (
                     <div
