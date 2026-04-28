@@ -498,51 +498,17 @@ export default function SettingsPage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center mt-0.5 shrink-0"
-                    style={{ backgroundColor: 'rgba(204,213,174,0.15)' }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Export your data anytime</p>
-                    <p className="text-xs mt-1 leading-relaxed" style={{ color: '#6A6A5A' }}>
-                      Download all your memories and books as a simple archive. Your data belongs to you.
-                    </p>
-                    <p className="text-xs mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-medium" style={{ 
-                      color: '#8A7A6A', 
-                      backgroundColor: 'rgba(212,163,115,0.08)',
-                      border: '1px solid rgba(212,163,115,0.15)',
-                    }}>
-                      Coming soon
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center mt-0.5 shrink-0"
-                    style={{ backgroundColor: 'rgba(204,213,174,0.15)' }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
-                      <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Delete anytime</p>
-                    <p className="text-xs mt-1 leading-relaxed" style={{ color: '#6A6A5A' }}>
-                      Permanently delete individual memories, books, or your entire account and all data.
-                    </p>
-                    <p className="text-xs mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-medium" style={{ 
-                      color: '#8A7A6A', 
-                      backgroundColor: 'rgba(212,163,115,0.08)',
-                      border: '1px solid rgba(212,163,115,0.15)',
-                    }}>
-                      Coming soon
-                    </p>
-                  </div>
+                {/* Export & account deletion — wired up when backend is ready */}
+                <div
+                  className="rounded-2xl p-4 mt-1 border-dashed"
+                  style={{
+                    backgroundColor: 'rgba(212,163,115,0.04)',
+                    border: '1px dashed rgba(212,163,115,0.18)',
+                  }}
+                >
+                  <p className="text-xs" style={{ color: '#8A8A7A' }}>
+                    Export memories &amp; delete account — available soon. We'll notify you.
+                  </p>
                 </div>
               </div>
             </div>
@@ -581,7 +547,7 @@ export default function SettingsPage() {
                   <div>
                     <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Password</p>
                     <p className="text-xs mt-0.5" style={{ color: '#8A8A7A' }}>
-                      Last changed: not available
+                      You haven't changed your password yet
                     </p>
                   </div>
                   <button

@@ -1261,41 +1261,34 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     </div>
                   ) : (
                     <div
-                      className="rounded-[1.5rem] p-6 relative overflow-hidden"
+                      className="rounded-[1.2rem] px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4"
                       style={{
-                        background: 'linear-gradient(145deg, rgba(250,237,205,0.65) 0%, rgba(204,213,174,0.18) 100%)',
-                        border: '1px solid rgba(212,163,115,0.22)',
-                        boxShadow: '0 4px 20px rgba(212,163,115,0.08)',
+                        background: 'linear-gradient(135deg, rgba(250,237,205,0.5) 0%, rgba(204,213,174,0.12) 100%)',
+                        border: '1px solid rgba(212,163,115,0.18)',
                       }}
                     >
-                      {/* Decorative top gradient line */}
-                      <div className="absolute top-0 left-0 right-0 h-1 rounded-t-[1.5rem]" style={{ background: 'linear-gradient(to right, var(--bronze), var(--tea-green), var(--papaya))' }} />
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
-                        <div className="flex-1 min-w-0 flex items-start gap-4">
-                          <div className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--bronze)' }}>
-                              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                              Add photos and voice notes
-                            </p>
-                            <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                              Upgrade to preserve moments in full — photos and audio bring memories to life in ways text alone cannot.
-                            </p>
-                          </div>
+                      <div className="flex items-start gap-3">
+                        <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center mt-0.5" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--bronze)' }}>
+                            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                          </svg>
                         </div>
-                        <div className="shrink-0">
-                          <Link
-                            href={`/upgrade?book=${id}`}
-                            className="inline-flex h-10 items-center justify-center rounded-2xl px-6 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-[0.98] shadow-sm"
-                            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 16px rgba(212,163,115,0.25)' }}
-                          >
-                            See plans
-                          </Link>
+                        <div>
+                          <p className="text-sm font-semibold mb-0.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                            Add photos &amp; voice notes
+                          </p>
+                          <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                            Upgrade your plan to preserve moments with images and audio.
+                          </p>
                         </div>
                       </div>
+                      <Link
+                        href={`/upgrade?book=${id}`}
+                        className="inline-flex h-9 items-center justify-center rounded-xl px-5 text-xs font-semibold transition-all duration-200 hover:brightness-105 active:scale-[0.98] shrink-0"
+                        style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                      >
+                        See plans
+                      </Link>
                     </div>
                   )}
                 </div>

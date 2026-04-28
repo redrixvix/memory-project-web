@@ -547,9 +547,33 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <div className="absolute bottom-2 left-0 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--bronze)', opacity: 0.3 }} />
             </div>
             <h2 className="text-2xl md:text-3xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>Start your memory book</h2>
-            <p className="text-sm max-w-sm mx-auto leading-relaxed mb-8" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
-              Every great story starts with a single memory. Add your first one — you can use a prompt or write freely.
+            <p className="text-sm max-w-sm mx-auto leading-relaxed mb-5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
+              Every great story starts with a single memory.
             </p>
+            {/* 3 example prompt chips — spark inspiration */}
+            <div className="flex flex-wrap justify-center gap-2.5 mb-8">
+              {[
+                "A trip that changed me",
+                "The house I grew up in",
+                "A meal I'll never forget",
+              ].map((label) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium"
+                  style={{
+                    backgroundColor: 'rgba(212,163,115,0.07)',
+                    color: '#6A5A4A',
+                    border: '1px solid rgba(212,163,115,0.18)',
+                    fontFamily: 'var(--font-sans)',
+                  }}
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                  </svg>
+                  {label}
+                </span>
+              ))}
+            </div>
             <Link
               href={`/books/${id}/edit`}
               className="inline-flex h-14 items-center justify-center rounded-full px-10 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-2xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-1 active:scale-95 group"
