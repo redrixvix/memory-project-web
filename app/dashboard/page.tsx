@@ -425,8 +425,9 @@ export default function Dashboard() {
 
             {/* Modal panel */}
             <div
-              className="relative w-full max-w-lg rounded-3xl overflow-hidden animate-fade-up"
+              className="relative w-full max-w-lg rounded-3xl overflow-y-auto animate-fade-up"
               style={{
+                maxHeight: '90vh',
                 backgroundColor: '#FDFCF5',
                 boxShadow: '0 40px 100px rgba(43,43,43,0.22), 0 12px 40px rgba(212,163,115,0.12)',
               }}
@@ -504,12 +505,11 @@ export default function Dashboard() {
                           key={plan.id}
                           type="button"
                           onClick={() => setNewPlan(plan.id)}
-                          className="rounded-2xl border px-5 py-4 text-left transition-all duration-200 relative"
+                          className="rounded-2xl border px-4 py-3.5 text-left transition-all duration-200 relative"
                           style={{
                             backgroundColor: newPlan === plan.id ? '#FFFDF8' : 'rgba(212,163,115,0.04)',
                             borderColor: newPlan === plan.id ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
                             boxShadow: newPlan === plan.id ? '0 6px 20px rgba(212,163,115,0.14)' : 'none',
-                            minHeight: '88px',
                           }}
                         >
                           {newPlan === plan.id && (
@@ -574,19 +574,6 @@ export default function Dashboard() {
 
                   {/* Actions */}
                   <div className="flex gap-3 pt-2">
-                    <Button
-                      type="submit"
-                      disabled={creating}
-                      className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-60"
-                      style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-                    >
-                      {creating ? (
-                        <>
-                          <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
-                          Creating...
-                        </>
-                      ) : 'Create Book'}
-                    </Button>
                     {!creating && (
                       <Button
                         type="button"
@@ -598,6 +585,19 @@ export default function Dashboard() {
                         Cancel
                       </Button>
                     )}
+                    <Button
+                      type="submit"
+                      disabled={creating || !newTitle.trim()}
+                      className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50"
+                      style={{ backgroundColor: creating ? 'rgba(212,163,115,0.5)' : 'var(--bronze)', color: 'var(--charcoal)', boxShadow: !creating && newTitle.trim() ? '0 6px 24px rgba(212,163,115,0.3)' : 'none' }}
+                    >
+                      {creating ? (
+                        <>
+                          <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                          Creating...
+                        </>
+                      ) : 'Create Book'}
+                    </Button>
                   </div>
                 </form>
               </div>
