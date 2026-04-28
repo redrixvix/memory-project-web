@@ -862,8 +862,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
                       {/* Footer actions — larger buttons for better accessibility */}
                       <div
-                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t transition-all duration-300"
-                        style={{ borderColor: 'rgba(212,163,115,0.08)' }}
+                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t transition-all duration-500"
+                        style={{ borderColor: 'rgba(212,163,115,0.08)', opacity: hoveredCard === memoryIndex ? 1 : 0 }}
                       >
                         <Link
                           href={`/books/${id}/edit?memory=${memory.id}`}

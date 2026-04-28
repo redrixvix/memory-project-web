@@ -342,10 +342,11 @@ export default function SettingsPage() {
 
               {/* Name field */}
               <div className="grid gap-2">
-                <label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                <label htmlFor="display-name" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                   Display name
                 </label>
                 <input
+                  id="display-name"
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}

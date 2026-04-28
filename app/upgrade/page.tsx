@@ -195,10 +195,11 @@ export default function UpgradePage() {
         {/* Book selector */}
         {books.length > 1 && (
           <div className="mb-8">
-            <label className="block text-sm font-medium mb-3" style={{ color: 'var(--charcoal)' }}>
+            <label id="book-selector-label" className="block text-sm font-medium mb-3" style={{ color: 'var(--charcoal)' }}>
               Which book?
             </label>
             <select
+              aria-labelledby="book-selector-label"
               value={selectedBookId}
               onChange={(e) => updateSelectedBook(e.target.value, books)}
               className="w-full rounded-xl px-4 py-3 text-base"
@@ -225,7 +226,11 @@ export default function UpgradePage() {
         )}
 
         {/* Plan radio cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div
+          role="group"
+          aria-label="Pricing plans: Free, Plus at $50, or Premium at $100. Lifetime access included."
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+        >
           {BOOK_PLAN_OPTIONS.map(plan => {
             const isCurrentPlan = selectedBook && normalizeBookPlan(selectedBook.plan) === plan.id;
             const isSelected = selectedPlan === plan.id;
@@ -385,31 +390,6 @@ export default function UpgradePage() {
                 </span>
               ) : `Begin with ${getBookPlanLabel(selectedPlan)}`}
             </button>
-          </div>
-        )}
-
-        {/* Book selector */}
-        {books.length > 0 && (
-          <div className="mt-6 text-center">
-            {books.length > 1 ? (
-              <div className="flex items-center justify-center gap-3">
-                <label className="text-sm" style={{ color: '#6A6A5A' }}>Upgrading:</label>
-                <select
-                  value={selectedBookId}
-                  onChange={(e) => updateSelectedBook(e.target.value, books)}
-                  className="rounded-xl px-4 py-2 text-sm"
-                  style={{ border: '1px solid rgba(212,163,115,0.35)', backgroundColor: '#FDFCF5', color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
-                >
-                  {books.map(b => (
-                    <option key={b.id} value={b.id}>{b.title}</option>
-                  ))}
-                </select>
-              </div>
-            ) : (
-              <p className="text-sm" style={{ color: '#6A6A5A' }}>
-                Upgrading: <span className="font-medium" style={{ color: 'var(--charcoal)' }}>{books[0].title}</span>
-              </p>
-            )}
           </div>
         )}
 
