@@ -784,9 +784,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 <h1 className="text-base md:text-lg font-medium truncate" style={{ color: 'var(--charcoal)' }}>
                   {book.title}
                 </h1>
-                <span className="ml-2 shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full" style={getPlanBadgeStyles(book.plan)}>
-                  {getBookPlanLabel(book.plan, book.storage_tier)}
-                </span>
               </>
             )}
           </div>
@@ -822,45 +819,34 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           <div className="hero-ambient" />
 
           <div className="relative px-5 py-4 md:px-8 md:py-5">
-            <div className="grid gap-5 border-b pb-6 md:grid-cols-[minmax(0,1.55fr)_minmax(15rem,0.85fr)] md:gap-8 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
-              <div>
-                <p className="label-caps mb-2" style={{ color: 'var(--bronze)' }}>
-                  Memory entry
-                </p>
+            <div className="border-b pb-6 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+                <div className="flex flex-wrap items-center gap-3 mb-3">
+                  <p className="label-caps" style={{ color: 'var(--bronze)' }}>Memory entry</p>
+                  <div className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.15)', color: '#4A5A35', fontFamily: 'var(--font-sans)' }}>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    Kept private
+                  </div>
+                </div>
                 <h1 className="text-xl md:text-2xl font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
-                <p className="max-w-2xl text-sm leading-relaxed" style={{ color: '#6A6A5A' }}>
+                <p className="text-sm leading-relaxed" style={{ color: '#6A6A5A' }}>
                   Capture one story at a time. Use a prompt or write freely.
                 </p>
               </div>
-
-              <aside className="self-start rounded-[1.1rem] px-4 py-3" style={{ backgroundColor: 'rgba(255,253,246,0.76)', border: '1px solid rgba(212,163,115,0.14)' }}>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                  <span className="label-caps" style={{ color: 'var(--bronze)' }}>Kept private</span>
-                </div>
-                <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A' }}>
-                  This memory stays private until you decide to share it.
-                </p>
-              </aside>
-            </div>
 
             <form onSubmit={handleSubmit} className="relative">
               {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
               <section className="py-5 md:py-6">
                 <div className="mb-4 flex flex-wrap items-center gap-3">
-                  <span className="text-xs font-medium uppercase tracking-[0.12em]" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
+                  <span className="text-xs font-medium uppercase tracking-[0.12em]" style={{ color: '#8A6A4A', fontFamily: 'var(--font-sans)' }}>
                     Guided prompt
                   </span>
                   {promptOptionCount > 0 && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.7rem] font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.22)', color: '#4A5A35', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.35)' }}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#5F6650' }}>
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-                      </svg>
-                      {promptOptionCount} available — or write freely
+                    <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
+                      Choose one below, or write freely
                     </span>
                   )}
                 </div>
@@ -998,7 +984,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 >
                   <style>{`
                     .memory-textarea::placeholder {
-                      color: rgba(120, 115, 100, 0.65);
+                      color: rgba(100, 95, 85, 0.75);
                       font-style: italic;
                     }
                   `}</style>
@@ -1017,7 +1003,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     }}
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
-                    <p className="text-xs" style={{ color: '#8E8478', fontFamily: 'var(--font-sans)' }}>
+                    <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                       Autosaves as you write
                     </p>
                     <div
@@ -1031,10 +1017,10 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
                       </svg>
-                      <span className="font-semibold" style={{ color: wordCount > 0 ? 'var(--charcoal)' : '#9A8A7A', fontFamily: 'var(--font-sans)' }}>
+                      <span className="font-semibold" style={{ color: wordCount > 0 ? 'var(--charcoal)' : '#7A7060', fontFamily: 'var(--font-sans)' }}>
                         {wordCount.toLocaleString()}
                       </span>
-                      <span style={{ color: '#9A8A7A', fontFamily: 'var(--font-sans)' }}>{wordCount === 1 ? 'word' : 'words'}</span>
+                      <span style={{ color: '#7A7060', fontFamily: 'var(--font-sans)' }}>{wordCount === 1 ? 'word' : 'words'}</span>
                       {wordCount >= 20 && (
                         <>
                           <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
@@ -1050,7 +1036,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
               <section className="border-t py-5 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
                 <div className="space-y-3">
-                  <div className="inline-flex rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: '#5F6650', fontFamily: 'var(--font-sans)' }}>
+                  <div className="inline-flex rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(212,163,115,0.08)', color: '#8A7A6A', fontFamily: 'var(--font-sans)' }}>
                     Optional
                   </div>
                   <div>

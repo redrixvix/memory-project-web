@@ -797,62 +797,20 @@ export default function Dashboard() {
                         {/* Rule */}
                         <div className="rule mb-5" />
 
-                        {/* Footer row */}
-                        <div className="flex items-center justify-between" style={{ paddingBottom: 4 }}>
-                          {/* Left side: memory count + contributor avatar */}
-                          <div className="flex items-center gap-3">
-                            {book._count && (
-                              <div
-                                className="rounded-full px-3 py-1 flex items-center gap-1.5"
-                                style={{
-                                  backgroundColor: book._count.memories === 0 ? 'rgba(212,163,115,0.1)' : 'rgba(184,137,90,0.12)',
-                                  border: book._count.memories === 0 ? '1px solid rgba(212,163,115,0.2)' : 'none',
-                                }}
-                              >
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                                </svg>
-                                <span className="text-xs font-medium" style={{
-                                  color: book._count.memories === 0 ? '#7A7A6A' : 'var(--charcoal)',
-                                  fontFamily: 'var(--font-sans)',
-                                }}>
-                                  {book._count.memories === 0
-                                    ? 'Ready for memories'
-                                    : `${book._count.memories} ${book._count.memories === 1 ? 'memory' : 'memories'}`}
-                                </span>
-                              </div>
-                            )}
-                            {book.contributors && book.contributors.length > 0 && (
-                              <Avatar
-                                name={book.contributors[0].name}
-                                imageUrl={book.contributors[0].profile_image_url || null}
-                                className="w-7 h-7"
-                              />
-                            )}
-                          </div>
-
-                          {/* Right side: updated time + arrow */}
-                          <div className="flex items-center gap-3">
-                            <p className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
-                              {(() => {
-                                const diff = Date.now() - new Date(lastUpdated).getTime();
-                                const days = Math.floor(diff / 86400000);
-                                if (days === 0) return 'Touched today';
-                                if (days === 1) return 'Touched yesterday';
-                                if (days < 7) return `Touched ${days} days ago`;
-                                if (days < 30) return `Touched ${Math.floor(days / 7)}w ago`;
-                                return `Last touched ${new Date(lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-                              })()}
-                            </p>
-                            <div
-                              className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                              style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}
-                            >
-                              <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                              </svg>
-                            </div>
+                        {/* Footer row — simplified */}
+                        <div className="flex items-center justify-end" style={{ paddingBottom: 4 }}>
+                          <div
+                            className="flex items-center gap-2 rounded-full px-3 py-1.5 transition-all duration-300 group-hover:gap-3"
+                            style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}
+                          >
+                            <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
+                              {book._count?.memories === 0
+                                ? 'Empty — start writing'
+                                : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'}`}
+                            </span>
+                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                              <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
                           </div>
                         </div>
                       </CardContent>

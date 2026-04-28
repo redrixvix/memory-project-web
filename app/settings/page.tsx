@@ -394,10 +394,10 @@ export default function SettingsPage() {
                   disabled={saving || !name.trim() || name.trim() === user?.name}
                   className="inline-flex items-center justify-center h-11 rounded-full px-8 text-sm font-semibold shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-105 active:scale-[0.97] hover:shadow-lg"
                   style={{
-                    backgroundColor: 'var(--bronze)',
-                    color: 'var(--charcoal)',
+                    backgroundColor: '#B8896A',
+                    color: '#FDFCF5',
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: '0 4px 16px rgba(212,163,115,0.28)',
+                    boxShadow: '0 4px 16px rgba(184,137,106,0.35)',
                   }}
                 >
                   {saving ? (
