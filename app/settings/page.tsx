@@ -378,7 +378,7 @@ export default function SettingsPage() {
                   <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
                     {user?.email}
                   </p>
-                  <span className="text-xs px-2.5 py-1 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#5A5040', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.2)' }}>
+                  <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: '#6A5A4A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.25)' }}>
                     read-only
                   </span>
                 </div>
@@ -483,11 +483,12 @@ export default function SettingsPage() {
                     <p className="text-xs mt-1 leading-relaxed" style={{ color: '#6A6A5A' }}>
                       Download all your memories and books as a simple archive. Your data belongs to you.
                     </p>
-                    <p className="text-xs mt-2 inline-flex items-center gap-1 font-medium" style={{ color: 'var(--bronze)' }}>
+                    <p className="text-xs mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-medium" style={{ 
+                      color: '#8A7A6A', 
+                      backgroundColor: 'rgba(212,163,115,0.08)',
+                      border: '1px solid rgba(212,163,115,0.15)',
+                    }}>
                       Coming soon
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                      </svg>
                     </p>
                   </div>
                 </div>
@@ -505,11 +506,12 @@ export default function SettingsPage() {
                     <p className="text-xs mt-1 leading-relaxed" style={{ color: '#6A6A5A' }}>
                       Permanently delete individual memories, books, or your entire account and all data.
                     </p>
-                    <p className="text-xs mt-2 inline-flex items-center gap-1 font-medium" style={{ color: 'var(--bronze)' }}>
+                    <p className="text-xs mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-medium" style={{ 
+                      color: '#8A7A6A', 
+                      backgroundColor: 'rgba(212,163,115,0.08)',
+                      border: '1px solid rgba(212,163,115,0.15)',
+                    }}>
                       Coming soon
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                      </svg>
                     </p>
                   </div>
                 </div>
@@ -549,8 +551,8 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Password</p>
-                    <p className="text-xs mt-0.5" style={{ color: '#6A6A5A' }}>
-                      Last changed: Unknown
+                    <p className="text-xs mt-0.5" style={{ color: '#8A8A7A' }}>
+                      Last changed: not available
                     </p>
                   </div>
                   <button

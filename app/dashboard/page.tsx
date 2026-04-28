@@ -425,7 +425,7 @@ export default function Dashboard() {
 
             {/* Modal panel */}
             <div
-              className="relative w-full max-w-lg rounded-3xl overflow-y-auto animate-fade-up"
+              className="relative w-full max-w-lg rounded-3xl overflow-hidden animate-fade-up flex flex-col"
               style={{
                 maxHeight: '90vh',
                 backgroundColor: '#FDFCF5',
@@ -433,35 +433,36 @@ export default function Dashboard() {
               }}
             >
               {/* Warm top bar */}
-              <div className="h-1.5 w-full" style={{ backgroundColor: 'var(--bronze)' }} />
+              <div className="h-1.5 w-full shrink-0" style={{ backgroundColor: 'var(--bronze)' }} />
 
-              <div className="p-8">
+              {/* Scrollable content area */}
+              <div className="p-6 overflow-y-auto flex-1 min-h-0">
                 {/* Header */}
-                <div className="flex items-start justify-between mb-7">
+                <div className="flex items-start justify-between mb-5">
                   <div>
-                    <h2 id="create-book-title" className="text-2xl font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+                    <h2 id="create-book-title" className="text-xl font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
                       Create a new memory book
                     </h2>
-                    <p className="text-sm mt-1.5" style={{ color: '#6A6A5A' }}>Give it a name — you can always change it later.</p>
+                    <p className="text-sm mt-1" style={{ color: '#6A6A5A' }}>Give it a name — you can always change it later.</p>
                   </div>
                   {!creating && (
                     <button
                       type="button"
                       onClick={() => { setShowCreate(false); setCreateError(''); }}
-                      className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 hover:opacity-80 active:scale-95 shrink-0 hover:bg-[rgba(212,163,115,0.2)]"
+                      className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:opacity-80 active:scale-95 shrink-0 hover:bg-[rgba(212,163,115,0.2)]"
                       style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--charcoal)' }}
                       aria-label="Close"
                     >
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M18 6L6 18M6 6l12 12"/>
                       </svg>
                     </button>
                   )}
                 </div>
 
-                <form onSubmit={createBook} className="space-y-6">
+                <form id="create-book-form" onSubmit={createBook} className="space-y-4">
                   {/* Title */}
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     <Label htmlFor="modal-title" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                       Book title <span style={{ color: 'var(--bronze)' }}>*</span>
                     </Label>
@@ -473,13 +474,13 @@ export default function Dashboard() {
                       required
                       autoFocus
                       placeholder="Ruth's Life Story"
-                      className="rounded-xl text-base w-full h-12"
+                      className="rounded-xl text-base w-full h-11"
                       style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
                     />
                   </div>
 
                   {/* Description */}
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     <Label htmlFor="modal-desc" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                       Description <span className="font-normal opacity-50">(optional)</span>
                     </Label>
@@ -488,69 +489,66 @@ export default function Dashboard() {
                       value={newDesc}
                       onChange={(e) => setNewDesc(e.target.value)}
                       className="resize-none rounded-xl text-base w-full"
-                      rows={3}
+                      rows={2}
                       placeholder="A collection of memories from a wonderful life..."
                       style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
                     />
                   </div>
 
                   {/* Plan selection */}
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     <Label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                       Plan
                     </Label>
-                    <div className="grid gap-3">
+                    <div className="grid gap-2">
                       {BOOK_PLAN_OPTIONS.map((plan) => (
                         <button
                           key={plan.id}
                           type="button"
                           onClick={() => setNewPlan(plan.id)}
-                          className="rounded-2xl border px-4 py-3.5 text-left transition-all duration-200 relative"
+                          className="rounded-2xl border px-4 py-2.5 text-left transition-all duration-200 relative"
                           style={{
                             backgroundColor: newPlan === plan.id ? '#FFFDF8' : 'rgba(212,163,115,0.04)',
                             borderColor: newPlan === plan.id ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
-                            boxShadow: newPlan === plan.id ? '0 6px 20px rgba(212,163,115,0.14)' : 'none',
+                            boxShadow: newPlan === plan.id ? '0 4px 16px rgba(212,163,115,0.14)' : 'none',
                           }}
                         >
                           {newPlan === plan.id && (
-                            <div className="absolute right-4 top-4 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
-                              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
+                            <div className="absolute right-3 top-3 w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
+                              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
                                 <path d="M20 6L9 17l-5-5"/>
                               </svg>
                             </div>
                           )}
-                          <div className="flex items-baseline gap-2 flex-wrap mb-2">
-                            <p className="label-caps" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
-                            <p className="text-base font-semibold" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
+                          <div className="flex items-baseline gap-1.5 flex-wrap mb-1">
+                            <p className="label-caps text-sm" style={{ color: 'var(--bronze)' }}>{plan.label}</p>
+                            <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>{plan.price}</p>
                             {plan.id === 'free' && (
-                              <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.2)', color: '#5F6650' }}>Free forever</span>
+                              <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.2)', color: '#5F6650' }}>Free</span>
                             )}
                             {plan.id === 'premium' && (
-                              <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>One-time</span>
+                              <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>One-time</span>
                             )}
                             {plan.id === 'plus' && (
-                              <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>One-time</span>
+                              <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A' }}>One-time</span>
                             )}
                           </div>
-                          <div className="space-y-1.5">
+                          <div className="space-y-0.5">
                             {(plan.id === 'free' ? [
                               'Unlimited text memories',
                               'Basic guided prompts',
-                              'One memory book',
-                              'Print from $99',
+                              'One book, print from $99',
                             ] : plan.id === 'premium' ? [
                               'Everything in Free',
                               '5GB photo & audio storage',
-                              'Printed books from $99',
-                              'Family collaboration',
+                              'Printed books, family sharing',
                             ] : [
                               'Everything in Premium',
-                              '15GB photo & audio storage',
-                              'Priority support',
+                              '15GB storage, priority support',
                               'Largest print runs',
                             ]).map((feat, fi) => (
-                              <div key={fi} className="flex items-center gap-2">
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: plan.id === 'free' && fi > 2 ? '#9A9A7A' : 'var(--bronze)', opacity: plan.id === 'free' && fi > 2 ? 0.5 : 1 }}>
+                              <div key={fi} className="flex items-center gap-1.5">
+                                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: plan.id === 'free' && fi > 2 ? '#9A9A7A' : 'var(--bronze)', opacity: plan.id === 'free' && fi > 2 ? 0.5 : 1 }}>
                                   <path d="M20 6L9 17l-5-5"/>
                                 </svg>
                                 <span className="text-xs" style={{ color: plan.id === 'free' && fi > 2 ? '#9A9A7A' : '#6A6A5A' }}>{feat}</span>
@@ -571,35 +569,38 @@ export default function Dashboard() {
                       {createError}
                     </div>
                   )}
-
-                  {/* Actions */}
-                  <div className="flex gap-3 pt-2">
-                    {!creating && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => { setShowCreate(false); setCreateError(''); }}
-                        className="rounded-full h-12 px-6 text-sm font-medium"
-                        style={{ borderColor: 'rgba(212,163,115,0.35)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
-                      >
-                        Cancel
-                      </Button>
-                    )}
-                    <Button
-                      type="submit"
-                      disabled={creating || !newTitle.trim()}
-                      className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50"
-                      style={{ backgroundColor: creating ? 'rgba(212,163,115,0.5)' : 'var(--bronze)', color: 'var(--charcoal)', boxShadow: !creating && newTitle.trim() ? '0 6px 24px rgba(212,163,115,0.3)' : 'none' }}
-                    >
-                      {creating ? (
-                        <>
-                          <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
-                          Creating...
-                        </>
-                      ) : 'Create Book'}
-                    </Button>
-                  </div>
                 </form>
+              </div>
+
+              {/* Sticky footer with actions */}
+              <div className="shrink-0 px-6 py-4 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)', backgroundColor: '#FDFCF5' }}>
+                <div className="flex gap-3">
+                  {!creating && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => { setShowCreate(false); setCreateError(''); }}
+                      className="rounded-full h-11 px-6 text-sm font-medium"
+                      style={{ borderColor: 'rgba(212,163,115,0.35)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                  <Button
+                    type="submit"
+                    form="create-book-form"
+                    disabled={creating || !newTitle.trim()}
+                    className="flex-1 rounded-full h-11 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50"
+                    style={{ backgroundColor: creating ? 'rgba(212,163,115,0.5)' : 'var(--bronze)', color: 'var(--charcoal)', boxShadow: !creating && newTitle.trim() ? '0 4px 16px rgba(212,163,115,0.25)' : 'none' }}
+                  >
+                    {creating ? (
+                      <>
+                        <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                        Creating...
+                      </>
+                    ) : 'Create Book'}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -797,15 +798,22 @@ export default function Dashboard() {
                         {/* Rule */}
                         <div className="rule mb-5" />
 
-                        {/* Footer row — simplified */}
+                        {/* Footer row — consistent pill CTA for all states */}
                         <div className="flex items-center justify-end" style={{ paddingBottom: 4 }}>
                           <div
                             className="flex items-center gap-2 rounded-full px-3 py-1.5 transition-all duration-300 group-hover:gap-3"
-                            style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}
+                            style={{ 
+                              backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.15)' : 'rgba(212,163,115,0.08)',
+                              border: book._count?.memories === 0 ? '1px dashed rgba(212,163,115,0.35)' : '1px solid rgba(212,163,115,0.08)',
+                            }}
                           >
-                            <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
+                            <span className="text-xs font-medium" style={{ 
+                              color: book._count?.memories === 0 ? 'var(--bronze)' : '#7A7A6A', 
+                              fontFamily: 'var(--font-sans)',
+                              fontStyle: book._count?.memories === 0 ? 'italic' : 'normal',
+                            }}>
                               {book._count?.memories === 0
-                                ? 'Empty — start writing'
+                                ? 'Start writing'
                                 : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'}`}
                             </span>
                             <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
