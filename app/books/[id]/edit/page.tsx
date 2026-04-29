@@ -886,6 +886,14 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.24)';
                         (e.target as HTMLElement).style.boxShadow = '0 10px 24px rgba(212,163,115,0.06)';
                       }}
+                      onMouseEnter={e => {
+                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.45)';
+                        (e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(212,163,115,0.12)';
+                      }}
+                      onMouseLeave={e => {
+                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.24)';
+                        (e.target as HTMLElement).style.boxShadow = '0 10px 24px rgba(212,163,115,0.06)';
+                      }}
                     >
                       {promptLoadState === 'loading' && (
                         <option value={NO_PROMPT_VALUE}>Loading prompts…</option>
@@ -1159,12 +1167,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
                           <div className="flex flex-wrap gap-3">
                             <label
-                              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
                               style={{
                                 borderColor: 'rgba(212,163,115,0.24)',
                                 backgroundColor: '#FDFCF5',
                                 color: 'var(--charcoal)',
                                 fontFamily: 'var(--font-sans)',
+                                boxShadow: '0 4px 12px rgba(212,163,115,0.08)',
                               }}
                             >
                               <input
@@ -1187,11 +1196,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               type="button"
                               onClick={recorderState === 'recording' ? handleStopRecording : () => void handleStartRecording()}
                               disabled={loading || recorderState === 'requesting' || recorderState === 'processing'}
-                              className="inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-70"
+                              className="inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-70 hover:brightness-105 active:scale-[0.98]"
                               style={{
                                 backgroundColor: recorderState === 'recording' ? '#8A3F2B' : 'rgba(212,163,115,0.12)',
                                 color: recorderState === 'recording' ? 'var(--cornsilk)' : 'var(--charcoal)',
                                 fontFamily: 'var(--font-sans)',
+                                boxShadow: '0 4px 12px rgba(212,163,115,0.08)',
                               }}
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
