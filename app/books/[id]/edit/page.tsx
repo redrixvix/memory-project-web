@@ -1104,7 +1104,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     onFocus={() => setTextareaFocused(true)}
                     onBlur={() => setTextareaFocused(false)}
                     required
-                    className="min-h-[360px] rounded-[1.2rem] border-0 px-5 py-5 text-[1.0625rem] leading-[1.95] md:min-h-[420px] md:text-[1.125rem] memory-textarea transition-all duration-200"
+                    className="min-h-[360px] rounded-[1.2rem] border-0 px-5 py-5 text-[1.0625rem] leading-[1.95] md:min-h-[420px] md:text-[1.125rem] memory-textarea memory-editor-textarea transition-all duration-200"
                     rows={16}
                     placeholder="Take your time. There is no perfect way to tell a memory, only your way."
                     style={{

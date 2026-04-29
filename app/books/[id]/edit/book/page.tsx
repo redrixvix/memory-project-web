@@ -168,14 +168,15 @@ export default function EditBookPage({ params }: { params: Promise<{ id: string 
                   className="text-sm font-medium block" 
                   style={{ color: 'var(--charcoal)' }}
                 >
-                  Title
+                  Title <span style={{ color: 'var(--bronze)' }}>*</span>
                 </label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
-                  className="w-full rounded-[1.25rem] border px-5 py-4 text-lg transition-all outline-none"
+                  maxLength={120}
+                  className="w-full rounded-[1.25rem] border px-5 py-4 text-lg transition-all duration-200 outline-none"
                   style={{
                     borderColor: 'rgba(212,163,115,0.3)',
                     backgroundColor: 'rgba(255,253,246,0.8)',
@@ -183,22 +184,41 @@ export default function EditBookPage({ params }: { params: Promise<{ id: string 
                     fontFamily: 'var(--font-serif)',
                     boxShadow: 'inset 0 2px 4px rgba(212,163,115,0.06)',
                   }}
-                  placeholder="Book title"
+                  placeholder="Give your book a title..."
+                  onFocus={e => {
+                    e.target.style.borderColor = 'rgba(212,163,115,0.6)';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.14), inset 0 2px 4px rgba(212,163,115,0.06)';
+                    e.target.style.backgroundColor = 'rgba(255,253,246,0.95)';
+                  }}
+                  onBlur={e => {
+                    e.target.style.borderColor = 'rgba(212,163,115,0.3)';
+                    e.target.style.boxShadow = 'inset 0 2px 4px rgba(212,163,115,0.06)';
+                    e.target.style.backgroundColor = 'rgba(255,253,246,0.8)';
+                  }}
                 />
+                <p className="text-xs text-right" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>
+                  {title.length}/120
+                </p>
               </div>
 
               <div className="space-y-2">
-                <label 
-                  className="text-sm font-medium block" 
-                  style={{ color: 'var(--charcoal)' }}
-                >
-                  Description <span style={{ color: '#8A8A7A', fontWeight: 400 }}>(optional)</span>
-                </label>
+                <div className="flex items-center justify-between">
+                  <label 
+                    className="text-sm font-medium" 
+                    style={{ color: 'var(--charcoal)' }}
+                  >
+                    Description <span style={{ color: '#8A8A7A', fontWeight: 400 }}>(optional)</span>
+                  </label>
+                  <span className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>
+                    {description.length}/280
+                  </span>
+                </div>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
-                  className="w-full rounded-[1.25rem] border px-5 py-4 text-base leading-relaxed transition-all outline-none resize-none"
+                  maxLength={280}
+                  className="w-full rounded-[1.25rem] border px-5 py-4 text-base leading-relaxed transition-all duration-200 outline-none resize-none"
                   style={{
                     borderColor: 'rgba(212,163,115,0.3)',
                     backgroundColor: 'rgba(255,253,246,0.8)',
@@ -206,8 +226,28 @@ export default function EditBookPage({ params }: { params: Promise<{ id: string 
                     fontFamily: 'var(--font-serif)',
                     boxShadow: 'inset 0 2px 4px rgba(212,163,115,0.06)',
                   }}
-                  placeholder="Add a brief description..."
+                  placeholder="Describe what this memory book is about..."
+                  onFocus={e => {
+                    e.target.style.borderColor = 'rgba(212,163,115,0.6)';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.14), inset 0 2px 4px rgba(212,163,115,0.06)';
+                    e.target.style.backgroundColor = 'rgba(255,253,246,0.95)';
+                  }}
+                  onBlur={e => {
+                    e.target.style.borderColor = 'rgba(212,163,115,0.3)';
+                    e.target.style.boxShadow = 'inset 0 2px 4px rgba(212,163,115,0.06)';
+                    e.target.style.backgroundColor = 'rgba(255,253,246,0.8)';
+                  }}
                 />
+              </div>
+
+              {/* Book URL preview */}
+              <div className="rounded-2xl px-4 py-3 flex items-center gap-3" style={{ backgroundColor: 'rgba(212,163,115,0.06)', border: '1px solid rgba(212,163,115,0.1)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+                <p className="text-xs truncate" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                  <span style={{ color: '#8A8A7A' }}>memoryproject.com/books/</span>{id}
+                </p>
               </div>
             </div>
           </div>

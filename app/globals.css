@@ -846,14 +846,20 @@ select:focus {
   background-color: #FFFDF8 !important;
 }
 
-textarea {
-  border-color: rgba(212,163,115,0.4) !important;
+/* Memory editor textarea — custom premium focus (no global override needed) */
+.memory-editor-textarea:focus {
+  outline: none;
+  border-color: transparent !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(212,163,115,0.75),
+    inset 0 3px 20px rgba(212,163,115,0.09),
+    inset 0 0 60px rgba(212,163,115,0.05),
+    0 0 0 4px rgba(212,163,115,0.14) !important;
+  background-color: rgba(255,253,246,0.95) !important;
 }
 
-textarea:focus {
-  border-color: var(--bronze) !important;
-  box-shadow: 0 0 0 3px rgba(212,163,115,0.18) !important;
-  background-color: #FFFDF8 !important;
+textarea {
+  border-color: rgba(212,163,115,0.4) !important;
 }
 
 textarea::placeholder {

@@ -825,18 +825,11 @@ export default function Dashboard() {
                           </div>
                         )}
 
-                        {/* Footer row */}
+                        {/* ── Footer CTA area ── */}
                         <div
                           className="flex items-center justify-end"
                           style={{ paddingBottom: 2 }}
                         >
-                          {/* Decorative corner line for empty books */}
-                          {book._count?.memories === 0 && (
-                            <div
-                              className="absolute top-4 right-4 w-8 h-px opacity-25"
-                              style={{ backgroundColor: 'var(--bronze)' }}
-                            />
-                          )}
                           <div
                             className="flex items-center gap-1.5 rounded-full px-4 py-2 transition-all duration-300 group-hover:gap-2 min-w-[100px] justify-center hover:shadow-md active:scale-95"
                             style={{
