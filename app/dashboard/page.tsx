@@ -305,7 +305,12 @@ export default function Dashboard() {
       <main className="px-6 md:px-10 pt-8 pb-10 max-w-5xl mx-auto w-full">
 
         {/* Header row — compact, editorial */}
-        <div className="mb-6">
+        <div className="mb-8 relative">
+          {/* Decorative warm accent — subtle top line */}
+          <div
+            className="absolute -top-2 left-0 right-0 h-px rounded-full overflow-hidden"
+            style={{ background: 'linear-gradient(to right, transparent 0%, rgba(212,163,115,0.25) 20%, rgba(212,163,115,0.25) 80%, transparent 100%)' }}
+          />
           <div className="flex items-end justify-between gap-4">
             <div>
               <h1 className="display-md font-medium tracking-tight mb-0.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
@@ -669,8 +674,14 @@ export default function Dashboard() {
                         border: '1px solid rgba(212,163,115,0.10)',
                         borderLeft: `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`,
                       }}
-                      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(212,163,115,0.12), 0 16px 40px rgba(212,163,115,0.14), 0 32px 72px rgba(212,163,115,0.07)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.07), 0 8px 24px rgba(212,163,115,0.09), 0 20px 48px rgba(212,163,115,0.05)'; }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.boxShadow = `0 4px 16px rgba(212,163,115,0.14), 0 16px 40px rgba(212,163,115,0.16), 0 32px 72px rgba(212,163,115,0.08), inset 0 0 0 1px rgba(212,163,115,0.08)`;
+                        e.currentTarget.style.borderLeft = `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.07), 0 8px 24px rgba(212,163,115,0.09), 0 20px 48px rgba(212,163,115,0.05)';
+                        e.currentTarget.style.borderLeft = `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`;
+                      }}
                     >
                       {/* Subtle warm overlay on hover */}
                       <div 
@@ -748,6 +759,31 @@ export default function Dashboard() {
                           <p className="text-sm leading-relaxed mb-4" style={{ color: '#7A7A6A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
                             No description yet — begin your story
                           </p>
+                        )}
+
+                        {/* Contributors row */}
+                        {book.contributors && book.contributors.length > 0 && (
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="flex -space-x-2">
+                              {book.contributors.slice(0, 4).map((c) => (
+                                <Avatar
+                                  key={c.id}
+                                  name={c.name || 'Contributor'}
+                                  imageUrl={c.profile_image_url}
+                                  className="ring-2 ring-white"
+                                  size={26}
+                                />
+                              ))}
+                            </div>
+                            {book.contributors.length > 4 && (
+                              <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
+                                +{book.contributors.length - 4}
+                              </span>
+                            )}
+                            <span className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                              {book.contributors.length === 1 ? '1 contributor' : `${book.contributors.length} contributors`}
+                            </span>
+                          </div>
                         )}
 
                         {/* Footer row */}

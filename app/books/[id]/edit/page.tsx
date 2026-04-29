@@ -870,25 +870,34 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             <form onSubmit={handleSubmit} className="relative">
               {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
               <section className="py-5 md:py-6">
-                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-medium uppercase tracking-[0.12em]" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-sans)' }}>
-                      Guided prompt
-                    </span>
+                    <div className="inline-flex items-center gap-1.5">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }}>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                          <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                        </svg>
+                      </div>
+                      <span className="text-xs font-semibold tracking-[0.08em]" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
+                        Not sure where to start?
+                      </span>
+                    </div>
                     {promptOptionCount > 0 && (
-                      <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
-                        Choose one or write freely
+                      <span className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                        Pick a prompt or write freely — no rules
                       </span>
                     )}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => { setPrompt(''); setUseCustomPrompt(false); setCustomPrompt(''); }}
-                    className="text-xs underline-offset-2 hover:underline transition-all"
-                    style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}
-                  >
-                    Skip prompt
-                  </button>
+                  {prompt && (
+                    <button
+                      type="button"
+                      onClick={() => { setPrompt(''); setUseCustomPrompt(false); setCustomPrompt(''); }}
+                      className="text-xs underline-offset-2 hover:underline transition-all"
+                      style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}
+                    >
+                      Clear prompt
+                    </button>
+                  )}
                 </div>
                 <div className="relative max-w-2xl">
                   <div className="relative">
@@ -1057,30 +1066,44 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
                     <div className="flex items-center gap-2">
-                      <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                        Autosaves as you write
-                      </p>
+                      {saveState === 'saving' && (
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
+                          <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Saving...</p>
+                        </div>
+                      )}
+                      {saveState === 'saved' && (
+                        <div className="flex items-center gap-1.5">
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                            <path d="M20 6L9 17l-5-5"/>
+                          </svg>
+                          <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Saved</p>
+                        </div>
+                      )}
+                      {saveState === 'idle' && wordCount === 0 && (
+                        <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
+                      )}
                     </div>
                     <div
                       className="inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs transition-all duration-300"
                       style={{
-                        backgroundColor: wordCount > 0 ? 'rgba(212,163,115,0.15)' : 'rgba(254,250,224,0.82)',
-                        boxShadow: wordCount > 0 ? '0 2px 12px rgba(212,163,115,0.18)' : 'none',
-                        border: wordCount > 0 ? '1px solid rgba(212,163,115,0.30)' : '1px solid rgba(212,163,115,0.08)',
+                        backgroundColor: wordCount > 0 ? 'rgba(212,163,115,0.18)' : 'rgba(254,250,224,0.60)',
+                        boxShadow: wordCount > 0 ? '0 2px 12px rgba(212,163,115,0.20)' : 'none',
+                        border: wordCount > 0 ? '1px solid rgba(212,163,115,0.35)' : '1px solid rgba(212,163,115,0.10)',
                       }}
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
                       </svg>
-                      <span className="font-semibold" style={{ color: wordCount > 0 ? 'var(--charcoal)' : '#7A7060', fontFamily: 'var(--font-sans)' }}>
+                      <span className="font-bold" style={{ color: wordCount > 0 ? 'var(--charcoal)' : '#9A9A8A', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>
                         {wordCount.toLocaleString()}
                       </span>
-                      <span style={{ color: '#7A7060', fontFamily: 'var(--font-sans)' }}>{wordCount === 1 ? 'word' : 'words'}</span>
+                      <span style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>{wordCount === 1 ? 'word' : 'words'}</span>
                       {wordCount >= 20 && (
                         <>
-                          <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
-                          <span style={{ color: '#8A7A6A', fontFamily: 'var(--font-sans)' }}>
-                            ~{Math.max(1, Math.round(wordCount / 200))} min read
+                          <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.30)' }} />
+                          <span style={{ color: '#8A7A6A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>
+                            ~{Math.max(1, Math.round(wordCount / 200))} min
                           </span>
                         </>
                       )}
@@ -1088,23 +1111,14 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   </div>
                   {/* Visible save CTA at card bottom */}
                   <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: 'rgba(212,163,115,0.10)' }}>
-                    <div className="flex items-center gap-2 text-xs" style={{ color: '#6A6A5A' }}>
-                      {saveState === 'saving' && (
-                        <>
-                          <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.5)' }} />
-                          <span style={{ fontFamily: 'var(--font-sans)' }}>Saving…</span>
-                        </>
-                      )}
-                      {saveState === 'saved' && (
-                        <>
-                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
-                            <path d="M20 6L9 17l-5-5" />
-                          </svg>
-                          <span style={{ fontFamily: 'var(--font-sans)' }}>Saved</span>
-                        </>
-                      )}
-                      {saveState === 'idle' && (
-                        <span style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>Ready to publish</span>
+                    <div className="flex flex-col gap-1">
+                      <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
+                        Autosaves as you write
+                      </p>
+                      {answer.trim().length === 0 && (
+                        <p className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                          Tip: photos and voice notes can be added below
+                        </p>
                       )}
                     </div>
                     <Button
