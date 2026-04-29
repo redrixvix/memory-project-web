@@ -101,8 +101,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const fetchBook = async () => {
     try {
       const res = await fetch(`/api/books/${id}`);
-      if (res.status === 401) { router.push('/login'); return; }
-      if (res.status === 404) { router.push('/dashboard'); return; }
+      if (res.status === 401) { router.push('/login'); setLoading(false); return; }
+      if (res.status === 404) { router.push('/dashboard'); setLoading(false); return; }
       const data = await res.json();
       setBook(data.book);
       setMemories(data.memories || []);
@@ -132,8 +132,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       setToastMessage('Failed to load book. Please refresh.');
       setToastVariant('error');
       setToastVisible(true);
+    } finally {
+      setLoading(false);
     }
-    finally { setLoading(false); }
   };
 
   const handleDeleteMemory = async (memoryId: number) => {

@@ -195,6 +195,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       .then((response) => {
         if (response.status === 401) {
           router.push('/login');
+          setIsCheckingAuth(false);
           return;
         }
 
@@ -202,6 +203,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       })
       .catch(() => {
         router.push('/login');
+        setIsCheckingAuth(false);
       });
 
     void fetchBook();
