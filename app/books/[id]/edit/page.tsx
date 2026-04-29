@@ -768,11 +768,24 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
   if (fetchingMemory || fetchingBook || isCheckingAuth) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
-          <p className="text-sm" style={{ color: '#6A6A5A' }}>Loading...</p>
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
+        <div className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b shrink-0" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
+          <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-16 h-4 rounded-md animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
+            </div>
+          </div>
         </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
+            <p className="text-sm" style={{ color: '#6A6A5A' }}>Loading…</p>
+          </div>
+        </div>
+        <style>{`
+          @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+          .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
+        `}</style>
       </div>
     );
   }

@@ -263,7 +263,7 @@ export default function Dashboard() {
               align="right"
             >
               <div className="px-4 py-3 border-b" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
-                <p className="text-xs font-medium" style={{ color: 'var(--bronze)' }}>{user.name.split(' ')[0]}</p>
+                <p className="text-xs font-medium" style={{ color: 'var(--bronze)' }}>{(user.name || 'User').split(' ')[0]}</p>
                 <p className="text-xs mt-0.5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>{user.email}</p>
               </div>
               <DropdownItem href="/dashboard">
