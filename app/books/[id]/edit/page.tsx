@@ -863,7 +863,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
                 <p className="text-sm leading-relaxed" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-serif)' }}>
-                  Capture one story. Use a prompt or write freely — there's no wrong way.
+                  Capture one story. Let a prompt inspire you, or simply start writing.
                 </p>
               </div>
 
@@ -879,12 +879,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         </svg>
                       </div>
                       <span className="text-xs font-semibold tracking-[0.08em]" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
-                        Not sure where to start?
+                        Browse prompts
                       </span>
                     </div>
                     {promptOptionCount > 0 && (
                       <span className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
-                        Pick a prompt or write freely — no rules
+                        {promptOptionCount} prompt{promptOptionCount !== 1 ? 's' : ''} available
                       </span>
                     )}
                   </div>
@@ -935,7 +935,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       )}
                       {promptLoadState !== 'loading' && (
                         <>
-                          <option value={NO_PROMPT_VALUE}>No prompt — write freely</option>
+                          <option value={NO_PROMPT_VALUE}>Start writing freely</option>
                           {promptLoadState === 'ready' && promptGroups.map((group) => (
                             <optgroup key={group.category} label={group.category}>
                               {group.prompts.map((promptOption) => (

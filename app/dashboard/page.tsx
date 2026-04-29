@@ -586,8 +586,13 @@ export default function Dashboard() {
                     type="submit"
                     form="create-book-form"
                     disabled={creating || !newTitle.trim()}
-                    className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-300 active:scale-[0.97] disabled:opacity-50 hover:brightness-105 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.4)] hover:-translate-y-0.5"
-                    style={{ backgroundColor: creating ? 'rgba(212,163,115,0.5)' : 'var(--bronze)', color: 'var(--charcoal)', boxShadow: !creating && newTitle.trim() ? '0 6px 24px rgba(212,163,115,0.35)' : 'none' }}
+                    className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-300 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-0.5"
+                    style={{
+                      backgroundColor: creating ? 'rgba(212,163,115,0.5)' : !newTitle.trim() ? 'rgba(212,163,115,0.45)' : '#B8895A',
+                      color: !newTitle.trim() ? 'rgba(43,43,43,0.5)' : 'var(--charcoal)',
+                      boxShadow: !creating && newTitle.trim() ? '0 6px 24px rgba(212,163,115,0.4)' : 'none',
+                      fontWeight: '600',
+                    }}
                   >
                     {creating ? (
                       <>
