@@ -501,64 +501,92 @@ export default function Dashboard() {
                       </Label>
                       <span className="text-xs" style={{ color: '#7A7A6A' }}>— select below</span>
                     </div>
-                    <div className="grid gap-2">
-                      {BOOK_PLAN_OPTIONS.map((plan) => (
-                        <button
-                          key={plan.id}
-                          type="button"
-                          onClick={() => setNewPlan(plan.id)}
-                          className="rounded-2xl border px-4 py-3 text-left transition-all duration-200 relative hover:border-opacity-80"
-                          style={{
-                            backgroundColor: newPlan === plan.id ? 'rgba(212,163,115,0.06)' : 'rgba(212,163,115,0.02)',
-                            borderColor: newPlan === plan.id ? 'var(--bronze)' : 'rgba(212,163,115,0.2)',
-                            borderWidth: newPlan === plan.id ? '2px' : '1px',
-                            boxShadow: newPlan === plan.id ? '0 4px 20px rgba(212,163,115,0.18)' : 'none',
-                          }}
-                        >
-                          {newPlan === plan.id && (
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
-                              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
-                                <path d="M20 6L9 17l-5-5"/>
-                              </svg>
-                            </div>
-                          )}
-                          <div className="flex items-baseline gap-2 flex-wrap pr-7">
-                            <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
-                            <p className="text-sm font-semibold" style={{ color: 'var(--bronze)' }}>{plan.price}</p>
-                            {plan.id === 'free' && (
-                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.2)', color: '#5F6650', fontFamily: 'var(--font-sans)' }}>No credit card</span>
+                    <div className="grid gap-3">
+                      {BOOK_PLAN_OPTIONS.map((plan) => {
+                        const isSelected = newPlan === plan.id;
+                        const isRecommended = plan.id === 'free';
+                        return (
+                          <button
+                            key={plan.id}
+                            type="button"
+                            onClick={() => setNewPlan(plan.id)}
+                            className="rounded-2xl border px-5 py-4 text-left transition-all duration-200 relative hover:-translate-y-0.5"
+                            style={{
+                              backgroundColor: isSelected
+                                ? 'rgba(212,163,115,0.08)'
+                                : isRecommended
+                                  ? 'linear-gradient(135deg, rgba(204,213,174,0.12) 0%, rgba(212,163,115,0.06) 100%)'
+                                  : 'rgba(212,163,115,0.02)',
+                              borderColor: isSelected ? 'var(--bronze)' : isRecommended ? 'rgba(204,213,174,0.45)' : 'rgba(212,163,115,0.2)',
+                              borderWidth: isSelected || isRecommended ? '2px' : '1px',
+                              boxShadow: isSelected
+                                ? '0 6px 28px rgba(212,163,115,0.22)'
+                                : isRecommended
+                                  ? '0 2px 12px rgba(204,213,174,0.18)'
+                                  : '0 1px 4px rgba(212,163,115,0.06)',
+                            }}
+                          >
+                            {/* Recommended / popular badge */}
+                            {(isRecommended || plan.id === 'premium') && (
+                              <div
+                                className="absolute -top-2.5 left-4 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                                style={{
+                                  backgroundColor: isRecommended ? 'var(--tea-green)' : 'var(--bronze)',
+                                  color: isRecommended ? '#FDFCF5' : 'var(--charcoal)',
+                                  fontFamily: 'var(--font-sans)',
+                                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                                }}
+                              >
+                                {isRecommended ? '✓ Recommended' : '★ Most popular'}
+                              </div>
                             )}
-                            {plan.id === 'premium' && (
-                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#6A5A4A', fontFamily: 'var(--font-sans)' }}>One-time</span>
-                            )}
-                            {plan.id === 'plus' && (
-                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#6A5A4A', fontFamily: 'var(--font-sans)' }}>One-time</span>
-                            )}
-                          </div>
-                          <div className="mt-1.5 space-y-0.5">
-                            {(plan.id === 'free' ? [
-                              'Unlimited text memories',
-                              'Basic guided prompts',
-                              'One book, print from $99',
-                            ] : plan.id === 'premium' ? [
-                              'Everything in Free',
-                              '5GB photo & audio storage',
-                              'Printed books, family sharing',
-                            ] : [
-                              'Everything in Premium',
-                              '15GB storage, priority support',
-                              'Largest print runs',
-                            ]).map((feat, fi) => (
-                              <div key={fi} className="flex items-center gap-1.5">
-                                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: plan.id === 'free' && fi > 2 ? '#9A9A7A' : 'var(--bronze)', opacity: plan.id === 'free' && fi > 2 ? 0.5 : 1 }}>
+
+                            {/* Checkmark for selected */}
+                            {isSelected && !isRecommended && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
+                                <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
                                   <path d="M20 6L9 17l-5-5"/>
                                 </svg>
-                                <span className="text-xs" style={{ color: plan.id === 'free' && fi > 2 ? '#9A9A7A' : '#6A6A5A' }}>{feat}</span>
                               </div>
-                            ))}
-                          </div>
-                        </button>
-                      ))}
+                            )}
+
+                            <div className="flex items-baseline gap-2 flex-wrap pr-7 mt-1">
+                              <p className="text-sm font-bold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
+                              <p className="text-sm font-bold" style={{ color: 'var(--bronze)' }}>{plan.price}</p>
+                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                                {plan.id === 'free' ? 'Free forever' : plan.id === 'premium' ? 'Lifetime' : 'Lifetime'}
+                              </span>
+                            </div>
+                            <p className="text-xs mt-1 leading-relaxed" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
+                              {plan.id === 'free' && 'Unlimited text memories — free to start'}
+                              {plan.id === 'premium' && '5GB photo & audio, printed books, family sharing'}
+                              {plan.id === 'plus' && '15GB storage, priority support, largest print runs'}
+                            </p>
+                            <div className="mt-2.5 space-y-1">
+                              {(plan.id === 'free' ? [
+                                'Unlimited text memories',
+                                'Basic guided prompts',
+                                'One memory book',
+                              ] : plan.id === 'premium' ? [
+                                'Everything in Free',
+                                '5GB photo & audio storage',
+                                'Printed books from $99',
+                              ] : [
+                                'Everything in Premium',
+                                '15GB photo & audio storage',
+                                'Priority support',
+                              ]).map((feat, fi) => (
+                                <div key={fi} className="flex items-center gap-1.5">
+                                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--bronze)' }}>
+                                    <path d="M20 6L9 17l-5-5"/>
+                                  </svg>
+                                  <span className="text-xs" style={{ color: '#5A5A5A', fontFamily: 'var(--font-sans)' }}>{feat}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 

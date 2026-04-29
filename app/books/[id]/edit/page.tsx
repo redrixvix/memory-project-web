@@ -1398,20 +1398,25 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <div
                       className="rounded-[1.2rem] px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4"
                       style={{
-                        background: 'linear-gradient(135deg, rgba(250,237,205,0.5) 0%, rgba(204,213,174,0.12) 100%)',
-                        border: '1px solid rgba(212,163,115,0.18)',
+                        background: 'linear-gradient(135deg, rgba(250,237,205,0.4) 0%, rgba(204,213,174,0.10) 100%)',
+                        border: '1px solid rgba(212,163,115,0.15)',
                       }}
                     >
                       <div className="flex items-start gap-3">
-                        <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center mt-0.5" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                        <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center mt-0.5" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }}>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--bronze)' }}>
                             <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
                           </svg>
                         </div>
                         <div>
-                          <p className="text-sm font-semibold mb-0.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                            Add photos &amp; voice notes
-                          </p>
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                              Add photos &amp; voice notes
+                            </p>
+                            <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: '#5A4A3A', fontFamily: 'var(--font-sans)' }}>
+                              Premium
+                            </span>
+                          </div>
                           <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                             Tuck away photos & voice notes alongside your words — they become part of the story.
                           </p>
@@ -1419,10 +1424,10 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       </div>
                       <Link
                         href={`/upgrade?book=${id}`}
-                        className="inline-flex h-9 items-center justify-center rounded-xl px-5 text-xs font-semibold transition-all duration-200 hover:brightness-105 active:scale-[0.98] shrink-0"
-                        style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                        className="inline-flex h-8 items-center justify-center rounded-full px-4 text-xs font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98] shrink-0"
+                        style={{ backgroundColor: 'rgba(212,163,115,0.08)', color: '#5A4A3A', border: '1px solid rgba(212,163,115,0.25)' }}
                       >
-                        See plans
+                        Upgrade
                       </Link>
                     </div>
                   )}

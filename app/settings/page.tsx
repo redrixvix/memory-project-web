@@ -385,11 +385,11 @@ export default function SettingsPage() {
                   <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
                     {user?.email}
                   </p>
-                  <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: '#6A5A4A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.25)' }}>
+                  <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.22)', color: '#4A3A2A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.4)' }}>
                     read-only
                   </span>
                 </div>
-                <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
+                <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                   Contact support to change your email address
                 </p>
               </div>
