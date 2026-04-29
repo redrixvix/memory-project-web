@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
+import { MobileNav } from '@/components/ui/mobile-nav';
 
 interface Book {
   id: number;
@@ -85,6 +86,7 @@ export default function Dashboard() {
   const [showFab, setShowFab] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const BOOKS_PER_PAGE = 12;
 
@@ -265,7 +267,7 @@ export default function Dashboard() {
               trigger={
                 <div className="flex items-center gap-2 cursor-pointer group">
                   <Avatar name={user.name} imageUrl={user.profileImageUrl || null} className="w-9 h-9" />
-                  <svg className="w-3.5 h-3.5 shrink-0 transition-transform duration-200" style={{ color: '#6A6A5A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <svg className="w-3.5 h-3.5 shrink-0 transition-transform duration-200 hidden sm:block" style={{ color: '#6A6A5A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="m6 9 6 6 6-6" />
                   </svg>
                 </div>
@@ -304,8 +306,23 @@ export default function Dashboard() {
               </DropdownItem>
             </Dropdown>
           )}
+
+          {/* Mobile hamburger */}
+          <button
+            className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-colors hover:opacity-70"
+            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open navigation menu"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
         </div>
       </header>
+
+      {/* Mobile nav drawer */}
+      <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} />
 
       {/* ── MAIN CONTENT ── */}
       <main className="px-6 md:px-10 pt-8 pb-10 max-w-5xl mx-auto w-full">

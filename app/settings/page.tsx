@@ -217,7 +217,7 @@ export default function SettingsPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>Profile</p>
+                  <h2 className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>Profile</h2>
                   <p className="text-xs mt-0.5" style={{ color: '#5A5A4A' }}>How you appear across Memory Project</p>
                 </div>
               </div>
@@ -644,7 +644,7 @@ export default function SettingsPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>Sign out</p>
+                  <h2 className="text-sm font-semibold" style={{ color: 'var(--charcoal)' }}>Sign out</h2>
                   <p className="text-xs mt-0.5" style={{ color: '#5A5A4A' }}>Sign out of Memory Project on this device</p>
                 </div>
               </div>

@@ -11,6 +11,7 @@ import { Lightbox } from '@/components/ui/lightbox';
 import { MembersModal } from '@/components/ui/members-modal';
 import { Avatar } from '@/components/ui/avatar';
 import { Toast } from '@/components/ui/toast';
+import { MobileNav } from '@/components/ui/mobile-nav';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 
 interface Memory {
@@ -81,6 +82,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [deleteConfirm, setDeleteConfirm] = useState<{ memoryId: number } | null>(null);
   // Memory sort order
   const [memorySort, setMemorySort] = useState<'newest' | 'oldest'>('newest');
+  // Mobile nav state
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Computed sorted memories
   const sortedMemories = [...memories].sort((a, b) => {
@@ -217,6 +220,13 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         onDismiss={() => setToastVisible(false)}
       />
 
+      {/* Mobile nav drawer */}
+      <MobileNav
+        isOpen={mobileNavOpen}
+        onClose={() => setMobileNavOpen(false)}
+        loggedIn={true}
+      />
+
       {/* Delete confirmation inline dialog */}
       {deleteConfirm !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
@@ -335,25 +345,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               Share
             </button>
 
-            {/* More menu (Members + Manage plan on mobile) */}
-            <div className="relative sm:hidden">
-              <button
-                type="button"
-                onClick={() => {
-                  // Cycle through: Members → Share → Manage plan → back to none
-                  if (currentUserRole === 'owner') {
-                    setShowMembersModal(true);
-                  }
-                }}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors"
-                style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
-                aria-label="More options"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
-                </svg>
-              </button>
-            </div>
+            {/* Mobile hamburger */}
+            <button
+              type="button"
+              onClick={() => setMobileNavOpen(true)}
+              className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-colors hover:opacity-70"
+              style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
+              aria-label="Open navigation menu"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 12h18M3 6h18M3 18h18"/>
+              </svg>
+            </button>
 
             {/* Manage plan — owner only, desktop */}
             {currentUserRole === 'owner' && (
