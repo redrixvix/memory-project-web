@@ -1039,9 +1039,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     }}
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
-                    <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                      Autosaves as you write
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
+                        Autosaves as you write
+                      </p>
+                    </div>
                     <div
                       className="inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs transition-all duration-300"
                       style={{
@@ -1066,6 +1068,45 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         </>
                       )}
                     </div>
+                  </div>
+                  {/* Visible save CTA at card bottom */}
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: 'rgba(212,163,115,0.10)' }}>
+                    <div className="flex items-center gap-2 text-xs" style={{ color: '#6A6A5A' }}>
+                      {saveState === 'saving' && (
+                        <>
+                          <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.5)' }} />
+                          <span style={{ fontFamily: 'var(--font-sans)' }}>Saving…</span>
+                        </>
+                      )}
+                      {saveState === 'saved' && (
+                        <>
+                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                            <path d="M20 6L9 17l-5-5" />
+                          </svg>
+                          <span style={{ fontFamily: 'var(--font-sans)' }}>Saved</span>
+                        </>
+                      )}
+                      {saveState === 'idle' && (
+                        <span style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>Ready to publish</span>
+                      )}
+                    </div>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitDisabled}
+                      className="h-10 rounded-full px-7 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(196,148,106,0.35)] hover:-translate-y-0.5"
+                      style={{
+                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.35)' : 'var(--bronze)',
+                        color: isSubmitDisabled ? 'rgba(43,43,43,0.55)' : 'var(--charcoal)',
+                        boxShadow: isSubmitDisabled ? 'none' : '0 4px 16px rgba(212,163,115,0.28)',
+                      }}
+                    >
+                      {loading ? (
+                        <>
+                          <div className="w-3.5 h-3.5 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                          Saving
+                        </>
+                      ) : hasUploadingPhotos ? 'Uploading…' : hasBlockingRecorderState ? 'Finish recording' : memoryId ? 'Update Memory' : 'Save Memory'}
+                    </Button>
                   </div>
                 </div>
               </section>
@@ -1332,11 +1373,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </div>
               </section>
 
-              {/* Sticky save bar */}
+              {/* ── Sticky save bar ── */}
               <div
                 className="sticky bottom-0 z-10 -mx-5 px-5 py-4 md:-mx-9 md:px-9 md:py-4"
                 style={{
-                  background: 'linear-gradient(to top, rgba(253,252,245,0.98) 0%, rgba(253,252,245,0.95) 100%)',
+                  background: 'linear-gradient(to top, rgba(253,252,245,0.99) 0%, rgba(253,252,245,0.97) 100%)',
                   backdropFilter: 'blur(20px)',
                   borderTop: '1px solid rgba(212,163,115,0.22)',
                   boxShadow: '0 -8px 32px rgba(212,163,115,0.08)',
@@ -1358,11 +1399,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <span>Draft saved</span>
                       </>
                     )}
-                    {saveState === 'idle' && answer.trim().length > 0 && (
-                      <span className="text-xs" style={{ color: '#8A8A7A' }}>Draft autosaves as you write <kbd className="ml-1.5 inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-[10px]" style={{ borderColor: 'rgba(212,163,115,0.25)', fontFamily: 'var(--font-sans)' }}>⌘S</kbd></span>
-                    )}
-                    {saveState === 'idle' && answer.trim().length === 0 && (
-                      <span className="text-xs" style={{ color: '#8A8A7A' }}>Draft autosaves as you write</span>
+                    {saveState === 'idle' && (
+                      <span className="text-xs" style={{ color: '#8A8A7A' }}>
+                        Autosaves as you write
+                        {answer.trim().length > 0 && (
+                          <>
+                            {' '}
+                            <kbd className="ml-1.5 inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-[10px]" style={{ borderColor: 'rgba(212,163,115,0.25)', fontFamily: 'var(--font-sans)' }}>⌘S</kbd>
+                          </>
+                        )}
+                      </span>
                     )}
                   </div>
 
