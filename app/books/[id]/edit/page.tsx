@@ -934,7 +934,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       </span>
                     </div>
                     {promptOptionCount > 0 && (
-                      <span className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                      <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                         {promptOptionCount} prompt{promptOptionCount !== 1 ? 's' : ''} available
                       </span>
                     )}
@@ -944,7 +944,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       type="button"
                       onClick={() => { setPrompt(''); setUseCustomPrompt(false); setCustomPrompt(''); }}
                       className="text-xs underline-offset-2 hover:underline transition-all"
-                      style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}
+                      style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}
                     >
                       Clear prompt
                     </button>
@@ -1133,7 +1133,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
                       {(saveState === 'idle' || wordCount === 0) && wordCount === 0 && (
-                        <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
+                        <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
                       )}
                     </div>
                     {wordCount > 0 && (
@@ -1151,11 +1151,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <span className="font-bold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>
                           {wordCount.toLocaleString()}
                         </span>
-                        <span style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>{wordCount === 1 ? 'word' : 'words'}</span>
+                        <span style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>{wordCount === 1 ? 'word' : 'words'}</span>
                         {wordCount >= 20 && (
                           <>
                             <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.30)' }} />
-                            <span style={{ color: '#8A7A6A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>
+                            <span style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>
                               ~{Math.max(1, Math.round(wordCount / 200))} min
                             </span>
                           </>
@@ -1490,7 +1490,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       </>
                     )}
                     {saveState === 'idle' && (
-                      <span className="text-xs" style={{ color: '#8A8A7A' }}>
+                      <span className="text-xs" style={{ color: '#6A6A5A' }}>
                         Autosaves as you write
                         {answer.trim().length > 0 && (
                           <>
