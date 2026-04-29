@@ -1430,8 +1430,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       disabled={isSubmitDisabled}
                       className="h-11 rounded-full px-8 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(196,148,106,0.4)] hover:-translate-y-0.5"
                       style={{
-                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.35)' : 'var(--bronze)',
-                        color: isSubmitDisabled ? 'rgba(43,43,43,0.6)' : 'var(--charcoal)',
+                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.55)' : 'var(--bronze)',
+                        color: isSubmitDisabled ? 'rgba(43,43,43,0.65)' : 'var(--charcoal)',
                         boxShadow: isSubmitDisabled ? 'none' : '0 6px 24px rgba(212,163,115,0.3)',
                       }}
                       onMouseEnter={e => {

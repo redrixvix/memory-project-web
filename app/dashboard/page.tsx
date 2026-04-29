@@ -399,10 +399,10 @@ export default function Dashboard() {
             aria-modal="true"
             aria-labelledby="create-book-title"
           >
-            {/* Backdrop — use opacity overlay instead of blur to avoid rendering artifacts on form elements */}
+            {/* Backdrop — darker scrim for better focus + contrast */}
             <div
               className="absolute inset-0"
-              style={{ backgroundColor: 'rgba(43,43,43,0.50)' }}
+              style={{ backgroundColor: 'rgba(43,43,43,0.62)' }}
               onClick={() => { if (!creating) { setShowCreate(false); setCreateError(''); } }}
             />
 
@@ -761,9 +761,9 @@ export default function Dashboard() {
                           <div
                             className="flex items-center gap-1.5 rounded-full px-3.5 py-2 transition-all duration-300 group-hover:gap-2 min-w-[88px] justify-center"
                             style={{
-                              backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.22)' : 'rgba(212,163,115,0.10)',
-                              border: book._count?.memories === 0 ? '1px solid rgba(212,163,115,0.45)' : '1px solid rgba(212,163,115,0.14)',
-                              boxShadow: book._count?.memories === 0 ? '0 2px 10px rgba(212,163,115,0.16)' : 'none',
+                              backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.35)' : 'rgba(212,163,115,0.10)',
+                              border: book._count?.memories === 0 ? '1.5px solid rgba(212,163,115,0.55)' : '1px solid rgba(212,163,115,0.14)',
+                              boxShadow: book._count?.memories === 0 ? '0 2px 12px rgba(212,163,115,0.22), 0 1px 0 rgba(212,163,115,0.15) inset' : 'none',
                             }}
                           >
                             <span className="text-xs font-semibold" style={{
