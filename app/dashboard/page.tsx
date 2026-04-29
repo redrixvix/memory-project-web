@@ -747,7 +747,10 @@ export default function Dashboard() {
                         )}
 
                         {/* Footer row */}
-                        <div className="flex items-center justify-end" style={{ paddingBottom: 2 }}>
+                        <div
+                          className="flex items-center justify-end"
+                          style={{ paddingBottom: 2 }}
+                        >
                           {/* Decorative corner line for empty books */}
                           {book._count?.memories === 0 && (
                             <div
@@ -756,14 +759,14 @@ export default function Dashboard() {
                             />
                           )}
                           <div
-                            className="flex items-center gap-2 rounded-full px-3.5 py-2 transition-all duration-300 group-hover:gap-3"
+                            className="flex items-center gap-1.5 rounded-full px-3.5 py-2 transition-all duration-300 group-hover:gap-2 min-w-[88px] justify-center"
                             style={{
                               backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.22)' : 'rgba(212,163,115,0.10)',
                               border: book._count?.memories === 0 ? '1px solid rgba(212,163,115,0.45)' : '1px solid rgba(212,163,115,0.14)',
                               boxShadow: book._count?.memories === 0 ? '0 2px 10px rgba(212,163,115,0.16)' : 'none',
                             }}
                           >
-                            <span className="text-xs font-semibold" style={{ 
+                            <span className="text-xs font-semibold truncate max-w-[60px]" style={{ 
                               color: book._count?.memories === 0 ? 'rgba(43,43,43,0.85)' : 'rgba(90,90,80,0.9)', 
                               fontFamily: 'var(--font-sans)',
                             }}>
@@ -771,7 +774,7 @@ export default function Dashboard() {
                                 ? 'Start writing'
                                 : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'}`}
                             </span>
-                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: book._count?.memories === 0 ? 'rgba(43,43,43,0.7)' : 'rgba(212,163,115,0.8)' }}>
+                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: book._count?.memories === 0 ? 'rgba(43,43,43,0.7)' : 'rgba(212,163,115,0.8)' }}>
                               <path d="M5 12h14M12 5l7 7-7 7"/>
                             </svg>
                           </div>
@@ -785,50 +788,64 @@ export default function Dashboard() {
           </div>
         )}
 
-          <div className="flex items-center justify-center gap-2 mt-10">
-            <button
-              type="button"
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
-              style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
-              aria-label="Previous page"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M15 18l-6-6 6-6"/>
-              </svg>
-            </button>
-
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-1.5 mt-10">
               <button
-                key={page}
                 type="button"
-                onClick={() => setCurrentPage(page)}
-                className="w-9 h-9 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
-                style={{
-                  backgroundColor: currentPage === page ? 'var(--charcoal)' : 'rgba(212,163,115,0.10)',
-                  color: currentPage === page ? 'var(--cornsilk)' : 'var(--charcoal)',
-                }}
-                aria-label={`Page ${page}`}
-                aria-current={currentPage === page ? 'page' : undefined}
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
+                style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
+                aria-label="Previous page"
               >
-                {page}
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
               </button>
-            ))}
 
-            <button
-              type="button"
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
-              style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
-              aria-label="Next page"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M9 18l6-6-6-6"/>
-              </svg>
-            </button>
-          </div>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).reduce<(number | '…')[]>((acc, page) => {
+                const prev = acc[acc.length - 1];
+                if (page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1) {
+                  acc.push(page);
+                } else if ((page === 2 || page === totalPages - 1) && prev !== '…') {
+                  acc.push('…');
+                }
+                return acc;
+              }, []).map((item, idx) =>
+                item === '…' ? (
+                  <span key={`ellipsis-${idx}`} className="w-9 h-9 flex items-center justify-center text-sm" style={{ color: 'rgba(43,43,43,0.35)' }}>…</span>
+                ) : (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => setCurrentPage(item as number)}
+                    className="w-9 h-9 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+                    style={{
+                      backgroundColor: currentPage === item ? 'var(--charcoal)' : 'rgba(212,163,115,0.10)',
+                      color: currentPage === item ? 'var(--cornsilk)' : 'var(--charcoal)',
+                    }}
+                    aria-label={`Page ${item}`}
+                    aria-current={currentPage === item ? 'page' : undefined}
+                  >
+                    {item}
+                  </button>
+                )
+              )}
+
+              <button
+                type="button"
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
+                style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
+                aria-label="Next page"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            </div>
+          )}
       </main>
 
       {/* Floating Action Button - New Book (appears on scroll) */}

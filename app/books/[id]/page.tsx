@@ -580,13 +580,24 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             <Link
               href={`/books/${id}/edit`}
               className="inline-flex h-14 items-center justify-center rounded-full px-10 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-2xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-1 active:scale-95 group"
-              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 6px 28px rgba(212,163,115,0.35)' }}
+              style={{ 
+                backgroundColor: 'var(--bronze)', 
+                color: 'var(--charcoal)', 
+                boxShadow: '0 6px 28px rgba(212,163,115,0.35)',
+                animation: 'gentle-pulse 3s ease-in-out infinite',
+              }}
             >
               <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M12 5v14M5 12h14"/>
               </svg>
               Add your first memory
             </Link>
+            <style>{`
+              @keyframes gentle-pulse {
+                0%, 100% { box-shadow: 0 6px 28px rgba(212,163,115,0.35); }
+                50% { box-shadow: 0 6px 40px rgba(212,163,115,0.55), 0 0 0 8px rgba(212,163,115,0.06); }
+              }
+            `}</style>
           </div>
         ) : (
           /* ── Memory list with lightbox ── */
@@ -705,7 +716,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         {memory.answer_text}
                       </p>
 
-                      {/* Date + contributor — tightly grouped below content */}
+                      {/* Date + contributor + read time — tightly grouped below content */}
                       <div className="flex items-center gap-3 mt-5 pt-4 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
                         {memory.contributor_name ? (
                           <div className="flex items-center gap-2">
@@ -722,6 +733,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         <p className="text-xs tracking-wide" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                           {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                         </p>
+                        {memory.answer_text && (
+                          <>
+                            <div className="w-px h-3 opacity-30" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
+                            <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
+                              ~{Math.max(1, Math.round(memory.answer_text.trim().split(/\s+/).length / 200))} min read
+                            </span>
+                          </>
+                        )}
                       </div>
 
                       {/* Photo grid — premium album-style with hover reveal */}
