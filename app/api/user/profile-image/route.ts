@@ -8,24 +8,23 @@ function hashSessionId(sessionId: string): string {
 
 // POST /api/user/profile-image — Upload a profile image via UploadThing
 export async function POST(request: NextRequest) {
+  const sessionId = request.cookies.get('session')?.value;
+  if (!sessionId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const sessionIdHash = hashSessionId(sessionId);
+  const [session] = await sql`
+    SELECT user_id, expires_at
+    FROM auth_sessions
+    WHERE workos_session_id = ${sessionIdHash}
+  `;
+
+  if (!session || new Date(session.expires_at) < new Date()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
-    const sessionId = request.cookies.get('session')?.value;
-    if (!sessionId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const sessionIdHash = hashSessionId(sessionId);
-    const [session] = await sql`
-      SELECT user_id, expires_at
-      FROM auth_sessions
-      WHERE workos_session_id = ${sessionIdHash}
-    `;
-
-    if (!session || new Date(session.expires_at) < new Date()) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Parse the multipart form data to extract the file
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -41,39 +40,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Image must be smaller than 4MB' }, { status: 400 });
     }
 
-    // Convert to buffer for UploadThing
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // Upload via UploadThing server SDK
     const { UTApi } = await import('uploadthing/server');
-    const utapi = new UTApi();
-
-    const ext = file.name.split('.').pop() || 'jpg';
-    const fileName = `profile-images/${session.user_id}/${Date.now()}.${ext}`;
-
-    // Convert to UTFile for UploadThing
     const { UTFile } = await import('uploadthing/server');
-    const utFile = new UTFile([buffer], file.name, {
-      type: file.type,
-    });
 
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const utFile = new UTFile([buffer], file.name, { type: file.type });
+
+    const utapi = new UTApi();
     const result = await utapi.uploadFiles([utFile]);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const uploaded = result[0] as any;
-    const publicUrl = uploaded.right?.ufsUrl ?? uploaded.ufsUrl;
+    const publicUrl = uploaded.data?.ufsUrl ?? uploaded.ufsUrl ?? uploaded.url;
 
-    // Optionally update the user's profile_image_url
     await sql`
       UPDATE users
       SET profile_image_url = ${publicUrl}
       WHERE id = ${session.user_id}
     `;
 
-    return NextResponse.json({ url: publicUrl, key: uploaded.key });
-  } catch (error) {
-    console.error('Profile image upload error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ url: publicUrl });
+  } catch (error: any) {
+    console.error('Profile image upload error:', error.message);
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }
