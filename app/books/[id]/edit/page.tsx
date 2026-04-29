@@ -870,15 +870,25 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             <form onSubmit={handleSubmit} className="relative">
               {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
               <section className="py-5 md:py-6">
-                <div className="mb-4 flex flex-wrap items-center gap-3">
-                  <span className="text-xs font-medium uppercase tracking-[0.12em]" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-sans)' }}>
-                    Guided prompt
-                  </span>
-                  {promptOptionCount > 0 && (
-                    <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
-                      Choose one below, or write freely
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-medium uppercase tracking-[0.12em]" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-sans)' }}>
+                      Guided prompt
                     </span>
-                  )}
+                    {promptOptionCount > 0 && (
+                      <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
+                        Choose one or write freely
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setPrompt(''); setUseCustomPrompt(false); setCustomPrompt(''); }}
+                    className="text-xs underline-offset-2 hover:underline transition-all"
+                    style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}
+                  >
+                    Skip prompt
+                  </button>
                 </div>
                 <div className="relative max-w-2xl">
                   <div className="relative">
@@ -1009,11 +1019,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </div>
               </section>
 
-              {/* Writing section — single column, full-width writing area */}
+              {/* Writing section — single column, constrained-width for premium readability */}
               <section className="border-t py-5 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+                {/* Constrained writing zone — creates "journal page" feel */}
                 <div
-                  className="rounded-[1.5rem] border p-3 md:p-5"
+                  className="rounded-[1.5rem] border p-3 md:p-5 mx-auto"
                   style={{
+                    maxWidth: '760px',
                     backgroundColor: 'rgba(255,253,246,0.78)',
                     borderColor: 'rgba(212,163,115,0.18)',
                     boxShadow: '0 18px 40px rgba(212,163,115,0.08)',
@@ -1021,7 +1033,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 >
                   <style>{`
                     .memory-textarea::placeholder {
-                      color: rgba(100, 95, 85, 0.75);
+                      color: rgba(100, 95, 85, 0.72);
                       font-style: italic;
                     }
                   `}</style>
@@ -1031,16 +1043,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     onFocus={() => setTextareaFocused(true)}
                     onBlur={() => setTextareaFocused(false)}
                     required
-                    className="min-h-[320px] rounded-[1.2rem] border-0 px-5 py-5 text-base leading-[1.9] md:min-h-[360px] md:text-[1.05rem] memory-textarea transition-all duration-200"
-                    rows={14}
+                    className="min-h-[360px] rounded-[1.2rem] border-0 px-5 py-5 text-[1.0625rem] leading-[1.95] md:min-h-[420px] md:text-[1.125rem] memory-textarea transition-all duration-200"
+                    rows={16}
                     placeholder="Take your time. There is no perfect way to tell a memory, only your way."
                     style={{
                       backgroundColor: '#FFFDF6',
                       fontFamily: 'var(--font-serif)',
                       resize: 'vertical',
                       boxShadow: textareaFocused
-                        ? 'inset 0 0 0 2px rgba(212,163,115,0.70), inset 0 2px 16px rgba(212,163,115,0.08), inset 0 0 40px rgba(212,163,115,0.05), 0 0 0 4px rgba(212,163,115,0.12)'
-                        : 'inset 0 0 0 1.5px rgba(212,163,115,0.38), inset 0 2px 12px rgba(212,163,115,0.05), inset 0 0 40px rgba(212,163,115,0.03)',
+                        ? 'inset 0 0 0 2px rgba(212,163,115,0.75), inset 0 3px 20px rgba(212,163,115,0.09), inset 0 0 60px rgba(212,163,115,0.05), 0 0 0 4px rgba(212,163,115,0.14)'
+                        : 'inset 0 0 0 1.5px rgba(212,163,115,0.30), inset 0 3px 14px rgba(212,163,115,0.06), inset 0 0 50px rgba(212,163,115,0.04)',
                     }}
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">

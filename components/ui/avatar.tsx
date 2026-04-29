@@ -51,11 +51,12 @@ export function Avatar({ name, imageUrl, className, size }: AvatarProps) {
       style={{
         width: sizeValue,
         height: sizeValue,
-        background: 'linear-gradient(135deg, #D4A373 0%, #C49A6C 50%, #B8895A 100%)',
+        background: 'linear-gradient(135deg, #D4A373 0%, #C9976A 50%, #B8875A 100%)',
         color: '#2B2B2B',
         fontFamily: 'var(--font-serif, Georgia, serif)',
-        letterSpacing: '0.03em',
+        letterSpacing: '0.04em',
         fontSize: Math.round(sizeValue * 0.38),
+        boxShadow: `0 ${Math.round(sizeValue * 0.1)}px ${Math.round(sizeValue * 0.3)}px rgba(212,163,115,0.18), 0 ${Math.round(sizeValue * 0.05)}px ${Math.round(sizeValue * 0.1)}px rgba(212,163,115,0.08), inset 0 1px 2px rgba(255,255,255,0.15)`
       }}
       title={name}
     >

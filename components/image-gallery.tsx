@@ -412,8 +412,7 @@ export function DropZone({
             fontFamily: "var(--font-sans)",
           }}
         >
-          or click to browse from your device. We will show previews right away and finish
-          uploading in the background.
+          or click to browse from your device. Previews appear instantly.
         </p>
       </div>
     </div>

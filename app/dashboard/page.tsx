@@ -232,7 +232,7 @@ export default function Dashboard() {
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
       {/* ── TOP NAV ── */}
-      <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
+      <header className="sticky top-0 z-20 h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
           {/* Left: Logo */}
           <div className="flex items-center gap-3">
@@ -302,7 +302,7 @@ export default function Dashboard() {
       </header>
 
       {/* ── MAIN CONTENT ── */}
-      <main className="px-6 md:px-10 pt-6 pb-10 max-w-5xl mx-auto w-full">
+      <main className="px-6 md:px-10 pt-8 pb-10 max-w-5xl mx-auto w-full">
 
         {/* Header row — compact, editorial */}
         <div className="mb-6">
@@ -336,7 +336,7 @@ export default function Dashboard() {
           {books.length > 0 && (
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4">
               <div className="relative flex-1">
-                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#8A8A7A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--bronze)' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
                 <input
@@ -765,8 +765,8 @@ export default function Dashboard() {
                           <div
                             className="flex items-center gap-1.5 rounded-full px-3.5 py-2 transition-all duration-300 group-hover:gap-2 min-w-[88px] justify-center"
                             style={{
-                              backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.35)' : 'rgba(212,163,115,0.10)',
-                              border: book._count?.memories === 0 ? '1.5px solid rgba(212,163,115,0.55)' : '1px solid rgba(212,163,115,0.14)',
+                              backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.35)' : 'rgba(212,163,115,0.07)',
+                              border: book._count?.memories === 0 ? '1.5px solid rgba(212,163,115,0.55)' : '1px solid rgba(212,163,115,0.10)',
                               boxShadow: book._count?.memories === 0 ? '0 2px 12px rgba(212,163,115,0.22), 0 1px 0 rgba(212,163,115,0.15) inset' : 'none',
                             }}
                           >
