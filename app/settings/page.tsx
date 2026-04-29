@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 interface User {
   id: number;
@@ -23,6 +25,13 @@ export default function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageError, setImageError] = useState('');
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => {
     async function loadUser() {
@@ -556,12 +565,59 @@ export default function SettingsPage() {
                     </p>
                   </div>
                   <button
+                    onClick={() => setShowPasswordForm(v => !v)}
                     className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:opacity-80"
                     style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.2)' }}
                   >
-                    Change password
+                    {showPasswordForm ? 'Cancel' : 'Change password'}
                   </button>
                 </div>
+                {showPasswordForm && (
+                  <div className="mt-4 p-4 rounded-xl space-y-3" style={{ backgroundColor: 'rgba(212,163,115,0.06)', border: '1px solid rgba(212,163,115,0.12)' }}>
+                    {passwordError && (
+                      <div className="p-3 rounded-lg text-xs" style={{ backgroundColor: 'rgba(185,28,28,0.08)', color: '#B91C1C', border: '1px solid rgba(185,28,28,0.2)' }}>{passwordError}</div>
+                    )}
+                    {passwordSuccess && (
+                      <div className="p-3 rounded-lg text-xs" style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: 'var(--charcoal)' }}>Password updated successfully.</div>
+                    )}
+                    <div>
+                      <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>Current password</Label>
+                      <Input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="Current password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }} />
+                    </div>
+                    <div>
+                      <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>New password</Label>
+                      <Input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="New password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }} />
+                    </div>
+                    <div>
+                      <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>Confirm new password</Label>
+                      <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm new password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }} />
+                    </div>
+                    <button
+                      onClick={async () => {
+                        setPasswordError('');
+                        setPasswordSuccess(false);
+                        if (!newPassword || !currentPassword) { setPasswordError('Please fill in all fields.'); return; }
+                        if (newPassword !== confirmPassword) { setPasswordError('New passwords do not match.'); return; }
+                        if (newPassword.length < 8) { setPasswordError('Password must be at least 8 characters.'); return; }
+                        setChangingPassword(true);
+                        try {
+                          const res = await fetch('/api/auth/change-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword, newPassword }) });
+                          const data = await res.json();
+                          if (!res.ok) { setPasswordError(data.error || 'Could not update password.'); return; }
+                          setPasswordSuccess(true);
+                          setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
+                          setTimeout(() => { setShowPasswordForm(false); setPasswordSuccess(false); }, 2500);
+                        } catch { setPasswordError('Something went wrong. Please try again.'); }
+                        finally { setChangingPassword(false); }
+                      }}
+                      disabled={changingPassword}
+                      className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:brightness-110 active:scale-[0.98]"
+                      style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+                    >
+                      {changingPassword ? 'Updating…' : 'Update password'}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </section>
