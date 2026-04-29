@@ -313,9 +313,6 @@ export default function SettingsPage() {
 
                 {/* Avatar info */}
                 <div className="flex-1 sm:pl-4">
-                  <p className="text-lg font-semibold mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                    {user?.name}
-                  </p>
                   {profileImageUrl ? (
                     <button
                       onClick={() => setProfileImageUrl(null)}
