@@ -49,8 +49,8 @@ export async function GET(request: NextRequest) {
         id: user.id,
         email: user.email,
         name: user.name,
-        profileImageUrl: user.profile_image_url || null,
-        googleId: user.google_id || null,
+        profile_image_url: user.profile_image_url || null,
+        google_id: user.google_id || null,
       },
     });
   } catch (error) {

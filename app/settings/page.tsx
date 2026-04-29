@@ -92,40 +92,30 @@ export default function SettingsPage() {
     }
 
     // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      setImageError('Image must be smaller than 2MB.');
+    if (file.size > 4 * 1024 * 1024) {
+      setImageError('Image must be smaller than 4MB.');
       return;
     }
 
-    setUploadingImage(true);
+        setUploadingImage(true);
     setImageError('');
 
     try {
-      // Get upload URL from our API
+      // Upload profile image via multipart form to our API
+      const formData = new FormData();
+      formData.append('file', file);
+
       const uploadRes = await fetch('/api/user/profile-image', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fileName: file.name, fileType: file.type }),
+        body: formData,
       });
 
       if (!uploadRes.ok) {
-        // If the endpoint doesn't exist yet, use a temporary local preview
-        const localUrl = URL.createObjectURL(file);
-        setProfileImageUrl(localUrl);
-        setImageError('');
-        return;
+        const errData = await uploadRes.json().catch(() => ({}));
+        throw new Error(errData.error || 'Upload failed');
       }
 
-      const { uploadUrl, publicUrl } = await uploadRes.json();
-
-      // Upload to storage
-      const putRes = await fetch(uploadUrl, {
-        method: 'PUT',
-        body: file,
-        headers: { 'Content-Type': file.type },
-      });
-
-      if (!putRes.ok) throw new Error('Upload failed');
+      const { url: publicUrl } = await uploadRes.json();
 
       setProfileImageUrl(publicUrl);
 
@@ -137,7 +127,7 @@ export default function SettingsPage() {
       });
 
     } catch (err) {
-      setImageError('Failed to upload image. Please try again.');
+      setImageError(err instanceof Error ? err.message : 'Failed to upload image. Please try again.');
     } finally {
       setUploadingImage(false);
     }
@@ -237,8 +227,16 @@ export default function SettingsPage() {
 
               {/* Avatar + image upload */}
               <div className="flex flex-col sm:flex-row items-center gap-6">
-                {/* Avatar display */}
+                {/* Avatar display — with warm ambient glow */}
                 <div className="relative group">
+                  {/* Warm ambient glow behind avatar */}
+                  <div
+                    className="absolute inset-0 rounded-full scale-125 pointer-events-none"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(212,163,115,0.18) 0%, rgba(204,213,174,0.12) 50%, transparent 70%)',
+                      filter: 'blur(8px)',
+                    }}
+                  />
                   {profileImageUrl ? (
                     <div className="relative">
                       <div className="w-24 h-24 rounded-full overflow-hidden" style={{ boxShadow: '0 8px 32px rgba(212,163,115,0.2)' }}>
