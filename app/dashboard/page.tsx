@@ -795,7 +795,7 @@ export default function Dashboard() {
                             {book.description}
                           </p>
                         ) : (
-                          <p className="text-sm leading-relaxed mb-4" style={{ color: '#7A7A6A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                          <p className="text-sm leading-relaxed mb-4" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
                             No description yet — begin your story
                           </p>
                         )}
@@ -819,7 +819,7 @@ export default function Dashboard() {
                                 +{book.contributors.length - 4}
                               </span>
                             )}
-                            <span className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                            <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                               {book.contributors.length === 1 ? '1 contributor' : `${book.contributors.length} contributors`}
                             </span>
                           </div>

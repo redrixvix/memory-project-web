@@ -436,7 +436,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 )}
               </div>
               {book.description && (
-                <p className="text-base leading-relaxed" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-serif)', maxWidth: '56ch', fontStyle: 'italic' }}>
+                <p className="text-base leading-relaxed" style={{ color: '#4A4A3A', fontFamily: 'var(--font-serif)', maxWidth: '56ch', fontStyle: 'italic' }}>
                   {book.description}
                 </p>
               )}
@@ -488,7 +488,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   className="rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
                   style={{
                     backgroundColor: memorySort === 'newest' ? 'var(--bronze)' : 'transparent',
-                    color: memorySort === 'newest' ? 'var(--charcoal)' : '#7A7A6A',
+                    color: memorySort === 'newest' ? 'var(--charcoal)' : '#6A6A5A',
                   }}
                 >
                   Newest
@@ -499,7 +499,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   className="rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
                   style={{
                     backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
-                    color: memorySort === 'oldest' ? 'var(--charcoal)' : '#7A7A6A',
+                    color: memorySort === 'oldest' ? 'var(--charcoal)' : '#6A6A5A',
                   }}
                 >
                   Oldest
@@ -728,18 +728,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               imageUrl={memory.contributor_avatar || null}
                               size={24}
                             />
-                            <span className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                            <span className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                               {memory.contributor_name}
                             </span>
                           </div>
                         ) : null}
-                        <span className="text-xs tracking-wide" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
+                        <span className="text-xs tracking-wide" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
                           {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                         </span>
                         {memory.answer_text && (
                           <>
                             <div className="w-px h-3 opacity-30" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
-                            <span className="text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
+                            <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                               ~{Math.max(1, Math.round(memory.answer_text.trim().split(/\s+/).length / 200))} min read
                             </span>
                           </>
@@ -955,7 +955,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </svg>
               Preview your book
             </Link>
-            <p className="mt-4 text-xs" style={{ color: '#7A7A6A', fontFamily: 'var(--font-sans)' }}>
+            <p className="mt-4 text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
               Print preview — see your book before ordering
             </p>
           </div>
