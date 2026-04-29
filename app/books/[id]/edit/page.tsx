@@ -1109,30 +1109,32 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
                       )}
                     </div>
-                    <div
-                      className="inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs transition-all duration-300"
-                      style={{
-                        backgroundColor: wordCount > 0 ? 'rgba(212,163,115,0.18)' : 'rgba(254,250,224,0.60)',
-                        boxShadow: wordCount > 0 ? '0 2px 12px rgba(212,163,115,0.20)' : 'none',
-                        border: wordCount > 0 ? '1px solid rgba(212,163,115,0.35)' : '1px solid rgba(212,163,115,0.10)',
-                      }}
-                    >
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                      </svg>
-                      <span className="font-bold" style={{ color: wordCount > 0 ? 'var(--charcoal)' : '#9A9A8A', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>
-                        {wordCount.toLocaleString()}
-                      </span>
-                      <span style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>{wordCount === 1 ? 'word' : 'words'}</span>
-                      {wordCount >= 20 && (
-                        <>
-                          <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.30)' }} />
-                          <span style={{ color: '#8A7A6A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>
-                            ~{Math.max(1, Math.round(wordCount / 200))} min
-                          </span>
-                        </>
-                      )}
-                    </div>
+                    {wordCount > 0 && (
+                      <div
+                        className="inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs transition-all duration-300"
+                        style={{
+                          backgroundColor: 'rgba(212,163,115,0.18)',
+                          boxShadow: '0 2px 12px rgba(212,163,115,0.20)',
+                          border: '1px solid rgba(212,163,115,0.35)',
+                        }}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                        </svg>
+                        <span className="font-bold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>
+                          {wordCount.toLocaleString()}
+                        </span>
+                        <span style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>{wordCount === 1 ? 'word' : 'words'}</span>
+                        {wordCount >= 20 && (
+                          <>
+                            <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.30)' }} />
+                            <span style={{ color: '#8A7A6A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>
+                              ~{Math.max(1, Math.round(wordCount / 200))} min
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                   {/* Visible save CTA at card bottom */}
                   <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: 'rgba(212,163,115,0.10)' }}>

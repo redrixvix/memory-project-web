@@ -304,22 +304,20 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               Members
             </button>
 
-            {/* Add Memory button - only shown when book has memories (empty state has its own CTA) */}
-            {memories.length > 0 && (
-              <Link
-                href={`/books/${id}/edit`}
-                className="hidden sm:inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95"
-                style={{
-                  backgroundColor: 'var(--bronze)',
-                  color: 'var(--charcoal)',
-                }}
-              >
-                <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M12 5v14M5 12h14"/>
-                </svg>
-                Add Memory
-              </Link>
-            )}
+            {/* Add Memory button — shown for all books, regardless of memory count */}
+            <Link
+              href={`/books/${id}/edit`}
+              className="hidden sm:inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95"
+              style={{
+                backgroundColor: 'var(--bronze)',
+                color: 'var(--charcoal)',
+              }}
+            >
+              <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Add Memory
+            </Link>
 
             {/* Share button */}
             <button
@@ -443,44 +441,24 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 </p>
               )}
             </div>
-            {memories.length > 0 ? (
-              <div className="flex items-center shrink-0">
-                <span
-                  className="inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-semibold shadow-sm"
-                  style={{
-                    backgroundColor: 'rgba(253,252,245,0.92)',
-                    color: 'var(--bronze)',
-                    fontFamily: 'var(--font-sans)',
-                    border: '1px solid rgba(212,163,115,0.22)',
-                    backdropFilter: 'blur(8px)',
-                    boxShadow: '0 2px 12px rgba(212,163,115,0.10)',
-                  }}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                  </svg>
-                  {memories.length} {memories.length === 1 ? 'memory' : 'memories'}
-                </span>
-              </div>
-            ) : (
-              <div className="flex items-center shrink-0">
-                <Link
-                  href={`/books/${id}/edit`}
-                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95 hover:shadow-md"
-                  style={{
-                    backgroundColor: 'var(--bronze)',
-                    color: 'var(--charcoal)',
-                    fontFamily: 'var(--font-sans)',
-                    boxShadow: '0 3px 14px rgba(212,163,115,0.30)',
-                  }}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M12 5v14M5 12h14"/>
-                  </svg>
-                  Add Memory
-                </Link>
-              </div>
-            )}
+            {/* Always show Add Memory in hero */}
+            <div className="flex items-center shrink-0">
+              <Link
+                href={`/books/${id}/edit`}
+                className="inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95 hover:shadow-md"
+                style={{
+                  backgroundColor: 'var(--bronze)',
+                  color: 'var(--charcoal)',
+                  fontFamily: 'var(--font-sans)',
+                  boxShadow: '0 3px 14px rgba(212,163,115,0.30)',
+                }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Add Memory
+              </Link>
+            </div>
           </div>
         </div>
 
