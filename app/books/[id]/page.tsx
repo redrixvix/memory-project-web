@@ -441,24 +441,26 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 </p>
               )}
             </div>
-            {/* Always show Add Memory in hero */}
-            <div className="flex items-center shrink-0">
-              <Link
-                href={`/books/${id}/edit`}
-                className="inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95 hover:shadow-md"
-                style={{
-                  backgroundColor: 'var(--bronze)',
-                  color: 'var(--charcoal)',
-                  fontFamily: 'var(--font-sans)',
-                  boxShadow: '0 3px 14px rgba(212,163,115,0.30)',
-                }}
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M12 5v14M5 12h14"/>
-                </svg>
-                Add Memory
-              </Link>
-            </div>
+            {/* Show Add Memory only when book is empty — avoid CTA redundancy */}
+            {memories.length === 0 && (
+              <div className="flex items-center shrink-0">
+                <Link
+                  href={`/books/${id}/edit`}
+                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95 hover:shadow-md"
+                  style={{
+                    backgroundColor: 'var(--bronze)',
+                    color: 'var(--charcoal)',
+                    fontFamily: 'var(--font-sans)',
+                    boxShadow: '0 3px 14px rgba(212,163,115,0.30)',
+                  }}
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M12 5v14M5 12h14"/>
+                  </svg>
+                  Add Memory
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 

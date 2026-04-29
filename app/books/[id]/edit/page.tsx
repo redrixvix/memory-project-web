@@ -1091,13 +1091,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
                     <div className="flex items-center gap-2">
-                      {saveState === 'saving' && (
+                      {saveState === 'saving' && wordCount > 0 && (
                         <div className="flex items-center gap-1.5">
                           <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
                           <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Saving...</p>
                         </div>
                       )}
-                      {saveState === 'saved' && (
+                      {saveState === 'saved' && wordCount > 0 && (
                         <div className="flex items-center gap-1.5">
                           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
                             <path d="M20 6L9 17l-5-5"/>
@@ -1105,7 +1105,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                           <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Saved</p>
                         </div>
                       )}
-                      {saveState === 'idle' && wordCount === 0 && (
+                      {(saveState === 'idle' || wordCount === 0) && wordCount === 0 && (
                         <p className="text-xs" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
                       )}
                     </div>
@@ -1153,8 +1153,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       disabled={isSubmitDisabled}
                       className="h-10 rounded-full px-7 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(196,148,106,0.35)] hover:-translate-y-0.5"
                       style={{
-                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.35)' : 'var(--bronze)',
-                        color: isSubmitDisabled ? 'rgba(43,43,43,0.55)' : 'var(--charcoal)',
+                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.28)' : 'var(--bronze)',
+                        color: isSubmitDisabled ? 'rgba(43,43,43,0.65)' : 'var(--charcoal)',
                         boxShadow: isSubmitDisabled ? 'none' : '0 4px 16px rgba(212,163,115,0.28)',
                       }}
                     >
@@ -1448,13 +1448,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: '#6A6A5A' }}>
-                    {saveState === 'saving' && (
+                    {saveState === 'saving' && answer.trim().length > 0 && (
                       <>
                         <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
                         <span>Saving draft...</span>
                       </>
                     )}
-                    {saveState === 'saved' && (
+                    {saveState === 'saved' && answer.trim().length > 0 && (
                       <>
                         <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
                           <path d="M20 6L9 17l-5-5" />
