@@ -123,6 +123,54 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await ensureDatabaseReady();
+    const user = await getUserFromSession(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = await params;
+    const book = await checkBookAccess(user.id, parseInt(id));
+
+    if (!book) {
+      return NextResponse.json({ error: 'Book not found' }, { status: 404 });
+    }
+
+    if (book.owner_id !== user.id) {
+      return NextResponse.json({ error: 'Only owner can update book' }, { status: 403 });
+    }
+
+    const { title, description } = await request.json();
+
+    const [updatedBook] = await sql`
+      UPDATE books
+      SET title = COALESCE(${title}, title),
+          description = COALESCE(${description}, description),
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${book.id}
+      RETURNING id, title, description, storage_tier, plan, storage_used_bytes, created_at
+    `;
+
+    return NextResponse.json({
+      book: {
+        ...updatedBook,
+        plan: normalizeBookPlan(updatedBook.plan, updatedBook.storage_tier),
+      },
+    });
+  } catch (error) {
+    console.error('Update book error:', error);
+    return NextResponse.json(
+      { error: 'Failed to update book' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

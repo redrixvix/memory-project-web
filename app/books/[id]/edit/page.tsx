@@ -243,6 +243,30 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     setDraftLoaded(true);
   }, [draftKey, id, memoryId, router, urlPrompt]);
 
+  // Auto-focus textarea when navigated via a prompt link (e.g. from empty state chip)
+  useEffect(() => {
+    const tryFocus = () => {
+      const textarea = document.querySelector('textarea');
+      if (textarea && textarea.value !== undefined) {
+        textarea.focus();
+        return true;
+      }
+      return false;
+    };
+
+    if (urlPrompt && !memoryId) {
+      // Wait for prompt to load, then focus
+      const focused = tryFocus();
+      if (!focused && promptLoadState === 'loading') {
+        const timeout = setTimeout(() => {
+          const t = document.querySelector('textarea');
+          if (t) t.focus();
+        }, 600);
+        return () => clearTimeout(timeout);
+      }
+    }
+  }, [urlPrompt, memoryId, promptLoadState]);
+
   useEffect(() => {
     if (!prompt) {
       setUseCustomPrompt(false);
@@ -1047,6 +1071,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     }
                   `}</style>
                   <Textarea
+                    autoFocus
                     value={answer}
                     onChange={(e) => handleAnswerChange(e.target.value)}
                     onFocus={() => setTextareaFocused(true)}
