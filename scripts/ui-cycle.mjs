@@ -1,146 +1,140 @@
 import { chromium } from '@playwright/test';
+import fs from 'fs';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE = process.env.E2E_BASE_URL || 'http://localhost:3000';
 const EMAIL = process.env.E2E_EMAIL || 'RedRixvix@proton.me';
 const PASSWORD = process.env.E2E_PASSWORD || 'd[,<(q<HC6V~MJvV';
 
-async function run() {
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({
-    viewport: { width: 1280, height: 800 },
-  });
-  const page = await context.newPage();
+const screenshots = [];
+const OUT = 'playwright/screens-ui-cycle';
+try { fs.mkdirSync(OUT, { recursive: true }); } catch {}
 
-  const screenshots = [];
-  let step = 0;
-  const snap = async (label) => {
-    await page.waitForLoadState('networkidle');
-    const path = `/home/rixvix/.openclaw/workspace/memory-project/web/screens/ui-cycle-${Date.now()}-${step++}-${label}.png`;
-    await page.screenshot({ path, fullPage: false });
-    screenshots.push(path);
-    console.log(`[${step}] ${label} → ${path}`);
-  };
-
+async function snap(page, name) {
+  const f = `${OUT}/${name}.png`;
   try {
-    // ── 1. LOGIN ──
-    console.log('\n=== LOGIN ===');
-    await page.goto(`${BASE_URL}/login`);
-    await page.waitForLoadState('networkidle');
-    await snap('login-page');
-
-    // Fill credentials
-    await page.fill('input[type="email"]', EMAIL);
-    await page.fill('input[type="password"]', PASSWORD);
-    await page.click('button[type="submit"]');
-    await page.waitForURL('**/dashboard', { timeout: 15000 });
-    await snap('dashboard-after-login');
-
-    // ── 2. EXPLORE DASHBOARD ──
-    console.log('\n=== DASHBOARD ===');
-    await page.waitForLoadState('networkidle');
-
-    const bookLinks = await page.locator('a[href*="/books/"]').count();
-    console.log(`Found ${bookLinks} book links on dashboard`);
-
-    const emptyState = await page.locator('text=/empty|no book|start/i').count();
-    console.log(`Empty state elements: ${emptyState}`);
-
-    await snap('dashboard-full');
-
-    // ── 3. CREATE A BOOK ──
-    console.log('\n=== CREATE BOOK ===');
-
-    let createBookBtn = page.locator('a:has-text("New Book"), button:has-text("Create Book")').first();
-    if (await createBookBtn.count() === 0) {
-      createBookBtn = page.locator('a:has-text("Create"), button:has-text("Create")').first();
-    }
-
-    const createBookBtnVisible = await createBookBtn.count() > 0 && await createBookBtn.isVisible().catch(() => false);
-    console.log(`Create book button visible: ${createBookBtnVisible}`);
-
-    if (createBookBtnVisible) {
-      await createBookBtn.click();
-      await page.waitForLoadState('networkidle');
-      await snap('book-creation-page');
-      console.log('Current URL:', page.url());
-    } else {
-      await page.goto(`${BASE_URL}/books/new`).catch(() => {});
-      await page.waitForLoadState('networkidle');
-      await snap('book-new-direct');
-      console.log('Current URL:', page.url());
-    }
-
-    // ── 4. NAVIGATE TO APP PAGES ──
-    console.log('\n=== NAVIGATE PAGES ===');
-    const routes = ['/app/settings'];
-    for (const route of routes) {
-      await page.goto(`${BASE_URL}${route}`).catch(() => {});
-      await page.waitForLoadState('networkidle');
-      await snap(`route-${route.replace(/\//g, '-')}`);
-      console.log(`${route}: ${page.url()}`);
-    }
-
-    // ── 5. GO TO BOOK DETAIL AND ADD MEMORY ──
-    console.log('\n=== BOOK DETAIL → MEMORY CREATION ===');
-    await page.goto(`${BASE_URL}/dashboard`);
-    await page.waitForLoadState('networkidle');
-    await snap('dashboard-back');
-
-    const bookLink = page.locator('a[href*="/books/"]').first();
-    if (await bookLink.count() > 0) {
-      const bookHref = await bookLink.getAttribute('href');
-      console.log(`Found book link: ${bookHref}`);
-      await bookLink.click();
-      await page.waitForLoadState('networkidle');
-      await snap('book-detail-page');
-
-      const addMemoryBtn = page.locator('a:has-text("Add Memory"), button:has-text("Add Memory")').first();
-      if (await addMemoryBtn.count() > 0 && await addMemoryBtn.isVisible().catch(() => false)) {
-        await addMemoryBtn.click();
-        await page.waitForLoadState('networkidle');
-        await snap('memory-edit-page');
-        console.log('Memory edit URL:', page.url());
-
-        // Try to fill in memory form
-        const promptInput = page.locator('input[placeholder*="question"], input[placeholder*="prompt"]').first();
-        if (await promptInput.count() > 0) {
-          await promptInput.fill('What is your favorite childhood memory?');
-        }
-
-        const answerTextarea = page.locator('textarea').first();
-        if (await answerTextarea.count() > 0) {
-          await answerTextarea.fill('This is a test memory entry created during the UI review cycle. It should be properly styled and feel premium.');
-        }
-
-        await snap('memory-form-filled');
-      } else {
-        console.log('No Add Memory button visible');
-      }
-    } else {
-      console.log('No book links found on dashboard');
-      await snap('dashboard-no-books');
-    }
-
-    // ── 6. SETTINGS ──
-    console.log('\n=== SETTINGS ===');
-    await page.goto(`${BASE_URL}/app/settings`);
-    await page.waitForLoadState('networkidle');
-    await snap('settings-page');
-
-    // ── 7. FINAL DASHBOARD ──
-    await page.goto(`${BASE_URL}/dashboard`);
-    await page.waitForLoadState('networkidle');
-    await snap('dashboard-final');
-
-    console.log('\n=== SCREENSHOTS ===');
-    screenshots.forEach((s, i) => console.log(`${i + 1}. ${s}`));
-
-  } catch (err) {
-    console.error('Error during flow:', err);
-    await snap(`error-${Date.now()}`);
-  } finally {
-    await browser.close();
+    await page.screenshot({ path: f, fullPage: false });
+    screenshots.push(f);
+    console.log(`📸 ${name}`);
+  } catch (e) {
+    console.log(`⚠️ snap failed for ${name}: ${e.message}`);
   }
 }
 
-run().catch(console.error);
+const browser = await chromium.launch({ headless: true });
+const context = await browser.newContext();
+const page = await context.newPage();
+
+// Set shorter timeouts globally
+page.setDefaultTimeout(15000);
+page.setDefaultNavigationTimeout(20000);
+
+try {
+  console.log('Starting UI premium cycle...');
+
+  // LOGIN
+  await page.goto(BASE + '/login', { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(2000);
+  await snap(page, '01-login-page');
+  console.log('Login page loaded');
+
+  const emailInput = page.locator('input[type="email"]');
+  const passInput = page.locator('input[type="password"]');
+  await emailInput.fill(EMAIL);
+  await passInput.fill(PASSWORD);
+  await snap(page, '02-login-filled');
+
+  await page.click('button[type="submit"]');
+  await page.waitForURL('**/dashboard', { timeout: 20000 });
+  await page.waitForTimeout(2000);
+  await snap(page, '03-dashboard-loaded');
+  console.log('Dashboard loaded after login');
+
+  // Check for books
+  const booksSection = page.locator('text=My Books').first();
+  if (await booksSection.isVisible({ timeout: 3000 })) {
+    await snap(page, '04-books-section');
+    console.log('Books section visible');
+  }
+
+  // Navigate to first book or create new one
+  let bookUrl = '';
+  const firstBookLink = page.locator('a[href*="/books/"]').first();
+  if (await firstBookLink.isVisible({ timeout: 3000 })) {
+    bookUrl = await firstBookLink.getAttribute('href');
+    await firstBookLink.click();
+    await page.waitForTimeout(2000);
+    await snap(page, '05-book-detail');
+    console.log('Navigated to book detail');
+  } else {
+    await page.goto(BASE + '/books/new', { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(2000);
+    await snap(page, '05-new-book-page');
+    const titleInput = page.locator('input[id*="title"], input[name*="title"]').first();
+    if (await titleInput.isVisible({ timeout: 3000 })) {
+      await titleInput.fill('My First Premium Book');
+      const descArea = page.locator('textarea[name*="description"]').first();
+      if (await descArea.isVisible({ timeout: 2000 })) {
+        await descArea.fill('A collection of cherished memories.');
+      }
+      await snap(page, '06-new-book-filled');
+      const createBtn = page.locator('button:has-text("Create"), button:has-text("Save")').first();
+      await createBtn.click();
+      await page.waitForURL(/\/books\/\d+/, { timeout: 15000 });
+      await page.waitForTimeout(2000);
+      bookUrl = page.url();
+    }
+    console.log('Created new book');
+  }
+
+  await snap(page, '07-book-context');
+
+  // ADD MEMORY
+  const addMemoryBtn = page.locator('a:has-text("Add Memory"), button:has-text("Add Memory"), a:has-text("New Memory"), button:has-text("Write a Memory")').first();
+  if (await addMemoryBtn.isVisible({ timeout: 5000 })) {
+    await addMemoryBtn.click();
+    await page.waitForTimeout(2000);
+    await snap(page, '08-memory-form');
+    console.log('Memory form opened');
+
+    const textarea = page.locator('textarea').first();
+    if (await textarea.isVisible({ timeout: 3000 })) {
+      await textarea.fill('The morning light was golden and warm. Grandma was in the kitchen making her famous cinnamon rolls, and the whole house smelled like heaven. Those were the moments that mattered most — simple, warm, full of love.');
+      await snap(page, '09-memory-filled');
+    }
+
+    const titleInput = page.locator('input[id*="title"], input[name*="title"]').first();
+    if (await titleInput.isVisible({ timeout: 2000 })) {
+      await titleInput.fill('Morning in Grandmas Kitchen');
+      await snap(page, '10-memory-titled');
+    }
+
+    // Save the memory
+    const saveBtn = page.locator('button:has-text("Save Memory"), button:has-text("Save"), button:has-text("Add Memory"), button[type="submit"]').first();
+    await saveBtn.click();
+    await page.waitForTimeout(3000);
+    await snap(page, '11-memory-saved');
+    console.log('Memory saved');
+  }
+
+  // NAVIGATE TO LIBRARY
+  await page.goto(BASE + '/app/library', { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(2000);
+  await snap(page, '12-library-page');
+
+  // SETTINGS
+  await page.goto(BASE + '/app/settings', { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(2000);
+  await snap(page, '13-settings-page');
+
+  // BACK TO DASHBOARD
+  await page.goto(BASE + '/dashboard', { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(2000);
+  await snap(page, '14-dashboard-final');
+
+  console.log('\n✅ All screenshots:', screenshots.join('\n'));
+} catch (err) {
+  console.error('Error during cycle:', err.message);
+  try { await snap(page, 'ERROR'); } catch {}
+} finally {
+  await browser.close();
+}

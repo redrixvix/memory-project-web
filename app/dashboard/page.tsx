@@ -307,7 +307,7 @@ export default function Dashboard() {
               <h1 className="text-3xl md:text-4xl font-medium tracking-tight mb-0.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                 Your Library
               </h1>
-              <p className="text-sm" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
+              <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
                 {filteredBooks.length === 0
                   ? 'Your stories are waiting to be captured.'
                   : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'book' : 'books'}${searchQuery ? ` matching "${searchQuery}"` : ''}${totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ''}`}
@@ -766,9 +766,10 @@ export default function Dashboard() {
                               boxShadow: book._count?.memories === 0 ? '0 2px 10px rgba(212,163,115,0.16)' : 'none',
                             }}
                           >
-                            <span className="text-xs font-semibold truncate max-w-[60px]" style={{ 
+                            <span className="text-xs font-semibold" style={{ 
                               color: book._count?.memories === 0 ? 'rgba(43,43,43,0.85)' : 'rgba(90,90,80,0.9)', 
                               fontFamily: 'var(--font-sans)',
+                              whiteSpace: 'nowrap',
                             }}>
                               {book._count?.memories === 0
                                 ? 'Start writing'

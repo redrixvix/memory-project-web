@@ -286,7 +286,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       <header className="sticky top-0 z-30 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.96)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.18)', boxShadow: '0 1px 0 rgba(212,163,115,0.08), 0 4px 24px rgba(212,163,115,0.04)' }}>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto gap-3">
           <div className="flex items-center gap-2 min-w-0">
-            <Link href="/dashboard" className="text-sm shrink-0 flex items-center gap-1.5 transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>
+            <Link href="/dashboard" className="text-sm shrink-0 flex items-center gap-1.5 transition-colors hover:opacity-70" style={{ color: 'var(--charcoal)' }}>
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M15 18l-6-6 6-6"/>
               </svg>
@@ -434,7 +434,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 )}
               </div>
               {book.description && (
-                <p className="text-base leading-relaxed" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)', maxWidth: '56ch', fontStyle: 'italic' }}>
+                <p className="text-base leading-relaxed" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-serif)', maxWidth: '56ch', fontStyle: 'italic' }}>
                   {book.description}
                 </p>
               )}
@@ -548,7 +548,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <div className="absolute bottom-2 left-0 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--bronze)', opacity: 0.3 }} />
             </div>
             <h2 className="text-2xl md:text-3xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>Start your memory book</h2>
-            <p className="text-sm max-w-sm mx-auto leading-relaxed mb-5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
+            <p className="text-sm max-w-sm mx-auto leading-relaxed mb-5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)', opacity: 0.75 }}>
               Every great story starts with a single memory.
             </p>
             {/* 3 example prompt chips — spark inspiration */}

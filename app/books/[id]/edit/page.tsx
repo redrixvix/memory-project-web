@@ -797,7 +797,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b shrink-0" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
           <div className="flex items-center gap-3 min-w-0">
-            <Link href={`/books/${id}`} className="text-sm flex items-center gap-1.5 transition-colors hover:opacity-70 shrink-0" style={{ color: '#6A6A5A' }}>
+            <Link href={`/books/${id}`} className="text-sm flex items-center gap-1.5 transition-colors hover:opacity-70 shrink-0" style={{ color: 'var(--charcoal)' }}>
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M15 18l-6-6 6-6" />
               </svg>
@@ -861,7 +861,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 <h1 className="text-xl md:text-2xl font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
-                <p className="text-sm leading-relaxed" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-serif)' }}>
                   Capture one story. Use a prompt or write freely — there's no wrong way.
                 </p>
               </div>
@@ -870,7 +870,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
               <section className="py-5 md:py-6">
                 <div className="mb-4 flex flex-wrap items-center gap-3">
-                  <span className="text-xs font-medium uppercase tracking-[0.12em]" style={{ color: '#6A5A4A', fontFamily: 'var(--font-sans)' }}>
+                  <span className="text-xs font-medium uppercase tracking-[0.12em]" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-sans)' }}>
                     Guided prompt
                   </span>
                   {promptOptionCount > 0 && (
