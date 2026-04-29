@@ -2,6 +2,7 @@
 
 import { generateReactHelpers } from '@uploadthing/react';
 import { useCallback, useEffect, useMemo, useRef, useState, use } from 'react';
+import { MobileNav } from '@/components/ui/mobile-nav';
 import type { MutableRefObject } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -122,6 +123,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const [audioError, setAudioError] = useState<string | null>(null);
   const [recorderState, setRecorderState] = useState<RecorderState>('idle');
   const [textareaFocused, setTextareaFocused] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const draftKey = `draft-${id}-${memoryId ?? 'new'}`;
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -858,8 +860,33 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               </>
             )}
           </div>
+
+          {/* Mobile hamburger — shown only on small screens */}
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen(true)}
+            className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95"
+            style={{ 
+              backgroundColor: 'rgba(212,163,115,0.12)',
+              color: 'var(--bronze)',
+              border: '1px solid rgba(212,163,115,0.18)',
+            }}
+            aria-label="Open navigation menu"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
         </div>
       </header>
+
+      <MobileNav
+        isOpen={mobileNavOpen}
+        onClose={() => setMobileNavOpen(false)}
+        loggedIn={true}
+      />
 
       <main className="mx-auto w-full max-w-5xl px-5 py-4 md:px-10 md:py-6">
         <article
