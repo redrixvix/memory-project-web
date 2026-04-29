@@ -362,7 +362,7 @@ export default function Dashboard() {
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-sans)',
                   }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.65)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.12)'; }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.65)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.08), 0 2px 8px rgba(212,163,115,0.06)'; }}
                   onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.30)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.color = 'var(--charcoal)'; }}
                 />
                 {searchQuery && (
@@ -812,13 +812,13 @@ export default function Dashboard() {
                           <div
                             className="flex items-center gap-1.5 rounded-full px-3.5 py-2 transition-all duration-300 group-hover:gap-2 min-w-[88px] justify-center"
                             style={{
-                              backgroundColor: book._count?.memories === 0 ? 'rgba(212,163,115,0.35)' : 'rgba(212,163,115,0.07)',
-                              border: book._count?.memories === 0 ? '1.5px solid rgba(212,163,115,0.55)' : '1px solid rgba(212,163,115,0.10)',
-                              boxShadow: book._count?.memories === 0 ? '0 2px 12px rgba(212,163,115,0.22), 0 1px 0 rgba(212,163,115,0.15) inset' : 'none',
+                              backgroundColor: 'rgba(212,163,115,0.12)',
+                              border: '1px solid rgba(212,163,115,0.18)',
+                              boxShadow: '0 1px 4px rgba(212,163,115,0.06)',
                             }}
                           >
                             <span className="text-xs font-semibold" style={{
-                              color: book._count?.memories === 0 ? 'var(--charcoal)' : '#3A3A32',
+                              color: 'var(--charcoal)',
                               fontFamily: 'var(--font-sans)',
                               whiteSpace: 'nowrap',
                             }}>
@@ -826,7 +826,7 @@ export default function Dashboard() {
                                 ? 'Start writing'
                                 : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'}`}
                             </span>
-                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: book._count?.memories === 0 ? 'rgba(43,43,43,0.7)' : 'rgba(212,163,115,0.8)' }}>
+                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'rgba(212,163,115,0.8)' }}>
                               <path d="M5 12h14M12 5l7 7-7 7"/>
                             </svg>
                           </div>

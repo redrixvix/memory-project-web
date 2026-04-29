@@ -272,7 +272,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         <button
           type="button"
           onClick={scrollToTop}
-          className="scroll-top-btn fixed bottom-7 left-7 z-30 w-11 h-11 rounded-full flex items-center justify-center animate-fade-up"
+          className="scroll-top-btn fixed bottom-7 right-7 z-30 w-11 h-11 rounded-full flex items-center justify-center animate-fade-up"
           style={{ backgroundColor: '#FDFCF5', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.2)', boxShadow: '0 4px 16px rgba(212,163,115,0.12)' }}
           aria-label="Scroll to top"
         >
@@ -304,20 +304,22 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               Members
             </button>
 
-            {/* Add Memory button - always visible for book access */}
-            <Link
-              href={`/books/${id}/edit`}
-              className="inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95"
-              style={{
-                backgroundColor: 'var(--bronze)',
-                color: 'var(--charcoal)',
-              }}
-            >
-              <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              Add Memory
-            </Link>
+            {/* Add Memory button - only shown when book has memories (empty state has its own CTA) */}
+            {memories.length > 0 && (
+              <Link
+                href={`/books/${id}/edit`}
+                className="hidden sm:inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95"
+                style={{
+                  backgroundColor: 'var(--bronze)',
+                  color: 'var(--charcoal)',
+                }}
+              >
+                <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Add Memory
+              </Link>
+            )}
 
             {/* Share button */}
             <button
