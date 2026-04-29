@@ -100,7 +100,13 @@ export default function Dashboard() {
         setLoggedIn(true);
 
         const userData = await userRes.json();
-        setUser(userData.user);
+        setUser({
+          id: userData.user.id,
+          name: userData.user.name,
+          email: userData.user.email,
+          profileImageUrl: userData.user.profile_image_url || null,
+          googleId: userData.user.google_id || null,
+        });
 
         if (booksRes.status === 401) { router.push('/login'); return; }
         const booksData = await booksRes.json();
