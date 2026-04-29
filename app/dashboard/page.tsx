@@ -39,7 +39,11 @@ const BOOK_COLORS = [
   'var(--tea-green)',
   'var(--papaya)',
   'rgba(212,163,115,0.5)',
-  'var(--tea-green)',
+  '#B8860B',
+  '#6B8E23',
+  '#8B4513',
+  '#556B2F',
+  '#D2691E',
 ];
 
 function getPlanBadgeStyles(plan: string) {
@@ -304,7 +308,7 @@ export default function Dashboard() {
         <div className="mb-6">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-medium tracking-tight mb-0.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+              <h1 className="display-md font-medium tracking-tight mb-0.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                 Your Library
               </h1>
               <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>

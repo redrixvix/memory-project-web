@@ -284,7 +284,7 @@ export default function UpgradePage() {
                     <p className="label-caps mb-1.5" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--bronze)' }}>{plan.label}</p>
                     <p className="text-3xl font-medium" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--charcoal)' }}>{plan.price}</p>
                     {plan.id !== 'free' && (
-                      <span className="inline-block mt-1.5 text-[0.65rem] font-semibold px-2.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: 'var(--bronze)', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.22)' }}>
+                      <span className="inline-block mt-1.5 text-[0.65rem] font-semibold px-2.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: '#4A5A35', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.35)' }}>
                         Lifetime access
                       </span>
                     )}

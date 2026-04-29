@@ -387,10 +387,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         <div
           className="rounded-3xl p-5 md:p-6 relative overflow-hidden transition-all duration-500"
           style={{
-            background: 'linear-gradient(135deg, rgba(212,163,115,0.09) 0%, rgba(204,213,174,0.06) 100%)',
+            background: memories.length > 0
+    ? 'linear-gradient(135deg, rgba(212,163,115,0.12) 0%, rgba(204,213,174,0.08) 100%)'
+    : 'linear-gradient(135deg, rgba(212,163,115,0.09) 0%, rgba(204,213,174,0.06) 100%)',
             border: '1px solid rgba(212,163,115,0.14)',
             marginBottom: memories.length === 0 ? '1.5rem' : '2rem',
-            boxShadow: '0 4px 24px rgba(212,163,115,0.06), inset 0 1px 0 rgba(255,255,255,0.6)',
+            boxShadow: '0 4px 24px rgba(212,163,115,0.08), inset 0 1px 0 rgba(255,255,255,0.7)',
           }}
         >
           {/* Decorative corner accent */}
@@ -411,7 +413,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           <div className="flex items-start justify-between gap-4 flex-wrap pl-3">
             <div className="flex flex-col gap-2 flex-1 min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-xl md:text-2xl font-medium tracking-tight leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+                <h1 className="display-md font-medium tracking-tight leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
                   {book.title}
                 </h1>
                 {book.plan && book.plan !== 'free' && (
