@@ -511,7 +511,7 @@ export default function Dashboard() {
                             <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
                             <p className="text-sm font-semibold" style={{ color: 'var(--bronze)' }}>{plan.price}</p>
                             {plan.id === 'free' && (
-                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.2)', color: '#5F6650', fontFamily: 'var(--font-sans)' }}>Free</span>
+                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.2)', color: '#5F6650', fontFamily: 'var(--font-sans)' }}>No credit card</span>
                             )}
                             {plan.id === 'premium' && (
                               <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#6A5A4A', fontFamily: 'var(--font-sans)' }}>One-time</span>
@@ -766,8 +766,8 @@ export default function Dashboard() {
                               boxShadow: book._count?.memories === 0 ? '0 2px 10px rgba(212,163,115,0.16)' : 'none',
                             }}
                           >
-                            <span className="text-xs font-semibold" style={{ 
-                              color: book._count?.memories === 0 ? 'rgba(43,43,43,0.85)' : 'rgba(90,90,80,0.9)', 
+                            <span className="text-xs font-semibold" style={{
+                              color: book._count?.memories === 0 ? 'var(--charcoal)' : '#3A3A32',
                               fontFamily: 'var(--font-sans)',
                               whiteSpace: 'nowrap',
                             }}>

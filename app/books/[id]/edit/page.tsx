@@ -121,6 +121,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const [audioDraft, setAudioDraft] = useState<AudioDraft | null>(null);
   const [audioError, setAudioError] = useState<string | null>(null);
   const [recorderState, setRecorderState] = useState<RecorderState>('idle');
+  const [textareaFocused, setTextareaFocused] = useState(false);
 
   const draftKey = `draft-${id}-${memoryId ?? 'new'}`;
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1027,15 +1028,19 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   <Textarea
                     value={answer}
                     onChange={(e) => handleAnswerChange(e.target.value)}
+                    onFocus={() => setTextareaFocused(true)}
+                    onBlur={() => setTextareaFocused(false)}
                     required
-                    className="min-h-[320px] rounded-[1.2rem] border-0 px-5 py-5 text-base leading-[1.9] md:min-h-[360px] md:text-[1.05rem] memory-textarea"
+                    className="min-h-[320px] rounded-[1.2rem] border-0 px-5 py-5 text-base leading-[1.9] md:min-h-[360px] md:text-[1.05rem] memory-textarea transition-all duration-200"
                     rows={14}
                     placeholder="Take your time. There is no perfect way to tell a memory, only your way."
                     style={{
                       backgroundColor: '#FFFDF6',
                       fontFamily: 'var(--font-serif)',
                       resize: 'vertical',
-                      boxShadow: 'inset 0 0 0 1.5px rgba(212,163,115,0.38), inset 0 2px 12px rgba(212,163,115,0.05), inset 0 0 40px rgba(212,163,115,0.03), 0 0 0 0px transparent',
+                      boxShadow: textareaFocused
+                        ? 'inset 0 0 0 2px rgba(212,163,115,0.70), inset 0 2px 16px rgba(212,163,115,0.08), inset 0 0 40px rgba(212,163,115,0.05), 0 0 0 4px rgba(212,163,115,0.12)'
+                        : 'inset 0 0 0 1.5px rgba(212,163,115,0.38), inset 0 2px 12px rgba(212,163,115,0.05), inset 0 0 40px rgba(212,163,115,0.03)',
                     }}
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
