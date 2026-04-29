@@ -304,20 +304,22 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               Members
             </button>
 
-            {/* Add Memory button */}
-            <Link
-              href={`/books/${id}/edit`}
-              className="inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95"
-              style={{
-                backgroundColor: 'var(--bronze)',
-                color: 'var(--charcoal)',
-              }}
-            >
-              <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              Add Memory
-            </Link>
+            {/* Add Memory button — hidden in empty state to avoid duplicate CTAs }}
+            {memories.length > 0 && (
+              <Link
+                href={`/books/${id}/edit`}
+                className="inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95"
+                style={{
+                  backgroundColor: 'var(--bronze)',
+                  color: 'var(--charcoal)',
+                }}
+              >
+                <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Add Memory
+              </Link>
+            )}
 
             {/* Share button */}
             <button
@@ -712,7 +714,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         style={{
                           color: 'var(--charcoal)',
                           fontFamily: 'var(--font-serif)',
-                          maxWidth: '72ch',
+                          maxWidth: '68ch',
+                          lineHeight: '1.9',
                         }}
                       >
                         {memory.answer_text}
@@ -732,9 +735,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             </span>
                           </div>
                         ) : null}
-                        <p className="text-xs tracking-wide" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                        <span className="text-xs tracking-wide" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                           {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                        </p>
+                        </span>
                         {memory.answer_text && (
                           <>
                             <div className="w-px h-3 opacity-30" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
