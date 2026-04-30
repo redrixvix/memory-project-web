@@ -520,15 +520,16 @@ export default function SettingsPage() {
                 >
                   <div className="shrink-0">
                     <div
-                      className="inline-flex items-center gap-1.5 text-[0.65rem] font-semibold px-3 py-1.5 rounded-full"
+                      className="inline-flex items-center gap-1.5 text-[0.6rem] font-medium px-3 py-1.5 rounded-full"
                       style={{
-                        backgroundColor: 'rgba(212,163,115,0.12)',
-                        color: '#5A4A3A',
+                        backgroundColor: 'rgba(204,213,174,0.2)',
+                        color: '#5A6A3A',
                         fontFamily: 'var(--font-sans)',
-                        letterSpacing: '0.04em',
+                        letterSpacing: '0.06em',
+                        border: '1px solid rgba(204,213,174,0.35)',
                       }}
                     >
-                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#7A8A5A' }}>
                         <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
                       </svg>
                       Coming soon
