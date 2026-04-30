@@ -183,7 +183,7 @@ export default function UpgradePage() {
           <div className="mt-8 relative inline-block rounded-2xl overflow-hidden shadow-xl" style={{ boxShadow: '0 16px 48px rgba(212,163,115,0.22), 0 4px 16px rgba(0,0,0,0.08)' }}>
             <div className="absolute inset-0 rounded-2xl" style={{ background: 'linear-gradient(to top, rgba(43,43,43,0.35) 0%, transparent 50%)', zIndex: 1 }} />
             <Image
-              src="/images/book-product.jpg"
+              src="/images/book-product-3.jpg"
               alt="Memory Project printed hardcover book"
               width={640}
               height={427}
