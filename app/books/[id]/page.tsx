@@ -556,7 +556,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <div className="absolute bottom-2 left-0 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--bronze)', opacity: 0.3 }} />
             </div>
             <h2 className="text-2xl md:text-3xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>Start your memory book</h2>
-            <p className="text-sm max-w-sm mx-auto leading-relaxed mb-5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)', opacity: 0.75 }}>
+            <p className="text-sm max-w-sm mx-auto leading-relaxed mb-5" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
               Every great story starts with a single memory.
             </p>
             {/* 3 example prompt chips — spark inspiration */}

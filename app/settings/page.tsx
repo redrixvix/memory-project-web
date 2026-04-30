@@ -580,15 +580,15 @@ export default function SettingsPage() {
                     )}
                     <div>
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>Current password</Label>
-                      <Input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="Current password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }} />
+                      <Input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="Current password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
                     </div>
                     <div>
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>New password</Label>
-                      <Input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="New password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }} />
+                      <Input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="New password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
                     </div>
                     <div>
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>Confirm new password</Label>
-                      <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm new password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FDFCF5' }} />
+                      <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm new password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
                     </div>
                     <button
                       onClick={async () => {
