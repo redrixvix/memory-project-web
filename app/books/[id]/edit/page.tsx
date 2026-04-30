@@ -902,7 +902,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           <div className="relative px-5 py-4 md:px-8 md:py-5">
             <div className="border-b pb-6 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)', transition: 'opacity 0.4s ease' }}>
                 <div className="flex flex-wrap items-center gap-3 mb-3">
-                  <p className="label-caps" style={{ color: 'var(--bronze)' }}>Memory entry</p>
                   <div className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.15)', color: '#4A5A35', fontFamily: 'var(--font-sans)' }}>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -913,9 +912,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 <h1 className="text-xl md:text-2xl font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-serif)' }}>
-                  Capture one story. Let a prompt inspire you, or simply start writing.
-                </p>
               </div>
 
             <form onSubmit={handleSubmit} className="relative">
