@@ -505,7 +505,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   className="rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
                   style={{
                     backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
-                    color: memorySort === 'oldest' ? 'var(--charcoal)' : '#6A6A5A',
+                    color: memorySort === 'oldest' ? 'var(--charcoal)' : 'rgba(43,43,43,0.58)',
                   }}
                 >
                   Oldest
