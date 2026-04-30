@@ -999,7 +999,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
                   {useCustomPrompt && (
                     <div className="mt-4">
-                      <Label className="mb-2 block text-xs font-medium" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
+                      <Label className="mb-2 block text-xs font-medium" style={{ color: '#7A6960', fontFamily: 'var(--font-sans)' }}>
                         Custom prompt
                       </Label>
                       <Input
@@ -1161,7 +1161,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'rgba(212,163,115,0.55)' }}>
                       <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
                     </svg>
-                    <span className="text-xs font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(212,163,115,0.65)', fontFamily: 'var(--font-sans)' }}>
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em]" style={{ color: '#8B7355', fontFamily: 'var(--font-sans)' }}>
                       Enrich your memory
                     </span>
                   </div>
@@ -1189,7 +1189,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               <p className="text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                                 Photo attachments
                               </p>
-                              <p className="mt-1 text-xs leading-5" style={{ color: '#8A8075', fontFamily: 'var(--font-sans)' }}>
+                              <p className="mt-1 text-xs leading-5" style={{ color: '#8A7A70', fontFamily: 'var(--font-sans)' }}>
                                 Add photos from your device. Images must be under 4MB, and previews appear immediately.
                               </p>
                             </div>
@@ -1263,7 +1263,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                             <p className="text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                               Voice note
                             </p>
-                            <p className="mt-1 text-xs leading-5" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
+                            <p className="mt-1 text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
                               Upload an audio file or record here. Audio stays local until you save this memory.
                             </p>
                           </div>
@@ -1328,7 +1328,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                             )}
                           </div>
 
-                          <p className="mt-3 text-xs leading-5" style={{ color: '#7A6D5A', fontFamily: 'var(--font-sans)' }}>
+                          <p className="mt-3 text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
                             Audio files up to 16MB. Recorded clips upload when you save.
                           </p>
 
@@ -1402,9 +1402,9 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <div>
                           <div className="flex items-center gap-2 mb-0.5">
                             <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                              Add photos &amp; voice notes
+                              Photos &amp; voice notes
                             </p>
-                            <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#5A4A3A', fontFamily: 'var(--font-sans)' }}>
+                            <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A5A4A', fontFamily: 'var(--font-sans)' }}>
                               Premium
                             </span>
                           </div>

@@ -294,8 +294,8 @@ export default function UpgradePage() {
                 {/* Popular badge */}
                 {isPopular && (
                   <div
-                    className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap"
-                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 text-[0.65rem] font-bold tracking-[0.18em] uppercase px-4 py-1 rounded-full whitespace-nowrap"
+                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', letterSpacing: '0.15em' }}
                   >
                     Most Popular
                   </div>
