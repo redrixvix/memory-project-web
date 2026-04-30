@@ -323,8 +323,8 @@ export default function SettingsPage() {
                   {profileImageUrl ? (
                     <button
                       onClick={() => setProfileImageUrl(null)}
-                      className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:opacity-70"
-                      style={{ color: '#8A6A5A', backgroundColor: 'rgba(212,163,115,0.06)' }}
+                      className="inline-flex items-center justify-center h-9 rounded-full px-4 text-xs font-semibold transition-all hover:brightness-95 active:scale-[0.97]"
+                      style={{ color: '#6A3A2A', backgroundColor: 'rgba(180,80,60,0.10)', border: '1px solid rgba(180,80,60,0.20)' }}
                     >
                       <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M18 6L6 18M6 6l12 12"/>
@@ -510,33 +510,35 @@ export default function SettingsPage() {
                     </p>
                   </div>
                 </div>
-                {/* Export & account deletion — wired up when backend is ready */}
+                {/* Export & account deletion — soft teaser when backend is not yet ready */}
                 <div
-                  className="rounded-2xl p-4 mt-1 border-dashed flex items-center gap-3"
+                  className="rounded-2xl p-4 mt-1 flex items-center gap-3"
                   style={{
-                    backgroundColor: 'rgba(212,163,115,0.04)',
-                    border: '1px dashed rgba(212,163,115,0.18)',
+                    backgroundColor: 'rgba(212,163,115,0.05)',
+                    border: '1px solid rgba(212,163,115,0.12)',
                   }}
                 >
                   <div className="shrink-0">
-                    <span
-                      className="inline-flex items-center gap-1 text-[0.65rem] font-semibold px-2.5 py-1 rounded-full"
+                    <div
+                      className="inline-flex items-center gap-1.5 text-[0.65rem] font-semibold px-3 py-1.5 rounded-full"
                       style={{
-                        backgroundColor: 'rgba(212,163,115,0.10)',
-                        color: 'rgba(90,80,60,0.80)',
+                        backgroundColor: 'rgba(212,163,115,0.12)',
+                        color: '#5A4A3A',
                         fontFamily: 'var(--font-sans)',
                         letterSpacing: '0.04em',
-                        border: '1px solid rgba(212,163,115,0.18)',
                       }}
                     >
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                      </svg>
                       Coming soon
-                    </span>
+                    </div>
                   </div>
                   <div>
-                    <p className="text-xs font-medium" style={{ color: 'rgba(60,60,50,0.85)', fontFamily: 'var(--font-sans)' }}>
+                    <p className="text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
                       Export memories &amp; delete account
                     </p>
-                    <p className="text-xs mt-0.5" style={{ color: 'rgba(90,85,75,0.70)', fontFamily: 'var(--font-sans)' }}>
+                    <p className="text-xs mt-0.5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                       We'll notify you when these features are available.
                     </p>
                   </div>

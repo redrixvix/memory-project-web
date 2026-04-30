@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -178,6 +179,25 @@ export default function UpgradePage() {
           <p className="text-xs mt-4" style={{ color: 'rgba(90,90,80,0.65)', fontFamily: 'var(--font-sans)' }}>
             Plans are set per-book. Each book can be on its own plan.
           </p>
+          {/* Decorative product photo */}
+          <div className="mt-8 relative inline-block rounded-2xl overflow-hidden shadow-xl" style={{ boxShadow: '0 16px 48px rgba(212,163,115,0.22), 0 4px 16px rgba(0,0,0,0.08)' }}>
+            <div className="absolute inset-0 rounded-2xl" style={{ background: 'linear-gradient(to top, rgba(43,43,43,0.35) 0%, transparent 50%)', zIndex: 1 }} />
+            <Image
+              src="/images/book-product.jpg"
+              alt="Memory Project printed hardcover book"
+              width={640}
+              height={427}
+              className="block rounded-2xl object-cover"
+              unoptimized
+              style={{ maxHeight: '280px', width: 'auto', maxWidth: '100%' }}
+            />
+            {/* Overlay caption */}
+            <div className="absolute bottom-0 left-0 right-0 px-6 py-4" style={{ zIndex: 2 }}>
+              <p className="text-sm font-medium" style={{ color: '#FDFCF5', fontFamily: 'var(--font-serif)' }}>
+                Beautifully printed hardcover books — starting at $99
+              </p>
+            </div>
+          </div>
         </div>
 
         {books.length === 0 && (
@@ -238,9 +258,10 @@ export default function UpgradePage() {
             const isCurrentPlan = selectedBook && normalizeBookPlan(selectedBook.plan) === plan.id;
             const isSelected = selectedPlan === plan.id;
             const isPopular = plan.id === 'premium' && !isCurrentPlan;
+            const isPlus = plan.id === 'plus';
             const cardStyles = {
-              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(204,213,174,0.12)' : 'var(--papaya)',
-              border: isSelected ? '2px solid var(--bronze)' : isCurrentPlan ? '2px dashed rgba(212,163,115,0.35)' : '1px solid rgba(212,163,115,0.2)',
+              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(204,213,174,0.12)' : isPlus ? '#FAF0E0' : 'var(--papaya)',
+              border: isSelected ? '2px solid var(--bronze)' : isCurrentPlan ? '2px dashed rgba(212,163,115,0.35)' : isPlus ? '1px solid rgba(196,168,120,0.35)' : '1px solid rgba(212,163,115,0.2)',
               boxShadow: isSelected 
                 ? '0 16px 48px rgba(212,163,115,0.28), 0 0 0 4px rgba(212,163,115,0.1)' 
                 : isCurrentPlan 
@@ -263,6 +284,13 @@ export default function UpgradePage() {
                 aria-pressed={isSelected}
                 aria-disabled={isCurrentPlan ? true : undefined}
               >
+                {/* Premium gold accent — top of Plus card */}
+                {isPlus && !isCurrentPlan && (
+                  <div
+                    className="absolute top-0 left-6 right-6 h-1 rounded-b-xl"
+                    style={{ background: 'linear-gradient(to right, rgba(196,168,120,0.6), rgba(212,163,115,0.9), rgba(196,168,120,0.6))' }}
+                  />
+                )}
                 {/* Popular badge */}
                 {isPopular && (
                   <div
@@ -288,7 +316,7 @@ export default function UpgradePage() {
                     <p className="text-3xl font-medium" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--charcoal)' }}>{plan.price}</p>
                     {plan.id !== 'free' && (
                       <span className="inline-block mt-1.5 text-[0.65rem] font-semibold px-2.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: '#4A5A35', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.35)' }}>
-                        Lifetime access
+                        Pay once, own forever
                       </span>
                     )}
                     <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>{plan.description}</p>

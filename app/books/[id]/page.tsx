@@ -892,10 +892,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
                       {/* Footer actions — chapter hint left, actions right */}
                       <div
-                        className="flex items-center justify-between mt-5 pt-4 border-t transition-all duration-500"
-                        style={{ borderColor: 'rgba(212,163,115,0.08)', opacity: hoveredCard === memoryIndex ? 1 : 0.4 }}
+                        className="flex items-center justify-between mt-4 pt-4 border-t transition-all duration-500"
+                        style={{ borderColor: hoveredCard === memoryIndex ? 'rgba(212,163,115,0.14)' : 'rgba(212,163,115,0.08)' }}
                       >
-                        <span className="text-[10px] tracking-[0.1em] uppercase" style={{ color: 'rgba(212,163,115,0.55)', fontFamily: 'var(--font-sans)' }}>
+                        <span className="text-[11px] font-semibold tracking-[0.1em] uppercase" style={{ color: hoveredCard === memoryIndex ? 'var(--charcoal)' : '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                           Ch. {memoryIndex + 1}
                         </span>
                         <div className="flex items-center gap-2">
