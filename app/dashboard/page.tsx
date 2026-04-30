@@ -816,7 +816,7 @@ export default function Dashboard() {
                           </p>
                         ) : (
                           <p className="text-sm leading-relaxed mb-4" style={{ color: '#8A7A6A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                            Every story deserves a beginning.
+                            Begin your story today.
                           </p>
                         )}
 

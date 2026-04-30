@@ -900,7 +900,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           <div className="hero-ambient" />
 
           <div className="relative px-5 py-4 md:px-8 md:py-5">
-            <div className="border-b pb-6 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)', opacity: textareaFocused ? 0.45 : 1, transition: 'opacity 0.4s ease' }}>
+            <div className="border-b pb-6 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)', transition: 'opacity 0.4s ease' }}>
                 <div className="flex flex-wrap items-center gap-3 mb-3">
                   <p className="label-caps" style={{ color: 'var(--bronze)' }}>Memory entry</p>
                   <div className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.15)', color: '#4A5A35', fontFamily: 'var(--font-sans)' }}>
@@ -920,7 +920,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
             <form onSubmit={handleSubmit} className="relative">
               {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
-              <section className="py-5 md:py-6" style={{ opacity: textareaFocused ? 0.45 : 1, transition: 'opacity 0.4s ease' }}>
+              <section className="py-5 md:py-6" style={{ opacity: textareaFocused ? 0.75 : 1, transition: 'opacity 0.4s ease' }}>
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="inline-flex items-center gap-1.5">
@@ -1115,26 +1115,26 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         : 'none',
                     }}
                   />
-                  <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
-                    <div className="flex items-center gap-2">
-                      {saveState === 'saving' && wordCount > 0 && (
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
-                          <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Saving...</p>
-                        </div>
-                      )}
-                      {saveState === 'saved' && wordCount > 0 && (
-                        <div className="flex items-center gap-1.5">
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
-                            <path d="M20 6L9 17l-5-5"/>
-                          </svg>
-                          <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Saved</p>
-                        </div>
-                      )}
-                      {(saveState === 'idle' || wordCount === 0) && wordCount === 0 && (
-                        <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
-                      )}
-                    </div>
+                  {/* Autosave status — single, clean indicator above the textarea */}
+                  <div className="flex items-center justify-between mt-3 px-1">
+                    {saveState === 'saving' && wordCount > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
+                        <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Saving...</p>
+                      </div>
+                    )}
+                    {saveState === 'saved' && wordCount > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                          <path d="M20 6L9 17l-5-5"/>
+                        </svg>
+                        <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Saved</p>
+                      </div>
+                    )}
+                    {(saveState === 'idle' || wordCount === 0) && (
+                      <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
+                    )}
+                    {/* Word count pill — right-aligned */}
                     {wordCount > 0 && (
                       <div
                         className="inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs transition-all duration-300"
@@ -1160,17 +1160,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                           </>
                         )}
                       </div>
-                    )}
-                  </div>
-                  {/* Word count + autosave status — inline metrics, no submit button */}
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: 'rgba(212,163,115,0.10)' }}>
-                    <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                      Draft auto-saved
-                    </p>
-                    {answer.trim().length === 0 && (
-                      <p className="text-xs italic" style={{ color: '#8A8A7A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                        Tip: photos and voice notes can be added below
-                      </p>
                     )}
                   </div>
                 </div>
