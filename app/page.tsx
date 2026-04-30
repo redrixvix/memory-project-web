@@ -161,8 +161,7 @@ export default function Home() {
               className="display-xl mb-6 animate-fade-up"
               style={{ color: 'var(--charcoal)', letterSpacing: '-0.03em', animationDelay: '200ms' }}
             >
-              Write your family&apos;s story.<br />
-              <em style={{ fontStyle: 'italic', fontWeight: 400 }}>Leave it to the generations who follow.</em>
+              Write your family's story.<br /> <em style={{ fontStyle: 'italic', fontWeight: 400 }}>Leave it to the generations who follow.</em>
             </h1>
 
             <p
