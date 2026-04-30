@@ -512,15 +512,34 @@ export default function SettingsPage() {
                 </div>
                 {/* Export & account deletion — wired up when backend is ready */}
                 <div
-                  className="rounded-2xl p-4 mt-1 border-dashed"
+                  className="rounded-2xl p-4 mt-1 border-dashed flex items-center gap-3"
                   style={{
                     backgroundColor: 'rgba(212,163,115,0.04)',
                     border: '1px dashed rgba(212,163,115,0.18)',
                   }}
                 >
-                  <p className="text-xs" style={{ color: '#7A7A6A' }}>
-                    Export memories &amp; delete account — available soon. We'll notify you.
-                  </p>
+                  <div className="shrink-0">
+                    <span
+                      className="inline-flex items-center gap-1 text-[0.65rem] font-semibold px-2.5 py-1 rounded-full"
+                      style={{
+                        backgroundColor: 'rgba(212,163,115,0.10)',
+                        color: 'rgba(90,80,60,0.80)',
+                        fontFamily: 'var(--font-sans)',
+                        letterSpacing: '0.04em',
+                        border: '1px solid rgba(212,163,115,0.18)',
+                      }}
+                    >
+                      Coming soon
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium" style={{ color: 'rgba(60,60,50,0.85)', fontFamily: 'var(--font-sans)' }}>
+                      Export memories &amp; delete account
+                    </p>
+                    <p className="text-xs mt-0.5" style={{ color: 'rgba(90,85,75,0.70)', fontFamily: 'var(--font-sans)' }}>
+                      We'll notify you when these features are available.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
