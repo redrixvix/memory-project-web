@@ -680,7 +680,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             <p
                               className="text-sm md:text-base italic leading-relaxed"
                               style={{ 
-                                color: 'var(--bronze)', 
+                                color: '#8A6A4A', 
                                 fontFamily: 'var(--font-serif)',
                               }}
                             >
