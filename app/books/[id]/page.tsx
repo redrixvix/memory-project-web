@@ -654,10 +654,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       <div
                         className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-1.5 shadow-sm mb-4"
                         style={{
-                          backgroundColor: `${accentColor}25`,
-                          color: '#3D3528',
+                          backgroundColor: `${accentColor}18`,
+                          color: 'var(--charcoal)',
                           fontFamily: 'var(--font-sans)',
-                          border: `1px solid ${accentColor}50`,
+                          border: `1px solid ${accentColor}40`,
                         }}
                       >
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
