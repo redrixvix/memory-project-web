@@ -334,7 +334,7 @@ export default function Dashboard() {
           {/* Mobile hamburger */}
           <button
             className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
+            style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: 'var(--bronze)' }}
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open navigation menu"
           >
@@ -399,7 +399,7 @@ export default function Dashboard() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search your books..."
-                  className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent"
+                  className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#7A6A5A]"
                   style={{
                     backgroundColor: 'rgba(255,253,246,0.92)',
                     border: '1.5px solid rgba(212,163,115,0.30)',
@@ -437,7 +437,7 @@ export default function Dashboard() {
                     className="rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'transparent',
-                      color: sortOrder === value ? 'var(--charcoal)' : '#7A7A6A',
+                      color: sortOrder === value ? 'var(--charcoal)' : 'rgba(43,43,43,0.65)',
                       fontFamily: 'var(--font-sans)',
                       minWidth: '50px',
                     }}
