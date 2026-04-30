@@ -122,7 +122,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
                   </li>
                 ))}
                 {['Photos & audio', 'Printed books'].map((feat, j) => (
-                  <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: '#6A6A5A' }}>
+                  <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
                     <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#B0B09A' }}>
                       <path d="M18 6L6 18M6 6l12 12" />
                     </svg>
@@ -190,7 +190,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
                   </li>
                 ))}
               </ul>
-              <Link href={upgradeHref} className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80" style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}>
+              <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}>
                 Upgrade
               </Link>
             </CardContent>
