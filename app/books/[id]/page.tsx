@@ -521,10 +521,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             {/* Warm illustrated open-book icon */}
             <div className="inline-block mb-8 relative">
               <div
-                className="w-24 h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center animate-float"
+                className="w-32 h-32 md:w-36 md:h-36 rounded-full flex items-center justify-center animate-float"
                 style={{
                   background: 'radial-gradient(circle, rgba(204,213,174,0.5) 0%, rgba(204,213,174,0.15) 70%, transparent 100%)',
-                  animationDuration: '3s',
+                  animationDuration: '4s',
                   animationDelay: '0.3s',
                 }}
               >
@@ -556,11 +556,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <div className="absolute bottom-2 left-0 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--bronze)', opacity: 0.3 }} />
             </div>
             <h2 className="text-2xl md:text-3xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>Start your memory book</h2>
-            <p className="text-sm max-w-sm mx-auto leading-relaxed mb-5" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
+            <p className="text-base max-w-sm mx-auto leading-relaxed mb-8" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
               Every great story starts with a single memory.
             </p>
             {/* 3 example prompt chips — spark inspiration */}
-            <div className="flex flex-wrap justify-center gap-2.5 mb-8">
+            <div className="flex flex-wrap justify-center gap-2.5 mb-10">
               {[
                 { label: "A trip that changed me", prompt: "Tell me about a trip that changed your perspective." },
                 { label: "The house I grew up in", prompt: "Tell me about the house you grew up in." },
@@ -569,7 +569,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <Link
                   key={label}
                   href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
                   style={{
                     backgroundColor: 'rgba(212,163,115,0.14)',
                     color: '#4A3A2A',
@@ -592,6 +592,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 backgroundColor: 'var(--bronze)', 
                 color: 'var(--charcoal)', 
                 boxShadow: '0 6px 28px rgba(212,163,115,0.35)',
+                fontFamily: 'var(--font-sans)',
                 animation: 'gentle-pulse 3s ease-in-out infinite',
               }}
             >
@@ -955,7 +956,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 boxShadow: '0 4px 20px rgba(212,163,115,0.2)',
               }}
             >
-              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
               </svg>

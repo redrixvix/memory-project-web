@@ -309,7 +309,7 @@ export default function Dashboard() {
 
           {/* Mobile hamburger */}
           <button
-            className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-colors hover:opacity-70"
+            className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
             style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open navigation menu"
@@ -363,7 +363,10 @@ export default function Dashboard() {
           {/* Search + sort — only shown when books exist */}
           {books.length > 0 && (
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4">
-              <div className="relative flex-1">
+              <div className="relative flex-1" style={{
+                  borderBottom: searchQuery ? '2px solid rgba(212,163,115,0.5)' : '2px solid rgba(212,163,115,0.18)',
+                  transition: 'border-color 0.3s ease',
+                }}>
                 <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--bronze)' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
@@ -372,7 +375,7 @@ export default function Dashboard() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search your books..."
-                  className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200"
+                  className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent"
                   style={{
                     backgroundColor: 'rgba(255,253,246,0.92)',
                     border: '1.5px solid rgba(212,163,115,0.30)',
@@ -728,15 +731,15 @@ export default function Dashboard() {
                         backgroundColor: '#FFFDF8',
                         boxShadow: '0 2px 8px rgba(212,163,115,0.07), 0 8px 24px rgba(212,163,115,0.09), 0 20px 48px rgba(212,163,115,0.05)',
                         border: '1px solid rgba(212,163,115,0.10)',
-                        borderLeft: `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`,
+                        borderLeft: `2px solid rgba(212,163,115,0.18)`,
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.boxShadow = `0 4px 16px rgba(212,163,115,0.14), 0 16px 40px rgba(212,163,115,0.16), 0 32px 72px rgba(212,163,115,0.08), inset 0 0 0 1px rgba(212,163,115,0.08)`;
-                        e.currentTarget.style.borderLeft = `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`;
+                        e.currentTarget.style.borderLeft = `2px solid rgba(212,163,115,0.18)`;
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.07), 0 8px 24px rgba(212,163,115,0.09), 0 20px 48px rgba(212,163,115,0.05)';
-                        e.currentTarget.style.borderLeft = `5px solid ${BOOK_COLORS[book.id % BOOK_COLORS.length]}`;
+                        e.currentTarget.style.borderLeft = `2px solid rgba(212,163,115,0.18)`;
                       }}
                     >
                       {/* Subtle warm overlay on hover */}
@@ -836,7 +839,7 @@ export default function Dashboard() {
                                 +{book.contributors.length - 4}
                               </span>
                             )}
-                            <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                            <span className="text-xs" style={{ color: '#3A3A32', fontFamily: 'var(--font-sans)' }}>
                               {book.contributors.length === 1 ? '1 contributor' : `${book.contributors.length} contributors`}
                             </span>
                           </div>
