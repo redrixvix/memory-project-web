@@ -28,6 +28,8 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loading, setLoading] = useState(true);
   const [ordering, setOrdering] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
 
   useEffect(() => {
     fetchBook();
@@ -46,13 +48,22 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
   };
 
   const handleOrderPrint = async () => {
-    if (!confirm('Order a printed copy of this book? ($99-149)')) return;
+    setShowOrderModal(true);
+  };
+
+  const handleConfirmOrder = async () => {
     setOrdering(true);
     try {
       const res = await fetch(`/api/books/${id}/order-print`, { method: 'POST' });
       const data = await res.json();
-      alert(data.message || 'Print order submitted!');
-    } finally { setOrdering(false); }
+      setOrderSuccess(true);
+      setShowOrderModal(false);
+      setTimeout(() => setOrderSuccess(false), 4000);
+    } catch {
+      // silently fail
+    } finally {
+      setOrdering(false);
+    }
   };
 
   if (loading) {
@@ -175,11 +186,11 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
                       {memories.map((m, i) => (
                         <li key={m.id} className="flex items-baseline gap-4">
                           <span className="text-xs w-5 text-right shrink-0" style={{ color: 'rgba(212,163,115,0.5)' }}>{i + 1}.</span>
-                          <div className="flex-1">
-                            <p className="text-sm leading-snug" style={{ color: 'var(--charcoal)' }}>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm leading-snug line-clamp-2" style={{ color: 'var(--charcoal)' }}>
                               {m.prompt_question
-                                ? <span className="italic">&ldquo;{m.prompt_question.slice(0, 50)}{m.prompt_question.length > 50 ? '…' : ''}&rdquo;</span>
-                                : <span>{m.answer_text.slice(0, 55)}{m.answer_text.length > 55 ? '…' : ''}</span>
+                                ? <span className="italic">&ldquo;{m.prompt_question}&rdquo;</span>
+                                : <span>{m.answer_text}</span>
                               }
                             </p>
                           </div>
@@ -311,6 +322,104 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
           </p>
         </div>
       </main>
+
+      {/* Order Print Modal */}
+      {showOrderModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="order-modal-title"
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0"
+            style={{ backgroundColor: 'rgba(43,43,43,0.65)' }}
+            onClick={() => !ordering && setShowOrderModal(false)}
+          />
+          {/* Modal panel */}
+          <div
+            className="relative w-full max-w-md rounded-3xl overflow-hidden animate-fade-up"
+            style={{
+              backgroundColor: '#FDFCF5',
+              boxShadow: '0 40px 100px rgba(43,43,43,0.28), 0 12px 40px rgba(212,163,115,0.12)',
+            }}
+          >
+            {/* Warm top bar */}
+            <div className="h-1.5 w-full shrink-0" style={{ backgroundColor: 'var(--bronze)' }} />
+            <div className="p-6">
+              {/* Book icon */}
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" style={{ color: 'var(--bronze)' }}>
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+              </div>
+              <h2 id="order-modal-title" className="text-xl font-medium text-center mb-3" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+                Order a printed copy
+              </h2>
+              <p className="text-sm text-center leading-relaxed mb-6" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                Your book <strong style={{ color: 'var(--charcoal)' }}>{book?.title}</strong> will be printed as a beautiful hardcover book and shipped to your door.
+              </p>
+              {/* Pricing details */}
+              <div className="rounded-2xl p-4 mb-6" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.18)' }}>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Hardcover book</span>
+                  <span className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>From $99</span>
+                </div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>200+ pages</span>
+                  <span className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Premium paper</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Ships in</span>
+                  <span className="text-sm font-semibold" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>3–5 weeks</span>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowOrderModal(false)}
+                  disabled={ordering}
+                  className="flex-1 h-11 rounded-full text-sm font-medium transition-all duration-200 hover:opacity-80"
+                  style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.2)' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmOrder}
+                  disabled={ordering}
+                  className="flex-1 h-11 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:opacity-60 hover:brightness-110"
+                  style={{ backgroundColor: ordering ? 'rgba(158,120,69,0.65)' : 'var(--bronze)', color: 'var(--charcoal)' }}
+                >
+                  {ordering ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 rounded-full animate-spin" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                      Ordering...
+                    </span>
+                  ) : 'Continue to payment'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Order success toast */}
+      {orderSuccess && (
+        <div
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 rounded-2xl px-5 py-3 shadow-xl animate-fade-up"
+          style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', minWidth: '280px', textAlign: 'center' }}
+        >
+          <div className="flex items-center gap-2 justify-center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+            <span className="text-sm font-medium" style={{ fontFamily: 'var(--font-sans)' }}>Print order submitted!</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
