@@ -1062,8 +1062,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <div
                       className="mt-4 flex items-start gap-3 rounded-[1.15rem] px-4 py-4"
                       style={{
-                        backgroundColor: 'rgba(212,163,115,0.08)',
-                        border: '1px solid rgba(212,163,115,0.16)',
+                        backgroundColor: 'rgba(212,163,115,0.13)',
+                        border: '1px solid rgba(212,163,115,0.25)',
                       }}
                     >
                       <svg className="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
@@ -1165,25 +1165,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   </div>
                   {/* Word count + autosave status — inline metrics, no submit button */}
                   <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: 'rgba(212,163,115,0.10)' }}>
-                    <div className="flex flex-col gap-1.5">
-                      <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                        Draft auto-saved
+                    <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
+                      Draft auto-saved
+                    </p>
+                    {answer.trim().length === 0 && (
+                      <p className="text-xs italic" style={{ color: '#8A8A7A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                        Tip: photos and voice notes can be added below
                       </p>
-                      {answer.trim().length === 0 && (
-                        <p className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                          Tip: photos and voice notes can be added below
-                        </p>
-                      )}
-                    </div>
-                    {wordCount > 0 && (
-                      <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.20)' }}>
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                        </svg>
-                        <span className="text-xs font-semibold" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                          {wordCount.toLocaleString()} {wordCount === 1 ? 'word' : 'words'}
-                        </span>
-                      </div>
                     )}
                   </div>
                 </div>
@@ -1267,7 +1255,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                           {photoItems.length > 0 && (
                             <div className="mt-5">
                               <div className="flex flex-wrap items-center justify-between gap-2">
-                                <p className="text-xs font-medium uppercase tracking-[0.16em]" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
+                                <p className="text-xs font-medium uppercase tracking-[0.16em]" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                                   {photoItems.length} {photoItems.length === 1 ? 'photo' : 'photos'} attached
                                 </p>
                                 <p className="text-xs" style={{ color: hasErroredPhotos ? '#9A5A4A' : '#8E8478', fontFamily: 'var(--font-sans)' }}>
