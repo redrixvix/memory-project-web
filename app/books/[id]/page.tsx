@@ -303,42 +303,30 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <span>Dashboard</span>
             </Link>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0">
             {/* Members button */}
             <button
               type="button"
               onClick={() => setShowMembersModal(true)}
-              className="hidden sm:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-colors"
+              className="header-action-btn hidden sm:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-90 active:scale-95"
               style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
             >
               Members
             </button>
 
-            {/* Add Memory button — shown for all books, regardless of memory count */}
+            {/* Add Memory button — primary CTA */}
             <Link
               href={`/books/${id}/edit`}
-              className="inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95 sm:hidden"
+              className="add-memory-btn inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-semibold transition-all duration-200 active:scale-95"
               style={{
                 backgroundColor: 'var(--bronze)',
                 color: 'var(--charcoal)',
+                boxShadow: '0 3px 14px rgba(212,163,115,0.30)',
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.45)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 3px 14px rgba(212,163,115,0.30)'; e.currentTarget.style.transform = 'translateY(0)'; }}
             >
-              <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              Add Memory
-            </Link>
-
-            {/* Add Memory button — desktop only (larger screen) */}
-            <Link
-              href={`/books/${id}/edit`}
-              className="hidden sm:inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95"
-              style={{
-                backgroundColor: 'var(--bronze)',
-                color: 'var(--charcoal)',
-              }}
-            >
-              <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg className="w-3.5 h-3.5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M12 5v14M5 12h14"/>
               </svg>
               Add Memory
@@ -354,7 +342,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   setToastVisible(true);
                 });
               }}
-              className="hidden sm:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-colors"
+              className="header-action-btn hidden sm:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-90 active:scale-95"
               style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
             >
               Share
@@ -377,7 +365,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             {currentUserRole === 'owner' && (
               <Link
                 href={`/upgrade?book=${id}`}
-                className="hidden md:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-colors"
+                className="header-action-btn hidden md:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-90 active:scale-95"
                 style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
               >
                 Manage plan
@@ -388,7 +376,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             {memories.length > 0 && (
               <Link
                 href={`/books/${id}/preview`}
-                className="hidden lg:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-colors"
+                className="header-action-btn hidden lg:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-90 active:scale-95"
                 style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
               >
                 Preview
@@ -583,11 +571,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
                   className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
                   style={{
-                    backgroundColor: 'rgba(212,163,115,0.1)',
-                    color: '#6A5A4A',
-                    border: '1px solid rgba(212,163,115,0.25)',
+                    backgroundColor: 'rgba(212,163,115,0.14)',
+                    color: '#4A3A2A',
+                    border: '1px solid rgba(212,163,115,0.30)',
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: '0 2px 8px rgba(212,163,115,0.08)',
+                    boxShadow: '0 2px 8px rgba(212,163,115,0.10)',
                   }}
                 >
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>

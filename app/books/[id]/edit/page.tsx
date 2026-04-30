@@ -1163,9 +1163,9 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       </div>
                     )}
                   </div>
-                  {/* Visible save CTA at card bottom */}
+                  {/* Word count + autosave status — inline metrics, no submit button */}
                   <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: 'rgba(212,163,115,0.10)' }}>
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1.5">
                       <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                         Draft auto-saved
                       </p>
@@ -1175,23 +1175,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         </p>
                       )}
                     </div>
-                    <Button
-                      type="submit"
-                      disabled={isSubmitDisabled}
-                      className="h-10 rounded-full px-7 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(196,148,106,0.35)] hover:-translate-y-0.5"
-                      style={{
-                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.28)' : 'var(--bronze)',
-                        color: isSubmitDisabled ? 'rgba(43,43,43,0.65)' : 'var(--charcoal)',
-                        boxShadow: isSubmitDisabled ? 'none' : '0 4px 16px rgba(212,163,115,0.28)',
-                      }}
-                    >
-                      {loading ? (
-                        <>
-                          <div className="w-3.5 h-3.5 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
-                          Saving
-                        </>
-                      ) : hasUploadingPhotos ? 'Uploading…' : hasBlockingRecorderState ? 'Finish recording' : memoryId ? 'Update Memory' : 'Save Memory'}
-                    </Button>
+                    {wordCount > 0 && (
+                      <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.20)' }}>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                        </svg>
+                        <span className="text-xs font-semibold" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
+                          {wordCount.toLocaleString()} {wordCount === 1 ? 'word' : 'words'}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </section>

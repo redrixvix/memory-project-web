@@ -812,8 +812,8 @@ export default function Dashboard() {
                             {book.description}
                           </p>
                         ) : (
-                          <p className="text-sm leading-relaxed mb-4" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                            No description yet — begin your story
+                          <p className="text-sm leading-relaxed mb-4" style={{ color: '#8A7A6A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                            Every story deserves a beginning.
                           </p>
                         )}
 
@@ -848,10 +848,10 @@ export default function Dashboard() {
                           style={{ paddingBottom: 2 }}
                         >
                           <div
-                            className="flex items-center gap-1.5 rounded-full px-4 py-2 transition-all duration-300 group-hover:gap-2 min-w-[100px] justify-center hover:shadow-md active:scale-95"
+                            className="memory-cta-btn flex items-center gap-1.5 rounded-full px-4 py-2 transition-all duration-300 group-hover:gap-2 min-w-[100px] justify-center active:scale-95"
                             style={{
                               backgroundColor: 'var(--bronze)',
-                              boxShadow: '0 2px 10px rgba(212,163,115,0.28)',
+                              boxShadow: '0 2px 10px rgba(212,163,115,0.28), 0 1px 0 rgba(255,255,255,0.6) inset',
                             }}
                           >
                             <span className="text-xs font-semibold" style={{
