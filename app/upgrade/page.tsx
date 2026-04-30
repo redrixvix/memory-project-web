@@ -170,9 +170,12 @@ export default function UpgradePage() {
         <div className="text-center mb-12">
           <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Upgrade</p>
           <h1 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>
-            Choose a plan for your book
+            Give your story a home that lasts a lifetime
           </h1>
-          <p className="text-base" style={{ color: '#6A6A5A' }}>
+          <p className="text-base max-w-lg mx-auto" style={{ color: '#6A6A5A' }}>
+            Your stories deserve more than words on a screen. Upgrade to preserve photos, voice recordings, and order a beautiful printed heirloom — all secured for generations.
+          </p>
+          <p className="text-xs mt-4" style={{ color: 'rgba(90,90,80,0.65)', fontFamily: 'var(--font-sans)' }}>
             Plans are set per-book. Each book can be on its own plan.
           </p>
         </div>

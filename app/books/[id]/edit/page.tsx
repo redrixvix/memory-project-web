@@ -1162,18 +1162,21 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               </section>
 
               <section className="border-t py-5 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
-                <div className="space-y-3">
-                  <div className="inline-flex rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em]" style={{ backgroundColor: 'rgba(212,163,115,0.08)', color: '#8A7A6A', fontFamily: 'var(--font-sans)' }}>
-                    Optional
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'rgba(212,163,115,0.55)' }}>
+                      <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                    </svg>
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(212,163,115,0.65)', fontFamily: 'var(--font-sans)' }}>
+                      Enrich your memory
+                    </span>
                   </div>
-                  <div>
-                    <Label className="mb-2 block label-caps" style={{ color: 'var(--bronze)' }}>
-                      Photos &amp; audio
-                    </Label>
-                    <p className="text-sm leading-6" style={{ color: '#6A6A5A' }}>
-                      Attach a few images or a voice note to preserve details that are difficult to capture in text alone.
-                    </p>
-                  </div>
+                  <h3 className="text-lg font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                    Add photos &amp; voice notes
+                  </h3>
+                  <p className="text-sm leading-relaxed mt-1" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                    A photograph or voice note can capture what words alone cannot — the sound of laughter, the light in a room, a moment that would otherwise fade.
+                  </p>
                 </div>
 
                 <div>
