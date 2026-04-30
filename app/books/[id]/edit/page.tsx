@@ -904,6 +904,28 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 <h1 className="text-xl md:text-2xl font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
+                {/* Step progress indicator */}
+                <div className="flex items-center gap-2 mt-4">
+                  <div className="flex items-center gap-1.5">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                      style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                    >
+                      1
+                    </div>
+                    <span className="text-xs font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Write</span>
+                  </div>
+                  <div className="flex-1 h-px max-w-[2.5rem]" style={{ backgroundColor: 'rgba(212,163,115,0.3)' }} />
+                  <div className="flex items-center gap-1.5">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                      style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'rgba(43,43,43,0.45)' }}
+                    >
+                      2
+                    </div>
+                    <span className="text-xs" style={{ color: 'rgba(43,43,43,0.45)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
+                  </div>
+                </div>
               </div>
 
             <form onSubmit={handleSubmit} className="relative">
