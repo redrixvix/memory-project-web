@@ -916,7 +916,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
             <form onSubmit={handleSubmit} className="relative">
               {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
-              <section className="py-5 md:py-6" style={{ opacity: textareaFocused ? 0.75 : 1, transition: 'opacity 0.4s ease' }}>
+              <section className="py-5 md:py-6" style={{ opacity: textareaFocused ? 0.4 : 1, transition: 'opacity 0.4s ease' }}>
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="inline-flex items-center gap-1.5">
@@ -1079,11 +1079,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               <section className="border-t py-5 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
                 {/* Constrained writing zone — creates "journal page" feel with soft shadow (no harsh border) */}
                 <div
-                  className="rounded-[1.5rem] mx-auto"
+                  className="rounded-[1.5rem] mx-auto transition-all duration-500"
                   style={{
                     maxWidth: '760px',
                     backgroundColor: 'rgba(255,253,246,0.88)',
-                    boxShadow: '0 4px 32px rgba(212,163,115,0.09), 0 1px 4px rgba(212,163,115,0.04)',
+                    boxShadow: textareaFocused
+                      ? '0 8px 48px rgba(212,163,115,0.16), 0 2px 8px rgba(212,163,115,0.08), 0 0 0 1px rgba(212,163,115,0.08)'
+                      : '0 4px 32px rgba(212,163,115,0.09), 0 1px 4px rgba(212,163,115,0.04)',
                   }}
                 >
                   <style>{`
@@ -1161,7 +1163,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </div>
               </section>
 
-              <section className="border-t py-5 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+              <section className="border-t py-5 md:py-6" style={{ opacity: textareaFocused ? 0.35 : 1, transition: 'opacity 0.5s ease', borderColor: 'rgba(212,163,115,0.14)' }}>
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-1">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'rgba(212,163,115,0.55)' }}>
