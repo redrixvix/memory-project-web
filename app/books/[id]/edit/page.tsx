@@ -1098,13 +1098,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     maxWidth: '760px',
                     backgroundColor: 'rgba(255,253,246,0.88)',
                     boxShadow: textareaFocused
-                      ? '0 8px 48px rgba(212,163,115,0.16), 0 2px 8px rgba(212,163,115,0.08), 0 0 0 1px rgba(212,163,115,0.08)'
-                      : '0 4px 32px rgba(212,163,115,0.09), 0 1px 4px rgba(212,163,115,0.04)',
+                      ? '0 0 0 2px rgba(212,163,115,0.28), 0 12px 48px rgba(212,163,115,0.14)'
+                      : '0 0 0 1px rgba(212,163,115,0.14), 0 4px 24px rgba(212,163,115,0.07)',
                   }}
                 >
                   <style>{`
                     .memory-textarea::placeholder {
-                      color: rgba(100, 95, 85, 0.65);
+                      color: rgba(80, 75, 65, 0.80);
                       font-style: italic;
                     }
                   `}</style>
@@ -1123,8 +1123,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       fontFamily: 'var(--font-serif)',
                       resize: 'vertical',
                       boxShadow: textareaFocused
-                        ? 'inset 0 2px 24px rgba(212,163,115,0.08), 0 0 0 2px rgba(212,163,115,0.12)'
-                        : 'none',
+                        ? '0 0 0 2.5px rgba(212,163,115,0.35), 0 8px 32px rgba(212,163,115,0.12)'
+                        : '0 0 0 1.5px rgba(212,163,115,0.20), 0 2px 8px rgba(212,163,115,0.06)',
                     }}
                   />
                   {/* Autosave status — single, clean indicator above the textarea */}
@@ -1412,7 +1412,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       className="rounded-[1.2rem] px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4"
                       style={{
                         backgroundColor: 'rgba(255,253,246,0.60)',
-                        border: '1px solid rgba(212,163,115,0.14)',
+                        border: '1px solid rgba(212,163,115,0.22)',
+                        background: 'linear-gradient(135deg, rgba(212,163,115,0.06) 0%, rgba(204,213,174,0.06) 100%)',
                       }}
                     >
                       <div className="flex items-start gap-3">
