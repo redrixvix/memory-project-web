@@ -548,7 +548,7 @@ export default function Dashboard() {
                     <div className="grid gap-3">
                       {BOOK_PLAN_OPTIONS.map((plan) => {
                         const isSelected = newPlan === plan.id;
-                        const isRecommended = plan.id === 'free';
+                        const isRecommended = plan.id === 'premium';
                         return (
                           <button
                             key={plan.id}
@@ -666,8 +666,8 @@ export default function Dashboard() {
                     disabled={creating || !newTitle.trim()}
                     className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-300 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-0.5"
                     style={{
-                      backgroundColor: creating ? 'rgba(212,163,115,0.65)' : !newTitle.trim() ? 'rgba(212,163,115,0.62)' : '#B8895A',
-                      color: !newTitle.trim() ? 'rgba(43,43,43,0.75)' : 'var(--charcoal)',
+                      backgroundColor: creating ? 'rgba(158,120,69,0.65)' : !newTitle.trim() ? 'rgba(158,120,69,0.62)' : '#8A6A3C',
+                      color: !newTitle.trim() ? 'rgba(254,250,224,0.75)' : 'var(--cornsilk)',
                       boxShadow: !creating && newTitle.trim() ? '0 6px 24px rgba(212,163,115,0.4)' : 'none',
                       fontWeight: '600',
                     }}
