@@ -575,7 +575,7 @@ export default function Dashboard() {
                               <div
                                 className="absolute -top-2.5 left-4 px-2.5 py-0.5 rounded-full text-xs font-semibold"
                                 style={{
-                                  backgroundColor: isRecommended ? 'var(--tea-green)' : 'var(--bronze)',
+                                  backgroundColor: isRecommended ? '#567C3B' : 'var(--bronze)',
                                   color: isRecommended ? '#FDFCF5' : 'var(--charcoal)',
                                   fontFamily: 'var(--font-sans)',
                                   boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
@@ -597,11 +597,11 @@ export default function Dashboard() {
                             <div className="flex items-baseline gap-2 flex-wrap pr-7 mt-1">
                               <p className="text-sm font-bold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
                               <p className="text-sm font-bold" style={{ color: 'var(--bronze)' }}>{plan.price}</p>
-                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                              <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                                 {plan.id === 'free' ? 'Free forever' : plan.id === 'premium' ? 'Lifetime' : 'Lifetime'}
                               </span>
                             </div>
-                            <p className="text-xs mt-1 leading-relaxed" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
+                            <p className="text-xs mt-1 leading-relaxed" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
                               {plan.id === 'free' && 'Unlimited text memories — free to start'}
                               {plan.id === 'premium' && '5GB photo & audio, printed books, family sharing'}
                               {plan.id === 'plus' && '15GB storage, priority support, largest print runs'}
@@ -666,8 +666,8 @@ export default function Dashboard() {
                     disabled={creating || !newTitle.trim()}
                     className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-300 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-0.5"
                     style={{
-                      backgroundColor: creating ? 'rgba(212,163,115,0.5)' : !newTitle.trim() ? 'rgba(212,163,115,0.45)' : '#B8895A',
-                      color: !newTitle.trim() ? 'rgba(43,43,43,0.5)' : 'var(--charcoal)',
+                      backgroundColor: creating ? 'rgba(212,163,115,0.65)' : !newTitle.trim() ? 'rgba(212,163,115,0.62)' : '#B8895A',
+                      color: !newTitle.trim() ? 'rgba(43,43,43,0.75)' : 'var(--charcoal)',
                       boxShadow: !creating && newTitle.trim() ? '0 6px 24px rgba(212,163,115,0.4)' : 'none',
                       fontWeight: '600',
                     }}
