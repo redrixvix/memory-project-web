@@ -123,7 +123,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
                 ))}
                 {['Photos & audio', 'Printed books'].map((feat, j) => (
                   <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
-                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#B0B09A' }}>
+                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: "rgba(43,43,43,0.38)" }}>
                       <path d="M18 6L6 18M6 6l12 12" />
                     </svg>
                     {feat}
@@ -146,7 +146,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             <CardContent className="pt-10">
               <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Premium</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$50</p>
-              <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>
+              <p className="text-sm mb-8" style={{ color: "rgba(43,43,43,0.72)" }}>for 5 years</p>
               <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 32 }} />
               <ul className="space-y-3 mb-10">
                 {[
@@ -174,7 +174,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             <CardContent className="pt-0">
               <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Plus</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$100</p>
-              <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>
+              <p className="text-sm mb-8" style={{ color: "rgba(43,43,43,0.72)" }}>for 5 years</p>
               <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 32 }} />
               <ul className="space-y-3 mb-10">
                 {[

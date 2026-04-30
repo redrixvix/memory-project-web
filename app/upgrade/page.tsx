@@ -347,7 +347,7 @@ export default function UpgradePage() {
                 <ul className="space-y-2.5 mb-7">
                   {plan.features.map((feat, i) => (
                     <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: isCurrentPlan ? '#6A6A5A' : 'var(--charcoal)' }}>
-                      <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: isCurrentPlan ? '#B0B09A' : 'var(--bronze)' }}>
+                      <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: isCurrentPlan ? 'rgba(43,43,43,0.48)' : 'var(--bronze)' }}>
                         <path d="M20 6L9 17l-5-5" />
                       </svg>
                       {feat}
