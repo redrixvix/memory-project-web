@@ -1167,7 +1167,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: 'rgba(212,163,115,0.10)' }}>
                     <div className="flex flex-col gap-1">
                       <p className="text-xs" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                        Autosaves as you write
+                        Draft auto-saved
                       </p>
                       {answer.trim().length === 0 && (
                         <p className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>

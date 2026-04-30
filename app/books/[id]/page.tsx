@@ -317,6 +317,21 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             {/* Add Memory button — shown for all books, regardless of memory count */}
             <Link
               href={`/books/${id}/edit`}
+              className="inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95 sm:hidden"
+              style={{
+                backgroundColor: 'var(--bronze)',
+                color: 'var(--charcoal)',
+              }}
+            >
+              <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Add Memory
+            </Link>
+
+            {/* Add Memory button — desktop only (larger screen) */}
+            <Link
+              href={`/books/${id}/edit`}
               className="hidden sm:inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95"
               style={{
                 backgroundColor: 'var(--bronze)',
