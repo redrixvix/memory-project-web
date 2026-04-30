@@ -103,7 +103,7 @@ export default function Dashboard() {
   const [showCreate, setShowCreate] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDesc, setNewDesc] = useState('');
-  const [newPlan, setNewPlan] = useState<BookPlan>('free');
+  const [newPlan, setNewPlan] = useState<BookPlan>('premium');
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
