@@ -787,8 +787,9 @@ export default function Dashboard() {
                         />
                       </div>
 
-                      {/* Main content area */}
-                      <div className="relative flex items-start gap-4 p-6 pl-8">
+                      {/* Main content area — outer flex-col + min-height ensures footer always at same vertical position */}
+                      <div className="relative flex flex-col justify-between min-h-[220px] p-6 pl-8">
+                        {/* Inner flex row: book illustration + text content */}
                         {/* Left: Book illustration — larger and more prominent */}
                         <div
                           className="shrink-0"
@@ -859,7 +860,7 @@ export default function Dashboard() {
                               {book.description}
                             </p>
                           ) : (
-                            <p className="text-xs italic" style={{ color: '#9A9A8A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                            <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                               {book._count?.memories === 0
                                 ? 'Empty — start writing'
                                 : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'} collected`}
@@ -880,7 +881,7 @@ export default function Dashboard() {
                                   />
                                 ))}
                               </div>
-                              <span className="text-[11px]" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                              <span className="text-[11px]" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
                                 {book.contributors.length} contributors
                               </span>
                             </div>
@@ -888,11 +889,11 @@ export default function Dashboard() {
                         </div>
                       </div>
 
-                      {/* Footer — elegant read link */}
-                      <div className="relative px-6 pl-8 pb-5">
+                      {/* Footer — embedded in outer flex-col so it's always at card bottom */}
+                      <div className="px-6 pl-8 pb-5" style={{ marginTop: 'auto' }}>
                         <div
                           className="flex items-center gap-1.5 transition-all duration-300 group-hover:gap-2.5"
-                          style={{ borderTop: '1px solid rgba(212,163,115,0.08)', paddingTop: 14 }}
+                          style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}
                         >
                           <span 
                             className="text-xs font-semibold tracking-wide"

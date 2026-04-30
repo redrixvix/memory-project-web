@@ -930,7 +930,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
             <form onSubmit={handleSubmit} className="relative">
               {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
-              <section className="py-5 md:py-6" style={{ opacity: textareaFocused ? 0.4 : 1, transition: 'opacity 0.4s ease' }}>
+              <section className="py-5 md:py-6" style={{ opacity: textareaFocused ? 0.65 : 1, transition: 'opacity 0.4s ease' }}>
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="inline-flex items-center gap-1.5">
@@ -1177,7 +1177,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </div>
               </section>
 
-              <section className="border-t py-5 md:py-6" style={{ opacity: textareaFocused ? 0.35 : 1, transition: 'opacity 0.5s ease', borderColor: 'rgba(212,163,115,0.14)' }}>
+              <section className="border-t py-5 md:py-6" style={{ opacity: textareaFocused ? 0.65 : 1, transition: 'opacity 0.5s ease', borderColor: 'rgba(212,163,115,0.14)' }}>
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-1">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'rgba(212,163,115,0.55)' }}>
