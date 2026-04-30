@@ -188,7 +188,7 @@ export default function Login() {
             <p className="text-sm" style={{ color: '#6A6A5A' }}>Sign in to continue your memory book</p>
           </div>
 
-          <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 4px 24px rgba(212,163,115,0.08)' }}>
+          <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 4px rgba(212,163,115,0.06), 0 8px 16px rgba(212,163,115,0.08), 0 24px 48px rgba(212,163,115,0.06)' }}>
             <CardContent className="pt-0 space-y-5">
 
               {/* ── Google sign-in button — styled as a real button ── */}
@@ -293,6 +293,12 @@ export default function Login() {
                     >
                       {passwordLoading ? 'Signing in...' : 'Sign in with password'}
                     </Button>
+                    <div className="flex items-center justify-center gap-1.5">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'rgba(212,163,115,0.6)' }}>
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                      </svg>
+                      <span className="text-xs" style={{ color: 'rgba(43,43,43,0.55)', fontFamily: 'var(--font-sans)' }}>Your memories are private and encrypted</span>
+                    </div>
                   </form>
 
                   <div className="flex items-center gap-3 py-0.5">

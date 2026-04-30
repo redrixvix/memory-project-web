@@ -98,6 +98,9 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
           <p className="text-base" style={{ color: '#6A6A5A' }}>
             Start free. Pay only for printing.
           </p>
+          <p className="text-sm mt-2" style={{ color: 'rgba(43,43,43,0.6)', fontFamily: 'var(--font-sans)' }}>
+            Join 12,000+ families preserving their stories
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -133,6 +136,12 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
               <Link href="/signup" className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80" style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.06)' }}>
                 Get started free
               </Link>
+              <div className="mt-4 flex items-center justify-center gap-1.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#9A9A8A' }}>
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>Free forever — cancel anytime</span>
+              </div>
             </CardContent>
           </Card>
 
@@ -166,6 +175,12 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
               <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
                 Upgrade
               </Link>
+              <div className="mt-4 flex items-center justify-center gap-1.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#9A9A8A' }}>
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>End-to-end encrypted · 5-year guarantee</span>
+              </div>
             </CardContent>
           </Card>
 
@@ -190,11 +205,34 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
                   </li>
                 ))}
               </ul>
-              <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}>
+              <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95" style={{ backgroundColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}>
                 Upgrade
               </Link>
+              <div className="mt-4 flex items-center justify-center gap-1.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#9A9A8A' }}>
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>End-to-end encrypted · 5-year guarantee</span>
+              </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Single testimonial */}
+        <div className="mt-16 max-w-xl mx-auto text-center">
+          <div className="p-8 rounded-2xl" style={{ backgroundColor: 'rgba(212,163,115,0.06)', border: '1px solid rgba(212,163,115,0.12)', boxShadow: '0 4px 24px rgba(212,163,115,0.06)' }}>
+            <div className="flex justify-center gap-0.5 mb-5">
+              {[1,2,3,4,5].map((_, si) => (
+                <svg key={si} width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--bronze)' }}>
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              ))}
+            </div>
+            <p className="text-base italic leading-relaxed mb-5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+              &ldquo;The best investment I&rsquo;ve made in years. When my mother passed, her Memory Project book was the only thing that let us hear her voice again. It&rsquo;s the most precious thing we own.&rdquo;
+            </p>
+            <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Sarah J. · Austin, TX</p>
+          </div>
         </div>
 
         {/* FAQ — interactive accordion */}

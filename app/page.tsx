@@ -199,7 +199,7 @@ export default function Home() {
           {/* Right: premium book photo — 40% */}
           <div className="md:col-span-5 flex justify-center md:justify-end">
             {/* LCP — above-the-fold hero book image should be considered high priority */}
-            <div className="relative" style={{ width: 300, height: 400 }}>
+            <div className="relative" style={{ width: 380, height: 500 }}>
               {/* Warm layered drop shadow (depth + softness) */}
               <div style={{
                 position: 'absolute',
@@ -222,13 +222,13 @@ export default function Home() {
                 filter: 'blur(6px)',
               }} />
               <Image
-                src="/hero-book.svg"
-                alt="A sample Memory Project hardcover book showing warm bronze spine and cream pages"
-                width={300}
-                height={400}
+                src="/images/book-product-3.jpg"
+                alt="A beautifully made Memory Project hardcover book with gold foil title on a warm marble surface"
+                width={380}
+                height={500}
                 priority
                 className="animate-float"
-                style={{ borderRadius: 14 }}
+                style={{ borderRadius: 6, objectFit: 'cover', width: '100%', height: '100%' }}
               />
             </div>
           </div>
