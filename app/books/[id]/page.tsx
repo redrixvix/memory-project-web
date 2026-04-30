@@ -653,7 +653,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
                       {/* Chapter number badge — positioned near the content */}
                       <div
-                        className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-1.5 shadow-sm mb-4"
+                        className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-1.5 shadow-sm mb-3"
                         style={{
                           backgroundColor: `${accentColor}18`,
                           color: 'var(--charcoal)',
@@ -726,8 +726,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         {memory.answer_text}
                       </p>
 
-                      {/* Date + contributor + read time — tightly grouped below content */}
-                      <div className="flex items-center gap-3 mt-5 pt-4 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
+                      {/* Date + contributor + read time — tight grouping */}
+                      <div className="flex items-center gap-3 mt-4 pt-3 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
                         {memory.contributor_name ? (
                           <div className="flex items-center gap-2">
                             <Avatar
@@ -846,7 +846,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       {/* Audio — premium styled card with waveform icon */}
                       {memory.audio_url && (
                         <div
-                          className="mt-7 p-5 rounded-2xl relative overflow-hidden"
+                          className="mt-5 p-5 rounded-2xl relative overflow-hidden"
                           style={{
                             background: 'linear-gradient(135deg, rgba(204,213,174,0.15) 0%, rgba(212,163,115,0.1) 100%)',
                             border: '1px solid rgba(212,163,115,0.2)',
@@ -890,12 +890,16 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Footer actions — larger buttons for better accessibility */}
+                      {/* Footer actions — chapter hint left, actions right */}
                       <div
-                        className="flex items-center justify-end gap-2 mt-7 pt-5 border-t transition-all duration-500"
-                        style={{ borderColor: 'rgba(212,163,115,0.08)', opacity: hoveredCard === memoryIndex ? 1 : 0 }}
+                        className="flex items-center justify-between mt-5 pt-4 border-t transition-all duration-500"
+                        style={{ borderColor: 'rgba(212,163,115,0.08)', opacity: hoveredCard === memoryIndex ? 1 : 0.4 }}
                       >
-                        <Link
+                        <span className="text-[10px] tracking-[0.1em] uppercase" style={{ color: 'rgba(212,163,115,0.55)', fontFamily: 'var(--font-sans)' }}>
+                          Ch. {memoryIndex + 1}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <Link
                           href={`/books/${id}/edit?memory=${memory.id}`}
                           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 active:scale-95"
                           style={{
@@ -927,6 +931,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                           </svg>
                           Delete
                         </button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

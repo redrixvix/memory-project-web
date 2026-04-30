@@ -809,14 +809,15 @@ export default function Dashboard() {
                           )}
                         </div>
 
-                        {/* Description */}
+                        {/* Description or memory count */}
                         {book.description ? (
-                          <p className="text-sm leading-relaxed line-clamp-3 mb-3" style={{ color: '#3A3A32', fontFamily: 'var(--font-serif)' }}>
+                          <p className="text-sm leading-relaxed line-clamp-2 mb-2" style={{ color: '#3A3A32', fontFamily: 'var(--font-serif)' }}>
                             {book.description}
                           </p>
-                        ) : (
-                          <p className="text-sm leading-relaxed mb-4" style={{ color: '#8A7A6A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                            Begin your story today.
+                        ) : null}
+                        {book._count?.memories !== undefined && book._count.memories > 0 && (
+                          <p className="text-xs" style={{ color: '#8A7A6A', fontFamily: 'var(--font-sans)' }}>
+                            {book._count.memories} {book._count.memories === 1 ? 'memory' : 'memories'}
                           </p>
                         )}
 
@@ -839,9 +840,11 @@ export default function Dashboard() {
                                 +{book.contributors.length - 4}
                               </span>
                             )}
-                            <span className="text-xs" style={{ color: '#3A3A32', fontFamily: 'var(--font-sans)' }}>
-                              {book.contributors.length === 1 ? '1 contributor' : `${book.contributors.length} contributors`}
-                            </span>
+                            {book.contributors.length > 1 && (
+                              <span className="text-xs" style={{ color: '#3A3A32', fontFamily: 'var(--font-sans)' }}>
+                                {book.contributors.length} contributors
+                              </span>
+                            )}
                           </div>
                         )}
 
