@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { FaqAccordion } from '@/components/ui/faq-accordion';
 import BreadcrumbSchema from '@/components/breadcrumb-schema';
 
 const pricingFaqJsonLd = {
@@ -196,28 +197,25 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
           </Card>
         </div>
 
-        {/* FAQ */}
+        {/* FAQ — interactive accordion */}
         <div className="mt-24 max-w-2xl mx-auto">
           <h2 className="display-md text-center mb-12" style={{ color: 'var(--charcoal)' }}>Common questions</h2>
-          {[
-            {
-              q: 'What happens to my free memories if I never upgrade?',
-              a: 'They stay yours, forever. Even on the free plan, your text memories are yours to keep, edit, and export any time.',
-            },
-            {
-              q: 'How does printing work?',
-              a: "When you're ready to print, we'll format your book as a hardcover with archival paper, smyth-sewn binding, and a custom dust jacket. Starting at $99 for a 200-page book.",
-            },
-            {
-              q: 'Can I switch plans later?',
-              a: 'Yes, you can upgrade at any time. You can also add photo storage à la carte without upgrading your whole plan.',
-            },
-          ].map((item, i) => (
-            <div key={i} className="mb-8 pb-8 border-b" style={{ borderColor: 'rgba(212,163,115,0.1)' }}>
-              <h3 className="text-base font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>{item.q}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: '#6A6A5A' }}>{item.a}</p>
-            </div>
-          ))}
+          <FaqAccordion
+            items={[
+              {
+                q: 'What happens to my free memories if I never upgrade?',
+                a: 'They stay yours, forever. Even on the free plan, your text memories are yours to keep, edit, and export any time.',
+              },
+              {
+                q: 'How does printing work?',
+                a: "When you're ready to print, we'll format your book as a hardcover with archival paper, smyth-sewn binding, and a custom dust jacket. Starting at $99 for a 200-page book.",
+              },
+              {
+                q: 'Can I switch plans later?',
+                a: 'Yes, you can upgrade at any time. You can also add photo storage à la carte without upgrading your whole plan.',
+              },
+            ]}
+          />
         </div>
       </main>
       <Script

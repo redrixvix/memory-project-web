@@ -102,6 +102,14 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
               >
                 Settings
               </Link>
+              <Link
+                href="/upgrade"
+                onClick={onClose}
+                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)' }}
+              >
+                Upgrade plan
+              </Link>
               <button
                 onClick={handleLogout}
                 className="block w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
