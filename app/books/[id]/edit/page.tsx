@@ -900,7 +900,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           <div className="hero-ambient" />
 
           <div className="relative px-5 py-4 md:px-8 md:py-5">
-            <div className="border-b pb-6 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
+            <div className="border-b pb-6 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)', opacity: textareaFocused ? 0.45 : 1, transition: 'opacity 0.4s ease' }}>
                 <div className="flex flex-wrap items-center gap-3 mb-3">
                   <p className="label-caps" style={{ color: 'var(--bronze)' }}>Memory entry</p>
                   <div className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.15)', color: '#4A5A35', fontFamily: 'var(--font-sans)' }}>
@@ -920,7 +920,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
             <form onSubmit={handleSubmit} className="relative">
               {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
-              <section className="py-5 md:py-6">
+              <section className="py-5 md:py-6" style={{ opacity: textareaFocused ? 0.45 : 1, transition: 'opacity 0.4s ease' }}>
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="inline-flex items-center gap-1.5">
@@ -958,27 +958,27 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       disabled={promptLoadState === 'loading'}
                       className="w-full appearance-none rounded-[1.15rem] border px-4 py-3.5 pr-12 text-sm md:text-[0.95rem] transition-colors outline-none"
                       style={{
-                        borderColor: 'rgba(212,163,115,0.24)',
-                        backgroundColor: 'rgba(255,253,246,0.88)',
+                        borderColor: 'rgba(212,163,115,0.20)',
+                        backgroundColor: 'rgba(255,253,246,0.70)',
                         color: 'var(--charcoal)',
                         fontFamily: 'var(--font-sans)',
-                        boxShadow: '0 10px 24px rgba(212,163,115,0.06)',
+                        boxShadow: '0 6px 16px rgba(212,163,115,0.05)',
                       }}
                       onFocus={e => {
-                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.55)';
-                        (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(212,163,115,0.12), 0 10px 24px rgba(212,163,115,0.08)';
+                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.45)';
+                        (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(212,163,115,0.10), 0 8px 20px rgba(212,163,115,0.07)';
                       }}
                       onBlur={e => {
-                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.24)';
-                        (e.target as HTMLElement).style.boxShadow = '0 10px 24px rgba(212,163,115,0.06)';
+                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.20)';
+                        (e.target as HTMLElement).style.boxShadow = '0 6px 16px rgba(212,163,115,0.05)';
                       }}
                       onMouseEnter={e => {
-                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.45)';
-                        (e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(212,163,115,0.12)';
+                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.40)';
+                        (e.target as HTMLElement).style.boxShadow = '0 4px 12px rgba(212,163,115,0.10)';
                       }}
                       onMouseLeave={e => {
-                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.24)';
-                        (e.target as HTMLElement).style.boxShadow = '0 10px 24px rgba(212,163,115,0.06)';
+                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.20)';
+                        (e.target as HTMLElement).style.boxShadow = '0 6px 16px rgba(212,163,115,0.05)';
                       }}
                     >
                       {promptLoadState === 'loading' && (
@@ -1081,19 +1081,18 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
               {/* Writing section — single column, constrained-width for premium readability */}
               <section className="border-t py-5 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
-                {/* Constrained writing zone — creates "journal page" feel */}
+                {/* Constrained writing zone — creates "journal page" feel with soft shadow (no harsh border) */}
                 <div
-                  className="rounded-[1.5rem] border p-3 md:p-5 mx-auto"
+                  className="rounded-[1.5rem] mx-auto"
                   style={{
                     maxWidth: '760px',
-                    backgroundColor: 'rgba(255,253,246,0.78)',
-                    borderColor: 'rgba(212,163,115,0.18)',
-                    boxShadow: '0 18px 40px rgba(212,163,115,0.08)',
+                    backgroundColor: 'rgba(255,253,246,0.88)',
+                    boxShadow: '0 4px 32px rgba(212,163,115,0.09), 0 1px 4px rgba(212,163,115,0.04)',
                   }}
                 >
                   <style>{`
                     .memory-textarea::placeholder {
-                      color: rgba(100, 95, 85, 0.72);
+                      color: rgba(100, 95, 85, 0.65);
                       font-style: italic;
                     }
                   `}</style>
@@ -1108,12 +1107,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     rows={16}
                     placeholder="Take your time. There is no perfect way to tell a memory, only your way."
                     style={{
-                      backgroundColor: '#FFFDF6',
+                      backgroundColor: 'transparent',
                       fontFamily: 'var(--font-serif)',
                       resize: 'vertical',
                       boxShadow: textareaFocused
-                        ? 'inset 0 0 0 2px rgba(212,163,115,0.75), inset 0 3px 20px rgba(212,163,115,0.09), inset 0 0 60px rgba(212,163,115,0.05), 0 0 0 4px rgba(212,163,115,0.14)'
-                        : 'inset 0 0 0 1.5px rgba(212,163,115,0.30), inset 0 3px 14px rgba(212,163,115,0.06), inset 0 0 50px rgba(212,163,115,0.04)',
+                        ? 'inset 0 2px 24px rgba(212,163,115,0.08), 0 0 0 2px rgba(212,163,115,0.12)'
+                        : 'none',
                     }}
                   />
                   <div className="flex items-center justify-between mt-3 px-1 flex-wrap gap-2">
@@ -1408,12 +1407,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <div
                       className="rounded-[1.2rem] px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4"
                       style={{
-                        background: 'linear-gradient(135deg, rgba(250,237,205,0.4) 0%, rgba(204,213,174,0.10) 100%)',
-                        border: '1px solid rgba(212,163,115,0.15)',
+                        backgroundColor: 'rgba(255,253,246,0.60)',
+                        border: '1px solid rgba(212,163,115,0.14)',
                       }}
                     >
                       <div className="flex items-start gap-3">
-                        <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center mt-0.5" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }}>
+                        <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center mt-0.5" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--bronze)' }}>
                             <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
                           </svg>
@@ -1423,7 +1422,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                             <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                               Add photos &amp; voice notes
                             </p>
-                            <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: '#5A4A3A', fontFamily: 'var(--font-sans)' }}>
+                            <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#5A4A3A', fontFamily: 'var(--font-sans)' }}>
                               Premium
                             </span>
                           </div>
@@ -1435,7 +1434,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       <Link
                         href={`/upgrade?book=${id}`}
                         className="inline-flex h-8 items-center justify-center rounded-full px-4 text-xs font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98] shrink-0"
-                        style={{ backgroundColor: 'rgba(212,163,115,0.08)', color: '#5A4A3A', border: '1px solid rgba(212,163,115,0.25)' }}
+                        style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 2px 8px rgba(212,163,115,0.15)' }}
                       >
                         Upgrade
                       </Link>

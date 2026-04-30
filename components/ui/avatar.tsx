@@ -20,14 +20,37 @@ function getInitials(name: string): string {
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
+// Generate a warm, consistent color from a name string
+function getAvatarColor(name: string): { bg: string; text: string } {
+  const PALETTE = [
+    { bg: 'linear-gradient(135deg, #B8895A 0%, #9E7350 100%)', text: '#FDFCF5' },
+    { bg: 'linear-gradient(135deg, #8B7355 0%, #6B5A45 100%)', text: '#FDFCF5' },
+    { bg: 'linear-gradient(135deg, #A07D5A 0%, #7A5F42 100%)', text: '#FDFCF5' },
+    { bg: 'linear-gradient(135deg, #C4A882 0%, #A68B60 100%)', text: '#2B2B2B' },
+    { bg: 'linear-gradient(135deg, #9B8B75 0%, #7A6F5F 100%)', text: '#FDFCF5' },
+    { bg: 'linear-gradient(135deg, #B09A7A 0%, #8F7B5E 100%)', text: '#2B2B2B' },
+    { bg: 'linear-gradient(135deg, #7D8B6A 0%, #5E6B4E 100%)', text: '#FDFCF5' },
+    { bg: 'linear-gradient(135deg, #8A7B6A 0%, #6B5E50 100%)', text: '#FDFCF5' },
+  ];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % PALETTE.length;
+  return PALETTE[index];
+}
+
 export function Avatar({ name, imageUrl, className, size }: AvatarProps) {
   const [imgError, setImgError] = useState(false);
 
   const initials = getInitials(name);
   const sizeValue = size ?? 40;
 
-  // Use imageUrl if it's a valid non-empty string
-  if (imageUrl && imageUrl.trim() && !imgError) {
+  // Use imageUrl if it's a valid non-empty string pointing to a real image.
+  // onLoad checks naturalWidth to catch broken/placeholder images (e.g. 1x1 pixel).
+  const hasValidImage = imageUrl && imageUrl.trim() && !imgError;
+
+  if (hasValidImage) {
     return (
       <Image
         src={imageUrl}
@@ -37,11 +60,19 @@ export function Avatar({ name, imageUrl, className, size }: AvatarProps) {
         className={cn('rounded-full object-cover shrink-0', className)}
         unoptimized
         onError={() => setImgError(true)}
+        onLoad={(e) => {
+          const img = e.currentTarget;
+          if (img.naturalWidth <= 1 && img.naturalHeight <= 1) {
+            setImgError(true);
+          }
+        }}
       />
     );
   }
 
-  // Image failed to load or not provided — show initials
+  // Image failed to load or not provided — show initials with warm generated color
+  const color = getAvatarColor(name);
+
   return (
     <div
       className={cn(
@@ -51,12 +82,13 @@ export function Avatar({ name, imageUrl, className, size }: AvatarProps) {
       style={{
         width: sizeValue,
         height: sizeValue,
-        background: 'linear-gradient(135deg, #D4A373 0%, #C9976A 50%, #B8875A 100%)',
-        color: '#2B2B2B',
+        background: color.bg,
+        color: color.text,
         fontFamily: 'var(--font-serif, Georgia, serif)',
-        letterSpacing: '0.04em',
-        fontSize: Math.round(sizeValue * 0.38),
-        boxShadow: `0 ${Math.round(sizeValue * 0.1)}px ${Math.round(sizeValue * 0.3)}px rgba(212,163,115,0.18), 0 ${Math.round(sizeValue * 0.05)}px ${Math.round(sizeValue * 0.1)}px rgba(212,163,115,0.08), inset 0 1px 2px rgba(255,255,255,0.15)`
+        letterSpacing: '0.03em',
+        fontSize: Math.round(sizeValue * 0.36),
+        fontWeight: 500,
+        boxShadow: `0 ${Math.round(sizeValue * 0.08)}px ${Math.round(sizeValue * 0.25)}px rgba(0,0,0,0.12), inset 0 1px 2px rgba(255,255,255,0.10)`,
       }}
       title={name}
     >
