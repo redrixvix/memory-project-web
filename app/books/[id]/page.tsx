@@ -84,6 +84,17 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [memorySort, setMemorySort] = useState<'newest' | 'oldest'>('newest');
   // Mobile nav state
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  // Overflow menu for memory actions
+  const [activeMenu, setActiveMenu] = useState<number | null>(null);
+
+  // Close menu on outside click
+  useEffect(() => {
+    const handleClick = () => setActiveMenu(null);
+    if (activeMenu !== null) {
+      document.addEventListener('click', handleClick, true);
+      return () => document.removeEventListener('click', handleClick, true);
+    }
+  }, [activeMenu]);
 
   // Computed sorted memories
   const sortedMemories = [...memories].sort((a, b) => {
@@ -651,20 +662,22 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     />
                     <CardContent className="pt-5 pb-5 px-4 pl-6 relative" style={{ paddingRight: '1.25rem' }}>
 
-                      {/* Chapter number badge — positioned near the content */}
+                      {/* Chapter number badge — larger, more prominent book-page style */}
                       <div
-                        className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-1.5 shadow-sm mb-3"
+                        className="inline-flex items-center gap-2.5 rounded-2xl px-4 py-2 mb-4"
                         style={{
-                          backgroundColor: `${accentColor}18`,
+                          backgroundColor: `${accentColor}14`,
                           color: 'var(--charcoal)',
                           fontFamily: 'var(--font-sans)',
-                          border: `1px solid ${accentColor}40`,
+                          border: `1px solid ${accentColor}30`,
+                          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 8px ${accentColor}10`,
                         }}
                       >
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                        </svg>
-                        <span className="text-xs font-semibold tracking-wide">Chapter {memoryIndex + 1}</span>
+                        <span className="text-base font-bold" style={{ color: accentColor, lineHeight: 1, fontFamily: 'Georgia, serif' }}>
+                          {String(memoryIndex + 1).padStart(2, '0')}
+                        </span>
+                        <div className="w-px h-4 opacity-40" style={{ backgroundColor: accentColor }} />
+                        <span className="text-xs font-semibold tracking-wide uppercase" style={{ letterSpacing: '0.08em', color: '#4A4A3A' }}>Chapter {memoryIndex + 1}</span>
                       </div>
 
                       {/* Prompt question as elegant chapter opener */}
@@ -726,7 +739,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         {memory.answer_text}
                       </p>
 
-                      {/* Date + contributor + read time — tight grouping */}
+                      {/* Date + contributor — warm, book-journal style, no min-read metric */}
                       <div className="flex items-center gap-3 mt-4 pt-3 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
                         {memory.contributor_name ? (
                           <div className="flex items-center gap-2">
@@ -740,17 +753,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             </span>
                           </div>
                         ) : null}
-                        <span className="text-xs tracking-wide" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
-                          {new Date(memory.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                        <span className="text-xs" style={{ color: '#8A7A6A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                          {(() => {
+                            const d = new Date(memory.created_at);
+                            const dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                            const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                            return `Added ${dateStr} · ${timeStr}`;
+                          })()}
                         </span>
-                        {memory.answer_text && (
-                          <>
-                            <div className="w-px h-3 opacity-30" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
-                            <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                              ~{Math.max(1, Math.round(memory.answer_text.trim().split(/\s+/).length / 200))} min read
-                            </span>
-                          </>
-                        )}
                       </div>
 
                       {/* Photo grid — premium album-style with hover reveal */}
@@ -890,47 +900,77 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Footer actions — chapter hint left, actions right */}
+                      {/* Footer actions — elegant overflow menu, appears on hover */}
                       <div
-                        className="flex items-center justify-between mt-4 pt-4 border-t transition-all duration-500"
+                        className="flex items-center justify-end mt-4 pt-4 border-t transition-all duration-500"
                         style={{ borderColor: hoveredCard === memoryIndex ? 'rgba(212,163,115,0.14)' : 'rgba(212,163,115,0.08)' }}
                       >
-                        <span className="text-[11px] font-semibold tracking-[0.1em] uppercase" style={{ color: hoveredCard === memoryIndex ? 'var(--charcoal)' : '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                          Ch. {memoryIndex + 1}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <Link
-                          href={`/books/${id}/edit?memory=${memory.id}`}
-                          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 active:scale-95"
-                          style={{
-                            color: 'var(--charcoal)',
-                            backgroundColor: 'rgba(212,163,115,0.08)',
-                            border: '1px solid rgba(212,163,115,0.15)',
-                          }}
-                          aria-label="Edit memory"
-                        >
-                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                          </svg>
-                          Edit
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => setDeleteConfirm({ memoryId: memory.id })}
-                          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:brightness-110 active:scale-95"
-                          style={{
-                            color: '#B07070',
-                            backgroundColor: 'rgba(212,163,115,0.06)',
-                            border: '1px solid rgba(212,163,115,0.12)',
-                          }}
-                          aria-label="Delete memory"
-                        >
-                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#B07070' }}>
-                            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
-                          </svg>
-                          Delete
-                        </button>
+                        <div className="relative">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setActiveMenu(activeMenu === memory.id ? null : memory.id);
+                            }}
+                            className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                            style={{
+                              backgroundColor: 'rgba(212,163,115,0.10)',
+                              color: '#7A7A6A',
+                              opacity: hoveredCard === memoryIndex ? 1 : 0,
+                            }}
+                            aria-label="Memory options"
+                            aria-haspopup="menu"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                              <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+                            </svg>
+                          </button>
+                          {activeMenu === memory.id && (
+                            <div
+                              className="absolute right-0 top-12 z-50 w-44 rounded-2xl p-1.5 animate-fade-up"
+                              style={{
+                                backgroundColor: '#FDFCF5',
+                                border: '1px solid rgba(212,163,115,0.18)',
+                                boxShadow: '0 12px 40px rgba(43,43,43,0.15), 0 4px 16px rgba(212,163,115,0.08)',
+                              }}
+                              role="menu"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Link
+                                href={`/books/${id}/edit?memory=${memory.id}`}
+                                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
+                                style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.10)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+                                role="menuitem"
+                              >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                                Edit memory
+                              </Link>
+                              <div className="h-px my-1" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setActiveMenu(null);
+                                  setDeleteConfirm({ memoryId: memory.id });
+                                }}
+                                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
+                                style={{ color: '#B07070', fontFamily: 'var(--font-sans)' }}
+                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(176,112,112,0.08)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+                                role="menuitem"
+                              >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#B07070' }}>
+                                  <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+                                </svg>
+                                Delete memory
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </CardContent>

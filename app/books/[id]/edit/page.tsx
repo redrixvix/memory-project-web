@@ -840,24 +840,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs font-medium rounded-full px-3 py-1.5 transition-all duration-300" style={{ 
-            color: saveState === 'saved' ? '#4A7C59' : '#6A6A5A',
-            backgroundColor: saveState === 'saved' ? 'rgba(74,124,89,0.10)' : 'transparent',
-            fontFamily: 'var(--font-sans)',
-          }}>
+          {/* Subtle autosave indicator — no pill, just elegant small text */}
+          <div className="flex items-center gap-1.5 text-xs transition-all duration-500" style={{ fontFamily: 'var(--font-sans)' }}>
             {saveState === 'saving' && (
               <>
-                <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.5)' }} />
-                <span>Saving...</span>
+                <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
+                <span className="italic" style={{ color: '#8A7A6A' }}>Saving...</span>
               </>
             )}
             {saveState === 'saved' && (
-              <>
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#4A7C59' }}>
-                  <path d="M20 6L9 17l-5-5" />
-                </svg>
-                <span>Saved</span>
-              </>
+              <span className="italic" style={{ color: '#8A7A6A' }}>Last saved</span>
             )}
           </div>
 
