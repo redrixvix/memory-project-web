@@ -324,7 +324,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             <button
               type="button"
               onClick={() => setShowMembersModal(true)}
-              className="header-action-btn hidden sm:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-90 active:scale-95"
+              className="header-action-btn h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-90 active:scale-95"
               style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
             >
               Members
@@ -359,7 +359,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   setToastVisible(true);
                 });
               }}
-              className="header-action-btn hidden sm:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-90 active:scale-95"
+              className="header-action-btn h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-90 active:scale-95"
               style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
             >
               Share
