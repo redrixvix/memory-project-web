@@ -920,11 +920,11 @@ export default function Dashboard() {
                               ? 'Begin writing'
                               : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'} collected`}
                           </span>
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full transition-all duration-300" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A4A2A', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em' }}>
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold px-3.5 py-1.5 rounded-full transition-all duration-300" style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: '#5A3A2A', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em' }}>
                             {book._count?.memories === 0 ? 'Start' : 'View'}
-                            <svg 
-                              className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0" 
-                              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" 
+                            <svg
+                              className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0"
+                              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
                               style={{ color: '#8A6A4A' }}
                             >
                               <path d="M5 12h14M12 5l7 7-7 7"/>

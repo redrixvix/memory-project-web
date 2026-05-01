@@ -939,7 +939,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                           <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
                         </svg>
                       </div>
-                      <span className="text-xs font-semibold tracking-[0.08em]" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
+                      <span className="text-sm font-bold tracking-[0.06em]" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
                         Browse prompts
                       </span>
                     </div>

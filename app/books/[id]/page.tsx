@@ -293,8 +293,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         <button
           type="button"
           onClick={scrollToTop}
-          className="scroll-top-btn fixed bottom-7 right-7 z-30 w-11 h-11 rounded-full flex items-center justify-center animate-fade-up"
-          style={{ backgroundColor: '#FDFCF5', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.2)', boxShadow: '0 4px 16px rgba(212,163,115,0.12)' }}
+          className="scroll-top-btn fixed bottom-7 right-7 z-30 w-11 h-11 rounded-full flex items-center justify-center animate-fade-up shadow-lg transition-all duration-200 hover:scale-110 active:scale-95"
+          style={{ backgroundColor: 'var(--bronze)', color: '#1A1A1A', border: '1px solid rgba(212,163,115,0.3)', boxShadow: '0 4px 16px rgba(212,163,115,0.25)' }}
           aria-label="Scroll to top"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -332,7 +332,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               style={{
                 backgroundColor: 'var(--bronze)',
                 color: 'var(--charcoal)',
-                boxShadow: '0 3px 14px rgba(212,163,115,0.30)',
+                boxShadow: '0 4px 16px rgba(212,163,115,0.45), 0 1px 3px rgba(212,163,115,0.20)',
+                    border: '1px solid rgba(212,163,115,0.25)',
               }}
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.45)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 3px 14px rgba(212,163,115,0.30)'; e.currentTarget.style.transform = 'translateY(0)'; }}
@@ -470,7 +471,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     backgroundColor: 'var(--bronze)',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: '0 3px 14px rgba(212,163,115,0.30)',
+                    boxShadow: '0 4px 16px rgba(212,163,115,0.45), 0 1px 3px rgba(212,163,115,0.20)',
+                    border: '1px solid rgba(212,163,115,0.25)',
                   }}
                 >
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -501,7 +503,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.4), transparent)' }} />
               {/* Sort controls */}
               <div className="flex items-center gap-2.5 rounded-full px-4 py-2 overflow-x-auto" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.18)' }}>
-                <span className="text-xs font-semibold tracking-wide shrink-0" style={{ color: 'rgba(43,43,43,0.65)', fontFamily: 'var(--font-sans)' }}>Sort</span>
+                <span className="text-xs font-bold tracking-wide shrink-0" style={{ color: 'rgba(43,43,43,0.85)', fontFamily: 'var(--font-sans)' }}>Sort</span>
                 <div className="w-px h-3.5 shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
                 <button
                   type="button"
