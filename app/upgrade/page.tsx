@@ -300,13 +300,13 @@ export default function UpgradePage() {
                     Most Popular
                   </div>
                 )}
-                {/* Current plan badge */}
+                {/* Current plan badge — subtle, low-profile */}
                 {isCurrentPlan && (
                   <div
-                    className="absolute top-4 right-4 flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full"
-                    style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                    className="absolute top-4 right-4 flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: 'rgba(212,163,115,0.08)', color: 'rgba(43,43,43,0.5)', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.12)' }}
                   >
-                    <Check size={10} strokeWidth={3} />
+                    <Check size={9} strokeWidth={2.5} />
                     Current
                   </div>
                 )}
