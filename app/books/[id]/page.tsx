@@ -253,7 +253,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             <h3 className="text-xl font-medium mb-3" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
               Delete this memory?
             </h3>
-            <p className="text-sm mb-8 leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+            <p className="text-sm mb-8 leading-relaxed" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
               This cannot be undone. The memory and all its photos will be permanently removed.
             </p>
             <div className="flex gap-3">
@@ -922,7 +922,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
                             style={{
                               backgroundColor: 'rgba(212,163,115,0.10)',
-                              color: '#7A7A6A',
+                              color: '#5A3A2A',
                               opacity: hoveredCard === memoryIndex ? 1 : 0,
                             }}
                             aria-label="Memory options"
@@ -1013,7 +1013,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </svg>
               Preview your book
             </Link>
-            <p className="mt-4 text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+            <p className="mt-4 text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
               Print preview — see your book before ordering
             </p>
           </div>

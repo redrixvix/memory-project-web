@@ -138,7 +138,7 @@ export default function UpgradePage() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
-          <p className="text-sm" style={{ color: '#6A6A5A' }}>Loading...</p>
+          <p className="text-sm" style={{ color: '#4A4A3A' }}>Loading...</p>
         </div>
       </div>
     );
@@ -157,7 +157,7 @@ export default function UpgradePage() {
             </svg>
             <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
           </Link>
-          <Link href="/dashboard" className="text-sm transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>
+          <Link href="/dashboard" className="text-sm transition-colors hover:opacity-70" style={{ color: '#4A4A3A' }}>
             Back to dashboard
           </Link>
         </div>
@@ -176,7 +176,7 @@ export default function UpgradePage() {
           </p>
           {/* Mobile book context — single line */}
           {books.length === 1 && (
-            <p className="text-xs mt-2 px-3 py-1 rounded-full inline-block" style={{ backgroundColor: 'rgba(212,163,115,0.10)', color: '#6A6A5A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.15)' }}>
+            <p className="text-xs mt-2 px-3 py-1 rounded-full inline-block" style={{ backgroundColor: 'rgba(212,163,115,0.10)', color: '#4A4A3A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.15)' }}>
               Upgrading: {books[0].title}
             </p>
           )}
