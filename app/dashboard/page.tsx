@@ -572,7 +572,7 @@ export default function Dashboard() {
                             }}
                           >
                             {/* Recommended / popular badge */}
-                            {(isRecommended || plan.id === 'premium') && (
+                            {(isRecommended) && (
                               <div
                                 className="absolute -top-2.5 left-4 px-2.5 py-0.5 rounded-full text-xs font-semibold"
                                 style={{

@@ -336,7 +336,7 @@ export default function UpgradePage() {
                 <button
                   type="button"
                   onClick={handleCardClick}
-                  disabled={isCurrentPlan}
+                  disabled={isCurrentPlan ?? false}
                   className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.97]"
                   style={{
                     backgroundColor: isSelected
