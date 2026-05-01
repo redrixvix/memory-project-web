@@ -904,26 +904,46 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 <h1 className="text-xl md:text-2xl font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
-                {/* Step progress indicator */}
-                <div className="flex items-center gap-2 mt-4">
-                  <div className="flex items-center gap-1.5">
+                {/* Step progress indicator — editorial style with warm palette */}
+                <div className="flex items-center gap-3 mt-5">
+                  {/* Step 1 — active */}
+                  <div className="flex items-center gap-2.5">
                     <div
-                      className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
-                      style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
+                      style={{
+                        backgroundColor: 'var(--bronze)',
+                        color: 'var(--charcoal)',
+                        fontFamily: 'var(--font-serif)',
+                        boxShadow: '0 2px 10px rgba(212,163,115,0.28), 0 1px 3px rgba(212,163,115,0.18)',
+                      }}
                     >
                       1
                     </div>
-                    <span className="text-xs font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Write</span>
+                    <span className="text-xs font-semibold tracking-wide" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Write</span>
                   </div>
-                  <div className="flex-1 h-px max-w-[2.5rem]" style={{ backgroundColor: 'rgba(212,163,115,0.3)' }} />
-                  <div className="flex items-center gap-1.5">
+                  {/* Connector — elegant warm gradient line */}
+                  <div className="flex-1 max-w-[3rem]">
                     <div
-                      className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
-                      style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
+                      className="h-0.5 rounded-full"
+                      style={{
+                        background: 'linear-gradient(to right, rgba(212,163,115,0.75), rgba(212,163,115,0.28))',
+                      }}
+                    />
+                  </div>
+                  {/* Step 2 — inactive, muted */}
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
+                      style={{
+                        backgroundColor: 'rgba(212,163,115,0.08)',
+                        color: 'rgba(43,43,43,0.58)',
+                        fontFamily: 'var(--font-serif)',
+                        border: '1.5px solid rgba(212,163,115,0.28)',
+                      }}
                     >
                       2
                     </div>
-                    <span className="text-xs" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
+                    <span className="text-xs tracking-wide" style={{ color: 'rgba(43,43,43,0.58)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
                   </div>
                 </div>
               </div>
