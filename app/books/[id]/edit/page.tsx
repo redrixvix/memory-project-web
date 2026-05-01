@@ -1242,7 +1242,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                             </div>
                             <label
                               className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200 hover:brightness-110 active:scale-[0.98] shadow-md"
-                              style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)', boxShadow: '0 4px 16px rgba(43,43,43,0.2)' }}
+                              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', boxShadow: '0 4px 16px rgba(212,163,115,0.3)' }}
                             >
                               <input
                                 type="file"
@@ -1648,7 +1648,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       }}
                       className="inline-flex items-center gap-2 h-11 rounded-full px-6 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
                       style={{
-                        backgroundColor: 'var(--charcoal)',
+                        backgroundColor: 'var(--bronze)',
                         color: 'var(--cornsilk)',
                         fontFamily: 'var(--font-sans)',
                         boxShadow: '0 4px 20px rgba(43,43,43,0.22)',

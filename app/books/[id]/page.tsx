@@ -102,6 +102,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
   });
 
+  // Compute chronological chapter numbers (oldest = Chapter 1) regardless of sort order
+  const chronologicalMemories = [...memories].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  const chapterNumberMap = new Map<number, number>();
+  chronologicalMemories.forEach((m, i) => chapterNumberMap.set(m.id, i + 1));
+
   useEffect(() => {
     fetchBook();
 
@@ -702,10 +707,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         }}
                       >
                         <span className="text-lg font-bold tracking-tight" style={{ color: accentColor, lineHeight: 1, fontFamily: 'Georgia, serif' }}>
-                          {String(memoryIndex + 1).padStart(2, '0')}
+                          {String(chapterNumberMap.get(memory.id) || memoryIndex + 1).padStart(2, '0')}
                         </span>
                         <div className="w-px h-5 rounded-full" style={{ backgroundColor: `${accentColor}55` }} />
-                        <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: `${accentColor}aa`, fontFamily: 'var(--font-sans)' }}>Chapter {memoryIndex + 1}</span>
+                        <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: `${accentColor}aa`, fontFamily: 'var(--font-sans)' }}>Chapter {chapterNumberMap.get(memory.id)}</span>
                       </div>
 
                       {/* Prompt question as elegant chapter opener */}
