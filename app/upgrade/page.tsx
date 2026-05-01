@@ -340,13 +340,13 @@ export default function UpgradePage() {
                   className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.97]"
                   style={{
                     backgroundColor: isSelected
-                      ? '#4A3520'
+                      ? '#2D1F10'
                       : isCurrentPlan
                         ? 'rgba(212,163,115,0.06)'
-                        : '#6B4A28',
+                        : '#4A3520',
                     color: isSelected || !isCurrentPlan
                       ? 'var(--cornsilk)'
-                      : '#8A8A7A',
+                      : '#7A7A6A',
                     fontFamily: 'var(--font-sans)',
                     boxShadow: !isCurrentPlan ? '0 4px 16px rgba(212,163,115,0.28)' : 'none',
                     border: isCurrentPlan ? '1px dashed rgba(212,163,115,0.20)' : 'none',

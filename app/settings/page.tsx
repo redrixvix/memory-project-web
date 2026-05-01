@@ -263,42 +263,40 @@ export default function SettingsPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="relative group">
-                      <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-24 h-24 rounded-full flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 hover:brightness-105"
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(212,163,115,0.18) 0%, rgba(204,213,174,0.18) 100%)',
-                          border: '2px solid rgba(212,163,115,0.35)',
-                          boxShadow: '0 4px 16px rgba(212,163,115,0.12)',
-                        }}
-                        aria-label="Add profile photo"
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="relative w-24 h-24 rounded-full overflow-hidden flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 hover:brightness-105"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(212,163,115,0.18) 0%, rgba(204,213,174,0.18) 100%)',
+                        border: '2px solid rgba(212,163,115,0.35)',
+                        boxShadow: '0 4px 16px rgba(212,163,115,0.12)',
+                      }}
+                      aria-label="Add profile photo"
+                    >
+                      <span
+                        className="text-2xl font-semibold tracking-tight leading-none"
+                        style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)' }}
                       >
-                        <span 
-                          className="text-2xl font-semibold tracking-tight"
-                          style={{ color: 'var(--bronze)', fontFamily: 'var(--font-serif)' }}
-                        >
-                          {getInitials(name || user?.name || '')}
-                        </span>
-                        {/* Camera icon at bottom-right */}
-                        <div 
-                          className="absolute bottom-1 right-1 w-7 h-7 rounded-full flex items-center justify-center"
-                          style={{ backgroundColor: 'rgba(212,163,115,0.9)' }}
-                        >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                            <circle cx="12" cy="13" r="4"/>
-                          </svg>
-                        </div>
-                        {/* Hover overlay indicator — non-interactive, purely visual */}
-                        <div 
-                          className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none"
-                          style={{ backgroundColor: 'rgba(43,43,43,0.45)' }}
-                        >
-                          <span className="text-xs font-medium text-white">Add photo</span>
-                        </div>
-                      </button>
-                    </div>
+                        {getInitials(name || user?.name || '')}
+                      </span>
+                      {/* Camera icon — bottom-right corner */}
+                      <div
+                        className="absolute bottom-2 right-2 w-6 h-6 rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: 'rgba(212,163,115,0.92)' }}
+                      >
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                          <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                      </div>
+                      {/* Hover overlay — subtle dark tint + "Add photo" label */}
+                      <div
+                        className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
+                        style={{ backgroundColor: 'rgba(43,43,43,0.4)' }}
+                      >
+                        <span className="text-xs font-medium text-white">Add photo</span>
+                      </div>
+                    </button>
                   )}
 
                   {/* Upload loading state */}
@@ -318,8 +316,8 @@ export default function SettingsPage() {
                   onChange={handleImageUpload}
                 />
 
-                {/* Avatar info */}
-                <div className="flex-1 sm:pl-4">
+                {/* Avatar info — right side */}
+                <div className="flex-1 sm:pl-4 min-w-0">
                   {profileImageUrl ? (
                     <button
                       onClick={() => setProfileImageUrl(null)}
@@ -331,16 +329,26 @@ export default function SettingsPage() {
                       </svg>
                       Remove photo
                     </button>
-                  ) : null}
+                  ) : (
+                    <p className="text-xs leading-relaxed" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
+                      A photo helps family members recognize you in shared books
+                    </p>
+                  )}
+                  {imageError && (
+                    <p className="text-xs mt-2" style={{ color: '#B91C1C' }}>{imageError}</p>
+                  )}
                 </div>
-                {/* Upload hint — only when no photo */}
+                {/* Upload hint — below avatar when no photo */}
                 {!profileImageUrl && (
-                  <p className="text-xs mt-3 text-center sm:text-left" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                    A photo helps family members recognize you in shared books
-                  </p>
-                )}
-                {imageError && (
-                  <p className="text-xs mt-2" style={{ color: '#B91C1C' }}>{imageError}</p>
+                  <div className="sm:hidden flex items-center gap-2 px-1">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--bronze)', flexShrink: 0 }}>
+                      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                      <path d="M12 8v4m0 4h.01"/>
+                    </svg>
+                    <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                      A photo helps family members recognize you in shared books
+                    </p>
+                  </div>
                 )}
               </div>
 

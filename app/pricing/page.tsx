@@ -104,36 +104,36 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Free */}
-          <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.14)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
-            <CardContent className="pt-0">
-              <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
+          {/* Free — solid, confident styling */}
+          <Card className="p-7 rounded-2xl h-full flex flex-col" style={{ backgroundColor: '#FAF6EE', border: '1.5px solid rgba(185,160,130,0.35)', boxShadow: '0 4px 24px rgba(212,163,115,0.08)' }}>
+            <CardContent className="pt-0 flex flex-col flex-1">
+              <p className="label-caps mb-3" style={{ color: '#8B6540' }}>Free</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$0</p>
-              <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>Unlimited text memories, forever free</p>
-              <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 32 }} />
-              <ul className="space-y-3 mb-10">
+              <p className="text-sm mb-8" style={{ color: '#5A5A4A' }}>Unlimited text memories, forever free</p>
+              <div style={{ height: 1, background: 'rgba(185,160,130,0.25)', marginBottom: 32 }} />
+              <ul className="space-y-3 mb-10 flex-1">
                 {[
                   'Unlimited text memories',
                   'Guided writing prompts',
                   'One memory book',
                 ].map((feat, j) => (
                   <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
-                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#8B6540' }}>
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
                     {feat}
                   </li>
                 ))}
                 {['Photos & audio', 'Printed books'].map((feat, j) => (
-                  <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
-                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: "rgba(43,43,43,0.38)" }}>
+                  <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'rgba(43,43,43,0.5)' }}>
+                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'rgba(43,43,43,0.28)' }}>
                       <path d="M18 6L6 18M6 6l12 12" />
                     </svg>
                     {feat}
                   </li>
                 ))}
               </ul>
-              <Link href="/signup" className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80" style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.06)' }}>
+              <Link href="/signup" className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-85 active:scale-[0.98] mt-auto" style={{ border: '1.5px solid rgba(185,160,130,0.55)', color: '#5A4A30', backgroundColor: 'rgba(185,160,130,0.12)' }}>
                 Get started free
               </Link>
               <div className="mt-4 flex items-center justify-center gap-1.5">
@@ -145,19 +145,19 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </CardContent>
           </Card>
 
-          {/* Premium — featured */}
-          <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 12px 48px rgba(212,163,115,0.22)' }}>
+          {/* Premium — featured card */}
+          <Card className="p-7 rounded-2xl h-full relative flex flex-col" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 16px 56px rgba(212,163,115,0.26)' }}>
             <div className="absolute -top-5 left-1/2 -translate-x-1/2">
               <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
                 Most Popular
               </Badge>
             </div>
-            <CardContent className="pt-10">
-              <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Premium</p>
+            <CardContent className="pt-10 flex flex-col flex-1">
+              <p className="label-caps mb-3" style={{ color: '#6A4A25' }}>Premium</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$50</p>
-              <p className="text-sm mb-8" style={{ color: "rgba(43,43,43,0.72)" }}>for 5 years</p>
-              <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 32 }} />
-              <ul className="space-y-3 mb-10">
+              <p className="text-sm mb-8" style={{ color: "rgba(43,43,43,0.7)" }}>for 5 years</p>
+              <div style={{ height: 1, background: 'rgba(185,160,130,0.3)', marginBottom: 32 }} />
+              <ul className="space-y-3 mb-10 flex-1">
                 {[
                   'Everything in Free',
                   '5GB photo & audio storage',
@@ -165,14 +165,14 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
                   'Family collaboration',
                 ].map((feat, j) => (
                   <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
-                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#6A4A25' }}>
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
                     {feat}
                   </li>
                 ))}
               </ul>
-              <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
+              <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95 mt-auto" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
                 Upgrade
               </Link>
               <div className="mt-4 flex items-center justify-center gap-1.5">
@@ -184,28 +184,28 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </CardContent>
           </Card>
 
-          {/* Plus */}
-          <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
-            <CardContent className="pt-0">
-              <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Plus</p>
+          {/* Plus — complete tier */}
+          <Card className="p-7 rounded-2xl h-full flex flex-col" style={{ backgroundColor: '#FAF6EE', border: '1.5px solid rgba(185,160,130,0.30)', boxShadow: '0 4px 24px rgba(212,163,115,0.08)' }}>
+            <CardContent className="pt-0 flex flex-col flex-1">
+              <p className="label-caps mb-3" style={{ color: '#8B6540' }}>Plus</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$100</p>
-              <p className="text-sm mb-8" style={{ color: "rgba(43,43,43,0.72)" }}>for 5 years</p>
-              <div style={{ height: 1, background: 'rgba(212,163,115,0.15)', marginBottom: 32 }} />
-              <ul className="space-y-3 mb-10">
+              <p className="text-sm mb-8" style={{ color: "rgba(43,43,43,0.7)" }}>for 5 years</p>
+              <div style={{ height: 1, background: 'rgba(185,160,130,0.25)', marginBottom: 32 }} />
+              <ul className="space-y-3 mb-10 flex-1">
                 {[
                   'Everything in Premium',
                   '15GB photo & audio storage',
                   'Priority support',
                 ].map((feat, j) => (
                   <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--charcoal)' }}>
-                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                    <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#8B6540' }}>
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
                     {feat}
                   </li>
                 ))}
               </ul>
-              <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95" style={{ backgroundColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}>
+              <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-85 active:scale-[0.98] mt-auto" style={{ backgroundColor: 'rgba(185,160,130,0.22)', color: '#5A4A30' }}>
                 Upgrade
               </Link>
               <div className="mt-4 flex items-center justify-center gap-1.5">
