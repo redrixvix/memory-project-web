@@ -237,14 +237,14 @@ export default function UpgradePage() {
             const isPopular = plan.id === 'premium' && !isCurrentPlan;
             const isPlus = plan.id === 'plus';
             const cardStyles = {
-              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(204,213,174,0.12)' : isPlus ? '#FAF0E0' : 'var(--papaya)',
-              border: isSelected ? '2px solid var(--bronze)' : isCurrentPlan ? '2px dashed rgba(212,163,115,0.35)' : isPlus ? '1px solid rgba(196,168,120,0.35)' : '1px solid rgba(212,163,115,0.2)',
+              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(212,163,115,0.05)' : isPlus ? '#FAF0E0' : 'var(--papaya)',
+              border: isSelected ? '2px solid #7A5A30' : isCurrentPlan ? '1.5px dashed rgba(212,163,115,0.30)' : isPlus ? '1px solid rgba(196,168,120,0.35)' : '1px solid rgba(212,163,115,0.2)',
               boxShadow: isSelected
                 ? '0 10px 36px rgba(212,163,115,0.26), 0 0 0 4px rgba(212,163,115,0.1)'
                 : isCurrentPlan
-                  ? 'none'
+                  ? '0 0 0 0 rgba(212,163,115,0)'
                   : '0 3px 12px rgba(212,163,115,0.07)',
-              opacity: isCurrentPlan ? 0.80 : 1,
+              opacity: isCurrentPlan ? 0.72 : 1,
               transform: isSelected ? 'scale(1.015)' : 'scale(1)',
               transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
             };
@@ -290,12 +290,22 @@ export default function UpgradePage() {
                     <p className="text-[0.65rem] font-semibold tracking-[0.12em] uppercase mb-1" style={{ color: isCurrentPlan ? '#8A8A7A' : 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
                     <div className="flex items-baseline gap-1.5 flex-wrap">
                       <p className="text-xl font-medium" style={{ color: isCurrentPlan ? '#8A8A7A' : 'var(--charcoal)' }}>{plan.price}</p>
-                      {plan.id !== 'free' && (
-                        <span className="text-[0.6rem] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: '#4A5A35', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.35)' }}>
-                          Pay once, own forever
-                        </span>
-                      )}
                     </div>
+                    {plan.id !== 'free' && (
+                      <div
+                        className="mt-2 text-[10px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap inline-block"
+                        style={{
+                          backgroundColor: isCurrentPlan ? 'rgba(212,163,115,0.08)' : 'rgba(212,163,115,0.15)',
+                          color: isCurrentPlan ? '#8A8A7A' : '#5A3A1A',
+                          fontFamily: 'var(--font-sans)',
+                          border: `1px solid ${isCurrentPlan ? 'rgba(212,163,115,0.15)' : 'rgba(212,163,115,0.30)'}`,
+                          border: `1px solid ${isCurrentPlan ? 'rgba(212,163,115,0.15)' : 'rgba(74,100,55,0.20)'}`,
+                          letterSpacing: '0.04em',
+                        }}
+                      >
+                        Pay once, own forever
+                      </div>
+                    )}
                     <p className="text-xs mt-1 leading-relaxed" style={{ color: '#5A5A4A' }}>{plan.description}</p>
                   </div>
                   {/* Selection indicator */}
@@ -328,21 +338,20 @@ export default function UpgradePage() {
                   type="button"
                   onClick={handleCardClick}
                   disabled={isCurrentPlan}
-                  className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed"
+                  className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.97]"
                   style={{
                     backgroundColor: isSelected
-                      ? 'var(--bronze)'
+                      ? '#4A3520'
                       : isCurrentPlan
                         ? 'rgba(212,163,115,0.06)'
-                        : 'rgba(212,163,115,0.10)',
-                    color: isSelected
-                      ? 'var(--charcoal)'
-                      : isCurrentPlan
-                        ? '#8A8A7A'
-                        : 'var(--charcoal)',
+                        : '#6B4A28',
+                    color: isSelected || !isCurrentPlan
+                      ? 'var(--cornsilk)'
+                      : '#8A8A7A',
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: isSelected ? '0 4px 14px rgba(212,163,115,0.26)' : 'none',
+                    boxShadow: !isCurrentPlan ? '0 4px 16px rgba(212,163,115,0.28)' : 'none',
                     border: isCurrentPlan ? '1px dashed rgba(212,163,115,0.20)' : 'none',
+                    letterSpacing: '0.01em',
                   }}
                 >
                   {isCurrentPlan ? 'Current plan' : isSelected ? 'Selected' : 'Choose plan'}

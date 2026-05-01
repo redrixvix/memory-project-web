@@ -22,7 +22,7 @@ export const BOOK_PLAN_OPTIONS = [
     label: 'Plus',
     price: '$100',
     description: 'Lifetime access — 15GB photo & audio storage',
-    features: ['Everything in Premium', '15GB photo & audio storage', 'Priority support'],
+    features: ['Everything in Premium', '15GB total photo & audio storage', 'Priority support (24hr response)'],
     notFeatures: [],
   },
 ] as const satisfies ReadonlyArray<{

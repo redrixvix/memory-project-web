@@ -207,43 +207,34 @@ function Signup() {
           <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 4px rgba(212,163,115,0.06), 0 8px 16px rgba(212,163,115,0.08), 0 24px 48px rgba(212,163,115,0.06)' }}>
             <CardContent className="pt-0 space-y-4">
 
-              {/* ── Google sign-in button ── */}
+              {/* ── Google sign-in button ── PRIMARY ACTION */}
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="w-full h-11 rounded-full text-sm font-medium flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-95"
+                className="w-full h-11 rounded-full text-sm font-semibold flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-95 hover:brightness-105 hover:shadow-md"
                 style={{
-                  backgroundColor: '#ffffff',
-                  color: '#3c4043',
-                  border: '1px solid rgba(212,163,115,0.25)',
-                  boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+                  backgroundColor: 'var(--charcoal)',
+                  color: 'var(--cornsilk)',
+                  boxShadow: '0 4px 16px rgba(43,43,43,0.22)',
                 }}
               >
                 <GoogleIcon />
                 Continue with Google
               </button>
 
-              {/* Passkey option */}
+              {/* Passkey — hidden behind a small tertiary link */}
               <button
                 type="button"
-                className="w-full h-9 rounded-full text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 active:scale-95"
+                className="w-full h-8 rounded-full text-xs font-medium flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 mx-auto"
                 style={{
-                  color: '#6A6A5A',
-                  border: '1px solid rgba(212,163,115,0.2)',
+                  color: '#7A7A6A',
                   backgroundColor: 'transparent',
                 }}
                 onClick={() => window.location.href = '/api/auth/passkey?screen_hint=sign-up'}
               >
                 <KeyIcon />
-                Sign up with passkey
+                Sign up with passkey instead
               </button>
-
-              {/* Divider */}
-              <div className="flex items-center gap-3 py-1">
-                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
-                <span className="text-xs" style={{ color: '#7A7A6A' }}>or continue with email</span>
-                <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
-              </div>
 
               {inviteToken && (
                 <div
@@ -344,15 +335,18 @@ function Signup() {
                     <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
                   </div>
 
-                  <form onSubmit={handleSubmit}>
-                    <Button
+                  <form onSubmit={handleSubmit} className="pt-1">
+                    <button
                       type="submit"
                       disabled={magicLoading}
-                      className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
-                      style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                      className="w-full h-9 rounded-full text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 hover:opacity-80"
+                      style={{ color: '#7A7A6A', border: '1px solid rgba(212,163,115,0.2)', backgroundColor: 'transparent' }}
                     >
-                      {magicLoading ? 'Sending link...' : 'Create account with magic link'}
-                    </Button>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                      </svg>
+                      Or email me a magic link
+                    </button>
                   </form>
                 </div>
               ) : (
