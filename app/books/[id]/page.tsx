@@ -581,9 +581,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             {/* 3 example prompt chips — spark inspiration */}
             <div className="flex flex-wrap justify-center gap-2.5 mb-10">
               {[
-                { label: "A trip that changed me", prompt: "Tell me about a trip that changed your perspective." },
-                { label: "The house I grew up in", prompt: "Tell me about the house you grew up in." },
-                { label: "A meal I'll never forget", prompt: "Describe a meal you'll never forget." },
+                { label: "The best day of the trip", prompt: "Describe the best day of your vacation." },
+                { label: "A funny travel mishap", prompt: "Tell me about a funny or unexpected moment during your trip." },
+                { label: "A meal I'll never forget", prompt: "Describe a meal you'll never forget from this trip." },
               ].map(({ label, prompt }) => (
                 <Link
                   key={label}

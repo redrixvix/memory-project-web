@@ -39,7 +39,7 @@ const BOOK_COLORS = [
   'var(--bronze)',
   'var(--tea-green)',
   'var(--papaya)',
-  'rgba(212,163,115,0.5)',
+  'rgba(139,90,43,0.82)',  // fixed: was rgba(212,163,115,0.5) — dark sienna replaces washed-out bronze
   '#B8860B',
   '#6B8E23',
   '#8B4513',
@@ -52,7 +52,7 @@ const BOOK_SPINE_COLORS = [
   'rgba(212,163,115,0.85)', // bronze
   'rgba(204,213,174,0.90)', // tea-green
   'rgba(239,214,168,0.90)', // papaya
-  'rgba(212,163,115,0.55)',
+  'rgba(139,90,43,0.92)',   // fixed: was 0.55 — dark sienna spine
   'rgba(184,134,11,0.85)',  // dark gold
   'rgba(107,142,35,0.85)',  // olive
   'rgba(139,69,19,0.85)',   // sienna
@@ -878,9 +878,9 @@ export default function Dashboard() {
                               {book.description}
                             </p>
                           ) : (
-                            <p className="text-xs" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
+                            <p className="text-xs italic" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)', fontStyle: 'italic' }}>
                               {book._count?.memories === 0
-                                ? 'Empty — start writing'
+                                ? 'Your story begins here'
                                 : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'} collected`}
                             </p>
                           )}
@@ -907,10 +907,10 @@ export default function Dashboard() {
                         </div>
                       </div>
 
-                      {/* Footer — embedded in outer flex-col so it's always at card bottom */}
+                      {/* Footer — elevated action strip for premium feel */}
                       <div className="px-6 pl-8 pb-5" style={{ marginTop: 'auto' }}>
                         <div
-                          className="flex items-center gap-1.5 transition-all duration-300 group-hover:gap-2.5"
+                          className="flex items-center justify-between gap-2 rounded-2xl px-4 py-2.5 transition-all duration-300 group-hover:gap-3 group-hover:bg-[rgba(212,163,115,0.06)]"
                           style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}
                         >
                           <span 
@@ -923,15 +923,18 @@ export default function Dashboard() {
                           >
                             {book._count?.memories === 0
                               ? 'Begin writing'
-                              : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'}`}
+                              : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'} collected`}
                           </span>
-                          <svg 
-                            className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1 shrink-0" 
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" 
-                            style={{ color: '#8A6A4A' }}
-                          >
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                          </svg>
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full transition-all duration-300" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A4A2A', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em' }}>
+                            {book._count?.memories === 0 ? 'Start' : 'View'}
+                            <svg 
+                              className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0" 
+                              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" 
+                              style={{ color: '#8A6A4A' }}
+                            >
+                              <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                          </span>
                         </div>
                       </div>
                     </div>
