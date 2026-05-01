@@ -411,17 +411,17 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           className="rounded-3xl p-5 md:p-6 relative overflow-hidden transition-all duration-500"
           style={{
             background: memories.length > 0
-    ? 'linear-gradient(135deg, rgba(212,163,115,0.12) 0%, rgba(204,213,174,0.08) 100%)'
-    : 'linear-gradient(135deg, rgba(212,163,115,0.09) 0%, rgba(204,213,174,0.06) 100%)',
-            border: '1px solid rgba(212,163,115,0.14)',
+    ? 'linear-gradient(160deg, rgba(212,163,115,0.14) 0%, rgba(204,213,174,0.10) 50%, rgba(212,163,115,0.06) 100%)'
+    : 'linear-gradient(135deg, rgba(212,163,115,0.10) 0%, rgba(204,213,174,0.07) 100%)',
+            border: '1px solid rgba(212,163,115,0.18)',
             marginBottom: memories.length === 0 ? '1.5rem' : '2rem',
-            boxShadow: '0 4px 24px rgba(212,163,115,0.08), inset 0 1px 0 rgba(255,255,255,0.7)',
+            boxShadow: '0 6px 32px rgba(212,163,115,0.10), inset 0 1px 0 rgba(255,255,255,0.8)',
           }}
         >
-          {/* Decorative corner accent */}
+          {/* Decorative corner accent — larger and more prominent */}
           <div
-            className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-20 pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(212,163,115,0.4) 0%, transparent 70%)' }}
+            className="absolute top-0 right-0 w-48 h-48 rounded-full opacity-25 pointer-events-none"
+            style={{ background: 'radial-gradient(circle, rgba(212,163,115,0.5) 0%, rgba(204,213,174,0.2) 40%, transparent 70%)' }}
           />
           {/* Warm left stripe */}
           <div
@@ -430,13 +430,18 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           />
           {/* Bottom warm fade */}
           <div
-            className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none"
-            style={{ background: 'linear-gradient(to top, rgba(212,163,115,0.04), transparent)' }}
+            className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
+            style={{ background: 'linear-gradient(to top, rgba(212,163,115,0.06), transparent)' }}
           />
-          <div className="flex items-start justify-between gap-4 flex-wrap pl-3">
+          {/* Subtle ambient book-glow behind title */}
+          <div
+            className="absolute top-4 left-12 w-64 h-16 rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse, rgba(212,163,115,0.15) 0%, transparent 70%)', filter: 'blur(12px)' }}
+          />
+          <div className="flex items-start justify-between gap-4 flex-wrap pl-3 relative z-10">
             <div className="flex flex-col gap-2 flex-1 min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="display-md font-medium tracking-tight leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+                <h1 className="display-md font-medium tracking-tight leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)', textShadow: '0 2px 12px rgba(212,163,115,0.12)' }}>
                   {book.title}
                 </h1>
                 {book.plan && book.plan !== 'free' && (
