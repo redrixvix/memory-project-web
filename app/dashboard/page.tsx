@@ -881,6 +881,11 @@ export default function Dashboard() {
                             </p>
                           ) : null}
 
+                          {/* Book date — created date for premium feel */}
+                          <p className="text-[11px] mt-1.5" style={{ color: '#B0A898', fontFamily: 'var(--font-sans)' }}>
+                            Created {new Date(book.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                          </p>
+
 
                           {/* Contributors — only show when multiple */}
                           {book.contributors && book.contributors.length > 1 && (

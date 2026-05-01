@@ -62,9 +62,13 @@ export function Avatar({ name, imageUrl, className, size }: AvatarProps) {
         onError={() => setImgError(true)}
         onLoad={(e) => {
           const img = e.currentTarget;
-          if (img.naturalWidth <= 1 && img.naturalHeight <= 1) {
+          // Treat tiny/broken images as no image (1x1 pixel placeholders, etc.)
+          if (img.naturalWidth <= 2 || img.naturalHeight <= 2) {
             setImgError(true);
+            return;
           }
+          // If image is valid but URL domain is known to be unreliable, still use it
+          // (Only reject clearly broken images like 1x1)
         }}
       />
     );

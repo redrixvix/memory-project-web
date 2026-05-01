@@ -894,8 +894,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           <div className="relative px-5 py-5 md:px-10 md:py-7">
             <div className="border-b pb-6 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)', transition: 'opacity 0.4s ease' }}>
                 <div className="flex flex-wrap items-center gap-3 mb-3">
-                  <div className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.12)', color: '#4A5A35', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.25)' }}>
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#6B8055' }}>
+                  <div className="inline-flex items-center gap-1.5 text-[11px] px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.08)', color: '#8A6A4A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.22)' }}>
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--bronze)' }}>
                       <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
                     </svg>
                     Private
@@ -922,11 +922,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <span className="text-xs font-semibold tracking-wide" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Write</span>
                   </div>
                   {/* Connector — elegant warm gradient line */}
-                  <div className="flex-1 max-w-[3rem]">
+                  <div className="flex-1 max-w-[3rem] flex items-center">
                     <div
-                      className="h-0.5 rounded-full"
+                      className="w-full h-0.5 rounded-full"
                       style={{
-                        background: 'linear-gradient(to right, rgba(212,163,115,0.75), rgba(212,163,115,0.28))',
+                        background: 'linear-gradient(to right, var(--bronze), rgba(212,163,115,0.35))',
                       }}
                     />
                   </div>

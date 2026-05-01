@@ -135,7 +135,7 @@ export default function UpgradePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
           <p className="text-sm" style={{ color: '#4A4A3A' }}>Loading...</p>
@@ -163,7 +163,7 @@ export default function UpgradePage() {
         </div>
       </header>
 
-      <main className="px-6 md:px-10 py-8 max-w-4xl mx-auto w-full">
+      <main className="px-6 md:px-10 py-8 max-w-4xl mx-auto w-full flex-1">
 
         {/* Page header — compact */}
         <div className="text-center mb-5 sm:mb-7">
@@ -406,6 +406,16 @@ export default function UpgradePage() {
           </div>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 py-6 text-xs" style={{ fontFamily: 'var(--font-sans)', color: '#9A8A78' }}>
+        <span>Memory Project</span>
+        <div className="flex items-center gap-6">
+          <a href="/privacy" className="hover:opacity-70 transition-opacity" style={{ color: '#9A8A78' }}>Privacy</a>
+          <a href="/terms" className="hover:opacity-70 transition-opacity" style={{ color: '#9A8A78' }}>Terms</a>
+          <a href="/faq" className="hover:opacity-70 transition-opacity" style={{ color: '#9A8A78' }}>FAQ</a>
+        </div>
+      </footer>
     </div>
   );
 }

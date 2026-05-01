@@ -22,6 +22,7 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [name, setName] = useState('');
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const [profileImgBroken, setProfileImgBroken] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageError, setImageError] = useState('');
@@ -158,7 +159,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
       {/* ── TOP NAV ── */}
       <header
@@ -180,7 +181,7 @@ export default function SettingsPage() {
       </header>
 
       {/* ── MAIN ── */}
-      <main className="px-6 md:px-10 py-10 max-w-3xl mx-auto w-full">
+      <main className="px-6 md:px-10 py-10 max-w-3xl mx-auto w-full flex-1">
 
         {/* Page header */}
         <div className="mb-8">
@@ -247,6 +248,18 @@ export default function SettingsPage() {
                           height={96}
                           className="object-cover w-full h-full"
                           unoptimized
+                          onLoad={(e) => {
+                            const img = e.currentTarget;
+                            if (img.naturalWidth <= 2 || img.naturalHeight <= 2) {
+                              // 1x1 placeholder or broken image — treat as no photo
+                              setProfileImageUrl(null);
+                              setProfileImgBroken(true);
+                            }
+                          }}
+                          onError={() => {
+                            setProfileImageUrl(null);
+                            setProfileImgBroken(true);
+                          }}
                         />
                       </div>
                       {/* Hover overlay */}
@@ -329,11 +342,7 @@ export default function SettingsPage() {
                       </svg>
                       Remove photo
                     </button>
-                  ) : (
-                    <p className="text-xs leading-relaxed" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
-                      A photo helps family members recognize you in shared books
-                    </p>
-                  )}
+                  ) : null}
                   {imageError && (
                     <p className="text-xs mt-2" style={{ color: '#B91C1C' }}>{imageError}</p>
                   )}
@@ -696,12 +705,12 @@ export default function SettingsPage() {
           </section>
 
         </div>
-
-        {/* Footer note */}
-        <p className="text-center text-xs mt-12 mb-4" style={{ color: '#B0A898', fontFamily: 'var(--font-sans)' }}>
-          Memory Project — All memories are kept private and secure.
-        </p>
       </main>
+
+      {/* Footer note */}
+      <footer className="text-center text-xs py-6 mt-auto" style={{ color: '#B0A898', fontFamily: 'var(--font-sans)' }}>
+        Memory Project — All memories are kept private and secure.
+      </footer>
     </div>
   );
 }
