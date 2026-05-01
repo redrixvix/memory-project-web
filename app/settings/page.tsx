@@ -266,11 +266,13 @@ export default function SettingsPage() {
                     <div className="relative group">
                       <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="w-24 h-24 rounded-full flex flex-col items-center justify-center transition-all duration-200 hover:scale-105"
+                        className="w-24 h-24 rounded-full flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 hover:brightness-105"
                         style={{
                           background: 'linear-gradient(135deg, rgba(212,163,115,0.18) 0%, rgba(204,213,174,0.18) 100%)',
                           border: '2px solid rgba(212,163,115,0.35)',
+                          boxShadow: '0 4px 16px rgba(212,163,115,0.12)',
                         }}
+                        aria-label="Add profile photo"
                       >
                         <span 
                           className="text-2xl font-semibold tracking-tight"
@@ -278,7 +280,7 @@ export default function SettingsPage() {
                         >
                           {getInitials(name || user?.name || '')}
                         </span>
-                        {/* Camera icon overlay at bottom */}
+                        {/* Camera icon at bottom-right */}
                         <div 
                           className="absolute bottom-1 right-1 w-7 h-7 rounded-full flex items-center justify-center"
                           style={{ backgroundColor: 'rgba(212,163,115,0.9)' }}
@@ -288,15 +290,13 @@ export default function SettingsPage() {
                             <circle cx="12" cy="13" r="4"/>
                           </svg>
                         </div>
-                      </button>
-                      {/* Hover overlay with "Change photo" text */}
-                      <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                        style={{ backgroundColor: 'rgba(43,43,43,0.5)' }}
-                        aria-label="Add profile photo"
-                      >
-                        <span className="text-xs font-medium text-white">Add photo</span>
+                        {/* Hover overlay indicator — non-interactive, purely visual */}
+                        <div 
+                          className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none"
+                          style={{ backgroundColor: 'rgba(43,43,43,0.45)' }}
+                        >
+                          <span className="text-xs font-medium text-white">Add photo</span>
+                        </div>
                       </button>
                     </div>
                   )}

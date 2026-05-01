@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -34,6 +34,13 @@ function ImageCard({
   const [isRemoving, setIsRemoving] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [entered, setEntered] = useState(false);
+
+  // Remove stagger class after mount animation completes so removal is instant
+  useEffect(() => {
+    const timer = setTimeout(() => setEntered(true), 520);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleRemove = () => {
     setIsRemoving(true);
@@ -44,9 +51,10 @@ function ImageCard({
     <div
       className={cn(
         "relative group animate-scale-in",
-        isRemoving && "animate-fade-out scale-95 opacity-0 transition-all duration-[280ms]",
+        !entered && !isRemoving && "gallery-card-stagger",
+        isRemoving && "animate-fade-out scale-95 opacity-0",
       )}
-      style={{ animationDelay: `${index * 60}ms`, animationFillMode: "both" }}
+      style={{ '--stagger-delay': `${index * 60}ms` } as React.CSSProperties}
     >
       <figure
         className="relative overflow-hidden rounded-[1.15rem] border transition-all duration-300"

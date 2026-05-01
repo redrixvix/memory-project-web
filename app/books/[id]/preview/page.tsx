@@ -68,7 +68,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--beige)' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
           <p className="text-sm" style={{ color: '#6A6A5A' }}>Loading preview...</p>
@@ -80,12 +80,12 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
   if (!book) return null;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--beige)', fontFamily: 'var(--font-serif)' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
       {/* ── TOP BAR ── */}
       <header
         className="sticky top-0 z-10 h-16 flex items-center px-6 border-b"
-        style={{ background: 'rgba(233,237,201,0.94)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.15)' }}
+        style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.15)' }}
       >
         <div className="flex items-center justify-between w-full max-w-2xl mx-auto">
           <div className="flex items-center gap-3">
@@ -250,7 +250,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
 
                     {/* Audio */}
                     {memory.audio_url && (
-                      <audio src={memory.audio_url} controls className="mt-8 w-full h-10" />
+                      <audio src={memory.audio_url} controls className="mt-8 w-full h-10 audio-player" />
                     )}
                   </div>
                 ))}
