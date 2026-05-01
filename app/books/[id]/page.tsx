@@ -670,22 +670,21 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     />
                     <CardContent className="pt-5 pb-5 px-4 pl-6 relative" style={{ paddingRight: '1.25rem' }}>
 
-                      {/* Chapter number badge — larger, more prominent book-page style */}
+                      {/* Chapter number badge — book-page style with embossed look */}
                       <div
-                        className="inline-flex items-center gap-2 rounded-xl px-3 py-1.5 mb-3"
+                        className="inline-flex items-center gap-2.5 rounded-2xl px-4 py-2 mb-4"
                         style={{
-                          backgroundColor: `${accentColor}14`,
-                          color: 'var(--charcoal)',
-                          fontFamily: 'var(--font-sans)',
-                          border: `1px solid ${accentColor}30`,
-                          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 6px ${accentColor}10`,
+                          background: `linear-gradient(135deg, ${accentColor}18 0%, ${accentColor}0a 100%)`,
+                          border: `1.5px solid ${accentColor}40`,
+                          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.7), 0 3px 10px ${accentColor}18`,
+                          backdropFilter: 'blur(4px)',
                         }}
                       >
-                        <span className="text-base font-bold" style={{ color: accentColor, lineHeight: 1, fontFamily: 'Georgia, serif' }}>
+                        <span className="text-lg font-bold tracking-tight" style={{ color: accentColor, lineHeight: 1, fontFamily: 'Georgia, serif' }}>
                           {String(memoryIndex + 1).padStart(2, '0')}
                         </span>
-                        <div className="w-px h-4 opacity-40" style={{ backgroundColor: accentColor }} />
-                        <span className="text-xs font-medium" style={{ letterSpacing: '0.02em', color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>Chapter {memoryIndex + 1}</span>
+                        <div className="w-px h-5 rounded-full" style={{ backgroundColor: `${accentColor}55` }} />
+                        <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: `${accentColor}aa`, fontFamily: 'var(--font-sans)' }}>Chapter {memoryIndex + 1}</span>
                       </div>
 
                       {/* Prompt question as elegant chapter opener */}
