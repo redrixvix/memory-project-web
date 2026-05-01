@@ -759,14 +759,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Memory text — journal feel, constrained width */}
+                      {/* Memory text — journal feel, constrained width with drop cap */}
                       <p
-                        className="text-sm md:text-base leading-[1.85] whitespace-pre-wrap"
+                        className="text-sm md:text-base whitespace-pre-wrap memory-answer-text"
                         style={{
                           color: 'var(--charcoal)',
                           fontFamily: 'var(--font-serif)',
                           maxWidth: '68ch',
-                          lineHeight: '1.9',
+                          lineHeight: '2.0',
                         }}
                       >
                         {memory.answer_text}
@@ -807,9 +807,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             return (
                               <div
                                 key={photoIndex}
-                                className="relative img-frame overflow-hidden cursor-pointer group"
+                                className="relative img-frame overflow-hidden cursor-pointer group transition-all duration-300 hover:ring-2 hover:ring-[rgba(212,163,115,0.35)] hover:shadow-[0_4px_16px_rgba(212,163,115,0.18)]"
                                 style={{
                                   aspectRatio: photoIndex === 0 && memory.photo_urls.length === 1 ? '4/3' : '1',
+                                  borderRadius: '12px',
                                 }}
                               >
                                 {hasError ? (

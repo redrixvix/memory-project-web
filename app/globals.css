@@ -1006,3 +1006,18 @@ button:has(svg[data-saved="true"]) {
   background-color: rgba(212,163,115,0.25);
   color: var(--charcoal);
 }
+
+/* ─────────────────────────────────────────
+   Drop cap for memory answer text — editorial journal feel
+───────────────────────────────────────── */
+.memory-answer-text::first-letter {
+  font-size: 3.2em;
+  font-weight: 600;
+  float: left;
+  line-height: 0.8;
+  margin-right: 0.08em;
+  margin-top: 0.05em;
+  color: var(--bronze);
+  font-family: var(--font-serif);
+  text-shadow: 1px 1px 0 rgba(212,163,115,0.15);
+}
