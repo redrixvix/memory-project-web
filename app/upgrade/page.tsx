@@ -278,7 +278,7 @@ export default function UpgradePage() {
                 {isCurrentPlan && (
                   <div
                     className="absolute top-3 right-3 flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}
+                    style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#4A4A3A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}
                   >
                     <Check size={9} strokeWidth={3} />
                     Current
@@ -287,16 +287,16 @@ export default function UpgradePage() {
 
                 <div className="flex items-start justify-between mb-3 gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[0.65rem] font-semibold tracking-[0.12em] uppercase mb-1" style={{ color: isCurrentPlan ? '#8A8A7A' : '#6B4423', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
+                    <p className="text-[0.65rem] font-semibold tracking-[0.12em] uppercase mb-1" style={{ color: isCurrentPlan ? '#5A5A48' : '#6B4423', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
                     <div className="flex items-baseline gap-1.5 flex-wrap">
-                      <p className="text-xl font-medium" style={{ color: isCurrentPlan ? '#8A8A7A' : 'var(--charcoal)' }}>{plan.price}</p>
+                      <p className="text-xl font-medium" style={{ color: isCurrentPlan ? '#5A5A48' : 'var(--charcoal)' }}>{plan.price}</p>
                     </div>
                     {plan.id !== 'free' && (
                       <div
                         className="mt-2 text-[10px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap inline-block"
                         style={{
                           backgroundColor: isCurrentPlan ? 'rgba(212,163,115,0.08)' : 'rgba(212,163,115,0.15)',
-                          color: isCurrentPlan ? '#8A8A7A' : '#5A3A1A',
+                          color: isCurrentPlan ? '#5A5A48' : '#5A3A1A',
                           fontFamily: 'var(--font-sans)',
                           border: `1px solid ${isCurrentPlan ? 'rgba(212,163,115,0.15)' : 'rgba(212,163,115,0.30)'}`,
                           letterSpacing: '0.04em',
@@ -313,7 +313,7 @@ export default function UpgradePage() {
                       className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: isSelected ? 'var(--charcoal)' : 'rgba(204,213,174,0.3)', border: isCurrentPlan ? '1px solid rgba(212,163,115,0.25)' : 'none' }}
                     >
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: isSelected ? 'var(--cornsilk)' : '#6A6A5A' }}>
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: isSelected ? 'var(--cornsilk)' : '#5A5A48' }}>
                         <path d="M20 6L9 17l-5-5"/>
                       </svg>
                     </div>
@@ -325,7 +325,7 @@ export default function UpgradePage() {
                 <ul className="space-y-2 mb-5">
                   {plan.features.map((feat, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm" style={{ color: '#3A2A1A' }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0 mt-0.5" style={{ color: isCurrentPlan ? '#8A8A7A' : '#7A5A2A' }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0 mt-0.5" style={{ color: isCurrentPlan ? '#5A5A48' : '#7A5A2A' }}>
                         <path d="M20 6L9 17l-5-5"/>
                       </svg>
                       <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem' }}>{feat}</span>
@@ -346,7 +346,7 @@ export default function UpgradePage() {
                         : '#4A3520',
                     color: isSelected || !isCurrentPlan
                       ? 'var(--cornsilk)'
-                      : '#7A7A6A',
+                      : '#5A5A48',
                     fontFamily: 'var(--font-sans)',
                     boxShadow: isSelected
                       ? '0 4px 20px rgba(212,163,115,0.30), inset 0 0 0 1px rgba(255,255,255,0.06)'
@@ -400,7 +400,7 @@ export default function UpgradePage() {
                 `Upgrade to ${getBookPlanLabel(selectedPlan)}`
               )}
             </button>
-            <p className="text-xs mt-3" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+            <p className="text-xs mt-3" style={{ color: '#5A5A48', fontFamily: 'var(--font-sans)' }}>
               Plans are per-book. Each book can be on its own plan.
             </p>
           </div>
