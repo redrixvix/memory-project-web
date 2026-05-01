@@ -919,18 +919,18 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   <div className="flex items-center gap-1.5">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
-                      style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'rgba(43,43,43,0.65)' }}
+                      style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
                     >
                       2
                     </div>
-                    <span className="text-xs" style={{ color: 'rgba(43,43,43,0.65)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
+                    <span className="text-xs" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
                   </div>
                 </div>
               </div>
 
             <form onSubmit={handleSubmit} className="relative">
               {/* Prompts section — cleaner single-column layout, prompts are discoverable without overwhelming sidebar */}
-              <section className="py-5 md:py-6" style={{ opacity: textareaFocused ? 0.65 : 1, transition: 'opacity 0.4s ease' }}>
+              <section className="py-5 md:py-6">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="inline-flex items-center gap-1.5">
@@ -1177,7 +1177,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </div>
               </section>
 
-              <section className="border-t py-5 md:py-6" style={{ opacity: textareaFocused ? 0.65 : 1, transition: 'opacity 0.5s ease', borderColor: 'rgba(212,163,115,0.14)' }}>
+              <section className="border-t py-5 md:py-6" style={{ borderColor: 'rgba(212,163,115,0.14)' }}>
                 <div className="mb-5 flex items-center gap-4">
                   <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.12)', boxShadow: '0 2px 8px rgba(212,163,115,0.08)' }}>

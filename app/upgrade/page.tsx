@@ -299,7 +299,6 @@ export default function UpgradePage() {
                           color: isCurrentPlan ? '#8A8A7A' : '#5A3A1A',
                           fontFamily: 'var(--font-sans)',
                           border: `1px solid ${isCurrentPlan ? 'rgba(212,163,115,0.15)' : 'rgba(212,163,115,0.30)'}`,
-                          border: `1px solid ${isCurrentPlan ? 'rgba(212,163,115,0.15)' : 'rgba(74,100,55,0.20)'}`,
                           letterSpacing: '0.04em',
                         }}
                       >
