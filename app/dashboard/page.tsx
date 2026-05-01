@@ -270,7 +270,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5 group">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 group-hover:scale-105" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
-                <svg width="18" height="18" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
+                <svg width="18" height="18" viewBox="0 0 22 22" fill="none" style={{ color: '#8A6A4A' }}>
                   <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
                   <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
                 </svg>
@@ -334,7 +334,7 @@ export default function Dashboard() {
           {/* Mobile hamburger */}
           <button
             className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: 'var(--bronze)' }}
+            style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#5A3A2A' }}
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open navigation menu"
           >
@@ -399,7 +399,7 @@ export default function Dashboard() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search your books..."
-                  className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#7A6A5A]"
+                  className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
                   style={{
                     backgroundColor: 'rgba(255,253,246,0.92)',
                     border: '1.5px solid rgba(212,163,115,0.30)',
@@ -437,7 +437,7 @@ export default function Dashboard() {
                     className="rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
-                      color: sortOrder === value ? 'var(--charcoal)' : 'rgba(43,43,43,0.85)',
+                      color: sortOrder === value ? 'var(--charcoal)' : 'rgba(43,43,43,0.92)',
                       fontFamily: 'var(--font-sans)',
                       minWidth: '56px',
                       fontWeight: '600',
@@ -720,7 +720,7 @@ export default function Dashboard() {
             <h2 className="text-3xl font-medium tracking-tight mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
               Your library is empty
             </h2>
-            <p className="text-base max-w-sm mx-auto leading-relaxed mb-8 text-center" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+            <p className="text-base max-w-sm mx-auto leading-relaxed mb-8 text-center" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
               Every family has stories worth preserving. Create your first book and start capturing the moments that matter.
             </p>
             <Button
@@ -734,7 +734,7 @@ export default function Dashboard() {
               </svg>
               Create your first book
             </Button>
-            <p className="text-xs mt-5 max-w-xs mx-auto leading-relaxed text-center" style={{ color: '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+            <p className="text-xs mt-5 max-w-xs mx-auto leading-relaxed text-center" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
               Free to start — takes about 5 minutes.
             </p>
           </div>
@@ -857,11 +857,11 @@ export default function Dashboard() {
 
                           {/* Description */}
                           {book.description ? (
-                            <p className="text-sm leading-relaxed line-clamp-2" style={{ color: '#4A4A3A', fontFamily: 'var(--font-serif)' }}>
+                            <p className="text-sm leading-relaxed line-clamp-2" style={{ color: '#2A2A1A', fontFamily: 'var(--font-serif)' }}>
                               {book.description}
                             </p>
                           ) : (
-                            <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                            <p className="text-xs" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
                               {book._count?.memories === 0
                                 ? 'Empty — start writing'
                                 : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'} collected`}
@@ -899,7 +899,7 @@ export default function Dashboard() {
                           <span 
                             className="text-xs font-semibold"
                             style={{ 
-                              color: 'var(--bronze)',
+                              color: '#5A3A2A',
                               fontFamily: 'var(--font-sans)',
                               letterSpacing: '0.02em',
                             }}
@@ -911,7 +911,7 @@ export default function Dashboard() {
                           <svg 
                             className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1 shrink-0" 
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" 
-                            style={{ color: 'var(--bronze)' }}
+                            style={{ color: '#8A6A4A' }}
                           >
                             <path d="M5 12h14M12 5l7 7-7 7"/>
                           </svg>
@@ -950,7 +950,7 @@ export default function Dashboard() {
                 return acc;
               }, []).map((item, idx) =>
                 item === '…' ? (
-                  <span key={`ellipsis-${idx}`} className="w-9 h-9 flex items-center justify-center text-sm" style={{ color: 'rgba(43,43,43,0.35)' }}>…</span>
+                  <span key={`ellipsis-${idx}`} className="w-9 h-9 flex items-center justify-center text-sm" style={{ color: 'rgba(43,43,43,0.60)' }}>…</span>
                 ) : (
                   <button
                     key={item}
