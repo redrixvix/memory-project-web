@@ -234,10 +234,10 @@ export default function UpgradePage() {
           {BOOK_PLAN_OPTIONS.map(plan => {
             const isCurrentPlan = selectedBook && normalizeBookPlan(selectedBook.plan) === plan.id;
             const isSelected = selectedPlan === plan.id;
-            const isPopular = plan.id === 'premium' && !isCurrentPlan;
+            const isPopular = plan.id === 'plus' && !isCurrentPlan;
             const isPlus = plan.id === 'plus';
             const cardStyles = {
-              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(212,163,115,0.05)' : isPlus ? '#FAF0E0' : 'var(--papaya)',
+              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(212,163,115,0.05)' : isPlus ? '#EDD9B4' : 'var(--papaya)',
               border: isSelected ? '2px solid #7A5A30' : isCurrentPlan ? '1.5px dashed rgba(212,163,115,0.30)' : isPlus ? '1px solid rgba(196,168,120,0.35)' : '1px solid rgba(212,163,115,0.2)',
               boxShadow: isSelected
                 ? '0 10px 36px rgba(212,163,115,0.26), 0 0 0 4px rgba(212,163,115,0.1)'
@@ -287,7 +287,7 @@ export default function UpgradePage() {
 
                 <div className="flex items-start justify-between mb-3 gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[0.65rem] font-semibold tracking-[0.12em] uppercase mb-1" style={{ color: isCurrentPlan ? '#8A8A7A' : 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
+                    <p className="text-[0.65rem] font-semibold tracking-[0.12em] uppercase mb-1" style={{ color: isCurrentPlan ? '#8A8A7A' : '#6B4423', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
                     <div className="flex items-baseline gap-1.5 flex-wrap">
                       <p className="text-xl font-medium" style={{ color: isCurrentPlan ? '#8A8A7A' : 'var(--charcoal)' }}>{plan.price}</p>
                     </div>
@@ -305,7 +305,7 @@ export default function UpgradePage() {
                         Pay once, own forever
                       </div>
                     )}
-                    <p className="text-xs mt-1 leading-relaxed" style={{ color: '#5A5A4A' }}>{plan.description}</p>
+                    <p className="text-xs mt-1 leading-relaxed" style={{ color: '#4A4A3A' }}>{plan.description}</p>
                   </div>
                   {/* Selection indicator */}
                   {(isSelected || isCurrentPlan) && (
@@ -324,8 +324,8 @@ export default function UpgradePage() {
 
                 <ul className="space-y-2 mb-5">
                   {plan.features.map((feat, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm" style={{ color: isCurrentPlan ? '#8A8A7A' : 'var(--charcoal)' }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0 mt-0.5" style={{ color: isCurrentPlan ? '#8A8A7A' : 'var(--bronze)' }}>
+                    <li key={i} className="flex items-start gap-2 text-sm" style={{ color: '#3A2A1A' }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0 mt-0.5" style={{ color: isCurrentPlan ? '#8A8A7A' : '#7A5A2A' }}>
                         <path d="M20 6L9 17l-5-5"/>
                       </svg>
                       <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem' }}>{feat}</span>

@@ -264,12 +264,12 @@ export default function Dashboard() {
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
       {/* ── TOP NAV ── */}
-      <header className="sticky top-0 z-20 h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
+      <header className="sticky top-0 z-20 h-12 md:h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
           {/* Left: Logo */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 group-hover:scale-105" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+              <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center transition-all duration-200 group-hover:scale-105" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
                 <svg width="18" height="18" viewBox="0 0 22 22" fill="none" style={{ color: '#8A6A4A' }}>
                   <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
                   <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
@@ -290,7 +290,7 @@ export default function Dashboard() {
             <Dropdown
               trigger={
                 <div className="flex items-center gap-2 cursor-pointer group">
-                  <Avatar name={user.name} imageUrl={user.profileImageUrl || null} className="w-9 h-9" />
+                  <Avatar name={user.name} imageUrl={user.profileImageUrl || null} className="w-8 h-8 md:w-9 md:h-9" />
                   <svg className="w-3.5 h-3.5 shrink-0 transition-transform duration-200 hidden sm:block" style={{ color: '#6A6A5A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="m6 9 6 6 6-6" />
                   </svg>
@@ -349,10 +349,10 @@ export default function Dashboard() {
       <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} />
 
       {/* ── MAIN CONTENT ── */}
-      <main className="px-6 md:px-10 pt-8 pb-10 max-w-5xl mx-auto w-full">
+      <main className="px-6 md:px-10 pt-5 md:pt-8 pb-10 max-w-5xl mx-auto w-full">
 
         {/* Header row — compact, editorial */}
-        <div className="mb-8 relative">
+        <div className="mb-5 md:mb-8 relative">
           {/* Decorative warm accent — subtle top line */}
           <div
             className="absolute -top-2 left-0 right-0 h-px rounded-full overflow-hidden"
@@ -386,7 +386,7 @@ export default function Dashboard() {
 
           {/* Search + sort — only shown when books exist */}
           {books.length > 0 && (
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-3">
               <div className="relative flex-1" style={{
                   borderBottom: searchQuery ? '2px solid rgba(212,163,115,0.5)' : '2px solid rgba(212,163,115,0.18)',
                   transition: 'border-color 0.3s ease',
@@ -399,7 +399,7 @@ export default function Dashboard() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search your books..."
-                  className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
+                  className="w-full h-10 md:h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
                   style={{
                     backgroundColor: 'rgba(255,253,246,0.92)',
                     border: '1.5px solid rgba(212,163,115,0.30)',
@@ -424,7 +424,7 @@ export default function Dashboard() {
                 )}
               </div>
               {/* Sort controls */}
-              <div className="flex items-center gap-1 rounded-2xl p-1.5 shrink-0" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)' }}>
+              <div className="flex items-center gap-1 rounded-2xl p-1 shrink-0" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)' }}>
                 {([
                   { value: 'newest', label: 'Newest' },
                   { value: 'oldest', label: 'Oldest' },
@@ -434,7 +434,7 @@ export default function Dashboard() {
                     key={value}
                     type="button"
                     onClick={() => setSortOrder(value)}
-                    className="rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
+                    className="rounded-xl px-4 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
                       color: sortOrder === value ? 'var(--charcoal)' : 'rgba(43,43,43,0.92)',
@@ -750,7 +750,7 @@ export default function Dashboard() {
                 <div
                   key={book.id}
                   className="animate-fade-up"
-                  style={{ animationDelay: `${i * 0.06}s` }}
+                  style={{ animationDelay: `${i * 0.06}s`, minHeight: 320 }}
                 >
                   <Link href={`/books/${book.id}`} className="block h-full group">
                     <div
