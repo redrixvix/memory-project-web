@@ -348,10 +348,14 @@ export default function UpgradePage() {
                       ? 'var(--cornsilk)'
                       : '#7A7A6A',
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: !isCurrentPlan ? '0 4px 16px rgba(212,163,115,0.28)' : 'none',
-                    border: isCurrentPlan ? '1px dashed rgba(212,163,115,0.20)' : 'none',
-                    letterSpacing: '0.01em',
+                    boxShadow: isSelected
+                      ? '0 4px 20px rgba(212,163,115,0.30), inset 0 0 0 1px rgba(255,255,255,0.06)'
+                      : '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)',
+                    position: 'relative' as const,
+                    overflow: 'hidden' as const,
                   }}
+                  onMouseEnter={(e) => { if (!isCurrentPlan) { e.currentTarget.style.background = 'linear-gradient(135deg, #5A3E22 0%, #8A6A3C 40%, #D4A373 60%, #8A6A3C 100%)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(212,163,115,0.45), 0 2px 8px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}}
+                  onMouseLeave={(e) => { if (!isCurrentPlan) { e.currentTarget.style.background = isSelected ? '#2D1F10' : '#4A3520'; e.currentTarget.style.boxShadow = isSelected ? '0 4px 20px rgba(212,163,115,0.30), inset 0 0 0 1px rgba(255,255,255,0.06)' : '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}}
                 >
                   {isCurrentPlan ? 'Current plan' : isSelected ? 'Selected' : 'Choose plan'}
                 </button>

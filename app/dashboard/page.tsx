@@ -754,7 +754,7 @@ export default function Dashboard() {
                 >
                   <Link href={`/books/${book.id}`} className="block h-full group">
                     <div
-                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 group/card hover:-translate-y-2"
+                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 group/card hover:-translate-y-2.5 hover:shadow-[0_20px_60px_rgba(212,163,115,0.22),0_8px_24px_rgba(43,43,43,0.12),inset_0_0_0_1.5px_rgba(212,163,115,0.15)]"
                       style={{
                         backgroundColor: '#FEFCF4',
                         boxShadow: '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)',
@@ -764,11 +764,13 @@ export default function Dashboard() {
                         minHeight: '220px',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = `0 8px 32px rgba(212,163,115,0.18), 0 24px 60px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.08)`;
+                        e.currentTarget.style.boxShadow = `0 20px 60px rgba(212,163,115,0.28), 0 8px 28px rgba(43,43,43,0.14), inset 0 0 0 1.5px rgba(212,163,115,0.18), 0 0 40px ${bookColor}08`;
+                        e.currentTarget.style.transform = 'translateY(-4px) scale(1.012)';
                         e.currentTarget.style.borderLeft = `4px solid ${spineHoverColor}`;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)';
+                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08), inset 0 0 0 0.5px rgba(212,163,115,0.04)';
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)';
                         e.currentTarget.style.borderLeft = `4px solid ${spineColor}`;
                       }}
                     >
@@ -905,7 +907,7 @@ export default function Dashboard() {
                       {/* Footer — elevated action strip for premium feel */}
                       <div className="px-6 pl-8 pb-5" style={{ marginTop: 'auto' }}>
                         <div
-                          className="flex items-center justify-between gap-2 rounded-2xl px-4 py-2.5 transition-all duration-300 group-hover:gap-3 group-hover:bg-[rgba(212,163,115,0.06)]"
+                          className="flex items-center justify-between gap-2 rounded-2xl px-4 py-2.5 transition-all duration-300 group-hover:gap-3 group-hover:bg-[rgba(212,163,115,0.10)]"
                           style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}
                         >
                           <span 
