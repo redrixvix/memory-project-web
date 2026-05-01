@@ -914,7 +914,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         backgroundColor: 'var(--bronze)',
                         color: 'var(--charcoal)',
                         fontFamily: 'var(--font-serif)',
-                        boxShadow: '0 2px 10px rgba(212,163,115,0.28), 0 1px 3px rgba(212,163,115,0.18)',
+                        boxShadow: '0 3px 10px rgba(212,163,115,0.30)',
                       }}
                     >
                       1
@@ -930,20 +930,20 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       }}
                     />
                   </div>
-                  {/* Step 2 — inactive, muted */}
+                  {/* Step 2 — inactive, muted but readable */}
                   <div className="flex items-center gap-2.5">
                     <div
                       className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
                       style={{
-                        backgroundColor: 'rgba(212,163,115,0.08)',
-                        color: 'rgba(43,43,43,0.58)',
+                        backgroundColor: 'rgba(212,163,115,0.14)',
+                        color: 'rgba(43,43,43,0.72)',
                         fontFamily: 'var(--font-serif)',
-                        border: '1.5px solid rgba(212,163,115,0.28)',
+                        border: '1.5px solid rgba(212,163,115,0.40)',
                       }}
                     >
                       2
                     </div>
-                    <span className="text-xs tracking-wide" style={{ color: 'rgba(43,43,43,0.58)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
+                    <span className="text-xs tracking-wide" style={{ color: 'rgba(43,43,43,0.72)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
                   </div>
                 </div>
               </div>
