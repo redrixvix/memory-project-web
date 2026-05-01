@@ -76,8 +76,8 @@ function getPlanBadgeStyles(plan: string) {
 
   if (normalizedPlan === 'plus') {
     return {
-      backgroundColor: 'var(--charcoal)',
-      color: 'var(--cornsilk)',
+      backgroundColor: '#2D4A35',
+      color: '#E8F0E5',
     };
   }
 
