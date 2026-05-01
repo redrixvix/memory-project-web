@@ -52,6 +52,7 @@ export function Lightbox({ src, alt = '', onClose }: LightboxProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-6 lightbox-backdrop"
+      style={{ backgroundColor: 'rgba(43,43,43,0.6)', backdropFilter: 'blur(12px)' }}
       onClick={onClose}
       ref={containerRef}
       role="dialog"
@@ -62,7 +63,7 @@ export function Lightbox({ src, alt = '', onClose }: LightboxProps) {
       <div
         onClick={(e) => e.stopPropagation()}
         className="relative max-w-3xl w-full rounded-2xl overflow-hidden lightbox-image"
-        style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.45)' }}
+        style={{ boxShadow: '0 32px 80px rgba(43,43,43,0.50), 0 0 0 1px rgba(212,163,115,0.08), 0 0 60px rgba(212,163,115,0.08)' }}
       >
         <Image
           src={src}
@@ -75,7 +76,7 @@ export function Lightbox({ src, alt = '', onClose }: LightboxProps) {
         <button
           ref={closeButtonRef}
           onClick={onClose}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:opacity-80 active:scale-95"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
           style={{ backgroundColor: 'rgba(254,250,224,0.92)', color: 'var(--charcoal)' }}
           aria-label="Close image preview"
         >
