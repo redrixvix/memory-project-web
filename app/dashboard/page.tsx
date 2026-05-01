@@ -436,10 +436,11 @@ export default function Dashboard() {
                     onClick={() => setSortOrder(value)}
                     className="rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
                     style={{
-                      backgroundColor: sortOrder === value ? 'var(--bronze)' : 'transparent',
-                      color: sortOrder === value ? 'var(--charcoal)' : 'rgba(43,43,43,0.65)',
+                      backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
+                      color: sortOrder === value ? 'var(--charcoal)' : 'rgba(43,43,43,0.85)',
                       fontFamily: 'var(--font-sans)',
-                      minWidth: '50px',
+                      minWidth: '56px',
+                      fontWeight: '600',
                     }}
                   >
                     {label}
@@ -896,13 +897,11 @@ export default function Dashboard() {
                           style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}
                         >
                           <span 
-                            className="text-xs font-semibold tracking-wide"
+                            className="text-xs font-semibold"
                             style={{ 
                               color: 'var(--bronze)',
                               fontFamily: 'var(--font-sans)',
-                              letterSpacing: '0.06em',
-                              textTransform: 'uppercase',
-                              fontSize: '0.68rem',
+                              letterSpacing: '0.02em',
                             }}
                           >
                             {book._count?.memories === 0

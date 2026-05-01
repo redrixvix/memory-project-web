@@ -498,13 +498,13 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.4), transparent)' }} />
               {/* Sort controls */}
-              <div className="flex items-center gap-2 rounded-full px-3 py-1.5 overflow-x-auto" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.12)' }}>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.1em] shrink-0" style={{ color: 'rgba(43,43,43,0.55)', fontFamily: 'var(--font-sans)' }}>Sort</span>
+              <div className="flex items-center gap-2.5 rounded-full px-4 py-2 overflow-x-auto" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.18)' }}>
+                <span className="text-xs font-semibold tracking-wide shrink-0" style={{ color: 'rgba(43,43,43,0.65)', fontFamily: 'var(--font-sans)' }}>Sort</span>
                 <div className="w-px h-3.5 shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
                 <button
                   type="button"
                   onClick={() => setMemorySort('newest')}
-                  className="rounded-full px-1.5 py-1 text-[10px] font-semibold transition-all duration-200 shrink-0"
+                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
                   style={{
                     backgroundColor: memorySort === 'newest' ? 'var(--bronze)' : 'transparent',
                     color: memorySort === 'newest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
@@ -517,7 +517,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <button
                   type="button"
                   onClick={() => setMemorySort('oldest')}
-                  className="rounded-full px-1.5 py-1 text-[10px] font-semibold transition-all duration-200 shrink-0"
+                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
                   style={{
                     backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
                     color: memorySort === 'oldest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
@@ -683,7 +683,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                           {String(memoryIndex + 1).padStart(2, '0')}
                         </span>
                         <div className="w-px h-4 opacity-40" style={{ backgroundColor: accentColor }} />
-                        <span className="text-xs font-semibold tracking-wide uppercase" style={{ letterSpacing: '0.08em', color: '#4A4A3A' }}>Chapter {memoryIndex + 1}</span>
+                        <span className="text-xs font-medium" style={{ letterSpacing: '0.02em', color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>Chapter {memoryIndex + 1}</span>
                       </div>
 
                       {/* Prompt question as elegant chapter opener */}
@@ -759,7 +759,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             </span>
                           </div>
                         ) : null}
-                        <span className="text-xs" style={{ color: '#8A7A6A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                        <span className="text-sm" style={{ color: '#7A6A5A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
                           {(() => {
                             const d = new Date(memory.created_at);
                             const dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
