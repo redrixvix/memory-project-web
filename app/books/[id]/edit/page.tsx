@@ -919,11 +919,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   <div className="flex items-center gap-1.5">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
-                      style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'rgba(43,43,43,0.45)' }}
+                      style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'rgba(43,43,43,0.65)' }}
                     >
                       2
                     </div>
-                    <span className="text-xs" style={{ color: 'rgba(43,43,43,0.45)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
+                    <span className="text-xs" style={{ color: 'rgba(43,43,43,0.65)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
                   </div>
                 </div>
               </div>
@@ -944,7 +944,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       </span>
                     </div>
                     {promptOptionCount > 0 && (
-                      <span className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                      <span className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
                         {promptOptionCount} prompt{promptOptionCount !== 1 ? 's' : ''} available
                       </span>
                     )}
@@ -954,7 +954,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       type="button"
                       onClick={() => { setPrompt(''); setUseCustomPrompt(false); setCustomPrompt(''); }}
                       className="text-xs underline-offset-2 hover:underline transition-all"
-                      style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}
+                      style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}
                     >
                       Clear prompt
                     </button>
@@ -1132,7 +1132,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     {saveState === 'saving' && wordCount > 0 && (
                       <div className="flex items-center gap-1.5">
                         <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
-                        <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Saving...</p>
+                        <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Saving...</p>
                       </div>
                     )}
                     {saveState === 'saved' && wordCount > 0 && (
@@ -1140,11 +1140,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
                           <path d="M20 6L9 17l-5-5"/>
                         </svg>
-                        <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Saved</p>
+                        <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Saved</p>
                       </div>
                     )}
                     {(saveState === 'idle' || wordCount === 0) && (
-                      <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
+                      <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
                     )}
                     {/* Word count pill — right-aligned */}
                     {wordCount > 0 && (
@@ -1162,11 +1162,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <span className="font-bold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>
                           {wordCount.toLocaleString()}
                         </span>
-                        <span style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>{wordCount === 1 ? 'word' : 'words'}</span>
+                        <span style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>{wordCount === 1 ? 'word' : 'words'}</span>
                         {wordCount >= 20 && (
                           <>
                             <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.30)' }} />
-                            <span style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>
+                            <span style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>
                               ~{Math.max(1, Math.round(wordCount / 200))} min
                             </span>
                           </>
@@ -1190,7 +1190,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   <h3 className="text-lg font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                     Add photos &amp; voice notes
                   </h3>
-                  <p className="text-sm leading-relaxed mt-1" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                  <p className="text-sm leading-relaxed mt-1" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
                     A photograph or voice note can capture what words alone cannot — the sound of laughter, the light in a room, a moment that would otherwise fade.
                   </p>
                 </div>
@@ -1258,7 +1258,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                           {photoItems.length > 0 && (
                             <div className="mt-5">
                               <div className="flex flex-wrap items-center justify-between gap-2">
-                                <p className="text-xs font-medium uppercase tracking-[0.16em]" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                                <p className="text-xs font-medium uppercase tracking-[0.16em]" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}>
                                   {photoItems.length} {photoItems.length === 1 ? 'photo' : 'photos'} attached
                                 </p>
                                 <p className="text-xs" style={{ color: hasErroredPhotos ? '#9A5A4A' : '#8E8478', fontFamily: 'var(--font-sans)' }}>
@@ -1380,7 +1380,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                                   <p className="truncate text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
                                     {audioDraft.fileName}
                                   </p>
-                                  <p className="mt-1 text-xs leading-5" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                                  <p className="mt-1 text-xs leading-5" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
                                     {audioDraft.sourceFile
                                       ? 'Ready to upload when you save.'
                                       : audioDraft.status === 'uploading'
@@ -1392,7 +1392,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                                   type="button"
                                   onClick={handleRemoveAudio}
                                   className="inline-flex items-center gap-1.5 text-xs transition-colors hover:opacity-70 shrink-0"
-                                  style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}
+                                  style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}
                                   aria-label="Remove audio"
                                 >
                                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1431,7 +1431,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               Premium
                             </span>
                           </div>
-                          <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                          <p className="text-xs leading-relaxed" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
                             Tuck away photos & voice notes alongside your words — they become part of the story.
                           </p>
                         </div>
@@ -1459,7 +1459,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 }}
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: '#6A6A5A' }}>
+                  <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: '#4A4A3A' }}>
                     {saveState === 'saving' && answer.trim().length > 0 && (
                       <>
                         <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
@@ -1475,7 +1475,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       </>
                     )}
                     {saveState === 'idle' && (
-                      <span className="text-xs" style={{ color: '#6A6A5A' }}>
+                      <span className="text-xs" style={{ color: '#4A4A3A' }}>
                         Autosaves as you write
                         {answer.trim().length > 0 && (
                           <>
@@ -1600,7 +1600,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 </p>
                 <p
                   className="success-sub text-sm"
-                  style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}
+                  style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}
                 >
                   See it in your book, or keep building.
                 </p>
