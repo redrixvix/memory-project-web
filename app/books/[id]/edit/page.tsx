@@ -891,14 +891,14 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         >
           <div className="hero-ambient" />
 
-          <div className="relative px-5 py-4 md:px-8 md:py-5">
+          <div className="relative px-5 py-5 md:px-10 md:py-7">
             <div className="border-b pb-6 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)', transition: 'opacity 0.4s ease' }}>
                 <div className="flex flex-wrap items-center gap-3 mb-3">
-                  <div className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.15)', color: '#4A5A35', fontFamily: 'var(--font-sans)' }}>
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  <div className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.12)', color: '#4A5A35', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.25)' }}>
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#6B8055' }}>
+                      <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
                     </svg>
-                    Kept private
+                    Private
                   </div>
                 </div>
                 <h1 className="text-xl md:text-2xl font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
@@ -1178,22 +1178,27 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               </section>
 
               <section className="border-t py-5 md:py-6" style={{ opacity: textareaFocused ? 0.65 : 1, transition: 'opacity 0.5s ease', borderColor: 'rgba(212,163,115,0.14)' }}>
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'rgba(212,163,115,0.55)' }}>
-                      <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                    </svg>
-                    <span className="text-xs font-semibold uppercase tracking-[0.14em]" style={{ color: '#8B7355', fontFamily: 'var(--font-sans)' }}>
-                      Enrich your memory
-                    </span>
+                <div className="mb-5 flex items-center gap-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.12)', boxShadow: '0 2px 8px rgba(212,163,115,0.08)' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: '#8B7355', fontFamily: 'var(--font-sans)' }}>
+                        Step 2
+                      </span>
+                      <h3 className="text-base md:text-lg font-medium -mt-0.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                        Enrich your memory
+                      </h3>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                    Add photos &amp; voice notes
-                  </h3>
-                  <p className="text-sm leading-relaxed mt-1" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
-                    A photograph or voice note can capture what words alone cannot — the sound of laughter, the light in a room, a moment that would otherwise fade.
-                  </p>
+                  <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.35), transparent)' }} />
                 </div>
+                <p className="text-sm leading-relaxed mb-5" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
+                  A photograph or voice note can capture what words alone cannot — the sound of laughter, the light in a room, a moment that would otherwise fade.
+                </p>
 
                 <div>
                   {canUseMedia ? (

@@ -393,7 +393,7 @@ export function DropZone({
             strokeLinecap="round"
             strokeLinejoin="round"
             style={{
-              color: isDragging ? "var(--bronze)" : "rgba(43,43,43,0.55)",
+              color: isDragging ? "var(--bronze)" : "rgba(43,43,43,0.8)",
               transition: "color 300ms ease",
             }}
           >
@@ -416,7 +416,7 @@ export function DropZone({
         <p
           className="max-w-xs text-xs leading-5"
           style={{
-            color: "rgba(43,43,43,0.6)",
+            color: "rgba(43,43,43,0.75)",
             fontFamily: "var(--font-sans)",
           }}
         >

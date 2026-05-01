@@ -625,7 +625,7 @@ export default function Dashboard() {
                                   <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--bronze)' }}>
                                     <path d="M20 6L9 17l-5-5"/>
                                   </svg>
-                                  <span className="text-xs" style={{ color: '#5A5A5A', fontFamily: 'var(--font-sans)' }}>{feat}</span>
+                                  <span className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>{feat}</span>
                                 </div>
                               ))}
                             </div>
@@ -791,11 +791,10 @@ export default function Dashboard() {
                       {/* Main content area — outer flex-col + min-height ensures footer always at same vertical position */}
                       <div className="relative flex flex-col justify-between min-h-[220px] p-6 pl-8">
                         {/* Inner flex row: book illustration + text content */}
-                        {/* Left: Book illustration — larger and more prominent */}
+                  {/* Book illustration with shimmer for premium plans */}
                         <div
-                          className="shrink-0"
+                          className="shrink-0 group/book"
                           style={{
-                            display: '',
                             marginTop: 4,
                             width: 72,
                             height: 96,
@@ -805,8 +804,26 @@ export default function Dashboard() {
                             boxShadow: `3px 4px 16px rgba(43,43,43,0.10), 5px 8px 24px ${bookColor}18, inset 0 0 0 0.5px rgba(255,255,255,0.8)`,
                             overflow: 'hidden',
                             flexDirection: 'column',
+                            position: 'relative',
+                            transition: 'transform 0.3s ease',
                           }}
                         >
+                          {/* Subtle shimmer overlay for premium/plus plans */}
+                          {book.plan !== 'free' && (
+                            <div className="shimmer" style={{
+                              position: 'absolute',
+                              inset: 0,
+                              background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)',
+                              animation: 'shimmer 3s ease-in-out infinite',
+                              pointerEvents: 'none',
+                            }} />
+                          )}
+                          <style>{`
+                            @keyframes shimmer {
+                              0%, 100% { transform: translateX(-100%); }
+                              50% { transform: translateX(100%); }
+                            }
+                          `}</style>
                           {/* Spine strip */}
                           <div style={{
                             position: 'absolute',
