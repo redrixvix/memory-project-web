@@ -872,18 +872,13 @@ export default function Dashboard() {
                             {book.title}
                           </h3>
 
-                          {/* Description */}
+                          {/* Description — only show when present */}
                           {book.description ? (
                             <p className="text-sm leading-relaxed line-clamp-2" style={{ color: '#2A2A1A', fontFamily: 'var(--font-serif)' }}>
                               {book.description}
                             </p>
-                          ) : (
-                            <p className="text-xs italic" style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)', fontStyle: 'italic' }}>
-                              {book._count?.memories === 0
-                                ? 'Your story begins here'
-                                : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'} collected`}
-                            </p>
-                          )}
+                          ) : null}
+
 
                           {/* Contributors — only show when multiple */}
                           {book.contributors && book.contributors.length > 1 && (

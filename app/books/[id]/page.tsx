@@ -462,7 +462,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             </div>
             {/* Show Add Memory only when book has memories — avoid CTA redundancy with empty state */}
             {memories.length > 0 && (
-              <div className="flex items-center shrink-0">
+              <div className="flex items-center shrink-0 hidden sm:flex">
                 <Link
                   href={`/books/${id}/edit`}
                   className="inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95 hover:shadow-md"
@@ -668,7 +668,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         transition: 'box-shadow 0.4s ease',
                       }}
                     />
-                    <CardContent className="pt-5 pb-5 px-4 pl-6 relative" style={{ paddingRight: '1.25rem' }}>
+                    <CardContent className="pt-5 pb-5 px-5">
 
                       {/* Chapter number badge — book-page style with embossed look */}
                       <div
