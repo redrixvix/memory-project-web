@@ -371,12 +371,24 @@ export default function UpgradePage() {
               type="button"
               onClick={handleSubmit}
               disabled={submitting}
-              className="h-13 rounded-full px-10 text-sm font-semibold transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="h-13 rounded-full px-10 text-sm font-semibold transition-all duration-300 active:scale-[0.97] hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: 'var(--bronze)',
                 color: 'var(--charcoal)',
                 fontFamily: 'var(--font-sans)',
                 boxShadow: '0 6px 28px rgba(212,163,115,0.36), 0 2px 8px rgba(212,163,115,0.16)',
+                position: 'relative' as const,
+                overflow: 'hidden' as const,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #C49A6C 0%, #D4A373 30%, #E8C89A 50%, #D4A373 70%, #C49A6C 100%)';
+                e.currentTarget.style.boxShadow = '0 10px 40px rgba(212,163,115,0.50), 0 3px 12px rgba(0,0,0,0.15)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'var(--bronze)';
+                e.currentTarget.style.boxShadow = '0 6px 28px rgba(212,163,115,0.36), 0 2px 8px rgba(212,163,115,0.16)';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               {submitting ? (
