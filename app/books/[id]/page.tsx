@@ -460,8 +460,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 </p>
               )}
             </div>
-            {/* Show Add Memory only when book is empty — avoid CTA redundancy */}
-            {memories.length === 0 && (
+            {/* Show Add Memory only when book has memories — avoid CTA redundancy with empty state */}
+            {memories.length > 0 && (
               <div className="flex items-center shrink-0">
                 <Link
                   href={`/books/${id}/edit`}
