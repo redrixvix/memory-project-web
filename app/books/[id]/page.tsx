@@ -681,13 +681,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     onMouseLeave={() => setHoveredCard(null)}
                     style={{
                       backgroundColor: '#FDFCF5',
-                      border: hoveredCard === memoryIndex ? '1px solid rgba(212,163,115,0.18)' : '1px solid rgba(212,163,115,0.06)',
+                      border: hoveredCard === memoryIndex ? '1px solid rgba(212,163,115,0.22)' : '1px solid rgba(212,163,115,0.06)',
                       boxShadow: hoveredCard === memoryIndex
-                        ? '0 16px 48px rgba(212,163,115,0.22), 0 8px 24px rgba(212,163,115,0.12), 0 1px 0 rgba(212,163,115,0.15) inset'
+                        ? '0 20px 56px rgba(212,163,115,0.26), 0 10px 30px rgba(212,163,115,0.14), 0 1px 0 rgba(212,163,115,0.18) inset'
                         : '0 4px 20px rgba(212,163,115,0.08), 0 1px 4px rgba(212,163,115,0.05)',
                       backgroundImage: hoveredCard === memoryIndex
-                        ? 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.10) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.12) 0%, transparent 50%)'
+                        ? 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.12) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.14) 0%, transparent 50%)'
                         : 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.08) 0%, transparent 50%)',
+                      transform: hoveredCard === memoryIndex ? 'translateY(-3px) scale(1.005)' : 'translateY(0) scale(1)',
                     }}
                   >
                     {/* Warm page-edge accent — left side with book spine feel */}
