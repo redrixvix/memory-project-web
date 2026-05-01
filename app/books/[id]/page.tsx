@@ -606,22 +606,41 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 </Link>
               ))}
             </div>
-            <Link
-              href={`/books/${id}/edit`}
-              className="inline-flex h-14 items-center justify-center rounded-full px-10 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-2xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-1 active:scale-95 group"
-              style={{ 
-                backgroundColor: 'var(--bronze)', 
-                color: 'var(--charcoal)', 
-                boxShadow: '0 6px 28px rgba(212,163,115,0.35)',
-                fontFamily: 'var(--font-sans)',
-                animation: 'gentle-pulse 3s ease-in-out infinite',
-              }}
-            >
-              <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              Add your first memory
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href={`/books/${id}/edit`}
+                className="inline-flex h-14 items-center justify-center rounded-full px-10 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-2xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-1 active:scale-95 group"
+                style={{ 
+                  backgroundColor: 'var(--bronze)', 
+                  color: 'var(--charcoal)', 
+                  boxShadow: '0 6px 28px rgba(212,163,115,0.35)',
+                  fontFamily: 'var(--font-sans)',
+                  animation: 'gentle-pulse 3s ease-in-out infinite',
+                }}
+              >
+                <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Add your first memory
+              </Link>
+              {/* Preview button — only show when book has no memories */}
+              <Link
+                href={`/books/${id}/preview`}
+                className="inline-flex h-14 items-center justify-center rounded-full px-8 text-sm font-medium border-2 transition-all duration-300 hover:brightness-105 active:scale-95"
+                style={{ 
+                  borderColor: 'rgba(212,163,115,0.45)', 
+                  color: 'var(--charcoal)',
+                  backgroundColor: 'rgba(212,163,115,0.08)',
+                  fontFamily: 'var(--font-sans)',
+                }}
+              >
+                <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+                Preview book
+              </Link>
+            </div>
             <style>{`
               @keyframes gentle-pulse {
                 0%, 100% { box-shadow: 0 6px 28px rgba(212,163,115,0.35); }
