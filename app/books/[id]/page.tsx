@@ -398,7 +398,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       </header>
 
       {/* ── MAIN ── */}
-      <main className="px-6 md:px-10 py-8 md:py-10 max-w-5xl mx-auto w-full">
+      <main className="px-6 md:px-10 py-5 md:py-7 max-w-5xl mx-auto w-full">
 
         {/* Book hero — compact when empty, expanded when has memories */}
         <div
@@ -486,14 +486,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           <div className="mb-7">
             <div className="flex items-center gap-4">
               <div
-                className="w-9 h-9 rounded-2xl shrink-0 flex items-center justify-center shadow-sm"
+                className="w-8 h-8 rounded-xl shrink-0 flex items-center justify-center shadow-sm"
                 style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}
               >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--bronze)' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--bronze)' }}>
                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                 </svg>
               </div>
-              <h2 className="text-xl md:text-2xl font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+              <h2 className="text-lg md:text-xl font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                 Your Memories
               </h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.4), transparent)' }} />
@@ -627,7 +627,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         ) : (
           /* ── Memory list with lightbox ── */
-          <div className="space-y-8 md:space-y-10">
+          <div className="space-y-5 md:space-y-7">
             {sortedMemories.map((memory, memoryIndex) => {
               const accentColor = ACCENT_COLORS[memoryIndex % ACCENT_COLORS.length];
               const isEven = memoryIndex % 2 === 0;
@@ -670,13 +670,13 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
                       {/* Chapter number badge — larger, more prominent book-page style */}
                       <div
-                        className="inline-flex items-center gap-2.5 rounded-2xl px-4 py-2 mb-4"
+                        className="inline-flex items-center gap-2 rounded-xl px-3 py-1.5 mb-3"
                         style={{
                           backgroundColor: `${accentColor}14`,
                           color: 'var(--charcoal)',
                           fontFamily: 'var(--font-sans)',
                           border: `1px solid ${accentColor}30`,
-                          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 8px ${accentColor}10`,
+                          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 6px ${accentColor}10`,
                         }}
                       >
                         <span className="text-base font-bold" style={{ color: accentColor, lineHeight: 1, fontFamily: 'Georgia, serif' }}>
