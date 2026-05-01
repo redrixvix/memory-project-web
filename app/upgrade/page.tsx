@@ -268,7 +268,7 @@ export default function UpgradePage() {
                 {/* Popular badge */}
                 {isPopular && (
                   <div
-                    className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[0.6rem] font-bold tracking-[0.18em] uppercase px-3.5 py-1 rounded-full whitespace-nowrap"
+                    className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[0.7rem] font-bold tracking-[0.15em] uppercase px-3.5 py-1 rounded-full whitespace-nowrap"
                     style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', letterSpacing: '0.15em' }}
                   >
                     Most Popular
@@ -277,8 +277,8 @@ export default function UpgradePage() {
                 {/* Current plan badge */}
                 {isCurrentPlan && (
                   <div
-                    className="absolute top-3 right-3 flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#4A4A3A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}
+                    className="absolute top-3 right-3 flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full"
+                    style={{ backgroundColor: '#A07850', color: '#FDFCF5', fontFamily: 'var(--font-sans)', border: '1px solid rgba(180,140,90,0.5)', boxShadow: '0 2px 8px rgba(160,120,80,0.25)', letterSpacing: '0.05em' }}
                   >
                     <Check size={9} strokeWidth={3} />
                     Current

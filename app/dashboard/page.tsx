@@ -876,7 +876,7 @@ export default function Dashboard() {
 
                           {/* Description — only show when present */}
                           {book.description ? (
-                            <p className="text-sm leading-relaxed line-clamp-2" style={{ color: '#1A1916', fontFamily: 'var(--font-serif)' }}>
+                            <p className="text-sm leading-relaxed line-clamp-2" style={{ color: '#5A3A1A', fontFamily: 'var(--font-serif)' }}>
                               {book.description}
                             </p>
                           ) : null}

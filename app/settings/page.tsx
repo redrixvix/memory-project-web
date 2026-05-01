@@ -537,7 +537,7 @@ export default function SettingsPage() {
                 >
                   <div className="shrink-0">
                     <div
-                      className="inline-flex items-center gap-1.5 text-[0.6rem] font-medium px-3 py-1.5 rounded-full"
+                      className="inline-flex items-center gap-1.5 text-[0.7rem] font-medium px-3 py-1.5 rounded-full"
                       style={{
                         backgroundColor: 'rgba(204,213,174,0.2)',
                         color: '#5A6A3A',

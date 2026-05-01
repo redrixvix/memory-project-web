@@ -785,7 +785,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             <Avatar
                               name={memory.contributor_name}
                               imageUrl={memory.contributor_avatar || null}
-                              size={24}
+                              size={32}
                             />
                             <span className="text-xs" style={{ color: 'rgba(43,43,43,0.78)', fontFamily: 'var(--font-sans)' }}>
                               {memory.contributor_name}
