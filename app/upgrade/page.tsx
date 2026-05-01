@@ -399,6 +399,31 @@ export default function UpgradePage() {
           })}
         </div>
 
+        {/* Printed book pricing clarity */}
+        <div className="mb-8 p-5 rounded-2xl text-center" style={{ backgroundColor: 'rgba(204,213,174,0.12)', border: '1px solid rgba(204,213,174,0.3)' }}>
+          <p className="text-sm font-medium mb-0.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+            📖 Printed hardcover books are an add-on — not included in plan pricing
+          </p>
+          <p className="text-xs" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+            Starting at <strong style={{ color: 'var(--charcoal)' }}>$99</strong> per book · Premium or Plus plan required · Archival-quality paper &amp; binding
+          </p>
+        </div>
+
+        {/* Social proof — testimonial */}
+        <div className="mb-10 px-6 py-8 rounded-2xl text-center" style={{ background: 'linear-gradient(to bottom, rgba(212,163,115,0.07), rgba(204,213,174,0.07))', border: '1px solid rgba(212,163,115,0.14)' }}>
+          <div className="mb-4 flex items-center justify-center gap-1">
+            {[1,2,3,4,5].map(i => (
+              <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill="var(--bronze)" style={{ opacity: 0.85 }}>
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            ))}
+          </div>
+          <p className="text-base italic mb-4 max-w-md mx-auto" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)', lineHeight: 1.75 }}>
+            "When my grandmother's Memory Project book arrived, it was like holding a piece of our family history in my hands. The quality — the paper, the binding, the colors — exceeded anything I imagined. It's a true heirloom."
+          </p>
+          <p className="text-xs font-semibold" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>— Margaret R., Premium member · Received her hardcover in 2025</p>
+        </div>
+
         {/* Error */}
         {error && (
           <p className="text-sm text-center mb-6" style={{ color: '#C0392B' }}>{error}</p>

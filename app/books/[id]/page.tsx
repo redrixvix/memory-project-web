@@ -498,13 +498,13 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.4), transparent)' }} />
               {/* Sort controls */}
-              <div className="flex items-center gap-2 rounded-full px-3 py-1.5" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.12)' }}>
+              <div className="flex items-center gap-2 rounded-full px-3 py-1.5 overflow-x-auto" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.12)' }}>
                 <span className="text-[10px] font-semibold uppercase tracking-[0.1em] shrink-0" style={{ color: 'rgba(43,43,43,0.55)', fontFamily: 'var(--font-sans)' }}>Sort</span>
                 <div className="w-px h-3.5 shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
                 <button
                   type="button"
                   onClick={() => setMemorySort('newest')}
-                  className="rounded-full px-2.5 py-1 text-[11px] font-semibold transition-all duration-200"
+                  className="rounded-full px-1.5 py-1 text-[10px] font-semibold transition-all duration-200 shrink-0"
                   style={{
                     backgroundColor: memorySort === 'newest' ? 'var(--bronze)' : 'transparent',
                     color: memorySort === 'newest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
@@ -512,12 +512,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     boxShadow: memorySort === 'newest' ? '0 2px 8px rgba(212,163,115,0.25)' : 'none',
                   }}
                 >
-                  Newest
+                  New
                 </button>
                 <button
                   type="button"
                   onClick={() => setMemorySort('oldest')}
-                  className="rounded-full px-2.5 py-1 text-[11px] font-semibold transition-all duration-200"
+                  className="rounded-full px-1.5 py-1 text-[10px] font-semibold transition-all duration-200 shrink-0"
                   style={{
                     backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
                     color: memorySort === 'oldest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
@@ -525,7 +525,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     boxShadow: memorySort === 'oldest' ? '0 2px 8px rgba(212,163,115,0.25)' : 'none',
                   }}
                 >
-                  Oldest
+                  Old
                 </button>
               </div>
             </div>
