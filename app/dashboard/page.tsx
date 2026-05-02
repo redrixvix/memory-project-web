@@ -424,7 +424,7 @@ export default function Dashboard() {
                 )}
               </div>
               {/* Sort controls */}
-              <div className="flex items-center gap-1 rounded-2xl p-1 shrink-0" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)' }}>
+              <div className="flex items-center gap-2 rounded-2xl p-1.5 shrink-0" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)' }}>
                 {([
                   { value: 'newest', label: 'Newest' },
                   { value: 'oldest', label: 'Oldest' },
@@ -434,12 +434,11 @@ export default function Dashboard() {
                     key={value}
                     type="button"
                     onClick={() => setSortOrder(value)}
-                    className="rounded-xl px-4 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
+                    className="rounded-xl px-5 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
                       color: sortOrder === value ? 'var(--charcoal)' : 'rgba(43,43,43,0.92)',
                       fontFamily: 'var(--font-sans)',
-                      minWidth: '56px',
                       fontWeight: '600',
                     }}
                   >
@@ -793,7 +792,7 @@ export default function Dashboard() {
                       {/* Main content area — outer flex-col + min-height ensures footer always at same vertical position */}
                       <div className="relative flex flex-col justify-between min-h-[220px] p-6 pl-8">
                         {/* Inner flex row: book illustration + text content */}
-                  {/* Book illustration with shimmer for premium plans */}
+                        <div className="flex items-start gap-5">
                         <div
                           className="shrink-0 group/book"
                           style={{
@@ -855,6 +854,7 @@ export default function Dashboard() {
                               marginTop: 10,
                             }} />
                           </div>
+                        </div>
                         </div>
 
                         {/* Right: Content */}
