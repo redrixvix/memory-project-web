@@ -1166,28 +1166,28 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     {(saveState === 'idle' || wordCount === 0) && (
                       <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
                     )}
-                    {/* Word count pill — right-aligned */}
+                    {/* Word count pill — right-aligned, editorial warmth */}
                     {wordCount > 0 && (
                       <div
-                        className="inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs transition-all duration-300"
+                        className="inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-xs transition-all duration-300"
                         style={{
-                          backgroundColor: 'rgba(212,163,115,0.18)',
-                          boxShadow: '0 2px 12px rgba(212,163,115,0.20)',
-                          border: '1px solid rgba(212,163,115,0.35)',
+                          backgroundColor: 'rgba(212,163,115,0.16)',
+                          boxShadow: '0 2px 12px rgba(212,163,115,0.15)',
+                          border: '1px solid rgba(212,163,115,0.30)',
                         }}
                       >
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
                           <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
                         </svg>
-                        <span className="font-bold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>
+                        <span className="font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', fontSize: '0.8rem', letterSpacing: '-0.01em' }}>
                           {wordCount.toLocaleString()}
                         </span>
-                        <span style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>{wordCount === 1 ? 'word' : 'words'}</span>
+                        <span style={{ color: '#7A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.72rem' }}>words</span>
                         {wordCount >= 20 && (
                           <>
-                            <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.30)' }} />
-                            <span style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>
-                              ~{Math.max(1, Math.round(wordCount / 200))} min
+                            <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
+                            <span style={{ color: '#7A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.72rem' }}>
+                              {Math.max(1, Math.round(wordCount / 200))} min
                             </span>
                           </>
                         )}
