@@ -144,7 +144,9 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     () => photoItems.flatMap((item) => item.uploadedUrl ? [item.uploadedUrl] : []),
     [photoItems]
   );
-  const hasUploadingPhotos = photoItems.some((item) => item.status === 'uploading');
+  const uploadingPhotoCount = photoItems.filter((item) => item.status === 'uploading').length;
+  const uploadedPhotoCount = photoItems.filter((item) => item.status === 'uploaded').length;
+  const hasUploadingPhotos = uploadingPhotoCount > 0;
   const hasErroredPhotos = photoItems.some((item) => item.status === 'error');
   const hasBlockingRecorderState = recorderState === 'requesting' || recorderState === 'recording' || recorderState === 'processing';
   const isSubmitDisabled = loading || !answer.trim() || hasUploadingPhotos || hasBlockingRecorderState;
@@ -161,6 +163,17 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const successExcerpt = savedPreview.length > 190 ? `${savedPreview.slice(0, 187).trimEnd()}…` : savedPreview;
   const attachedPhotoCount = photoItems.filter((item) => item.status !== 'error').length;
   const hasAttachedAudio = Boolean(audioDraft?.uploadedUrl || audioDraft?.sourceFile || audioDraft?.previewUrl);
+  const saveReadinessMessage = !answer.trim()
+    ? 'Write a few lines and this memory will be ready to tuck away.'
+    : hasUploadingPhotos
+      ? `${uploadingPhotoCount} photo${uploadingPhotoCount === 1 ? ' is' : 's are'} still uploading. Saving will unlock as soon as the upload finishes.`
+      : hasBlockingRecorderState
+        ? 'Finish recording your voice note before saving this memory.'
+        : audioDraft?.sourceFile
+          ? 'Your voice note is staged and will upload the moment you save.'
+          : hasErroredPhotos
+            ? 'You can retry failed photos or save this memory without them.'
+            : 'Everything is ready. Save when this memory feels complete.';
 
   useEffect(() => {
     photoItemsRef.current = photoItems;
@@ -1305,7 +1318,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                                   {photoItems.length} {photoItems.length === 1 ? 'photo' : 'photos'} attached
                                 </p>
                                 <p className="text-xs" style={{ color: hasErroredPhotos ? '#9A5A4A' : '#8E8478', fontFamily: 'var(--font-sans)' }}>
-                                  {hasUploadingPhotos ? 'Finishing uploads…' : hasErroredPhotos ? 'Retry failed uploads or save without them.' : 'Remove any photo you do not want to keep.'}
+                                  {hasUploadingPhotos
+                                    ? `${uploadedPhotoCount} of ${photoItems.length} photo${photoItems.length === 1 ? '' : 's'} ready — the rest are still uploading.`
+                                    : hasErroredPhotos
+                                      ? 'Retry failed photos or save without them.'
+                                      : 'Remove any photo you do not want to keep.'}
                                 </p>
                               </div>
                               <ImageGallery
@@ -1526,70 +1543,108 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   boxShadow: '0 -8px 32px rgba(212,163,115,0.08)',
                 }}
               >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: '#4A4A3A' }}>
-                    {saveState === 'saving' && answer.trim().length > 0 && (
-                      <>
-                        <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
-                        <span>Saving draft...</span>
-                      </>
-                    )}
-                    {saveState === 'saved' && answer.trim().length > 0 && (
-                      <>
-                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
-                          <path d="M20 6L9 17l-5-5" />
-                        </svg>
-                        <span>Draft saved</span>
-                      </>
-                    )}
-                    {saveState === 'idle' && (
-                      <span className="text-xs" style={{ color: '#4A4A3A' }}>
-                        Autosaves as you write
-                        {answer.trim().length > 0 && (
-                          <>
-                            {' '}
-                            <kbd className="ml-1.5 inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-[10px]" style={{ borderColor: 'rgba(212,163,115,0.25)', fontFamily: 'var(--font-sans)' }}>⌘S</kbd>
-                          </>
-                        )}
-                      </span>
-                    )}
+                <div className="flex flex-col gap-3">
+                  <div
+                    className="rounded-[1.2rem] border px-4 py-3"
+                    style={{
+                      background: 'linear-gradient(180deg, rgba(255,253,246,0.94) 0%, rgba(248,239,224,0.88) 100%)',
+                      borderColor: 'rgba(212,163,115,0.18)',
+                    }}
+                  >
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                      <div>
+                        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8A6A4A', fontFamily: 'var(--font-sans)' }}>
+                          Ready to save
+                        </p>
+                        <p className="mt-1 text-sm leading-6" style={{ color: '#4A3A2B', fontFamily: 'var(--font-sans)' }}>
+                          {saveReadinessMessage}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <ReadinessPill label={answer.trim() ? 'Story written' : 'Story needed'} tone={answer.trim() ? 'ready' : 'waiting'} />
+                        <ReadinessPill
+                          label={hasUploadingPhotos ? `${uploadingPhotoCount} photo${uploadingPhotoCount === 1 ? '' : 's'} uploading` : attachedPhotoCount > 0 ? `${attachedPhotoCount} photo${attachedPhotoCount === 1 ? '' : 's'} attached` : 'No photos added'}
+                          tone={hasUploadingPhotos ? 'waiting' : hasErroredPhotos ? 'warning' : attachedPhotoCount > 0 ? 'ready' : 'neutral'}
+                        />
+                        <ReadinessPill
+                          label={hasBlockingRecorderState ? 'Recording in progress' : audioDraft?.sourceFile ? 'Voice note queued' : currentAudioUrl ? 'Voice note attached' : 'No voice note'}
+                          tone={hasBlockingRecorderState ? 'waiting' : (audioDraft?.sourceFile || currentAudioUrl) ? 'ready' : 'neutral'}
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:items-center">
-                    <Link
-                      href={`/books/${id}`}
-                      className="inline-flex h-10 items-center justify-center rounded-full border px-5 text-sm font-medium transition-colors"
-                      style={{ borderColor: 'rgba(212,163,115,0.26)', color: 'var(--charcoal)', backgroundColor: 'rgba(255,253,246,0.9)' }}
-                    >
-                      Cancel
-                    </Link>
-                    <Button
-                      type="submit"
-                      disabled={isSubmitDisabled}
-                      className="h-11 rounded-full px-8 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(196,148,106,0.4)] hover:-translate-y-0.5"
-                      style={{
-                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.55)' : 'var(--bronze)',
-                        color: isSubmitDisabled ? 'rgba(43,43,43,0.65)' : 'var(--charcoal)',
-                        boxShadow: isSubmitDisabled ? 'none' : '0 6px 24px rgba(212,163,115,0.3)',
-                      }}
-                      onMouseEnter={e => {
-                        if (!isSubmitDisabled) {
-                          e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.45)';
-                        }
-                      }}
-                      onMouseLeave={e => {
-                        if (!isSubmitDisabled) {
-                          e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.3)';
-                        }
-                      }}
-                    >
-                      {loading ? (
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: '#4A4A3A' }}>
+                      {saveState === 'saving' && answer.trim().length > 0 && (
                         <>
-                          <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
-                          Saving...
+                          <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
+                          <span>Saving draft...</span>
                         </>
-                      ) : hasUploadingPhotos ? 'Uploading photos…' : hasBlockingRecorderState ? 'Finish recording first' : memoryId ? 'Update Memory' : 'Save Memory'}
-                    </Button>
+                      )}
+                      {saveState === 'saved' && answer.trim().length > 0 && (
+                        <>
+                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                            <path d="M20 6L9 17l-5-5" />
+                          </svg>
+                          <span>Draft saved</span>
+                        </>
+                      )}
+                      {saveState === 'idle' && (
+                        <span className="text-xs" style={{ color: '#4A4A3A' }}>
+                          Autosaves as you write
+                          {answer.trim().length > 0 && (
+                            <>
+                              {' '}
+                              <kbd className="ml-1.5 inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-[10px]" style={{ borderColor: 'rgba(212,163,115,0.25)', fontFamily: 'var(--font-sans)' }}>⌘S</kbd>
+                            </>
+                          )}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:items-center">
+                      <Link
+                        href={`/books/${id}`}
+                        className="inline-flex h-10 items-center justify-center rounded-full border px-5 text-sm font-medium transition-colors"
+                        style={{ borderColor: 'rgba(212,163,115,0.26)', color: 'var(--charcoal)', backgroundColor: 'rgba(255,253,246,0.9)' }}
+                      >
+                        Cancel
+                      </Link>
+                      <Button
+                        type="submit"
+                        disabled={isSubmitDisabled}
+                        className="h-11 rounded-full px-8 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(196,148,106,0.4)] hover:-translate-y-0.5"
+                        style={{
+                          backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.55)' : 'var(--bronze)',
+                          color: isSubmitDisabled ? 'rgba(43,43,43,0.65)' : 'var(--charcoal)',
+                          boxShadow: isSubmitDisabled ? 'none' : '0 6px 24px rgba(212,163,115,0.3)',
+                        }}
+                        onMouseEnter={e => {
+                          if (!isSubmitDisabled) {
+                            e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.45)';
+                          }
+                        }}
+                        onMouseLeave={e => {
+                          if (!isSubmitDisabled) {
+                            e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.3)';
+                          }
+                        }}
+                      >
+                        {loading ? (
+                          <>
+                            <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                            Saving...
+                          </>
+                        ) : hasUploadingPhotos
+                          ? `Waiting for ${uploadingPhotoCount} photo${uploadingPhotoCount === 1 ? '' : 's'}`
+                          : hasBlockingRecorderState
+                            ? 'Finish recording first'
+                            : memoryId
+                              ? 'Update Memory'
+                              : 'Save Memory'}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1776,6 +1831,43 @@ function SuccessMetaPill({ label }: { label: string }) {
         backgroundColor: 'rgba(212,163,115,0.12)',
         color: '#4A3A28',
         border: '1px solid rgba(212,163,115,0.16)',
+        fontFamily: 'var(--font-sans)',
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
+function ReadinessPill({ label, tone }: { label: string; tone: 'ready' | 'waiting' | 'warning' | 'neutral' }) {
+  const styles = {
+    ready: {
+      backgroundColor: 'rgba(204,213,174,0.32)',
+      borderColor: 'rgba(133,153,87,0.22)',
+      color: '#3F4B25',
+    },
+    waiting: {
+      backgroundColor: 'rgba(212,163,115,0.16)',
+      borderColor: 'rgba(212,163,115,0.24)',
+      color: '#6D4E2D',
+    },
+    warning: {
+      backgroundColor: 'rgba(185,28,28,0.08)',
+      borderColor: 'rgba(185,28,28,0.18)',
+      color: '#8A3F2B',
+    },
+    neutral: {
+      backgroundColor: 'rgba(255,255,255,0.65)',
+      borderColor: 'rgba(212,163,115,0.16)',
+      color: '#5E5142',
+    },
+  }[tone];
+
+  return (
+    <span
+      className="inline-flex items-center rounded-full border px-3 py-1.5 text-[0.72rem] font-medium"
+      style={{
+        ...styles,
         fontFamily: 'var(--font-sans)',
       }}
     >

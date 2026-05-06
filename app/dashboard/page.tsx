@@ -53,6 +53,8 @@ interface User {
   googleId?: string | null;
 }
 
+type ShelfFilter = 'all' | 'active' | 'drafts' | 'shared';
+
 const BOOK_COLORS = [
   'var(--bronze)',
   'var(--tea-green)',
@@ -127,6 +129,7 @@ export default function Dashboard() {
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
   const [showFab, setShowFab] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [shelfFilter, setShelfFilter] = useState<ShelfFilter>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -319,14 +322,28 @@ export default function Dashboard() {
     );
   }
 
-  // Filter books by search query
-  const filteredBooks = searchQuery.trim()
+  // Filter books by search query, then let the shelf view narrow the moment that needs attention.
+  const searchFilteredBooks = searchQuery.trim()
     ? books.filter(book =>
         getDisplayBookTitle(book.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
         book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (book.description && book.description.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     : books;
+
+  const shelfCounts = {
+    all: searchFilteredBooks.length,
+    active: searchFilteredBooks.filter((book) => (book._count?.memories ?? 0) > 0).length,
+    drafts: searchFilteredBooks.filter((book) => (book._count?.memories ?? 0) === 0).length,
+    shared: searchFilteredBooks.filter((book) => (book.contributors?.length ?? 0) > 1).length,
+  };
+
+  const filteredBooks = searchFilteredBooks.filter((book) => {
+    if (shelfFilter === 'active') return (book._count?.memories ?? 0) > 0;
+    if (shelfFilter === 'drafts') return (book._count?.memories ?? 0) === 0;
+    if (shelfFilter === 'shared') return (book.contributors?.length ?? 0) > 1;
+    return true;
+  });
 
   const sortedBooks = filteredBooks
     .slice()
@@ -349,6 +366,28 @@ export default function Dashboard() {
   const totalPages = Math.max(1, Math.ceil(sortedBooks.length / BOOKS_PER_PAGE));
   const safePage = Math.min(currentPage, totalPages);
   const paginatedBooks = sortedBooks.slice((safePage - 1) * BOOKS_PER_PAGE, safePage * BOOKS_PER_PAGE);
+  const shelfFilterMeta: Record<ShelfFilter, { label: string; empty: string; summary: string }> = {
+    all: {
+      label: 'All books',
+      empty: 'No books match this search yet.',
+      summary: 'A full shelf with every keepsake and draft in one place.',
+    },
+    active: {
+      label: 'Continue writing',
+      empty: 'Nothing has memories yet — start a draft and this lane will light up.',
+      summary: 'Books with real stories inside, ready to pick back up.',
+    },
+    drafts: {
+      label: 'Needs first page',
+      empty: 'Every draft already has a first memory — a nice problem to have.',
+      summary: 'Quietly titled books still waiting for the first scene.',
+    },
+    shared: {
+      label: 'Family voices',
+      empty: 'No shared keepsakes in this view yet.',
+      summary: 'Books that already carry more than one family perspective.',
+    },
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
@@ -455,8 +494,8 @@ export default function Dashboard() {
               </h1>
               <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
                 {filteredBooks.length === 0
-                  ? 'Your stories are waiting to be captured.'
-                  : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'book' : 'books'}${searchQuery ? ` matching "${searchQuery}"` : ''}${totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ''}`}
+                  ? shelfFilterMeta[shelfFilter].empty
+                  : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'book' : 'books'} in ${shelfFilterMeta[shelfFilter].label.toLowerCase()}${searchQuery ? ` matching "${searchQuery}"` : ''}${totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ''}`}
               </p>
             </div>
             {books.length > 0 && (
@@ -476,7 +515,82 @@ export default function Dashboard() {
 
           {/* Search + sort — only shown when books exist */}
           {books.length > 0 && (
-            <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div className="mt-4 space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                {([
+                  {
+                    value: 'all',
+                    kicker: 'Full shelf',
+                    count: shelfCounts.all,
+                    description: 'See every keepsake at once.',
+                  },
+                  {
+                    value: 'active',
+                    kicker: 'Continue writing',
+                    count: shelfCounts.active,
+                    description: 'Jump back into books that already hold memories.',
+                  },
+                  {
+                    value: 'drafts',
+                    kicker: 'Needs first page',
+                    count: shelfCounts.drafts,
+                    description: 'Drafts still waiting for their opening scene.',
+                  },
+                  {
+                    value: 'shared',
+                    kicker: 'Family voices',
+                    count: shelfCounts.shared,
+                    description: 'Books with more than one contributor.',
+                  },
+                ] as const).map(({ value, kicker, count, description }) => {
+                  const selected = shelfFilter === value;
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => {
+                        setShelfFilter(value);
+                        setCurrentPage(1);
+                      }}
+                      className="group rounded-[1.25rem] border px-3.5 py-3 text-left transition-all duration-200 hover:-translate-y-0.5"
+                      style={{
+                        background: selected
+                          ? 'linear-gradient(180deg, rgba(255,252,245,0.98) 0%, rgba(247,237,218,0.98) 100%)'
+                          : 'rgba(255,253,246,0.78)',
+                        borderColor: selected ? 'rgba(212,163,115,0.34)' : 'rgba(212,163,115,0.18)',
+                        boxShadow: selected ? '0 12px 28px rgba(212,163,115,0.14)' : 'none',
+                        minWidth: '11rem',
+                      }}
+                      aria-pressed={selected}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: selected ? '#7A5A3F' : '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                            {kicker}
+                          </p>
+                          <p className="mt-1 text-sm leading-5" style={{ color: '#4F3C2F', fontFamily: 'var(--font-sans)' }}>
+                            {description}
+                          </p>
+                        </div>
+                        <span className="inline-flex min-w-8 items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold" style={{ backgroundColor: selected ? 'var(--bronze)' : 'rgba(212,163,115,0.16)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                          {count}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="rounded-[1.3rem] border px-4 py-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between" style={{ background: 'rgba(255,253,246,0.72)', borderColor: 'rgba(212,163,115,0.18)' }}>
+                <p className="text-sm leading-6" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)' }}>
+                  <span className="font-semibold" style={{ color: '#302117' }}>{shelfFilterMeta[shelfFilter].label}.</span> {shelfFilterMeta[shelfFilter].summary}
+                </p>
+                <p className="text-xs uppercase tracking-[0.16em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                  {filteredBooks.length > 0 ? `${filteredBooks.length} ready to browse` : 'Adjust search or start a new book'}
+                </p>
+              </div>
+
+            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
               <div className="relative flex-1" style={{
                   borderBottom: searchQuery ? '2px solid rgba(212,163,115,0.5)' : '2px solid rgba(212,163,115,0.18)',
                   transition: 'border-color 0.3s ease',
@@ -546,6 +660,7 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
+          </div>
           )}
         </div>
 
@@ -971,6 +1086,45 @@ export default function Dashboard() {
             <p className="text-xs mt-5 max-w-xs mx-auto leading-relaxed text-center" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
               Free to start — takes about 5 minutes.
             </p>
+          </div>
+        ) : filteredBooks.length === 0 ? (
+          <div className="animate-fade-up rounded-[2rem] border px-6 py-8 md:px-8 md:py-9" style={{ background: 'linear-gradient(180deg, rgba(255,252,245,0.95) 0%, rgba(247,239,226,0.95) 100%)', borderColor: 'rgba(212,163,115,0.18)', boxShadow: '0 18px 40px rgba(212,163,115,0.08)' }}>
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+              Shelf view empty
+            </p>
+            <h2 className="mt-3 text-2xl font-medium tracking-tight" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
+              {shelfFilterMeta[shelfFilter].empty}
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-7" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)' }}>
+              Try another shelf view, clear your search, or open a new book so this library still feels curated instead of crowded.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {searchQuery && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setCurrentPage(1);
+                  }}
+                  className="rounded-full h-10 px-5 text-sm font-medium"
+                  style={{ borderColor: 'rgba(212,163,115,0.28)', color: 'var(--charcoal)', backgroundColor: 'rgba(255,253,246,0.9)' }}
+                >
+                  Clear search
+                </Button>
+              )}
+              <Button
+                type="button"
+                onClick={() => {
+                  setShelfFilter('all');
+                  setCurrentPage(1);
+                }}
+                className="rounded-full h-10 px-5 text-sm font-medium"
+                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+              >
+                Show full shelf
+              </Button>
+            </div>
           </div>
         ) : (
           /* ── Book grid ── */
