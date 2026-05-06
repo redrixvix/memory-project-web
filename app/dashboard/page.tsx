@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 import { MobileNav } from '@/components/ui/mobile-nav';
+import { BookCover } from '@/components/ui/book-cover';
 
 interface Book {
   id: number;
@@ -793,68 +794,12 @@ export default function Dashboard() {
                       <div className="relative flex flex-col justify-between min-h-[220px] p-6 pl-8">
                         {/* Inner flex row: book illustration + text content */}
                         <div className="flex items-start gap-5">
-                        <div
-                          className="shrink-0 group/book"
-                          style={{
-                            marginTop: 4,
-                            width: 72,
-                            height: 96,
-                            borderRadius: 10,
-                            background: `linear-gradient(160deg, #FEFCF4 0%, #F8F5E0 60%, #EDE5C8 100%)`,
-                            border: '1px solid rgba(212,163,115,0.28)',
-                            boxShadow: `3px 4px 16px rgba(43,43,43,0.10), 5px 8px 24px ${bookColor}18, inset 0 0 0 0.5px rgba(255,255,255,0.8)`,
-                            overflow: 'hidden',
-                            flexDirection: 'column',
-                            position: 'relative',
-                            transition: 'transform 0.3s ease',
-                          }}
-                        >
-                          {/* Subtle shimmer overlay for premium/plus plans */}
-                          {book.plan !== 'free' && (
-                            <div className="shimmer" style={{
-                              position: 'absolute',
-                              inset: 0,
-                              background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)',
-                              animation: 'shimmer 3s ease-in-out infinite',
-                              pointerEvents: 'none',
-                            }} />
-                          )}
-                          <style>{`
-                            @keyframes shimmer {
-                              0%, 100% { transform: translateX(-100%); }
-                              50% { transform: translateX(100%); }
-                            }
-                          `}</style>
-                          {/* Spine strip */}
-                          <div style={{
-                            position: 'absolute',
-                            left: 0, top: 0, bottom: 0,
-                            width: 6,
-                            background: `linear-gradient(to bottom, ${bookColor}dd, ${bookColor}55)`,
-                            borderRadius: '10px 0 0 10px',
-                          }} />
-                          {/* Decorative cover lines */}
-                          <div className="pt-4 px-3.5 pl-3 flex-1 flex flex-col justify-center">
-                            <div style={{ height: 1.5, backgroundColor: 'rgba(212,163,115,0.30)', marginBottom: 8 }} />
-                            {[1,2,3,4,5].map((_, li) => (
-                              <div key={li} style={{
-                                height: 2.5,
-                                width: `${60 + li * 8}%`,
-                                backgroundColor: li % 2 === 0 ? 'rgba(212,163,115,0.20)' : 'rgba(204,213,174,0.35)',
-                                borderRadius: 2,
-                                marginBottom: 4,
-                              }} />
-                            ))}
-                            {/* Title block */}
-                            <div style={{
-                              height: 4,
-                              width: '80%',
-                              backgroundColor: `${bookColor}55`,
-                              borderRadius: 2,
-                              marginTop: 10,
-                            }} />
-                          </div>
-                        </div>
+                        <BookCover
+                          title={book.title}
+                          description={book.description}
+                          accentColor={bookColor}
+                          plan={book.plan}
+                        />
                         </div>
 
                         {/* Right: Content */}
