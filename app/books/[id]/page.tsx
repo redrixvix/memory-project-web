@@ -757,7 +757,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      <div className={useMediaRail ? 'grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(17rem,0.95fr)] lg:items-start' : ''}>
+                      <div className={useMediaRail ? 'grid gap-4 lg:grid-cols-[minmax(0,1.52fr)_minmax(14.5rem,0.82fr)] lg:items-start' : ''}>
                         <div>
                           {/* Media chips */}
                           {(photoCount > 0 || hasAudio) && !useMediaRail && (
@@ -821,12 +821,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
                         {useMediaRail && (photoCount > 0 || hasAudio) && (
                           <aside
-                            className="lg:mt-1 space-y-4"
+                            className="lg:mt-1 space-y-3.5"
                             style={{
                               background: 'linear-gradient(180deg, rgba(250,237,205,0.34) 0%, rgba(255,253,246,0.92) 100%)',
                               border: '1px solid rgba(212,163,115,0.16)',
                               borderRadius: '1.25rem',
-                              padding: '1rem',
+                              padding: '0.9rem',
                               boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.72), 0 10px 28px rgba(212,163,115,0.08)',
                             }}
                           >
@@ -1143,34 +1143,47 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         )}
 
         {memories.length > 0 && (
-          <div className="mt-12 text-center">
-            {/* Decorative divider */}
-            <div className="flex items-center justify-center gap-4 mb-8">
-              <div className="h-px w-12 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
-              <svg width="16" height="16" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)', opacity: 0.5 }}>
-                <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
-                <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
-              </svg>
-              <div className="h-px w-12 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
+          <div
+            className="mt-8 rounded-[28px] border px-5 py-5 md:px-7 md:py-6"
+            style={{
+              background: 'linear-gradient(180deg, rgba(255,250,240,0.98) 0%, rgba(250,241,226,0.98) 100%)',
+              borderColor: 'rgba(212,163,115,0.2)',
+              boxShadow: '0 14px 34px rgba(212,163,115,0.12), inset 0 1px 0 rgba(255,255,255,0.82)',
+            }}
+          >
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-6">
+              <div className="min-w-0">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em]" style={{ color: '#8A6A4A', fontFamily: 'var(--font-sans)' }}>
+                  Next step
+                </p>
+                <h3 className="mt-2 text-xl md:text-2xl font-medium tracking-tight" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                  {memories.length === 1 ? 'See how this chapter reads in the book.' : 'See how these chapters read in the book.'}
+                </h3>
+                <p className="mt-2 text-sm leading-6 max-w-2xl" style={{ color: '#5B4636', fontFamily: 'var(--font-sans)' }}>
+                  Open the print preview to check pacing, flow, and keepsakes before you add more memories or order your book.
+                </p>
+              </div>
+              <div className="flex shrink-0 flex-col items-start gap-2 md:items-end">
+                <Link
+                  href={`/books/${id}/preview`}
+                  className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-300 hover:brightness-105 hover:shadow-xl hover:shadow-[rgba(74,49,32,0.22)] hover:-translate-y-0.5 active:scale-95"
+                  style={{
+                    backgroundColor: '#4A3120',
+                    color: '#FEFAE0',
+                    boxShadow: '0 10px 24px rgba(74,49,32,0.18)',
+                  }}
+                >
+                  <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                  </svg>
+                  Preview your book
+                </Link>
+                <p className="text-xs" style={{ color: '#6B5848', fontFamily: 'var(--font-sans)' }}>
+                  Layout preview before ordering
+                </p>
+              </div>
             </div>
-            <Link
-              href={`/books/${id}/preview`}
-              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-300 hover:brightness-105 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.25)] hover:-translate-y-0.5 active:scale-95"
-              style={{ 
-                backgroundColor: 'var(--bronze)', 
-                color: 'var(--charcoal)',
-                boxShadow: '0 4px 20px rgba(212,163,115,0.2)',
-              }}
-            >
-              <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-              </svg>
-              Preview your book
-            </Link>
-            <p className="mt-4 text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
-              Print preview — see your book before ordering
-            </p>
           </div>
         )}
       </main>

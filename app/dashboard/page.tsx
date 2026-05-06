@@ -825,7 +825,6 @@ export default function Dashboard() {
               const updatedAt = new Date(book.updated_at);
               const draftLabel = `Draft from ${createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${createdAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
               const presenceLabel = hasMemories ? 'In progress' : 'Ready to begin';
-              const timeLabel = `${hasMemories ? 'Last touched' : 'Started'} ${hasMemories ? updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
               return (
                 <div
                   key={book.id}
@@ -861,7 +860,7 @@ export default function Dashboard() {
                       <div className="absolute inset-x-5 top-0 h-px opacity-80" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)' }} />
 
                       <div className="relative flex h-full flex-col p-4 md:p-6">
-                        <div className="mb-4 flex items-center justify-between gap-3">
+                        <div className="mb-5 flex items-start justify-between gap-3">
                           <div className="flex min-w-0 flex-wrap items-center gap-2">
                             {book.plan && book.plan !== 'free' && (
                               <span
@@ -872,21 +871,29 @@ export default function Dashboard() {
                               </span>
                             )}
                             <span
-                              className="text-[0.68rem] font-semibold uppercase tracking-[0.16em]"
+                              className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]"
                               style={{
-                                color: hasMemories ? '#556748' : '#8A6B46',
+                                backgroundColor: hasMemories ? 'rgba(85,103,72,0.12)' : 'rgba(212,163,115,0.16)',
+                                color: hasMemories ? '#46563C' : '#7A5A3F',
                                 fontFamily: 'var(--font-sans)',
                               }}
                             >
                               {presenceLabel}
                             </span>
                           </div>
-                          <p className="shrink-0 text-[0.68rem] font-medium uppercase tracking-[0.16em]" style={{ color: '#9B836D', fontFamily: 'var(--font-sans)' }}>
-                            {timeLabel}
-                          </p>
+                          <div className="shrink-0 text-right">
+                            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#A18468', fontFamily: 'var(--font-sans)' }}>
+                              {hasMemories ? 'Last touched' : 'Started'}
+                            </p>
+                            <p className="mt-1 text-[0.82rem]" style={{ color: '#5F4938', fontFamily: 'var(--font-sans)' }}>
+                              {hasMemories
+                                ? updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                                : createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            </p>
+                          </div>
                         </div>
 
-                        <div className="flex items-start gap-3 md:gap-4 flex-1 min-h-0">
+                        <div className="flex items-start gap-4 md:gap-5 flex-1 min-h-0">
                           <div className="shrink-0 rounded-[20px] p-2 md:rounded-[22px] md:p-2.5" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(250,237,205,0.46) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.82), 0 10px 24px rgba(212,163,115,0.12)' }}>
                             <div className="origin-top-left scale-[0.96] md:scale-[1.06]">
                               <BookCover
@@ -900,33 +907,37 @@ export default function Dashboard() {
 
                           <div className="flex min-w-0 flex-1 flex-col">
                             <div>
-                              <h3 className="text-[1.12rem] font-medium leading-snug line-clamp-2" style={{ color: '#2F241B', fontFamily: 'var(--font-serif)' }}>
+                              <h3 className="text-[1.18rem] font-medium leading-snug line-clamp-2" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
                                 {displayTitle}
                               </h3>
                               {wasSanitized && (
-                                <p className="mt-1 text-[11px] uppercase tracking-[0.16em]" style={{ color: '#9B836D', fontFamily: 'var(--font-sans)' }}>
+                                <p className="mt-1 text-[11px] uppercase tracking-[0.16em]" style={{ color: '#927762', fontFamily: 'var(--font-sans)' }}>
                                   {draftLabel}
                                 </p>
                               )}
                             </div>
 
                             {book.description ? (
-                              <p className="mt-2 text-[0.95rem] leading-6 line-clamp-3" style={{ color: '#614530', fontFamily: 'var(--font-serif)' }}>
+                              <p className="mt-2.5 text-[0.93rem] leading-6 line-clamp-2" style={{ color: '#523A2A', fontFamily: 'var(--font-serif)' }}>
                                 {book.description}
                               </p>
                             ) : (
-                              <p className="mt-2 text-[0.92rem] leading-6 italic" style={{ color: '#806F60', fontFamily: 'var(--font-serif)' }}>
+                              <p className="mt-2.5 text-[0.9rem] leading-6 italic" style={{ color: '#756253', fontFamily: 'var(--font-serif)' }}>
                                 A new place to gather stories, voices, and images worth keeping.
                               </p>
                             )}
 
-                            <div className="mt-3 flex flex-wrap items-center gap-2.5">
-                              <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.7)', color: '#3E2E22', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.16)' }}>
+                            <div className="mt-4 flex flex-wrap items-center gap-2.5">
+                              <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.82)', color: '#302117', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}>
                                 {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'}
                               </span>
-                              {contributorCount > 1 && (
-                                <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px]" style={{ backgroundColor: 'rgba(204,213,174,0.26)', color: '#42503A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.24)' }}>
-                                  {contributorCount} contributors
+                              {contributorCount > 1 ? (
+                                <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.26)', color: '#42503A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.24)' }}>
+                                  Shared with {contributorCount} people
+                                </span>
+                              ) : (
+                                <span className="text-[11px] font-medium" style={{ color: '#6C5846', fontFamily: 'var(--font-sans)' }}>
+                                  {hasMemories ? 'A living draft with room for more.' : 'Waiting for the first story.'}
                                 </span>
                               )}
                             </div>
@@ -945,7 +956,7 @@ export default function Dashboard() {
                                   ))}
                                 </div>
                                 <span className="text-[11px]" style={{ color: '#756253', fontFamily: 'var(--font-sans)' }}>
-                                  Shared with family
+                                  Family can add their memories too
                                 </span>
                               </div>
                             )}
@@ -953,25 +964,25 @@ export default function Dashboard() {
                         </div>
 
                         <div
-                          className="mt-4 md:mt-5 rounded-[22px] px-4 py-3.5 transition-all duration-300 group-hover:translate-y-[-1px]"
+                          className="mt-5 rounded-[24px] px-4 py-4 transition-all duration-300 group-hover:translate-y-[-1px]"
                           style={{
                             background: hasMemories
-                              ? 'linear-gradient(180deg, rgba(255,250,240,0.98) 0%, rgba(248,239,224,0.98) 100%)'
-                              : 'linear-gradient(180deg, rgba(252,246,234,0.98) 0%, rgba(248,237,214,0.98) 100%)',
-                            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.75), 0 10px 24px rgba(212,163,115,0.12)',
-                            border: '1px solid rgba(212,163,115,0.18)',
+                              ? 'linear-gradient(180deg, rgba(247,236,218,0.98) 0%, rgba(242,227,205,0.98) 100%)'
+                              : 'linear-gradient(180deg, rgba(251,243,229,0.98) 0%, rgba(246,232,205,0.98) 100%)',
+                            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.82), 0 14px 30px rgba(212,163,115,0.15)',
+                            border: '1px solid rgba(212,163,115,0.22)',
                           }}
                         >
                           <div className="flex items-center justify-between gap-3">
                             <div className="min-w-0">
-                              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8E735C', fontFamily: 'var(--font-sans)' }}>
-                                {hasMemories ? 'Open book' : 'Start your first chapter'}
+                              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#7A5E47', fontFamily: 'var(--font-sans)' }}>
+                                Next step
                               </p>
-                              <p className="mt-1 text-sm leading-5" style={{ color: '#5F4938', fontFamily: 'var(--font-sans)' }}>
-                                {hasMemories ? 'Pick up where the last memory left off.' : 'Capture the first story while it is still vivid.'}
+                              <p className="mt-1 text-[0.92rem] leading-5" style={{ color: '#4E3829', fontFamily: 'var(--font-sans)' }}>
+                                {hasMemories ? 'Open the book and add the next memory while the details are fresh.' : 'Open the book and write the first scene that still lives in your mind.'}
                               </p>
                             </div>
-                            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: 'rgba(90,62,38,0.92)', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 10px 20px rgba(90,62,38,0.18)' }}>
+                            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.22)' }}>
                               {hasMemories ? 'Continue' : 'Begin'}
                               <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                 <path d="M5 12h14M12 5l7 7-7 7"/>
