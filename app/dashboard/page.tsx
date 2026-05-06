@@ -750,7 +750,7 @@ export default function Dashboard() {
                 <div
                   key={book.id}
                   className="animate-fade-up"
-                  style={{ animationDelay: `${i * 0.06}s`, minHeight: 320 }}
+                  style={{ animationDelay: `${i * 0.06}s`, minHeight: 0 }}
                 >
                   <Link href={`/books/${book.id}`} className="block h-full group">
                     <div
@@ -761,7 +761,7 @@ export default function Dashboard() {
                         border: '1px solid rgba(212,163,115,0.10)',
                         borderLeft: `4px solid ${spineColor}`,
                         borderLeftColor: spineColor,
-                        minHeight: '220px',
+                        minHeight: '264px',
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.boxShadow = `0 20px 60px rgba(212,163,115,0.28), 0 8px 28px rgba(43,43,43,0.14), inset 0 0 0 1.5px rgba(212,163,115,0.18), 0 0 40px ${bookColor}08`;
@@ -774,114 +774,138 @@ export default function Dashboard() {
                         e.currentTarget.style.borderLeft = `4px solid ${spineColor}`;
                       }}
                     >
-                      {/* Warm hover glow */}
-                      <div 
+                      <div
                         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
                         style={{ background: `radial-gradient(ellipse at 30% 50%, ${bookColor}12 0%, transparent 60%)` }}
                       />
 
-                      {/* Decorative corner flourish — top right */}
-                      <div
-                        className="absolute top-0 right-0 w-20 h-20 pointer-events-none overflow-hidden"
-                      >
+                      <div className="absolute top-0 right-0 w-20 h-20 pointer-events-none overflow-hidden">
                         <div
                           className="absolute top-0 right-0 w-16 h-16 rounded-full opacity-[0.07]"
                           style={{ background: `radial-gradient(circle, ${bookColor} 0%, transparent 70%)` }}
                         />
                       </div>
 
-                      {/* Main content area — outer flex-col + min-height ensures footer always at same vertical position */}
-                      <div className="relative flex flex-col justify-between min-h-[220px] p-6 pl-8">
-                        {/* Inner flex row: book illustration + text content */}
-                        <div className="flex items-start gap-5">
-                        <BookCover
-                          title={book.title}
-                          description={book.description}
-                          accentColor={bookColor}
-                          plan={book.plan}
-                        />
-                        </div>
-
-                        {/* Right: Content */}
-                        <div className="flex-1 min-w-0">
-                          {/* Plan badge */}
-                          {book.plan && book.plan !== 'free' && (
-                            <span
-                              className="inline-block text-[10px] font-semibold px-2.5 py-0.5 rounded-full mb-2"
-                              style={getPlanBadgeStyles(book.plan)}
-                            >
-                              {getBookPlanLabel(book.plan, book.storage_tier)}
-                            </span>
-                          )}
-
-                          {/* Title */}
-                          <h3 className="text-xl font-medium leading-snug mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                            {book.title}
-                          </h3>
-
-                          {/* Description — only show when present */}
-                          {book.description ? (
-                            <p className="text-sm leading-relaxed line-clamp-2" style={{ color: '#5A3A1A', fontFamily: 'var(--font-serif)' }}>
-                              {book.description}
-                            </p>
-                          ) : null}
-
-                          {/* Book date — created date for premium feel */}
-                          <p className="text-[11px] mt-1.5" style={{ color: '#B0A898', fontFamily: 'var(--font-sans)' }}>
-                            Created {new Date(book.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                          </p>
-
-
-                          {/* Contributors — only show when multiple */}
-                          {book.contributors && book.contributors.length > 1 && (
-                            <div className="flex items-center gap-2 mt-3">
-                              <div className="flex -space-x-1.5">
-                                {book.contributors.slice(0, 3).map((c) => (
-                                  <Avatar
-                                    key={c.id}
-                                    name={c.name || 'Contributor'}
-                                    imageUrl={c.profile_image_url}
-                                    className="ring-2 ring-[#FEFCF4]"
-                                    size={22}
-                                  />
-                                ))}
-                              </div>
-                              <span className="text-[11px]" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
-                                {book.contributors.length} contributors
+                      <div className="relative flex h-full flex-col p-5 pl-6">
+                        <div className="flex items-start justify-between gap-3 mb-4">
+                          <div className="flex items-center gap-2 flex-wrap min-w-0">
+                            {book.plan && book.plan !== 'free' && (
+                              <span
+                                className="inline-flex items-center text-[10px] font-semibold px-2.5 py-1 rounded-full"
+                                style={getPlanBadgeStyles(book.plan)}
+                              >
+                                {getBookPlanLabel(book.plan, book.storage_tier)}
                               </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Footer — elevated action strip for premium feel */}
-                      <div className="px-6 pl-8 pb-5" style={{ marginTop: 'auto' }}>
-                        <div
-                          className="flex items-center justify-between gap-2 rounded-2xl px-4 py-2.5 transition-all duration-300 group-hover:gap-3 group-hover:bg-[rgba(212,163,115,0.10)]"
-                          style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}
-                        >
-                          <span 
-                            className="text-xs font-semibold"
-                            style={{ 
-                              color: '#3A2A1A',
-                              fontFamily: 'var(--font-sans)',
-                              letterSpacing: '0.02em',
-                            }}
-                          >
-                            {book._count?.memories === 0
-                              ? 'Begin writing'
-                              : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'} collected`}
-                          </span>
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold px-3.5 py-1.5 rounded-full transition-all duration-300" style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: '#5A3A2A', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em' }}>
-                            {book._count?.memories === 0 ? 'Start' : 'View'}
-                            <svg
-                              className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0"
-                              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-                              style={{ color: '#8A6A4A' }}
+                            )}
+                            <span
+                              className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em]"
+                              style={{
+                                backgroundColor: book._count?.memories ? 'rgba(204,213,174,0.24)' : 'rgba(212,163,115,0.14)',
+                                color: book._count?.memories ? '#49553A' : '#7A5B37',
+                                fontFamily: 'var(--font-sans)',
+                              }}
                             >
-                              <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
+                              {book._count?.memories ? 'Active' : 'Draft'}
+                            </span>
+                          </div>
+                          <span className="text-[11px] shrink-0" style={{ color: '#9A8D7A', fontFamily: 'var(--font-sans)' }}>
+                            Updated {new Date(book.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                           </span>
+                        </div>
+
+                        <div className="flex items-start gap-4 flex-1 min-h-0">
+                          <BookCover
+                            title={book.title}
+                            description={book.description}
+                            accentColor={bookColor}
+                            plan={book.plan}
+                          />
+
+                          <div className="flex-1 min-w-0 flex flex-col">
+                            <h3 className="text-[1.15rem] font-medium leading-snug mb-2 line-clamp-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                              {book.title}
+                            </h3>
+
+                            {book.description ? (
+                              <p className="text-sm leading-relaxed line-clamp-3" style={{ color: '#5A3A1A', fontFamily: 'var(--font-serif)' }}>
+                                {book.description}
+                              </p>
+                            ) : (
+                              <p className="text-sm leading-relaxed italic" style={{ color: '#8A7C69', fontFamily: 'var(--font-serif)' }}>
+                                A new place to gather stories, voices, and images worth keeping.
+                              </p>
+                            )}
+
+                            <div className="mt-3 flex items-center gap-3 flex-wrap">
+                              <div className="rounded-2xl px-3 py-2" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.12)' }}>
+                                <p className="text-[10px] uppercase tracking-[0.14em]" style={{ color: '#8A6A4A', fontFamily: 'var(--font-sans)' }}>
+                                  Memories
+                                </p>
+                                <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                                  {book._count?.memories ?? 0}
+                                </p>
+                              </div>
+                              <div className="rounded-2xl px-3 py-2" style={{ backgroundColor: 'rgba(204,213,174,0.12)', border: '1px solid rgba(204,213,174,0.18)' }}>
+                                <p className="text-[10px] uppercase tracking-[0.14em]" style={{ color: '#6B7A56', fontFamily: 'var(--font-sans)' }}>
+                                  Started
+                                </p>
+                                <p className="text-sm font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                                  {new Date(book.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                                </p>
+                              </div>
+                            </div>
+
+                            {book.contributors && book.contributors.length > 1 && (
+                              <div className="flex items-center gap-2 mt-3">
+                                <div className="flex -space-x-1.5">
+                                  {book.contributors.slice(0, 3).map((c) => (
+                                    <Avatar
+                                      key={c.id}
+                                      name={c.name || 'Contributor'}
+                                      imageUrl={c.profile_image_url}
+                                      className="ring-2 ring-[#FEFCF4]"
+                                      size={22}
+                                    />
+                                  ))}
+                                </div>
+                                <span className="text-[11px]" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                                  {book.contributors.length} contributors
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mt-5 pt-4" style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}>
+                          <div className="flex items-center justify-between gap-3 rounded-2xl px-3 py-3 transition-all duration-300 group-hover:bg-[rgba(212,163,115,0.10)]">
+                            <div className="min-w-0">
+                              <p
+                                className="text-xs font-semibold"
+                                style={{
+                                  color: '#3A2A1A',
+                                  fontFamily: 'var(--font-sans)',
+                                  letterSpacing: '0.02em',
+                                }}
+                              >
+                                {book._count?.memories === 0
+                                  ? 'Ready for the first story'
+                                  : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'} collected`}
+                              </p>
+                              <p className="text-[11px] mt-1" style={{ color: '#8A7C69', fontFamily: 'var(--font-sans)' }}>
+                                {book._count?.memories === 0 ? 'Open the book and add your first memory.' : 'Open the book to keep shaping the story.'}
+                              </p>
+                            </div>
+                            <span className="flex items-center gap-1.5 text-[11px] font-bold px-3.5 py-1.5 rounded-full transition-all duration-300 shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: '#5A3A2A', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em' }}>
+                              {book._count?.memories === 0 ? 'Start' : 'Open'}
+                              <svg
+                                className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                                style={{ color: '#8A6A4A' }}
+                              >
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                              </svg>
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>

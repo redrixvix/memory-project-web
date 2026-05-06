@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { AppShellHeader } from '@/components/ui/app-shell-header';
 
 interface User {
   id: number;
@@ -161,24 +162,13 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
-      {/* ── TOP NAV ── */}
-      <header
-        className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b shrink-0"
-        style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}
-      >
-        <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
-              <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
-              <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
-            </svg>
-            <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
-          </Link>
-          <Link href="/dashboard" className="text-sm transition-colors hover:opacity-70" style={{ color: '#5A5A4A' }}>
-            Back to dashboard
-          </Link>
-        </div>
-      </header>
+      <AppShellHeader
+        current="Settings"
+        links={[
+          { href: '/dashboard', label: 'Dashboard' },
+          { href: '/upgrade', label: 'Plans' },
+        ]}
+      />
 
       {/* ── MAIN ── */}
       <main className="px-6 md:px-10 py-10 max-w-3xl mx-auto w-full flex-1">
