@@ -833,6 +833,10 @@ export default function Dashboard() {
                   ? 'One memory is already on the page.'
                   : `${memoryCount} memories are already taking shape.`
                 : 'Open the book and capture the first scene while it is still vivid.';
+              const nextStepLabel = hasMemories ? 'Continue the story' : 'Start the first chapter';
+              const nextStepBody = hasMemories
+                ? 'Open your book and keep writing from the moment you left off.'
+                : 'Open your book, choose a prompt, and capture the first scene while it is fresh.';
               return (
                 <div
                   key={book.id}
@@ -916,7 +920,7 @@ export default function Dashboard() {
                             </div>
 
                             {book.description ? (
-                              <p className="mt-2.5 text-[0.95rem] leading-6 line-clamp-3" style={{ color: '#523A2A', fontFamily: 'var(--font-serif)' }}>
+                              <p className="mt-2.5 text-[0.95rem] leading-6 line-clamp-2" style={{ color: '#523A2A', fontFamily: 'var(--font-serif)' }}>
                                 {book.description}
                               </p>
                             ) : (
@@ -954,18 +958,33 @@ export default function Dashboard() {
                                 </span>
                               </div>
                             ) : (
-                              <p className="mt-3 text-[11px] uppercase tracking-[0.14em]" style={{ color: '#8B725D', fontFamily: 'var(--font-sans)' }}>
+                              <p className="mt-3 text-[0.76rem] leading-5" style={{ color: '#7A6453', fontFamily: 'var(--font-sans)' }}>
                                 {supportingLine}
                               </p>
                             )}
 
                             <div className="mt-auto pt-5">
-                              <div className="flex items-center justify-between gap-3 border-t pt-4" style={{ borderColor: 'rgba(212,163,115,0.16)' }}>
-                                <p className="min-w-0 text-[0.88rem] leading-5" style={{ color: '#4E3829', fontFamily: 'var(--font-sans)' }}>
-                                  {hasMemories ? 'Pick up where you left off.' : 'Write the first chapter.'}
-                                </p>
-                                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
-                                  {hasMemories ? 'Continue' : 'Begin'}
+                              <div
+                                className="flex flex-col gap-3 rounded-[22px] border px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                                style={{
+                                  borderColor: 'rgba(212,163,115,0.18)',
+                                  background: 'linear-gradient(180deg, rgba(255,255,255,0.76) 0%, rgba(252,246,235,0.92) 100%)',
+                                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8)',
+                                }}
+                              >
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                                    Next step
+                                  </p>
+                                  <p className="mt-1 text-[0.94rem] font-semibold leading-5" style={{ color: '#2C1E14', fontFamily: 'var(--font-sans)' }}>
+                                    {nextStepLabel}
+                                  </p>
+                                  <p className="mt-1 text-[0.83rem] leading-5" style={{ color: '#5A4334', fontFamily: 'var(--font-sans)' }}>
+                                    {nextStepBody}
+                                  </p>
+                                </div>
+                                <span className="inline-flex w-full shrink-0 items-center justify-center gap-1.5 self-start whitespace-nowrap rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5 sm:w-auto sm:self-center" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
+                                  {hasMemories ? 'Open book' : 'Begin memory'}
                                   <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <path d="M5 12h14M12 5l7 7-7 7"/>
                                   </svg>
