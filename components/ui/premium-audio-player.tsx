@@ -14,7 +14,7 @@ type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 export function PremiumAudioPlayer({
   src,
   loadingText = 'Preparing playback…',
-  errorText = 'Preview unavailable',
+  errorText = 'Voice note attached',
   className = 'w-full rounded-xl audio-player',
 }: PremiumAudioPlayerProps) {
   const [loadState, setLoadState] = useState<LoadState>(src ? 'loading' : 'idle');
@@ -38,16 +38,16 @@ export function PremiumAudioPlayer({
         <span
           className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-semibold"
           style={{
-            backgroundColor: loadState === 'error' ? 'rgba(185,28,28,0.1)' : 'rgba(254,250,224,0.92)',
-            color: loadState === 'error' ? '#7C2D12' : '#5A4633',
-            border: loadState === 'error' ? '1px solid rgba(185,28,28,0.18)' : '1px solid rgba(212,163,115,0.2)',
+            backgroundColor: loadState === 'error' ? 'rgba(212,163,115,0.14)' : 'rgba(254,250,224,0.92)',
+            color: loadState === 'error' ? '#5A4633' : '#5A4633',
+            border: loadState === 'error' ? '1px solid rgba(212,163,115,0.24)' : '1px solid rgba(212,163,115,0.2)',
           }}
         >
           <span
             className="h-1.5 w-1.5 rounded-full"
             style={{
               backgroundColor: loadState === 'error'
-                ? '#B91C1C'
+                ? 'var(--bronze)'
                 : loadState === 'ready'
                   ? '#6B8F71'
                   : 'var(--bronze)',
@@ -56,29 +56,33 @@ export function PremiumAudioPlayer({
           />
           {statusLabel}
         </span>
-        {loadState === 'loading' && (
-          <span style={{ color: '#7A6A60' }}>
-            We’re pulling in the timing so this feels settled before playback.
-          </span>
-        )}
+      {loadState === 'loading' && (
+        <span style={{ color: '#7A6A60' }}>
+          We’re pulling in the timing so this feels settled before playback.
+        </span>
+      )}
+      {loadState === 'error' && (
+        <span style={{ color: '#7A6A60' }}>
+          Preview isn’t available in this browser, but the voice note is still saved with this memory.
+        </span>
+      )}
       </div>
 
       {loadState !== 'ready' && (
         <div
-          className="flex h-10 items-center gap-3 rounded-xl border px-3"
+          className="flex min-h-10 items-center gap-3 rounded-xl border px-3 py-3"
           style={{
             backgroundColor: 'rgba(255,253,246,0.72)',
-            borderColor: loadState === 'error' ? 'rgba(185,28,28,0.18)' : 'rgba(212,163,115,0.18)',
+            borderColor: loadState === 'error' ? 'rgba(212,163,115,0.24)' : 'rgba(212,163,115,0.18)',
           }}
         >
           <div
             className="flex h-7 w-7 items-center justify-center rounded-full"
-            style={{ backgroundColor: loadState === 'error' ? 'rgba(185,28,28,0.08)' : 'rgba(212,163,115,0.14)' }}
+            style={{ backgroundColor: loadState === 'error' ? 'rgba(212,163,115,0.16)' : 'rgba(212,163,115,0.14)' }}
           >
             {loadState === 'error' ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#B91C1C' }}>
-                <circle cx="12" cy="12" r="10" />
-                <path d="M15 9l-6 6M9 9l6 6" />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#8A6A3C' }}>
+                <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
               </svg>
             ) : (
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
@@ -87,18 +91,35 @@ export function PremiumAudioPlayer({
             )}
           </div>
           <div className="flex flex-1 items-center gap-1.5">
-            {[36, 52, 40, 64, 44].map((width, index) => (
-              <span
-                key={width + index}
-                className={loadState === 'loading' ? 'animate-pulse' : ''}
-                style={{
-                  width,
-                  height: 6 + (index % 2) * 4,
-                  borderRadius: 999,
-                  backgroundColor: loadState === 'error' ? 'rgba(185,28,28,0.15)' : 'rgba(212,163,115,0.2)',
-                }}
-              />
-            ))}
+            {loadState === 'error' ? (
+              <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                <p className="min-w-0 text-sm leading-5" style={{ color: '#5F4A3B', fontFamily: 'var(--font-sans)' }}>
+                  Playback preview couldn’t load here. You can still keep the attachment or open the file directly.
+                </p>
+                <a
+                  href={src}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex shrink-0 items-center rounded-full px-3 py-1.5 text-[11px] font-semibold transition-opacity hover:opacity-80"
+                  style={{ backgroundColor: 'rgba(212,163,115,0.16)', color: '#4A3120', fontFamily: 'var(--font-sans)' }}
+                >
+                  Open audio
+                </a>
+              </div>
+            ) : (
+              [36, 52, 40, 64, 44].map((width, index) => (
+                <span
+                  key={width + index}
+                  className={loadState === 'loading' ? 'animate-pulse' : ''}
+                  style={{
+                    width,
+                    height: 6 + (index % 2) * 4,
+                    borderRadius: 999,
+                    backgroundColor: 'rgba(212,163,115,0.2)',
+                  }}
+                />
+              ))
+            )}
           </div>
         </div>
       )}

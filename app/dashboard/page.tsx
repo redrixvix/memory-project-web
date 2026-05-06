@@ -328,16 +328,27 @@ export default function Dashboard() {
       )
     : books;
 
-  const totalPages = Math.max(1, Math.ceil(filteredBooks.length / BOOKS_PER_PAGE));
-  const safePage = Math.min(currentPage, totalPages);
-  const paginatedBooks = filteredBooks
+  const sortedBooks = filteredBooks
     .slice()
     .sort((a, b) => {
       if (sortOrder === 'newest') return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
       if (sortOrder === 'oldest') return new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
       return getDisplayBookTitle(a.title).localeCompare(getDisplayBookTitle(b.title));
-    })
-    .slice((safePage - 1) * BOOKS_PER_PAGE, safePage * BOOKS_PER_PAGE);
+    });
+
+  const activeBooks = sortedBooks.filter((book) => (book._count?.memories ?? 0) > 0);
+  const draftBooks = sortedBooks.filter((book) => (book._count?.memories ?? 0) === 0);
+  const featuredBook = activeBooks[0] ?? sortedBooks[0] ?? null;
+  const featuredQueue = featuredBook
+    ? [
+        ...activeBooks.filter((book) => book.id !== featuredBook.id),
+        ...draftBooks.filter((book) => book.id !== featuredBook.id),
+      ].slice(0, 3)
+    : [];
+
+  const totalPages = Math.max(1, Math.ceil(sortedBooks.length / BOOKS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedBooks = sortedBooks.slice((safePage - 1) * BOOKS_PER_PAGE, safePage * BOOKS_PER_PAGE);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
@@ -778,6 +789,142 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+        )}
+
+        {!searchQuery && featuredBook && (
+          <section className="mb-8 md:mb-10 animate-fade-up">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                  Reading room
+                </p>
+                <h2 className="mt-2 text-[1.85rem] font-medium tracking-tight" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
+                  {activeBooks.length > 0 ? 'Continue where the story still feels warm.' : 'Choose the first keepsake worth opening tonight.'}
+                </h2>
+              </div>
+              <p className="max-w-md text-sm leading-6 md:text-right" style={{ color: '#6A5648', fontFamily: 'var(--font-sans)' }}>
+                {activeBooks.length > 0
+                  ? `${activeBooks.length} books already hold memories. ${draftBooks.length} ${draftBooks.length === 1 ? 'draft is' : 'drafts are'} waiting for a first page.`
+                  : 'Start with a draft that already has a title and make it feel like a keepsake instead of a placeholder.'}
+              </p>
+            </div>
+
+            <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(320px,0.9fr)]">
+              <Link href={`/books/${featuredBook.id}`} className="group block">
+                <article
+                  className="relative overflow-hidden rounded-[32px] border p-6 md:p-7 transition-all duration-300 group-hover:-translate-y-1"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255,251,242,0.98) 0%, rgba(246,236,219,0.96) 100%)',
+                    borderColor: 'rgba(212,163,115,0.2)',
+                    boxShadow: '0 18px 42px rgba(212,163,115,0.14), 0 20px 50px rgba(43,43,43,0.06)',
+                  }}
+                >
+                  <div className="absolute inset-y-0 left-0 w-1.5" style={{ background: 'linear-gradient(180deg, rgba(212,163,115,0.95) 0%, rgba(107,142,35,0.85) 100%)' }} />
+                  <div className="absolute right-0 top-0 h-28 w-28 rounded-full blur-3xl" style={{ background: 'rgba(212,163,115,0.12)' }} />
+
+                  <div className="relative grid gap-5 md:grid-cols-[132px_minmax(0,1fr)] md:items-center">
+                    <div className="mx-auto md:mx-0 rounded-[24px] p-3" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(250,237,205,0.48) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.88), 0 12px 28px rgba(212,163,115,0.14)' }}>
+                      <BookCover
+                        title={featuredBook.title}
+                        description={featuredBook.description}
+                        accentColor={BOOK_COLORS[featuredBook.id % BOOK_COLORS.length]}
+                        plan={featuredBook.plan}
+                        previewImageUrl={featuredBook.preview_photo_url}
+                      />
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]" style={{ backgroundColor: 'rgba(85,103,72,0.12)', color: '#46563C', fontFamily: 'var(--font-sans)' }}>
+                          {(featuredBook._count?.memories ?? 0) > 0 ? 'Best next step' : 'Start here'}
+                        </span>
+                        {featuredBook.plan && featuredBook.plan !== 'free' && (
+                          <span className="inline-flex items-center text-[10px] font-semibold px-2.5 py-1 rounded-full" style={getPlanBadgeStyles(featuredBook.plan)}>
+                            {getBookPlanLabel(featuredBook.plan, featuredBook.storage_tier)}
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="mt-4 text-[1.9rem] leading-tight font-medium tracking-tight" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
+                        {getDisplayBookTitle(featuredBook.title)}
+                      </h3>
+                      <p className="mt-2 max-w-2xl text-[0.98rem] leading-7" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)' }}>
+                        {(featuredBook._count?.memories ?? 0) > 0
+                          ? shortenShelfNote(shortenMemoryExcerpt(featuredBook.latest_memory_excerpt) ? `“${shortenMemoryExcerpt(featuredBook.latest_memory_excerpt)}”${featuredBook.latest_contributor_name ? ` — ${featuredBook.latest_contributor_name}` : ''}` : `${featuredBook._count?.memories ?? 0} memories already live here.`, 180)
+                          : shortenShelfNote(featuredBook.description, 180) || 'Open this draft and capture the first scene while it is still close.'}
+                      </p>
+
+                      <div className="mt-5 flex flex-wrap items-center gap-2.5">
+                        <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.82)', color: '#302117', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}>
+                          {featuredBook._count?.memories ?? 0} {(featuredBook._count?.memories ?? 0) === 1 ? 'memory' : 'memories'}
+                        </span>
+                        <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#5F4A3B', fontFamily: 'var(--font-sans)' }}>
+                          Updated {new Date(featuredBook.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
+
+                      <div className="mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
+                        {(featuredBook._count?.memories ?? 0) > 0 ? 'Open the book' : 'Begin the first memory'}
+                        <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </Link>
+
+              <div className="rounded-[30px] border p-4 md:p-5" style={{ background: 'rgba(255,252,245,0.9)', borderColor: 'rgba(212,163,115,0.18)', boxShadow: '0 14px 32px rgba(212,163,115,0.08)' }}>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                      Up next
+                    </p>
+                    <p className="mt-1 text-sm leading-6" style={{ color: '#6A5648', fontFamily: 'var(--font-sans)' }}>
+                      A shorter queue so the library feels curated instead of endless.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  {featuredQueue.length > 0 ? featuredQueue.map((book) => {
+                    const memoryCount = book._count?.memories ?? 0;
+                    return (
+                      <Link key={book.id} href={`/books/${book.id}`} className="group flex items-start gap-3 rounded-[22px] border px-4 py-3 transition-all duration-200 hover:-translate-y-0.5" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(250,244,233,0.92) 100%)', borderColor: 'rgba(212,163,115,0.14)' }}>
+                        <div className="mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: memoryCount > 0 ? '#6B8E23' : 'var(--bronze)' }} />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <p className="truncate text-[1rem] font-medium" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
+                                {getDisplayBookTitle(book.title)}
+                              </p>
+                              <p className="mt-1 text-[0.8rem] uppercase tracking-[0.14em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                                {memoryCount > 0 ? `${memoryCount} ${memoryCount === 1 ? 'memory' : 'memories'} inside` : 'Still waiting for page one'}
+                              </p>
+                            </div>
+                            <svg className="mt-1 h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#7A6453' }}>
+                              <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                          </div>
+                          <p className="mt-2 line-clamp-2 text-[0.92rem] leading-6" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)' }}>
+                            {memoryCount > 0
+                              ? shortenShelfNote(shortenMemoryExcerpt(book.latest_memory_excerpt) ? `“${shortenMemoryExcerpt(book.latest_memory_excerpt)}”` : 'Pick up where this story left off.', 110)
+                              : shortenShelfNote(book.description, 110) || 'Add the opening memory while the details are still vivid.'}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  }) : (
+                    <div className="rounded-[22px] border px-4 py-4" style={{ borderColor: 'rgba(212,163,115,0.14)', background: 'rgba(255,255,255,0.66)' }}>
+                      <p className="text-sm leading-6" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)' }}>
+                        Once you have a few books, this queue will keep the next meaningful action within reach.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
         )}
 
         {/* ── Empty state — editorial card style ── */}
