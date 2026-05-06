@@ -1,12 +1,11 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useCallback, useEffect, useState, use } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Lightbox } from '@/components/ui/lightbox';
 import { MembersModal } from '@/components/ui/members-modal';
 import { Avatar } from '@/components/ui/avatar';
@@ -34,6 +33,11 @@ interface Book {
   storage_tier: string;
   plan: string;
   owner_name: string;
+}
+
+interface BookMember {
+  user_id: number;
+  role: string;
 }
 
 const ACCENT_COLORS = ['var(--bronze)', 'var(--tea-green)', 'var(--papaya)'];
@@ -108,17 +112,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const chapterNumberMap = new Map<number, number>();
   chronologicalMemories.forEach((m, i) => chapterNumberMap.set(m.id, i + 1));
 
-  useEffect(() => {
-    fetchBook();
-
-    const handleScroll = () => {
-      setShowTopBtn(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [id]);
-
-  const fetchBook = async () => {
+  const fetchBook = useCallback(async () => {
     try {
       const res = await fetch(`/api/books/${id}`);
       if (res.status === 401) { router.push('/login'); setLoading(false); return; }
@@ -139,7 +133,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           const meRes = await fetch('/api/auth/me');
           if (meRes.ok) {
             const me = await meRes.json();
-            const self = (membersData.data || []).find((m: any) => m.user_id === me.user?.id);
+            const self = ((membersData.data as BookMember[] | undefined) || []).find((member) => member.user_id === me.user?.id);
             if (self) {
               setCurrentUserId(self.user_id);
               setCurrentUserRole(self.role);
@@ -155,7 +149,22 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, router]);
+
+  useEffect(() => {
+    const fetchTimer = window.setTimeout(() => {
+      void fetchBook();
+    }, 0);
+
+    const handleScroll = () => {
+      setShowTopBtn(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.clearTimeout(fetchTimer);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [fetchBook]);
 
   const handleDeleteMemory = async (memoryId: number) => {
     const res = await fetch(`/api/memories/${memoryId}`, { method: 'DELETE' });
@@ -733,7 +742,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               className="text-2xl leading-none mt-[-2px] shrink-0"
                               style={{ color: 'rgba(212,163,115,0.4)', fontFamily: 'Georgia, serif' }}
                             >
-                              "
+                              &ldquo;
                             </span>
                             <p
                               className="text-sm md:text-base italic leading-relaxed"
@@ -751,7 +760,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       <div className={useMediaRail ? 'grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(17rem,0.95fr)] lg:items-start' : ''}>
                         <div>
                           {/* Media chips */}
-                          {(photoCount > 0 || hasAudio) && (
+                          {(photoCount > 0 || hasAudio) && !useMediaRail && (
                             <div className="flex flex-wrap items-center gap-2 mb-4">
                               {photoCount > 0 && (
                                 <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}>
@@ -823,10 +832,28 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                           >
                             <div>
                               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em]" style={{ color: '#8A735E', fontFamily: 'var(--font-sans)' }}>
-                                Captured with this memory
+                                Keepsakes
                               </p>
-                              <p className="mt-1 text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
-                                Keepsakes sit alongside the story instead of taking it over.
+                              <div className="mt-2 flex flex-wrap items-center gap-2">
+                                {photoCount > 0 && (
+                                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.68rem] font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: '#6D5237', fontFamily: 'var(--font-sans)' }}>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                                    </svg>
+                                    {photoCount} {photoCount === 1 ? 'photo' : 'photos'}
+                                  </span>
+                                )}
+                                {hasAudio && (
+                                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.68rem] font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.22)', color: '#4E5D46', fontFamily: 'var(--font-sans)' }}>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+                                    </svg>
+                                    Voice note
+                                  </span>
+                                )}
+                              </div>
+                              <p className="mt-2 text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
+                                Open the keepsakes that were saved alongside this chapter.
                               </p>
                             </div>
 

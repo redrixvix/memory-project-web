@@ -9,7 +9,6 @@ import { Dropdown, DropdownItem, DropdownDivider } from '@/components/ui/dropdow
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
 import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 import { MobileNav } from '@/components/ui/mobile-nav';
 import { BookCover } from '@/components/ui/book-cover';
@@ -172,11 +171,6 @@ export default function Dashboard() {
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   }, [showCreate, creating]);
-
-  // Reset to page 1 whenever the filtered list changes — must be before early return
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, sortOrder]);
 
   const createBook = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -465,7 +459,10 @@ export default function Dashboard() {
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
                   placeholder="Search your books..."
                   className="w-full h-10 md:h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
                   style={{
@@ -480,7 +477,10 @@ export default function Dashboard() {
                 {searchQuery && (
                   <button
                     type="button"
-                    onClick={() => setSearchQuery('')}
+                    onClick={() => {
+                      setSearchQuery('');
+                      setCurrentPage(1);
+                    }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-full transition-opacity hover:opacity-70"
                     style={{ color: '#7A7A6A', backgroundColor: 'rgba(212,163,115,0.1)' }}
                     aria-label="Clear search"
@@ -501,7 +501,10 @@ export default function Dashboard() {
                   <button
                     key={value}
                     type="button"
-                    onClick={() => setSortOrder(value)}
+                    onClick={() => {
+                      setSortOrder(value);
+                      setCurrentPage(1);
+                    }}
                     className="rounded-xl px-5 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
@@ -818,7 +821,11 @@ export default function Dashboard() {
               const hasMemories = memoryCount > 0;
               const displayTitle = getDisplayBookTitle(book.title);
               const wasSanitized = titleWasSanitized(book.title);
-              const draftLabel = `Draft from ${new Date(book.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${new Date(book.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+              const createdAt = new Date(book.created_at);
+              const updatedAt = new Date(book.updated_at);
+              const draftLabel = `Draft from ${createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${createdAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+              const presenceLabel = hasMemories ? 'In progress' : 'Ready to begin';
+              const timeLabel = `${hasMemories ? 'Last touched' : 'Started'} ${hasMemories ? updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
               return (
                 <div
                   key={book.id}
@@ -854,8 +861,8 @@ export default function Dashboard() {
                       <div className="absolute inset-x-5 top-0 h-px opacity-80" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)' }} />
 
                       <div className="relative flex h-full flex-col p-4 md:p-6">
-                        <div className="flex items-start justify-between gap-3 mb-4">
-                          <div className="flex items-center gap-2 flex-wrap min-w-0">
+                        <div className="mb-4 flex items-center justify-between gap-3">
+                          <div className="flex min-w-0 flex-wrap items-center gap-2">
                             {book.plan && book.plan !== 'free' && (
                               <span
                                 className="inline-flex items-center text-[10px] font-semibold px-2.5 py-1 rounded-full"
@@ -865,24 +872,18 @@ export default function Dashboard() {
                               </span>
                             )}
                             <span
-                              className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em]"
+                              className="text-[0.68rem] font-semibold uppercase tracking-[0.16em]"
                               style={{
-                                backgroundColor: hasMemories ? 'rgba(204,213,174,0.32)' : 'rgba(212,163,115,0.14)',
-                                color: hasMemories ? '#39482C' : '#7A5B37',
+                                color: hasMemories ? '#556748' : '#8A6B46',
                                 fontFamily: 'var(--font-sans)',
                               }}
                             >
-                              {hasMemories ? 'In progress' : 'Fresh draft'}
+                              {presenceLabel}
                             </span>
                           </div>
-                          <div className="text-right shrink-0">
-                            <p className="text-[10px] uppercase tracking-[0.16em]" style={{ color: '#9B836D', fontFamily: 'var(--font-sans)' }}>
-                              Updated
-                            </p>
-                            <p className="text-[12px] font-semibold" style={{ color: '#544233', fontFamily: 'var(--font-sans)' }}>
-                              {new Date(book.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                            </p>
-                          </div>
+                          <p className="shrink-0 text-[0.68rem] font-medium uppercase tracking-[0.16em]" style={{ color: '#9B836D', fontFamily: 'var(--font-sans)' }}>
+                            {timeLabel}
+                          </p>
                         </div>
 
                         <div className="flex items-start gap-3 md:gap-4 flex-1 min-h-0">
@@ -897,7 +898,7 @@ export default function Dashboard() {
                             </div>
                           </div>
 
-                          <div className="flex-1 min-w-0 flex flex-col">
+                          <div className="flex min-w-0 flex-1 flex-col">
                             <div>
                               <h3 className="text-[1.12rem] font-medium leading-snug line-clamp-2" style={{ color: '#2F241B', fontFamily: 'var(--font-serif)' }}>
                                 {displayTitle}
@@ -919,12 +920,9 @@ export default function Dashboard() {
                               </p>
                             )}
 
-                            <div className="mt-3 md:mt-4 flex flex-wrap gap-2">
+                            <div className="mt-3 flex flex-wrap items-center gap-2.5">
                               <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.7)', color: '#3E2E22', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.16)' }}>
                                 {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'}
-                              </span>
-                              <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px]" style={{ backgroundColor: 'rgba(250,237,205,0.62)', color: '#6E5948', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.12)' }}>
-                                Started {new Date(book.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                               </span>
                               {contributorCount > 1 && (
                                 <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px]" style={{ backgroundColor: 'rgba(204,213,174,0.26)', color: '#42503A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.24)' }}>
@@ -955,27 +953,31 @@ export default function Dashboard() {
                         </div>
 
                         <div
-                          className="mt-4 md:mt-5 rounded-[20px] md:rounded-[22px] px-3.5 md:px-4 py-3 flex items-center justify-between gap-3 transition-all duration-300 group-hover:translate-y-[-1px]"
+                          className="mt-4 md:mt-5 rounded-[22px] px-4 py-3.5 transition-all duration-300 group-hover:translate-y-[-1px]"
                           style={{
-                            background: 'linear-gradient(180deg, rgba(255,250,240,0.96) 0%, rgba(248,239,224,0.96) 100%)',
-                            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.75), 0 8px 18px rgba(212,163,115,0.12)',
+                            background: hasMemories
+                              ? 'linear-gradient(180deg, rgba(255,250,240,0.98) 0%, rgba(248,239,224,0.98) 100%)'
+                              : 'linear-gradient(180deg, rgba(252,246,234,0.98) 0%, rgba(248,237,214,0.98) 100%)',
+                            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.75), 0 10px 24px rgba(212,163,115,0.12)',
                             border: '1px solid rgba(212,163,115,0.18)',
                           }}
                         >
-                          <div className="min-w-0">
-                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8E735C', fontFamily: 'var(--font-sans)' }}>
-                              {hasMemories ? `${memoryCount} ${memoryCount === 1 ? 'memory' : 'memories'} collected` : 'Ready for chapter one'}
-                            </p>
-                            <p className="mt-1 text-sm leading-5" style={{ color: '#5F4938', fontFamily: 'var(--font-sans)' }}>
-                              {hasMemories ? 'Continue shaping the story and preview the next pages.' : 'Open this book and capture the first story while it is still vivid.'}
-                            </p>
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8E735C', fontFamily: 'var(--font-sans)' }}>
+                                {hasMemories ? 'Open book' : 'Start your first chapter'}
+                              </p>
+                              <p className="mt-1 text-sm leading-5" style={{ color: '#5F4938', fontFamily: 'var(--font-sans)' }}>
+                                {hasMemories ? 'Pick up where the last memory left off.' : 'Capture the first story while it is still vivid.'}
+                              </p>
+                            </div>
+                            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: 'rgba(90,62,38,0.92)', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 10px 20px rgba(90,62,38,0.18)' }}>
+                              {hasMemories ? 'Continue' : 'Begin'}
+                              <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                              </svg>
+                            </span>
                           </div>
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full transition-all duration-300 shrink-0 group-hover:translate-x-0.5" style={{ backgroundColor: 'rgba(138,106,60,0.10)', color: '#5A3E26', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', border: '1px solid rgba(138,106,60,0.12)' }}>
-                            {hasMemories ? 'Continue' : 'Start writing'}
-                            <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'rgba(90,62,38,0.84)' }}>
-                              <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
-                          </span>
                         </div>
                       </div>
                     </div>
