@@ -1375,6 +1375,13 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                             )}
                           </div>
 
+                          <div className="mt-4">
+                            <DropZone
+                              onFilesSelected={(files) => handleAudioFileSelection(files)}
+                              accept="audio/*"
+                            />
+                          </div>
+
                           <p className="mt-3 text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
                             Audio files up to 16MB. Recorded clips upload when you save.
                           </p>

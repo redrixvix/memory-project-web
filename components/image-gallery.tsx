@@ -295,16 +295,23 @@ export function DropZone({
     setIsDragging(false);
   }, []);
 
+  const acceptsAudio = accept.toLowerCase().includes("audio");
+  const acceptsImages = accept.toLowerCase().includes("image");
+
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       setIsDragging(false);
       if (disabled) return;
 
-      const files = Array.from(e.dataTransfer.files).filter((file) => file.type.startsWith("image/"));
+      const files = Array.from(e.dataTransfer.files).filter((file) => {
+        if (acceptsAudio) return file.type.startsWith("audio/");
+        if (acceptsImages) return file.type.startsWith("image/");
+        return true;
+      });
       if (files.length > 0) onFilesSelected(files);
     },
-    [disabled, onFilesSelected],
+    [acceptsAudio, acceptsImages, disabled, onFilesSelected],
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -410,7 +417,13 @@ export function DropZone({
             fontFamily: "var(--font-sans)",
           }}
         >
-          {isDragging ? "Drop images here" : "Drag photos here"}
+          {isDragging
+            ? acceptsAudio
+              ? "Drop audio here"
+              : "Drop photos here"
+            : acceptsAudio
+              ? "Drag audio here"
+              : "Drag photos here"}
         </p>
 
         <p
@@ -420,7 +433,9 @@ export function DropZone({
             fontFamily: "var(--font-sans)",
           }}
         >
-          or click to browse from your device. Previews appear instantly.
+          {acceptsAudio
+            ? "or click to browse from your device. MP3, M4A, and WAV upload cleanly here."
+            : "or click to browse from your device. Previews appear instantly."}
         </p>
       </div>
     </div>

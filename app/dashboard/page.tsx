@@ -746,6 +746,9 @@ export default function Dashboard() {
               const bookColor = BOOK_COLORS[colorIdx];
               const spineColor = BOOK_SPINE_COLORS[colorIdx];
               const spineHoverColor = BOOK_SPINE_HOVER_COLORS[colorIdx];
+              const memoryCount = book._count?.memories ?? 0;
+              const contributorCount = book.contributors?.length ?? 0;
+              const hasMemories = memoryCount > 0;
               return (
                 <div
                   key={book.id}
@@ -754,40 +757,34 @@ export default function Dashboard() {
                 >
                   <Link href={`/books/${book.id}`} className="block h-full group">
                     <div
-                      className="book-card relative h-full rounded-[28px] overflow-hidden cursor-pointer transition-all duration-300 group/card"
+                      className="book-card relative h-full min-h-[228px] md:min-h-[252px] rounded-[30px] overflow-hidden cursor-pointer transition-all duration-300 group/card"
                       style={{
-                        backgroundColor: '#FEFCF4',
-                        boxShadow: '0 2px 8px rgba(212,163,115,0.05), 0 10px 28px rgba(212,163,115,0.07)',
-                        border: '1px solid rgba(212,163,115,0.10)',
-                        borderLeft: `4px solid ${spineColor}`,
+                        background: 'linear-gradient(180deg, rgba(255,253,247,0.98) 0%, rgba(250,244,233,0.98) 100%)',
+                        boxShadow: '0 6px 16px rgba(212,163,115,0.08), 0 20px 44px rgba(43,43,43,0.05)',
+                        border: '1px solid rgba(212,163,115,0.16)',
+                        borderLeft: `5px solid ${spineColor}`,
                         borderLeftColor: spineColor,
-                        minHeight: '228px',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = `0 18px 42px rgba(212,163,115,0.18), 0 8px 20px rgba(43,43,43,0.10), inset 0 0 0 1px rgba(212,163,115,0.12), 0 0 28px ${bookColor}08`;
-                        e.currentTarget.style.transform = 'translateY(-3px)';
-                        e.currentTarget.style.borderLeft = `4px solid ${spineHoverColor}`;
+                        e.currentTarget.style.boxShadow = `0 22px 48px rgba(212,163,115,0.2), 0 12px 28px rgba(43,43,43,0.12), inset 0 0 0 1px rgba(212,163,115,0.14), 0 0 32px ${bookColor}08`;
+                        e.currentTarget.style.transform = 'translateY(-4px)';
+                        e.currentTarget.style.borderLeft = `5px solid ${spineHoverColor}`;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.05), 0 10px 28px rgba(212,163,115,0.07)';
+                        e.currentTarget.style.boxShadow = '0 6px 16px rgba(212,163,115,0.08), 0 20px 44px rgba(43,43,43,0.05)';
                         e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.borderLeft = `4px solid ${spineColor}`;
+                        e.currentTarget.style.borderLeft = `5px solid ${spineColor}`;
                       }}
                     >
                       <div
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[28px]"
-                        style={{ background: `radial-gradient(ellipse at 28% 42%, ${bookColor}10 0%, transparent 62%)` }}
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[30px]"
+                        style={{ background: `radial-gradient(ellipse at 25% 32%, ${bookColor}14 0%, transparent 64%)` }}
                       />
 
-                      <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none overflow-hidden">
-                        <div
-                          className="absolute top-0 right-0 w-14 h-14 rounded-full opacity-[0.06]"
-                          style={{ background: `radial-gradient(circle, ${bookColor} 0%, transparent 72%)` }}
-                        />
-                      </div>
+                      <div className="absolute inset-x-5 top-0 h-px opacity-80" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)' }} />
 
-                      <div className="relative flex h-full flex-col p-4 md:p-5 pl-5">
-                        <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="relative flex h-full flex-col p-4 md:p-6">
+                        <div className="flex items-start justify-between gap-3 mb-4">
                           <div className="flex items-center gap-2 flex-wrap min-w-0">
                             {book.plan && book.plan !== 'free' && (
                               <span
@@ -800,87 +797,104 @@ export default function Dashboard() {
                             <span
                               className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em]"
                               style={{
-                                backgroundColor: book._count?.memories ? 'rgba(204,213,174,0.2)' : 'rgba(212,163,115,0.12)',
-                                color: book._count?.memories ? '#49553A' : '#7A5B37',
+                                backgroundColor: hasMemories ? 'rgba(204,213,174,0.32)' : 'rgba(212,163,115,0.14)',
+                                color: hasMemories ? '#39482C' : '#7A5B37',
                                 fontFamily: 'var(--font-sans)',
                               }}
                             >
-                              {book._count?.memories ? 'Active' : 'Draft'}
+                              {hasMemories ? 'In progress' : 'Fresh draft'}
                             </span>
                           </div>
-                          <span className="text-[11px] shrink-0" style={{ color: '#988775', fontFamily: 'var(--font-sans)' }}>
-                            {new Date(book.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                          </span>
+                          <div className="text-right shrink-0">
+                            <p className="text-[10px] uppercase tracking-[0.16em]" style={{ color: '#9B836D', fontFamily: 'var(--font-sans)' }}>
+                              Updated
+                            </p>
+                            <p className="text-[12px] font-semibold" style={{ color: '#544233', fontFamily: 'var(--font-sans)' }}>
+                              {new Date(book.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            </p>
+                          </div>
                         </div>
 
-                        <div className="flex items-start gap-3.5 flex-1 min-h-0">
-                          <div className="origin-top-left scale-[0.92] md:scale-90">
-                            <BookCover
-                              title={book.title}
-                              description={book.description}
-                              accentColor={bookColor}
-                              plan={book.plan}
-                            />
+                        <div className="flex items-start gap-3 md:gap-4 flex-1 min-h-0">
+                          <div className="shrink-0 rounded-[20px] p-2 md:rounded-[22px] md:p-2.5" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(250,237,205,0.46) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.82), 0 10px 24px rgba(212,163,115,0.12)' }}>
+                            <div className="origin-top-left scale-[0.96] md:scale-[1.06]">
+                              <BookCover
+                                title={book.title}
+                                description={book.description}
+                                accentColor={bookColor}
+                                plan={book.plan}
+                              />
+                            </div>
                           </div>
 
                           <div className="flex-1 min-w-0 flex flex-col">
-                            <h3 className="text-[1.06rem] font-medium leading-snug line-clamp-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                            <h3 className="text-[1.12rem] font-medium leading-snug line-clamp-2" style={{ color: '#2F241B', fontFamily: 'var(--font-serif)' }}>
                               {book.title}
                             </h3>
 
                             {book.description ? (
-                              <p className="mt-1.5 text-[0.94rem] leading-6 line-clamp-2" style={{ color: '#5A3A1A', fontFamily: 'var(--font-serif)' }}>
+                              <p className="mt-2 text-[0.95rem] leading-6 line-clamp-3" style={{ color: '#614530', fontFamily: 'var(--font-serif)' }}>
                                 {book.description}
                               </p>
                             ) : (
-                              <p className="mt-1.5 text-[0.92rem] leading-6 italic" style={{ color: '#8A7C69', fontFamily: 'var(--font-serif)' }}>
+                              <p className="mt-2 text-[0.92rem] leading-6 italic" style={{ color: '#806F60', fontFamily: 'var(--font-serif)' }}>
                                 A new place to gather stories, voices, and images worth keeping.
                               </p>
                             )}
 
-                            <div className="mt-3 flex items-center flex-wrap gap-x-2 gap-y-1 text-[11px]" style={{ color: '#7B6A59', fontFamily: 'var(--font-sans)' }}>
-                              <span className="font-semibold" style={{ color: '#453225' }}>
-                                {book._count?.memories ?? 0} {book._count?.memories === 1 ? 'memory' : 'memories'}
+                            <div className="mt-3 md:mt-4 flex flex-wrap gap-2">
+                              <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.7)', color: '#3E2E22', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.16)' }}>
+                                {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'}
                               </span>
-                              <span aria-hidden="true">•</span>
-                              <span>
+                              <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px]" style={{ backgroundColor: 'rgba(250,237,205,0.62)', color: '#6E5948', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.12)' }}>
                                 Started {new Date(book.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                               </span>
-                              {book.contributors && book.contributors.length > 1 && (
-                                <>
-                                  <span aria-hidden="true">•</span>
-                                  <span>{book.contributors.length} contributors</span>
-                                </>
+                              {contributorCount > 1 && (
+                                <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px]" style={{ backgroundColor: 'rgba(204,213,174,0.26)', color: '#42503A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.24)' }}>
+                                  {contributorCount} contributors
+                                </span>
                               )}
                             </div>
 
-                            {book.contributors && book.contributors.length > 1 && (
-                              <div className="flex items-center gap-2 mt-2.5">
+                            {contributorCount > 1 && (
+                              <div className="mt-3 flex items-center gap-2">
                                 <div className="flex -space-x-1.5">
-                                  {book.contributors.slice(0, 3).map((c) => (
+                                  {book.contributors?.slice(0, 3).map((c) => (
                                     <Avatar
                                       key={c.id}
                                       name={c.name || 'Contributor'}
                                       imageUrl={c.profile_image_url}
                                       className="ring-2 ring-[#FEFCF4]"
-                                      size={20}
+                                      size={22}
                                     />
                                   ))}
                                 </div>
+                                <span className="text-[11px]" style={{ color: '#756253', fontFamily: 'var(--font-sans)' }}>
+                                  Shared with family
+                                </span>
                               </div>
                             )}
                           </div>
                         </div>
 
-                        <div className="mt-4 pt-3 flex items-center justify-between gap-3" style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}>
+                        <div
+                          className="mt-4 md:mt-5 rounded-[20px] md:rounded-[22px] px-3.5 md:px-4 py-3 md:py-3.5 flex items-center justify-between gap-3 transition-all duration-300 group-hover:translate-y-[-1px]"
+                          style={{
+                            background: 'linear-gradient(90deg, rgba(43,43,43,0.94) 0%, rgba(73,54,37,0.94) 100%)',
+                            boxShadow: '0 10px 24px rgba(43,43,43,0.12)',
+                          }}
+                        >
                           <div className="min-w-0">
-                            <p className="text-xs font-semibold" style={{ color: '#3A2A1A', fontFamily: 'var(--font-sans)', letterSpacing: '0.02em' }}>
-                              {book._count?.memories === 0 ? 'Ready for the first story' : 'Open and continue shaping the story'}
+                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: 'rgba(254,250,224,0.72)', fontFamily: 'var(--font-sans)' }}>
+                              Next step
+                            </p>
+                            <p className="mt-1 text-sm font-medium leading-5" style={{ color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}>
+                              {hasMemories ? 'Open the book and keep the story moving' : 'Start the first memory while this book is still fresh'}
                             </p>
                           </div>
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full transition-all duration-300 shrink-0 group-hover:translate-x-0.5" style={{ backgroundColor: 'rgba(212,163,115,0.16)', color: '#5A3A2A', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em' }}>
-                            {book._count?.memories === 0 ? 'Start' : 'Open'}
-                            <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#8A6A4A' }}>
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full transition-all duration-300 shrink-0 group-hover:translate-x-0.5" style={{ backgroundColor: 'rgba(254,250,224,0.14)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em' }}>
+                            {hasMemories ? 'Open book' : 'Begin'}
+                            <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'rgba(254,250,224,0.8)' }}>
                               <path d="M5 12h14M12 5l7 7-7 7"/>
                             </svg>
                           </span>
@@ -895,7 +909,7 @@ export default function Dashboard() {
         )}
 
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-1.5 mt-10">
+            <div className="flex items-center justify-center gap-1.5 mt-7 md:mt-10">
               <button
                 type="button"
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
