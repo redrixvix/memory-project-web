@@ -4,6 +4,7 @@ import { useEffect, useState, use } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getDisplayBookTitle } from '@/lib/display-book-title';
 
 interface Memory {
   id: number;
@@ -79,6 +80,8 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
 
   if (!book) return null;
 
+  const displayTitle = getDisplayBookTitle(book.title);
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
@@ -96,7 +99,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
               Back
             </Link>
             <span style={{ color: 'rgba(212,163,115,0.35)' }}>·</span>
-            <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>{book.title}</span>
+            <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>{displayTitle}</span>
           </div>
           <button
             onClick={handleOrderPrint}
@@ -161,7 +164,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
                     className="text-4xl md:text-5xl font-medium mb-4 leading-tight"
                     style={{ fontFamily: 'var(--font-serif)', letterSpacing: '-0.02em', color: 'var(--charcoal)' }}
                   >
-                    {book.title}
+                    {displayTitle}
                   </h2>
 
                   <p className="text-sm italic mb-8" style={{ color: '#6A6A5A' }}>A Memory Book</p>

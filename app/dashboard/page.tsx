@@ -246,6 +246,7 @@ export default function Dashboard() {
   // Filter books by search query
   const filteredBooks = searchQuery.trim()
     ? books.filter(book =>
+        getDisplayBookTitle(book.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
         book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (book.description && book.description.toLowerCase().includes(searchQuery.toLowerCase()))
       )
@@ -258,7 +259,7 @@ export default function Dashboard() {
     .sort((a, b) => {
       if (sortOrder === 'newest') return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
       if (sortOrder === 'oldest') return new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
-      return a.title.localeCompare(b.title);
+      return getDisplayBookTitle(a.title).localeCompare(getDisplayBookTitle(b.title));
     })
     .slice((safePage - 1) * BOOKS_PER_PAGE, safePage * BOOKS_PER_PAGE);
 

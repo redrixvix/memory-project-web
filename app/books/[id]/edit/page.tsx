@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, use } from 'react';
 import { MobileNav } from '@/components/ui/mobile-nav';
 import type { MutableRefObject } from 'react';
 import Link from 'next/link';
+import { getDisplayBookTitle } from '@/lib/display-book-title';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import type { OurFileRouter } from '@/app/api/uploadthing/core';
@@ -834,7 +835,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               <>
                 <span style={{ color: 'rgba(212,163,115,0.3)' }}>·</span>
                 <div className="text-base md:text-lg font-medium truncate" style={{ color: 'var(--charcoal)' }}>
-                  {book.title}
+                  {getDisplayBookTitle(book.title)}
                 </div>
               </>
             )}

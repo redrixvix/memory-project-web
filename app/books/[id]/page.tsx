@@ -13,6 +13,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Toast } from '@/components/ui/toast';
 import { MobileNav } from '@/components/ui/mobile-nav';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
+import { getDisplayBookTitle } from '@/lib/display-book-title';
 
 interface Memory {
   id: number;
@@ -215,6 +216,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   }
 
   if (!book) return null;
+
+  const displayTitle = getDisplayBookTitle(book.title);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
@@ -442,7 +445,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             <div className="flex flex-col gap-2 flex-1 min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="display-md font-medium tracking-tight leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)', textShadow: '0 2px 12px rgba(212,163,115,0.12)' }}>
-                  {book.title}
+                  {displayTitle}
                 </h1>
                 {book.plan && book.plan !== 'free' && (
                   <span className="text-xs font-semibold px-3 py-1 rounded-full shrink-0" style={getPlanBadgeStyles(book.plan)}>

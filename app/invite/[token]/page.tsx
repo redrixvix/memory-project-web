@@ -3,6 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getDisplayBookTitle } from '@/lib/display-book-title';
 
 interface InviteData {
   book_id: number;
@@ -141,7 +142,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
         <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>You&apos;ve been invited</p>
 
         <h1 className="text-2xl font-medium mb-3 leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
-          Join &ldquo;{inviteData.book_title}&rdquo;
+          Join &ldquo;{getDisplayBookTitle(inviteData.book_title)}&rdquo;
         </h1>
 
         <p className="text-sm leading-relaxed mb-6" style={{ color: '#6A6A5A' }}>
