@@ -1,0 +1,137 @@
+'use client';
+
+import { useState } from 'react';
+
+interface PremiumAudioPlayerProps {
+  src: string | null | undefined;
+  loadingText?: string;
+  errorText?: string;
+  className?: string;
+}
+
+type LoadState = 'idle' | 'loading' | 'ready' | 'error';
+
+export function PremiumAudioPlayer({
+  src,
+  loadingText = 'Preparing playback…',
+  errorText = 'Preview unavailable',
+  className = 'w-full rounded-xl audio-player',
+}: PremiumAudioPlayerProps) {
+  const [loadState, setLoadState] = useState<LoadState>(src ? 'loading' : 'idle');
+  const [duration, setDuration] = useState<number | null>(null);
+
+  if (!src) {
+    return null;
+  }
+
+  const statusLabel = loadState === 'ready'
+    ? duration !== null
+      ? formatAudioDuration(duration)
+      : 'Ready to play'
+    : loadState === 'error'
+      ? errorText
+      : loadingText;
+
+  return (
+    <div className="space-y-2.5">
+      <div className="flex flex-wrap items-center gap-2 text-xs" style={{ fontFamily: 'var(--font-sans)' }}>
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-semibold"
+          style={{
+            backgroundColor: loadState === 'error' ? 'rgba(185,28,28,0.1)' : 'rgba(254,250,224,0.92)',
+            color: loadState === 'error' ? '#7C2D12' : '#5A4633',
+            border: loadState === 'error' ? '1px solid rgba(185,28,28,0.18)' : '1px solid rgba(212,163,115,0.2)',
+          }}
+        >
+          <span
+            className="h-1.5 w-1.5 rounded-full"
+            style={{
+              backgroundColor: loadState === 'error'
+                ? '#B91C1C'
+                : loadState === 'ready'
+                  ? '#6B8F71'
+                  : 'var(--bronze)',
+              boxShadow: loadState === 'loading' ? '0 0 0 4px rgba(212,163,115,0.12)' : 'none',
+            }}
+          />
+          {statusLabel}
+        </span>
+        {loadState === 'loading' && (
+          <span style={{ color: '#7A6A60' }}>
+            We’re pulling in the timing so this feels settled before playback.
+          </span>
+        )}
+      </div>
+
+      {loadState !== 'ready' && (
+        <div
+          className="flex h-10 items-center gap-3 rounded-xl border px-3"
+          style={{
+            backgroundColor: 'rgba(255,253,246,0.72)',
+            borderColor: loadState === 'error' ? 'rgba(185,28,28,0.18)' : 'rgba(212,163,115,0.18)',
+          }}
+        >
+          <div
+            className="flex h-7 w-7 items-center justify-center rounded-full"
+            style={{ backgroundColor: loadState === 'error' ? 'rgba(185,28,28,0.08)' : 'rgba(212,163,115,0.14)' }}
+          >
+            {loadState === 'error' ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#B91C1C' }}>
+                <circle cx="12" cy="12" r="10" />
+                <path d="M15 9l-6 6M9 9l6 6" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
+              </svg>
+            )}
+          </div>
+          <div className="flex flex-1 items-center gap-1.5">
+            {[36, 52, 40, 64, 44].map((width, index) => (
+              <span
+                key={width + index}
+                className={loadState === 'loading' ? 'animate-pulse' : ''}
+                style={{
+                  width,
+                  height: 6 + (index % 2) * 4,
+                  borderRadius: 999,
+                  backgroundColor: loadState === 'error' ? 'rgba(185,28,28,0.15)' : 'rgba(212,163,115,0.2)',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <audio
+        src={src}
+        controls
+        preload="metadata"
+        onLoadedMetadata={(event) => {
+          const nextDuration = Number.isFinite(event.currentTarget.duration)
+            ? event.currentTarget.duration
+            : null;
+          setDuration(nextDuration);
+          setLoadState('ready');
+        }}
+        onCanPlay={() => {
+          setLoadState((current) => (current === 'error' ? current : 'ready'));
+        }}
+        onError={() => {
+          setDuration(null);
+          setLoadState('error');
+        }}
+        className={loadState === 'ready' ? className : 'sr-only'}
+        style={loadState === 'ready' ? { height: '40px', borderRadius: '10px' } : undefined}
+      />
+    </div>
+  );
+}
+
+function formatAudioDuration(durationInSeconds: number) {
+  const rounded = Math.max(0, Math.round(durationInSeconds));
+  const minutes = Math.floor(rounded / 60);
+  const seconds = rounded % 60;
+
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}

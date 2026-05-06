@@ -11,6 +11,7 @@ import { MembersModal } from '@/components/ui/members-modal';
 import { Avatar } from '@/components/ui/avatar';
 import { Toast } from '@/components/ui/toast';
 import { MobileNav } from '@/components/ui/mobile-nav';
+import { PremiumAudioPlayer } from '@/components/ui/premium-audio-player';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 import { getDisplayBookTitle } from '@/lib/display-book-title';
 
@@ -936,11 +937,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                     <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] mb-2" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
                                       Voice Note
                                     </p>
-                                    <audio
-                                      src={memory.audio_url ?? undefined}
-                                      controls
-                                      className="w-full rounded-xl audio-player"
-                                      style={{ height: '40px', borderRadius: '10px' }}
+                                    <PremiumAudioPlayer
+                                      key={memory.audio_url ?? `voice-note-${memory.id}`}
+                                      src={memory.audio_url}
+                                      loadingText="Loading voice note…"
                                     />
                                   </div>
                                 </div>
@@ -1050,11 +1050,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
                                 Voice Note
                               </p>
-                              <audio
-                                src={memory.audio_url ?? undefined}
-                                controls
-                                className="w-full rounded-xl audio-player"
-                                style={{ height: '40px', borderRadius: '10px' }}
+                              <PremiumAudioPlayer
+                                key={memory.audio_url ?? `voice-note-${memory.id}`}
+                                src={memory.audio_url}
+                                loadingText="Loading voice note…"
                               />
                             </div>
                           </div>

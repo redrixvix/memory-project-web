@@ -14,6 +14,7 @@ import { ImageGallery, type ImageGalleryItem, DropZone } from '@/components/imag
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { PremiumAudioPlayer } from '@/components/ui/premium-audio-player';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 import { flattenMemoryPrompts, getMemoryPromptGroups, isMemoryPromptGroups, type MemoryPromptGroup } from '@/lib/memory-prompts';
 
@@ -1464,7 +1465,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                                   Remove
                                 </button>
                               </div>
-                              <audio src={audioDraft.previewUrl} controls className="h-10 w-full" />
+                              <PremiumAudioPlayer
+                                key={audioDraft.previewUrl}
+                                src={audioDraft.previewUrl}
+                                loadingText={audioDraft.sourceFile ? 'Preparing your voice note…' : 'Loading saved voice note…'}
+                              />
                             </div>
                           )}
                         </div>
