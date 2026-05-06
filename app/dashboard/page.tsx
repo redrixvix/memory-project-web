@@ -13,6 +13,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 import { MobileNav } from '@/components/ui/mobile-nav';
 import { BookCover } from '@/components/ui/book-cover';
+import { getDisplayBookTitle, titleWasSanitized } from '@/lib/display-book-title';
 
 interface Book {
   id: number;
@@ -749,6 +750,9 @@ export default function Dashboard() {
               const memoryCount = book._count?.memories ?? 0;
               const contributorCount = book.contributors?.length ?? 0;
               const hasMemories = memoryCount > 0;
+              const displayTitle = getDisplayBookTitle(book.title);
+              const wasSanitized = titleWasSanitized(book.title);
+              const draftLabel = `Draft from ${new Date(book.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${new Date(book.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
               return (
                 <div
                   key={book.id}
@@ -828,9 +832,16 @@ export default function Dashboard() {
                           </div>
 
                           <div className="flex-1 min-w-0 flex flex-col">
-                            <h3 className="text-[1.12rem] font-medium leading-snug line-clamp-2" style={{ color: '#2F241B', fontFamily: 'var(--font-serif)' }}>
-                              {book.title}
-                            </h3>
+                            <div>
+                              <h3 className="text-[1.12rem] font-medium leading-snug line-clamp-2" style={{ color: '#2F241B', fontFamily: 'var(--font-serif)' }}>
+                                {displayTitle}
+                              </h3>
+                              {wasSanitized && (
+                                <p className="mt-1 text-[11px] uppercase tracking-[0.16em]" style={{ color: '#9B836D', fontFamily: 'var(--font-sans)' }}>
+                                  {draftLabel}
+                                </p>
+                              )}
+                            </div>
 
                             {book.description ? (
                               <p className="mt-2 text-[0.95rem] leading-6 line-clamp-3" style={{ color: '#614530', fontFamily: 'var(--font-serif)' }}>
@@ -878,23 +889,24 @@ export default function Dashboard() {
                         </div>
 
                         <div
-                          className="mt-4 md:mt-5 rounded-[20px] md:rounded-[22px] px-3.5 md:px-4 py-3 md:py-3.5 flex items-center justify-between gap-3 transition-all duration-300 group-hover:translate-y-[-1px]"
+                          className="mt-4 md:mt-5 rounded-[20px] md:rounded-[22px] px-3.5 md:px-4 py-3 flex items-center justify-between gap-3 transition-all duration-300 group-hover:translate-y-[-1px]"
                           style={{
-                            background: 'linear-gradient(90deg, rgba(43,43,43,0.94) 0%, rgba(73,54,37,0.94) 100%)',
-                            boxShadow: '0 10px 24px rgba(43,43,43,0.12)',
+                            background: 'linear-gradient(180deg, rgba(255,250,240,0.96) 0%, rgba(248,239,224,0.96) 100%)',
+                            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.75), 0 8px 18px rgba(212,163,115,0.12)',
+                            border: '1px solid rgba(212,163,115,0.18)',
                           }}
                         >
                           <div className="min-w-0">
-                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: 'rgba(254,250,224,0.72)', fontFamily: 'var(--font-sans)' }}>
-                              Next step
+                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8E735C', fontFamily: 'var(--font-sans)' }}>
+                              {hasMemories ? `${memoryCount} ${memoryCount === 1 ? 'memory' : 'memories'} collected` : 'Ready for chapter one'}
                             </p>
-                            <p className="mt-1 text-sm font-medium leading-5" style={{ color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)' }}>
-                              {hasMemories ? 'Open the book and keep the story moving' : 'Start the first memory while this book is still fresh'}
+                            <p className="mt-1 text-sm leading-5" style={{ color: '#5F4938', fontFamily: 'var(--font-sans)' }}>
+                              {hasMemories ? 'Continue shaping the story and preview the next pages.' : 'Open this book and capture the first story while it is still vivid.'}
                             </p>
                           </div>
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full transition-all duration-300 shrink-0 group-hover:translate-x-0.5" style={{ backgroundColor: 'rgba(254,250,224,0.14)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em' }}>
-                            {hasMemories ? 'Open book' : 'Begin'}
-                            <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'rgba(254,250,224,0.8)' }}>
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full transition-all duration-300 shrink-0 group-hover:translate-x-0.5" style={{ backgroundColor: 'rgba(138,106,60,0.10)', color: '#5A3E26', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', border: '1px solid rgba(138,106,60,0.12)' }}>
+                            {hasMemories ? 'Continue' : 'Start writing'}
+                            <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'rgba(90,62,38,0.84)' }}>
                               <path d="M5 12h14M12 5l7 7-7 7"/>
                             </svg>
                           </span>

@@ -1,3 +1,5 @@
+import { getDisplayBookTitle } from '@/lib/display-book-title';
+
 interface BookCoverProps {
   title: string;
   description?: string | null;
@@ -60,9 +62,10 @@ function getCoverMicrocopy(description?: string | null) {
 }
 
 export function BookCover({ title, description, accentColor = 'var(--bronze)', plan = 'free' }: BookCoverProps) {
+  const displayTitle = getDisplayBookTitle(title);
   const theme = THEMES[hashString(title) % THEMES.length];
-  const coverLabel = getCoverLabel(title).toUpperCase();
-  const initial = title.trim().charAt(0).toUpperCase() || 'M';
+  const coverLabel = getCoverLabel(displayTitle).toUpperCase();
+  const initial = displayTitle.trim().charAt(0).toUpperCase() || 'M';
   const microcopy = getCoverMicrocopy(description);
   const isPremium = plan !== 'free';
 
