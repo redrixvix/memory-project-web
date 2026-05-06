@@ -825,6 +825,14 @@ export default function Dashboard() {
               const updatedAt = new Date(book.updated_at);
               const draftLabel = `Draft from ${createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${createdAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
               const presenceLabel = hasMemories ? 'In progress' : 'Ready to begin';
+              const timingLabel = hasMemories
+                ? `Last touched ${updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                : `Started ${createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+              const supportingLine = hasMemories
+                ? memoryCount === 1
+                  ? 'One memory is already on the page.'
+                  : `${memoryCount} memories are already taking shape.`
+                : 'Open the book and capture the first scene while it is still vivid.';
               return (
                 <div
                   key={book.id}
@@ -835,41 +843,30 @@ export default function Dashboard() {
                     <div
                       className="book-card relative h-full min-h-[228px] md:min-h-[252px] rounded-[30px] overflow-hidden cursor-pointer transition-all duration-300 group/card"
                       style={{
-                        background: 'linear-gradient(180deg, rgba(255,253,247,0.98) 0%, rgba(250,244,233,0.98) 100%)',
-                        boxShadow: '0 6px 16px rgba(212,163,115,0.08), 0 20px 44px rgba(43,43,43,0.05)',
+                        background: 'linear-gradient(180deg, rgba(255,253,247,0.98) 0%, rgba(248,241,228,0.98) 100%)',
+                        boxShadow: '0 10px 26px rgba(212,163,115,0.10), 0 22px 52px rgba(43,43,43,0.06)',
                         border: '1px solid rgba(212,163,115,0.16)',
-                        borderLeft: `5px solid ${spineColor}`,
-                        borderLeftColor: spineColor,
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = `0 22px 48px rgba(212,163,115,0.2), 0 12px 28px rgba(43,43,43,0.12), inset 0 0 0 1px rgba(212,163,115,0.14), 0 0 32px ${bookColor}08`;
+                        e.currentTarget.style.boxShadow = `0 24px 56px rgba(212,163,115,0.22), 0 16px 32px rgba(43,43,43,0.10), inset 0 0 0 1px rgba(212,163,115,0.14), 0 0 32px ${bookColor}08`;
                         e.currentTarget.style.transform = 'translateY(-4px)';
-                        e.currentTarget.style.borderLeft = `5px solid ${spineHoverColor}`;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = '0 6px 16px rgba(212,163,115,0.08), 0 20px 44px rgba(43,43,43,0.05)';
+                        e.currentTarget.style.boxShadow = '0 10px 26px rgba(212,163,115,0.10), 0 22px 52px rgba(43,43,43,0.06)';
                         e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.borderLeft = `5px solid ${spineColor}`;
                       }}
                     >
                       <div
                         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[30px]"
-                        style={{ background: `radial-gradient(ellipse at 25% 32%, ${bookColor}14 0%, transparent 64%)` }}
+                        style={{ background: `radial-gradient(ellipse at 22% 18%, ${bookColor}16 0%, transparent 60%)` }}
                       />
 
-                      <div className="absolute inset-x-5 top-0 h-px opacity-80" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)' }} />
+                      <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ background: `linear-gradient(180deg, ${spineHoverColor} 0%, ${spineColor} 100%)` }} />
+                      <div className="absolute inset-x-6 top-0 h-px opacity-80" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)' }} />
 
-                      <div className="relative flex h-full flex-col p-4 md:p-6">
-                        <div className="mb-5 flex items-start justify-between gap-3">
+                      <div className="relative flex h-full flex-col p-5 md:p-6">
+                        <div className="flex items-center justify-between gap-3">
                           <div className="flex min-w-0 flex-wrap items-center gap-2">
-                            {book.plan && book.plan !== 'free' && (
-                              <span
-                                className="inline-flex items-center text-[10px] font-semibold px-2.5 py-1 rounded-full"
-                                style={getPlanBadgeStyles(book.plan)}
-                              >
-                                {getBookPlanLabel(book.plan, book.storage_tier)}
-                              </span>
-                            )}
                             <span
                               className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]"
                               style={{
@@ -880,22 +877,23 @@ export default function Dashboard() {
                             >
                               {presenceLabel}
                             </span>
+                            {book.plan && book.plan !== 'free' && (
+                              <span
+                                className="inline-flex items-center text-[10px] font-semibold px-2.5 py-1 rounded-full"
+                                style={getPlanBadgeStyles(book.plan)}
+                              >
+                                {getBookPlanLabel(book.plan, book.storage_tier)}
+                              </span>
+                            )}
                           </div>
-                          <div className="shrink-0 text-right">
-                            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#A18468', fontFamily: 'var(--font-sans)' }}>
-                              {hasMemories ? 'Last touched' : 'Started'}
-                            </p>
-                            <p className="mt-1 text-[0.82rem]" style={{ color: '#5F4938', fontFamily: 'var(--font-sans)' }}>
-                              {hasMemories
-                                ? updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-                                : createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                            </p>
-                          </div>
+                          <p className="shrink-0 text-[0.7rem] uppercase tracking-[0.16em]" style={{ color: '#8F745D', fontFamily: 'var(--font-sans)' }}>
+                            {timingLabel}
+                          </p>
                         </div>
 
-                        <div className="flex items-start gap-4 md:gap-5 flex-1 min-h-0">
-                          <div className="shrink-0 rounded-[20px] p-2 md:rounded-[22px] md:p-2.5" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(250,237,205,0.46) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.82), 0 10px 24px rgba(212,163,115,0.12)' }}>
-                            <div className="origin-top-left scale-[0.96] md:scale-[1.06]">
+                        <div className="mt-5 flex items-start gap-4 md:gap-5 flex-1 min-h-0">
+                          <div className="shrink-0 rounded-[22px] p-2.5" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(250,237,205,0.48) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.88), 0 12px 28px rgba(212,163,115,0.14)' }}>
+                            <div className="origin-top-left scale-[1.02]">
                               <BookCover
                                 title={book.title}
                                 description={book.description}
@@ -907,7 +905,7 @@ export default function Dashboard() {
 
                           <div className="flex min-w-0 flex-1 flex-col">
                             <div>
-                              <h3 className="text-[1.18rem] font-medium leading-snug line-clamp-2" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
+                              <h3 className="text-[1.2rem] font-medium leading-snug line-clamp-2" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
                                 {displayTitle}
                               </h3>
                               {wasSanitized && (
@@ -918,32 +916,28 @@ export default function Dashboard() {
                             </div>
 
                             {book.description ? (
-                              <p className="mt-2.5 text-[0.93rem] leading-6 line-clamp-2" style={{ color: '#523A2A', fontFamily: 'var(--font-serif)' }}>
+                              <p className="mt-2.5 text-[0.95rem] leading-6 line-clamp-3" style={{ color: '#523A2A', fontFamily: 'var(--font-serif)' }}>
                                 {book.description}
                               </p>
                             ) : (
-                              <p className="mt-2.5 text-[0.9rem] leading-6 italic" style={{ color: '#756253', fontFamily: 'var(--font-serif)' }}>
-                                A new place to gather stories, voices, and images worth keeping.
+                              <p className="mt-2.5 text-[0.92rem] leading-6 italic" style={{ color: '#756253', fontFamily: 'var(--font-serif)' }}>
+                                A new place to gather stories, voices, and keepsakes worth saving.
                               </p>
                             )}
 
-                            <div className="mt-4 flex flex-wrap items-center gap-2.5">
+                            <div className="mt-4 flex flex-wrap items-center gap-2">
                               <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.82)', color: '#302117', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}>
                                 {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'}
                               </span>
-                              {contributorCount > 1 ? (
+                              {contributorCount > 1 && (
                                 <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.26)', color: '#42503A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.24)' }}>
-                                  Shared with {contributorCount} people
-                                </span>
-                              ) : (
-                                <span className="text-[11px] font-medium" style={{ color: '#6C5846', fontFamily: 'var(--font-sans)' }}>
-                                  {hasMemories ? 'A living draft with room for more.' : 'Waiting for the first story.'}
+                                  {contributorCount} contributors
                                 </span>
                               )}
                             </div>
 
-                            {contributorCount > 1 && (
-                              <div className="mt-3 flex items-center gap-2">
+                            {contributorCount > 1 ? (
+                              <div className="mt-3 flex items-center gap-2.5">
                                 <div className="flex -space-x-1.5">
                                   {book.contributors?.slice(0, 3).map((c) => (
                                     <Avatar
@@ -956,38 +950,28 @@ export default function Dashboard() {
                                   ))}
                                 </div>
                                 <span className="text-[11px]" style={{ color: '#756253', fontFamily: 'var(--font-sans)' }}>
-                                  Family can add their memories too
+                                  Family can add to this keepsake.
                                 </span>
                               </div>
+                            ) : (
+                              <p className="mt-3 text-[11px] uppercase tracking-[0.14em]" style={{ color: '#8B725D', fontFamily: 'var(--font-sans)' }}>
+                                {supportingLine}
+                              </p>
                             )}
-                          </div>
-                        </div>
 
-                        <div
-                          className="mt-5 rounded-[24px] px-4 py-4 transition-all duration-300 group-hover:translate-y-[-1px]"
-                          style={{
-                            background: hasMemories
-                              ? 'linear-gradient(180deg, rgba(247,236,218,0.98) 0%, rgba(242,227,205,0.98) 100%)'
-                              : 'linear-gradient(180deg, rgba(251,243,229,0.98) 0%, rgba(246,232,205,0.98) 100%)',
-                            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.82), 0 14px 30px rgba(212,163,115,0.15)',
-                            border: '1px solid rgba(212,163,115,0.22)',
-                          }}
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="min-w-0">
-                              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#7A5E47', fontFamily: 'var(--font-sans)' }}>
-                                Next step
-                              </p>
-                              <p className="mt-1 text-[0.92rem] leading-5" style={{ color: '#4E3829', fontFamily: 'var(--font-sans)' }}>
-                                {hasMemories ? 'Open the book and add the next memory while the details are fresh.' : 'Open the book and write the first scene that still lives in your mind.'}
-                              </p>
+                            <div className="mt-auto pt-5">
+                              <div className="flex items-center justify-between gap-3 border-t pt-4" style={{ borderColor: 'rgba(212,163,115,0.16)' }}>
+                                <p className="min-w-0 text-[0.88rem] leading-5" style={{ color: '#4E3829', fontFamily: 'var(--font-sans)' }}>
+                                  {hasMemories ? 'Pick up where you left off.' : 'Write the first chapter.'}
+                                </p>
+                                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
+                                  {hasMemories ? 'Continue' : 'Begin'}
+                                  <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                  </svg>
+                                </span>
+                              </div>
                             </div>
-                            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.22)' }}>
-                              {hasMemories ? 'Continue' : 'Begin'}
-                              <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                              </svg>
-                            </span>
                           </div>
                         </div>
                       </div>
