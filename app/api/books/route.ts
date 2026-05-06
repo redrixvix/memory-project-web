@@ -44,7 +44,29 @@ export async function GET(request: NextRequest) {
       SELECT DISTINCT b.id, b.title, b.description, b.storage_tier, b.plan, b.storage_used_bytes, b.created_at, b.updated_at, b.owner_id,
              u.name as owner_name, u.google_id as owner_google_id, u.profile_image_url as owner_profile_image_url,
              COALESCE(bm.role, 'owner') as role,
-             (SELECT COUNT(*) FROM memories m WHERE m.book_id = b.id) as memory_count
+             (SELECT COUNT(*) FROM memories m WHERE m.book_id = b.id) as memory_count,
+             (
+               SELECT m.answer_text
+               FROM memories m
+               WHERE m.book_id = b.id AND m.answer_text IS NOT NULL
+               ORDER BY m.created_at DESC
+               LIMIT 1
+             ) as latest_memory_excerpt,
+             (
+               SELECT m.photo_urls[1]
+               FROM memories m
+               WHERE m.book_id = b.id AND m.photo_urls IS NOT NULL AND array_length(m.photo_urls, 1) > 0
+               ORDER BY m.created_at DESC
+               LIMIT 1
+             ) as preview_photo_url,
+             (
+               SELECT u2.name
+               FROM memories m
+               LEFT JOIN users u2 ON u2.id = m.user_id
+               WHERE m.book_id = b.id
+               ORDER BY m.created_at DESC
+               LIMIT 1
+             ) as latest_contributor_name
       FROM books b
       JOIN users u ON b.owner_id = u.id
       LEFT JOIN book_members bm ON b.id = bm.book_id AND bm.user_id = ${user.id}
@@ -60,6 +82,9 @@ export async function GET(request: NextRequest) {
       plan: normalizeBookPlan(b.plan, b.storage_tier),
       _count: { memories: Number(b.memory_count) },
       updated_at: b.updated_at ?? b.created_at,
+      latest_memory_excerpt: typeof b.latest_memory_excerpt === 'string' ? b.latest_memory_excerpt : null,
+      preview_photo_url: typeof b.preview_photo_url === 'string' ? b.preview_photo_url : null,
+      latest_contributor_name: typeof b.latest_contributor_name === 'string' ? b.latest_contributor_name : null,
     }));
 
     // Get contributors for all books in ONE query (avoids N+1 connection problem)

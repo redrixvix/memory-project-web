@@ -5,6 +5,7 @@ interface BookCoverProps {
   description?: string | null;
   accentColor?: string;
   plan?: string;
+  previewImageUrl?: string | null;
 }
 
 const THEMES = [
@@ -61,13 +62,14 @@ function getCoverMicrocopy(description?: string | null) {
   return clean.length > 36 ? `${clean.slice(0, 33).trimEnd()}…` : clean;
 }
 
-export function BookCover({ title, description, accentColor = 'var(--bronze)', plan = 'free' }: BookCoverProps) {
+export function BookCover({ title, description, accentColor = 'var(--bronze)', plan = 'free', previewImageUrl }: BookCoverProps) {
   const displayTitle = getDisplayBookTitle(title);
   const theme = THEMES[hashString(title) % THEMES.length];
   const coverLabel = getCoverLabel(displayTitle).toUpperCase();
   const initial = displayTitle.trim().charAt(0).toUpperCase() || 'M';
   const microcopy = getCoverMicrocopy(description);
   const isPremium = plan !== 'free';
+  const hasPreviewImage = Boolean(previewImageUrl);
 
   return (
     <div
@@ -141,35 +143,67 @@ export function BookCover({ title, description, accentColor = 'var(--bronze)', p
               boxShadow: `0 0 0 1px rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.3)`,
             }}
           />
-          <div
-            className="text-[25px] leading-none"
-            style={{
-              color: 'rgba(74, 49, 27, 0.82)',
-              fontFamily: 'var(--font-serif)',
-              textShadow: '0 1px 0 rgba(255,255,255,0.45)',
-            }}
-          >
-            {initial}
-          </div>
-          <div className="mt-1.5 text-[8px] font-semibold tracking-[0.2em]" style={{ color: theme.label }}>
-            {coverLabel}
-          </div>
-          <div className="mt-2 space-y-1.5">
-            {[0, 1].map((index) => (
+          {hasPreviewImage ? (
+            <>
+              <div className="absolute inset-x-2.5 top-2.5 bottom-[27px] overflow-hidden rounded-[8px]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={previewImageUrl ?? undefined}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-full w-full object-cover"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background: 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(38,26,16,0.06) 52%, rgba(38,26,16,0.38) 100%)',
+                  }}
+                />
+                <div className="absolute left-2 bottom-2 right-2">
+                  <div className="rounded-[7px] px-1.5 py-1" style={{ backgroundColor: 'rgba(255,248,236,0.76)', backdropFilter: 'blur(8px)' }}>
+                    <div className="text-[6.5px] font-semibold tracking-[0.18em] truncate" style={{ color: 'rgba(74,49,27,0.8)' }}>
+                      {coverLabel}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute left-2.5 right-2.5 bottom-2 text-[6.5px] leading-[1.35]" style={{ color: 'rgba(90, 69, 45, 0.7)' }}>
+                {microcopy}
+              </div>
+            </>
+          ) : (
+            <>
               <div
-                key={index}
+                className="text-[25px] leading-none"
                 style={{
-                  height: 1.5,
-                  width: index === 0 ? '100%' : '82%',
-                  backgroundColor: theme.line,
-                  borderRadius: 999,
+                  color: 'rgba(74, 49, 27, 0.82)',
+                  fontFamily: 'var(--font-serif)',
+                  textShadow: '0 1px 0 rgba(255,255,255,0.45)',
                 }}
-              />
-            ))}
-          </div>
-          <div className="mt-2.5 text-[7px] leading-[1.45]" style={{ color: 'rgba(90, 69, 45, 0.72)' }}>
-            {microcopy}
-          </div>
+              >
+                {initial}
+              </div>
+              <div className="mt-1.5 text-[8px] font-semibold tracking-[0.2em]" style={{ color: theme.label }}>
+                {coverLabel}
+              </div>
+              <div className="mt-2 space-y-1.5">
+                {[0, 1].map((index) => (
+                  <div
+                    key={index}
+                    style={{
+                      height: 1.5,
+                      width: index === 0 ? '100%' : '82%',
+                      backgroundColor: theme.line,
+                      borderRadius: 999,
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="mt-2.5 text-[7px] leading-[1.45]" style={{ color: 'rgba(90, 69, 45, 0.72)' }}>
+                {microcopy}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

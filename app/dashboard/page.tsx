@@ -24,8 +24,18 @@ interface Book {
   updated_at: string;
   role: string;
   owner_name: string;
+  latest_memory_excerpt?: string | null;
+  latest_contributor_name?: string | null;
+  preview_photo_url?: string | null;
   _count?: { memories: number };
   contributors?: {id: number, name: string, profile_image_url: string, google_id: string}[];
+}
+
+function shortenMemoryExcerpt(excerpt?: string | null) {
+  if (!excerpt) return null;
+  const compact = excerpt.replace(/\s+/g, ' ').trim();
+  if (!compact) return null;
+  return compact.length > 132 ? `${compact.slice(0, 129).trimEnd()}…` : compact;
 }
 
 interface User {
@@ -828,10 +838,13 @@ export default function Dashboard() {
               const timingLabel = hasMemories
                 ? `Last touched ${updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
                 : `Started ${createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+              const latestExcerpt = shortenMemoryExcerpt(book.latest_memory_excerpt);
               const supportingLine = hasMemories
-                ? memoryCount === 1
-                  ? 'One memory is already on the page.'
-                  : `${memoryCount} memories are already taking shape.`
+                ? latestExcerpt
+                  ? `“${latestExcerpt}”${book.latest_contributor_name ? ` — ${book.latest_contributor_name}` : ''}`
+                  : memoryCount === 1
+                    ? 'One memory is already on the page.'
+                    : `${memoryCount} memories are already taking shape.`
                 : 'Open the book and capture the first scene while it is still vivid.';
               const nextStepLabel = hasMemories ? 'Continue the story' : 'Start the first chapter';
               const nextStepBody = hasMemories
@@ -903,6 +916,7 @@ export default function Dashboard() {
                                 description={book.description}
                                 accentColor={bookColor}
                                 plan={book.plan}
+                                previewImageUrl={book.preview_photo_url}
                               />
                             </div>
                           </div>
