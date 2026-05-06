@@ -155,6 +155,11 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const { startUpload: startImageUpload } = useUploadThing('imageUploader');
   const { startUpload: startAudioUpload } = useUploadThing('audioUploader');
   const currentAudioUrl = audioDraft?.uploadedUrl ?? null;
+  const savedPromptLabel = (useCustomPrompt ? customPrompt : prompt).replace(/\s+/g, ' ').trim();
+  const savedPreview = answer.replace(/\s+/g, ' ').trim();
+  const successExcerpt = savedPreview.length > 190 ? `${savedPreview.slice(0, 187).trimEnd()}…` : savedPreview;
+  const attachedPhotoCount = photoItems.filter((item) => item.status !== 'error').length;
+  const hasAttachedAudio = Boolean(audioDraft?.uploadedUrl || audioDraft?.sourceFile || audioDraft?.previewUrl);
 
   useEffect(() => {
     photoItemsRef.current = photoItems;
@@ -778,12 +783,9 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       clearDraft();
       await flushRemovedUploads();
 
-      // Premium success moment — brief celebration before redirecting
+      // Premium success moment — let the user choose what to do next
       setSaveSuccess(true);
       setSaveState('saved');
-      setTimeout(() => {
-        router.push(`/books/${id}`);
-      }, 1600);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to save memory.';
       setAudioDraft((current) => current && current.sourceFile
@@ -1563,142 +1565,166 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             {/* ── Premium save success overlay ── */}
             {saveSuccess && (
               <div
-                className="absolute inset-0 z-30 flex flex-col items-center justify-center rounded-[2.25rem] animate-fade-up"
+                className="absolute inset-0 z-30 flex items-center justify-center rounded-[2.25rem] px-5 py-6 md:px-8"
                 style={{
-                  background: 'linear-gradient(160deg, rgba(253,252,245,0.97) 0%, rgba(250,237,205,0.94) 100%)',
-                  animation: 'fadeInScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+                  background: 'linear-gradient(180deg, rgba(45,36,24,0.18) 0%, rgba(45,36,24,0.38) 100%)',
+                  backdropFilter: 'blur(10px)',
+                  animation: 'successBackdropIn 0.28s ease-out both',
                 }}
               >
                 <style>{`
-                  @keyframes fadeInScale {
-                    from { opacity: 0; transform: scale(0.92); }
-                    to { opacity: 1; transform: scale(1); }
+                  @keyframes successBackdropIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
                   }
-                  @keyframes drawCheck {
-                    to { stroke-dashoffset: 0; }
+                  @keyframes successCardIn {
+                    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+                    to { opacity: 1; transform: translateY(0) scale(1); }
                   }
                   @keyframes popIn {
                     0% { transform: scale(0) rotate(-12deg); opacity: 0; }
-                    60% { transform: scale(1.15) rotate(3deg); }
-                    80% { transform: scale(0.95) rotate(-1deg); }
+                    60% { transform: scale(1.12) rotate(3deg); }
+                    80% { transform: scale(0.96) rotate(-1deg); }
                     100% { transform: scale(1) rotate(0deg); opacity: 1; }
                   }
-                  @keyframes shimmer {
-                    0% { opacity: 0.4; }
-                    50% { opacity: 0.8; }
-                    100% { opacity: 0.4; }
-                  }
                   .check-circle {
-                    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
-                  }
-                  .check-path {
-                    stroke-dasharray: 30;
-                    stroke-dashoffset: 30;
-                    animation: drawCheck 0.4s ease-out 0.45s forwards;
-                  }
-                  .success-text {
-                    animation: fadeInScale 0.3s ease-out 0.55s both;
-                  }
-                  .success-sub {
-                    animation: fadeInScale 0.3s ease-out 0.7s both;
+                    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s both;
                   }
                 `}</style>
 
-                {/* Animated success circle */}
                 <div
-                  className="check-circle w-20 h-20 rounded-full flex items-center justify-center mb-6"
+                  className="w-full max-w-[32rem] overflow-hidden rounded-[2rem] border"
                   style={{
-                    background: 'linear-gradient(135deg, var(--tea-green) 0%, #8BAF6A 100%)',
-                    boxShadow: '0 12px 40px rgba(95,102,80,0.35), 0 4px 12px rgba(95,102,80,0.2), inset 0 1px 0 rgba(255,255,255,0.3)',
+                    background: 'linear-gradient(180deg, rgba(255,252,244,0.98) 0%, rgba(253,248,237,0.98) 100%)',
+                    borderColor: 'rgba(212,163,115,0.22)',
+                    boxShadow: '0 30px 80px rgba(43,43,43,0.20), 0 10px 30px rgba(43,43,43,0.10), inset 0 1px 0 rgba(255,255,255,0.85)',
+                    animation: 'successCardIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) both',
                   }}
                 >
-                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-                    <path
-                      className="check-path"
-                      d="M5 12l5 5L19 7"
-                      stroke="#FDFCF5"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-
-                {/* Success text */}
-                <p
-                  className="success-text text-2xl font-medium mb-2"
-                  style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
-                >
-                  {memoryId ? 'Memory updated' : 'Memory saved'}
-                </p>
-                <p
-                  className="success-sub text-sm"
-                  style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}
-                >
-                  See it in your book, or keep building.
-                </p>
-
-                <div className="success-sub mt-8 flex flex-col sm:flex-row gap-3 items-center">
-                  {!memoryId && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSaveSuccess(false);
-                        setSaveState('idle');
-                        setAnswer('');
-                        setWordCount(0);
-                        setPrompt('');
-                        setUseCustomPrompt(false);
-                        setCustomPrompt('');
-                        clearDraft();
-                        setAudioDraft(null);
-                        router.refresh();
-                      }}
-                      className="inline-flex items-center gap-2 h-11 rounded-full px-6 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
-                      style={{
-                        backgroundColor: 'var(--bronze)',
-                        color: 'var(--cornsilk)',
-                        fontFamily: 'var(--font-sans)',
-                        boxShadow: '0 4px 20px rgba(43,43,43,0.22)',
-                      }}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 5v14M5 12h14"/>
-                      </svg>
-                      Add another
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => router.push(`/books/${id}`)}
-                    className="inline-flex items-center gap-2 h-11 rounded-full px-6 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
-                    style={{
-                      backgroundColor: 'rgba(212,163,115,0.12)',
-                      color: 'var(--charcoal)',
-                      fontFamily: 'var(--font-sans)',
-                      border: '1px solid rgba(212,163,115,0.22)',
-                    }}
-                  >
-                    View book
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                  </button>
-                </div>
-
-                {/* Progress dots */}
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
-                  {[0, 1, 2].map(i => (
+                  <div className="relative overflow-hidden px-6 py-6 md:px-8 md:py-7">
                     <div
-                      key={i}
-                      className="w-1.5 h-1.5 rounded-full"
+                      className="absolute inset-x-0 top-0 h-24"
                       style={{
-                        backgroundColor: 'var(--bronze)',
-                        opacity: 0.4,
-                        animation: `shimmer 1.2s ease-in-out ${i * 0.2}s infinite`,
+                        background: 'linear-gradient(180deg, rgba(204,213,174,0.28) 0%, rgba(204,213,174,0.08) 55%, transparent 100%)',
                       }}
                     />
-                  ))}
+                    <div className="relative flex flex-col gap-6">
+                      <div className="flex items-start gap-4">
+                        <div
+                          className="check-circle flex h-16 w-16 shrink-0 items-center justify-center rounded-full"
+                          style={{
+                            background: 'linear-gradient(135deg, #93AA71 0%, #718A53 100%)',
+                            boxShadow: '0 12px 34px rgba(95,102,80,0.24), inset 0 1px 0 rgba(255,255,255,0.38)',
+                          }}
+                        >
+                          <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                            <path
+                              d="M5 12l5 5L19 7"
+                              stroke="#FDFCF5"
+                              strokeWidth="2.7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+
+                        <div className="min-w-0 flex-1 pt-1">
+                          <p
+                            className="mb-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em]"
+                            style={{ color: '#7B6444', fontFamily: 'var(--font-sans)' }}
+                          >
+                            {memoryId ? 'Updated in your keepsake' : 'Saved to your keepsake'}
+                          </p>
+                          <h2
+                            className="text-[1.8rem] leading-[1.05] font-medium"
+                            style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
+                          >
+                            {memoryId ? 'Your memory feels polished now.' : 'That memory is safely tucked in.'}
+                          </h2>
+                          <p
+                            className="mt-2 max-w-[28rem] text-sm leading-6"
+                            style={{ color: '#4F4231', fontFamily: 'var(--font-sans)' }}
+                          >
+                            {memoryId ? 'You can head back to the book or keep refining the details while the moment is fresh.' : 'Take a quick look in the book, or keep the storytelling flow going with another memory.'}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div
+                        className="grid gap-3 rounded-[1.4rem] border px-4 py-4 md:grid-cols-[1.4fr_1fr]"
+                        style={{
+                          backgroundColor: 'rgba(255,255,255,0.54)',
+                          borderColor: 'rgba(212,163,115,0.18)',
+                        }}
+                      >
+                        <div className="min-w-0">
+                          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8A6A4A', fontFamily: 'var(--font-sans)' }}>
+                            Memory preview
+                          </p>
+                          <p className="mt-2 text-sm leading-6" style={{ color: '#3E3224' }}>
+                            “{successExcerpt || 'Your words are ready in the book.'}”
+                          </p>
+                          {savedPromptLabel && (
+                            <p className="mt-3 text-[0.8rem] leading-5" style={{ color: '#6A5843', fontFamily: 'var(--font-sans)' }}>
+                              Prompt: {savedPromptLabel}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap content-start gap-2 md:justify-end">
+                          <SuccessMetaPill label={`${wordCount} words`} />
+                          <SuccessMetaPill label={attachedPhotoCount === 1 ? '1 photo' : `${attachedPhotoCount} photos`} />
+                          <SuccessMetaPill label={hasAttachedAudio ? 'Voice note attached' : 'No voice note'} />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSaveSuccess(false);
+                            setSaveState('idle');
+                            if (memoryId) {
+                              router.refresh();
+                              return;
+                            }
+                            setAnswer('');
+                            setWordCount(0);
+                            setPrompt('');
+                            setUseCustomPrompt(false);
+                            setCustomPrompt('');
+                            clearDraft();
+                            setAudioDraft(null);
+                            router.refresh();
+                          }}
+                          className="inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200 hover:bg-white active:scale-[0.98]"
+                          style={{
+                            border: '1px solid rgba(212,163,115,0.22)',
+                            color: 'var(--charcoal)',
+                            backgroundColor: 'rgba(255,255,255,0.72)',
+                            fontFamily: 'var(--font-sans)',
+                          }}
+                        >
+                          {memoryId ? 'Keep refining' : 'Add another memory'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => router.push(`/books/${id}`)}
+                          className="inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition-all duration-200 hover:translate-y-[-1px] active:scale-[0.98]"
+                          style={{
+                            backgroundColor: 'var(--bronze)',
+                            color: 'var(--cornsilk)',
+                            fontFamily: 'var(--font-sans)',
+                            boxShadow: '0 12px 28px rgba(124, 91, 54, 0.24)',
+                          }}
+                        >
+                          View book
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -1706,6 +1732,22 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         </article>
       </main>
     </div>
+  );
+}
+
+function SuccessMetaPill({ label }: { label: string }) {
+  return (
+    <span
+      className="inline-flex items-center rounded-full px-3 py-1.5 text-[0.72rem] font-medium"
+      style={{
+        backgroundColor: 'rgba(212,163,115,0.12)',
+        color: '#4A3A28',
+        border: '1px solid rgba(212,163,115,0.16)',
+        fontFamily: 'var(--font-sans)',
+      }}
+    >
+      {label}
+    </span>
   );
 }
 

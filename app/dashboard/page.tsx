@@ -218,7 +218,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
         <header className="sticky top-0 z-20 h-12 md:h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
-          <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
+          <div className="flex items-center justify-between w-full max-w-6xl mx-auto">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
               <div className="hidden sm:block h-4 w-28 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
@@ -228,7 +228,7 @@ export default function Dashboard() {
           </div>
         </header>
 
-        <main className="px-6 md:px-10 pt-5 md:pt-8 pb-10 max-w-5xl mx-auto w-full">
+        <main className="px-6 md:px-10 pt-5 md:pt-8 pb-10 max-w-6xl mx-auto w-full">
           <div className="mb-5 md:mb-8 relative">
             <div
               className="absolute -top-2 left-0 right-0 h-px rounded-full overflow-hidden"
@@ -248,7 +248,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 xl:gap-7">
             {Array.from({ length: 6 }, (_, i) => (
               <div
                 key={i}
@@ -337,7 +337,7 @@ export default function Dashboard() {
 
       {/* ── TOP NAV ── */}
       <header className="sticky top-0 z-20 h-12 md:h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
-        <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
+        <div className="flex items-center justify-between w-full max-w-6xl mx-auto">
           {/* Left: Logo */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5 group">
@@ -421,7 +421,7 @@ export default function Dashboard() {
       <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} />
 
       {/* ── MAIN CONTENT ── */}
-      <main className="px-6 md:px-10 pt-5 md:pt-8 pb-10 max-w-5xl mx-auto w-full">
+      <main className="px-6 md:px-10 pt-5 md:pt-8 pb-10 max-w-6xl mx-auto w-full">
 
         {/* Header row — compact, editorial */}
         <div className="mb-5 md:mb-8 relative">
@@ -458,7 +458,7 @@ export default function Dashboard() {
 
           {/* Search + sort — only shown when books exist */}
           {books.length > 0 && (
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-3">
+            <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
               <div className="relative flex-1" style={{
                   borderBottom: searchQuery ? '2px solid rgba(212,163,115,0.5)' : '2px solid rgba(212,163,115,0.18)',
                   transition: 'border-color 0.3s ease',
@@ -502,7 +502,7 @@ export default function Dashboard() {
                 )}
               </div>
               {/* Sort controls */}
-              <div className="flex items-center gap-2 rounded-2xl p-1.5 shrink-0" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)' }}>
+              <div className="flex items-center gap-2 rounded-2xl p-1.5 shrink-0 lg:justify-self-end" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)' }}>
                 {([
                   { value: 'newest', label: 'Newest' },
                   { value: 'oldest', label: 'Oldest' },
@@ -820,7 +820,7 @@ export default function Dashboard() {
           </div>
         ) : (
           /* ── Book grid ── */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 xl:gap-7">
             {paginatedBooks.map((book, i) => {
               const colorIdx = book.id % BOOK_COLORS.length;
               const bookColor = BOOK_COLORS[colorIdx];
@@ -846,7 +846,6 @@ export default function Dashboard() {
                     ? 'One memory is already on the page.'
                     : `${memoryCount} memories are already taking shape.`
                 : 'Open the book and capture the first scene while it is still vivid.';
-              const nextStepLabel = hasMemories ? 'Continue the story' : 'Start the first chapter';
               const nextStepBody = hasMemories
                 ? 'Open your book and keep writing from the moment you left off.'
                 : 'Open your book, choose a prompt, and capture the first scene while it is fresh.';
@@ -882,7 +881,7 @@ export default function Dashboard() {
                       <div className="absolute inset-x-6 top-0 h-px opacity-80" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)' }} />
 
                       <div className="relative flex h-full flex-col p-5 md:p-6">
-                        <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-start justify-between gap-3">
                           <div className="flex min-w-0 flex-wrap items-center gap-2">
                             <span
                               className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]"
@@ -903,8 +902,8 @@ export default function Dashboard() {
                               </span>
                             )}
                           </div>
-                          <p className="shrink-0 text-[0.7rem] uppercase tracking-[0.16em]" style={{ color: '#8F745D', fontFamily: 'var(--font-sans)' }}>
-                            {timingLabel}
+                          <p className="shrink-0 text-[0.68rem] uppercase tracking-[0.16em]" style={{ color: '#9A806A', fontFamily: 'var(--font-sans)' }}>
+                            {hasMemories ? 'Recently held' : 'Fresh pages'}
                           </p>
                         </div>
 
@@ -926,6 +925,9 @@ export default function Dashboard() {
                               <h3 className="text-[1.2rem] font-medium leading-snug line-clamp-2" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
                                 {displayTitle}
                               </h3>
+                              <p className="mt-2 text-[0.84rem] uppercase tracking-[0.14em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                                {timingLabel}
+                              </p>
                               {wasSanitized && (
                                 <p className="mt-1 text-[11px] uppercase tracking-[0.16em]" style={{ color: '#927762', fontFamily: 'var(--font-sans)' }}>
                                   {draftLabel}
@@ -933,15 +935,9 @@ export default function Dashboard() {
                               )}
                             </div>
 
-                            {book.description ? (
-                              <p className="mt-2.5 text-[0.95rem] leading-6 line-clamp-2" style={{ color: '#523A2A', fontFamily: 'var(--font-serif)' }}>
-                                {book.description}
-                              </p>
-                            ) : (
-                              <p className="mt-2.5 text-[0.92rem] leading-6 italic" style={{ color: '#756253', fontFamily: 'var(--font-serif)' }}>
-                                A new place to gather stories, voices, and keepsakes worth saving.
-                              </p>
-                            )}
+                            <p className="mt-3 text-[0.95rem] leading-6 line-clamp-2" style={{ color: '#523A2A', fontFamily: 'var(--font-serif)' }}>
+                              {book.description || 'A new place to gather stories, voices, and keepsakes worth saving.'}
+                            </p>
 
                             <div className="mt-4 flex flex-wrap items-center gap-2">
                               <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.82)', color: '#302117', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}>
@@ -971,39 +967,35 @@ export default function Dashboard() {
                                   Family can add to this keepsake.
                                 </span>
                               </div>
-                            ) : (
-                              <p className="mt-3 text-[0.76rem] leading-5" style={{ color: '#7A6453', fontFamily: 'var(--font-sans)' }}>
+                            ) : null}
+
+                            <div
+                              className="mt-4 rounded-[22px] px-4 py-4"
+                              style={{
+                                background: hasMemories
+                                  ? 'linear-gradient(180deg, rgba(255,255,255,0.68) 0%, rgba(252,246,235,0.94) 100%)'
+                                  : 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,250,242,0.92) 100%)',
+                                border: '1px solid rgba(212,163,115,0.14)',
+                              }}
+                            >
+                              <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                                {hasMemories ? 'Latest memory' : 'First page waiting'}
+                              </p>
+                              <p className="mt-2 text-[0.88rem] leading-6" style={{ color: hasMemories ? '#3F2E22' : '#5E4939', fontFamily: hasMemories ? 'var(--font-serif)' : 'var(--font-sans)', fontStyle: hasMemories ? 'italic' : 'normal' }}>
                                 {supportingLine}
                               </p>
-                            )}
+                            </div>
 
-                            <div className="mt-auto pt-5">
-                              <div
-                                className="flex flex-col gap-3 rounded-[22px] border px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-                                style={{
-                                  borderColor: 'rgba(212,163,115,0.18)',
-                                  background: 'linear-gradient(180deg, rgba(255,255,255,0.76) 0%, rgba(252,246,235,0.92) 100%)',
-                                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8)',
-                                }}
-                              >
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
-                                    Next step
-                                  </p>
-                                  <p className="mt-1 text-[0.94rem] font-semibold leading-5" style={{ color: '#2C1E14', fontFamily: 'var(--font-sans)' }}>
-                                    {nextStepLabel}
-                                  </p>
-                                  <p className="mt-1 text-[0.83rem] leading-5" style={{ color: '#5A4334', fontFamily: 'var(--font-sans)' }}>
-                                    {nextStepBody}
-                                  </p>
-                                </div>
-                                <span className="inline-flex w-full shrink-0 items-center justify-center gap-1.5 self-start whitespace-nowrap rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5 sm:w-auto sm:self-center" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
-                                  {hasMemories ? 'Open book' : 'Begin memory'}
-                                  <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                                  </svg>
-                                </span>
-                              </div>
+                            <div className="mt-auto flex items-end justify-between gap-3 pt-5">
+                              <p className="max-w-[13rem] text-[0.78rem] leading-5" style={{ color: '#7A6453', fontFamily: 'var(--font-sans)' }}>
+                                {nextStepBody}
+                              </p>
+                              <span className="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
+                                {hasMemories ? 'Open book' : 'Begin memory'}
+                                <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                              </span>
                             </div>
                           </div>
                         </div>
