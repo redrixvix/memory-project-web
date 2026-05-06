@@ -663,7 +663,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           <div className="space-y-5 md:space-y-7">
             {sortedMemories.map((memory, memoryIndex) => {
               const accentColor = ACCENT_COLORS[memoryIndex % ACCENT_COLORS.length];
-              const isEven = memoryIndex % 2 === 0;
+              const photoCount = memory.photo_urls?.length ?? 0;
+              const hasAudio = Boolean(memory.audio_url);
+              const useMediaRail = photoCount === 1 || (hasAudio && photoCount <= 1);
               return (
                 <div
                   key={memory.id}
@@ -743,69 +745,185 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      {/* Media chips */}
-                      {(memory.photo_urls?.length > 0 || memory.audio_url) && (
-                        <div className="flex flex-wrap items-center gap-2 mb-4">
-                          {memory.photo_urls?.length > 0 && (
-                            <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}>
-                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-                              </svg>
-                              {memory.photo_urls.length} {memory.photo_urls.length === 1 ? 'photo' : 'photos'}
+                      <div className={useMediaRail ? 'grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(17rem,0.95fr)] lg:items-start' : ''}>
+                        <div>
+                          {/* Media chips */}
+                          {(photoCount > 0 || hasAudio) && (
+                            <div className="flex flex-wrap items-center gap-2 mb-4">
+                              {photoCount > 0 && (
+                                <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}>
+                                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                                  </svg>
+                                  {photoCount} {photoCount === 1 ? 'photo' : 'photos'}
+                                </div>
+                              )}
+                              {hasAudio && (
+                                <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: 'var(--charcoal)' }}>
+                                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
+                                    <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+                                  </svg>
+                                  Voice note
+                                </div>
+                              )}
                             </div>
                           )}
-                          {memory.audio_url && (
-                            <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: 'var(--charcoal)' }}>
-                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
-                                <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-                              </svg>
-                              Voice note
-                            </div>
-                          )}
-                        </div>
-                      )}
 
-                      {/* Memory text — journal feel, constrained width with drop cap */}
-                      <p
-                        className="text-sm md:text-base whitespace-pre-wrap memory-answer-text"
-                        style={{
-                          color: 'var(--charcoal)',
-                          fontFamily: 'var(--font-serif)',
-                          maxWidth: '68ch',
-                          lineHeight: '2.0',
-                        }}
-                      >
-                        {memory.answer_text}
-                      </p>
+                          {/* Memory text — journal feel, constrained width with drop cap */}
+                          <p
+                            className="text-sm md:text-base whitespace-pre-wrap memory-answer-text"
+                            style={{
+                              color: 'var(--charcoal)',
+                              fontFamily: 'var(--font-serif)',
+                              maxWidth: useMediaRail ? '62ch' : '68ch',
+                              lineHeight: '2.0',
+                            }}
+                          >
+                            {memory.answer_text}
+                          </p>
 
-                      {/* Date + contributor — warm, book-journal style, no min-read metric */}
-                      <div className="flex items-center gap-3 mt-4 pt-3 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
-                        {memory.contributor_name ? (
-                          <div className="flex items-center gap-2">
-                            <Avatar
-                              name={memory.contributor_name}
-                              imageUrl={memory.contributor_avatar || null}
-                              size={32}
-                            />
-                            <span className="text-xs" style={{ color: 'rgba(43,43,43,0.78)', fontFamily: 'var(--font-sans)' }}>
-                              {memory.contributor_name}
+                          {/* Date + contributor — warm, book-journal style, no min-read metric */}
+                          <div className="flex items-center gap-3 mt-4 pt-3 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
+                            {memory.contributor_name ? (
+                              <div className="flex items-center gap-2">
+                                <Avatar
+                                  name={memory.contributor_name}
+                                  imageUrl={memory.contributor_avatar || null}
+                                  size={32}
+                                />
+                                <span className="text-xs" style={{ color: 'rgba(43,43,43,0.78)', fontFamily: 'var(--font-sans)' }}>
+                                  {memory.contributor_name}
+                                </span>
+                              </div>
+                            ) : null}
+                            <span className="text-sm" style={{ color: '#7A6A5A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                              {(() => {
+                                const d = new Date(memory.created_at);
+                                const dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                                const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                                return `Added ${dateStr} · ${timeStr}`;
+                              })()}
                             </span>
                           </div>
-                        ) : null}
-                        <span className="text-sm" style={{ color: '#7A6A5A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                          {(() => {
-                            const d = new Date(memory.created_at);
-                            const dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                            const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-                            return `Added ${dateStr} · ${timeStr}`;
-                          })()}
-                        </span>
+                        </div>
+
+                        {useMediaRail && (photoCount > 0 || hasAudio) && (
+                          <aside
+                            className="lg:mt-1 space-y-4"
+                            style={{
+                              background: 'linear-gradient(180deg, rgba(250,237,205,0.34) 0%, rgba(255,253,246,0.92) 100%)',
+                              border: '1px solid rgba(212,163,115,0.16)',
+                              borderRadius: '1.25rem',
+                              padding: '1rem',
+                              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.72), 0 10px 28px rgba(212,163,115,0.08)',
+                            }}
+                          >
+                            <div>
+                              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em]" style={{ color: '#8A735E', fontFamily: 'var(--font-sans)' }}>
+                                Captured with this memory
+                              </p>
+                              <p className="mt-1 text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
+                                Keepsakes sit alongside the story instead of taking it over.
+                              </p>
+                            </div>
+
+                            {photoCount === 1 && memory.photo_urls?.[0] && (() => {
+                              const url = memory.photo_urls[0];
+                              const globalIndex = memoryIndex * 100;
+                              const hasError = !!imageErrors[globalIndex];
+                              return (
+                                <div
+                                  className="relative img-frame overflow-hidden cursor-pointer group transition-all duration-300 hover:ring-2 hover:ring-[rgba(212,163,115,0.35)] hover:shadow-[0_10px_24px_rgba(212,163,115,0.18)]"
+                                  style={{ aspectRatio: '5 / 4', borderRadius: '1rem' }}
+                                >
+                                  {hasError ? (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-[1rem]" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'rgba(43,43,43,0.3)' }}>
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                        <circle cx="8.5" cy="8.5" r="1.5" />
+                                        <polyline points="21 15 16 10 5 21" />
+                                      </svg>
+                                      <span className="text-[0.65rem] font-medium" style={{ color: 'rgba(43,43,43,0.4)', fontFamily: 'var(--font-sans)' }}>Unavailable</span>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <Image
+                                        src={url}
+                                        alt="Memory photo"
+                                        fill
+                                        unoptimized={true}
+                                        className="object-cover rounded-[1rem] transition-transform duration-500 group-hover:scale-105"
+                                        onError={() => handlePhotoError(globalIndex)}
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() => handlePhotoClick(globalIndex, url)}
+                                        className="absolute inset-0 flex items-end justify-start p-3 opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-[1rem]"
+                                        aria-label="View photo fullscreen"
+                                        style={{ background: 'linear-gradient(to top, rgba(43,43,43,0.4) 0%, rgba(43,43,43,0.06) 55%, transparent 100%)' }}
+                                      >
+                                        <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[0.68rem] font-medium" style={{ backgroundColor: 'rgba(254,250,224,0.94)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                                          </svg>
+                                          View photo
+                                        </div>
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
+                              );
+                            })()}
+
+                            {hasAudio && (
+                              <div
+                                className="p-4 rounded-[1rem] relative overflow-hidden"
+                                style={{
+                                  background: 'linear-gradient(135deg, rgba(204,213,174,0.16) 0%, rgba(212,163,115,0.1) 100%)',
+                                  border: '1px solid rgba(212,163,115,0.18)',
+                                  boxShadow: '0 4px 18px rgba(212,163,115,0.07), inset 0 1px 0 rgba(255,255,255,0.5)',
+                                }}
+                              >
+                                <div className="absolute inset-0 opacity-[0.06] pointer-events-none flex items-center justify-center gap-0.5">
+                                  {[...Array(24)].map((_, i) => (
+                                    <div
+                                      key={i}
+                                      className="w-0.5 rounded-full"
+                                      style={{
+                                        height: `${8 + Math.abs(Math.sin(i * 0.8) * 10 + Math.cos(i * 1.4) * 6)}px`,
+                                        backgroundColor: 'var(--bronze)',
+                                      }}
+                                    />
+                                  ))}
+                                </div>
+                                <div className="relative flex items-center gap-3">
+                                  <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--bronze)', boxShadow: '0 4px 12px rgba(212,163,115,0.28)' }}>
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
+                                      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+                                    </svg>
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] mb-2" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
+                                      Voice Note
+                                    </p>
+                                    <audio
+                                      src={memory.audio_url ?? undefined}
+                                      controls
+                                      className="w-full rounded-xl audio-player"
+                                      style={{ height: '40px', borderRadius: '10px' }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </aside>
+                        )}
                       </div>
 
                       {/* Photo grid — premium album-style with hover reveal */}
-                      {memory.photo_urls && memory.photo_urls.length > 0 && (
+                      {photoCount > 1 && (
                         <div
-                          className={`mt-5 photo-grid photo-grid--${Math.min(memory.photo_urls.length, 4)}`}
+                          className={`mt-5 photo-grid photo-grid--${Math.min(photoCount, 4)}`}
                         >
                           {memory.photo_urls.map((url, photoIndex) => {
                             const globalIndex = memoryIndex * 100 + photoIndex;
@@ -815,7 +933,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                 key={photoIndex}
                                 className="relative img-frame overflow-hidden cursor-pointer group transition-all duration-300 hover:ring-2 hover:ring-[rgba(212,163,115,0.35)] hover:shadow-[0_4px_16px_rgba(212,163,115,0.18)]"
                                 style={{
-                                  aspectRatio: photoIndex === 0 && memory.photo_urls.length === 1 ? '4/3' : '1',
+                                  aspectRatio: '1',
                                   borderRadius: '12px',
                                 }}
                               >
@@ -824,26 +942,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                     className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl"
                                     style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}
                                   >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="24"
-                                      height="24"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      strokeWidth="1.5"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      style={{ color: 'rgba(43,43,43,0.3)' }}
-                                    >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'rgba(43,43,43,0.3)' }}>
                                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                                       <circle cx="8.5" cy="8.5" r="1.5" />
                                       <polyline points="21 15 16 10 5 21" />
                                     </svg>
-                                    <span
-                                      className="text-[0.65rem] font-medium"
-                                      style={{ color: 'rgba(43,43,43,0.4)', fontFamily: 'var(--font-sans)' }}
-                                    >
+                                    <span className="text-[0.65rem] font-medium" style={{ color: 'rgba(43,43,43,0.4)', fontFamily: 'var(--font-sans)' }}>
                                       Unavailable
                                     </span>
                                   </div>
@@ -857,34 +961,22 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                       className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"
                                       onError={() => handlePhotoError(globalIndex)}
                                     />
-                                    {/* Hover overlay with expand hint */}
                                     <button
                                       type="button"
                                       onClick={() => handlePhotoClick(globalIndex, url)}
                                       className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-xl"
                                       aria-label={`View photo ${photoIndex + 1} fullscreen`}
-                                      style={{
-                                        background: 'linear-gradient(to top, rgba(43,43,43,0.45) 0%, rgba(43,43,43,0.1) 50%, transparent 100%)',
-                                      }}
+                                      style={{ background: 'linear-gradient(to top, rgba(43,43,43,0.45) 0%, rgba(43,43,43,0.1) 50%, transparent 100%)' }}
                                     >
-                                      <div
-                                        className="w-10 h-10 rounded-full flex items-center justify-center mb-1 transition-transform duration-300 group-hover:scale-110"
-                                        style={{ backgroundColor: 'rgba(254,250,224,0.95)', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
-                                      >
+                                      <div className="w-10 h-10 rounded-full flex items-center justify-center mb-1 transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: 'rgba(254,250,224,0.95)', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
                                           <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
                                         </svg>
                                       </div>
                                     </button>
-                                    {/* Photo index badge */}
-                                    {memory.photo_urls.length > 1 && (
-                                      <div
-                                        className="absolute bottom-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                        style={{ backgroundColor: 'rgba(254,250,224,0.9)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
-                                      >
-                                        {photoIndex + 1} / {memory.photo_urls.length}
-                                      </div>
-                                    )}
+                                    <div className="absolute bottom-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ backgroundColor: 'rgba(254,250,224,0.9)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                                      {photoIndex + 1} / {photoCount}
+                                    </div>
                                   </>
                                 )}
                               </div>
@@ -894,7 +986,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       )}
 
                       {/* Audio — premium styled card with waveform icon */}
-                      {memory.audio_url && (
+                      {!useMediaRail && hasAudio && (
                         <div
                           className="mt-5 p-5 rounded-2xl relative overflow-hidden"
                           style={{
@@ -903,7 +995,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             boxShadow: '0 4px 20px rgba(212,163,115,0.08), inset 0 1px 0 rgba(255,255,255,0.5)',
                           }}
                         >
-                          {/* Subtle decorative waveform lines */}
                           <div className="absolute inset-0 opacity-[0.06] pointer-events-none flex items-center justify-center gap-0.5">
                             {[...Array(30)].map((_, i) => (
                               <div
@@ -930,7 +1021,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                 Voice Note
                               </p>
                               <audio
-                                src={memory.audio_url}
+                                src={memory.audio_url ?? undefined}
                                 controls
                                 className="w-full rounded-xl audio-player"
                                 style={{ height: '40px', borderRadius: '10px' }}
