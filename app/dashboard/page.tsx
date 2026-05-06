@@ -35,7 +35,14 @@ function shortenMemoryExcerpt(excerpt?: string | null) {
   if (!excerpt) return null;
   const compact = excerpt.replace(/\s+/g, ' ').trim();
   if (!compact) return null;
-  return compact.length > 132 ? `${compact.slice(0, 129).trimEnd()}…` : compact;
+  return compact.length > 110 ? `${compact.slice(0, 107).trimEnd()}…` : compact;
+}
+
+function shortenShelfNote(copy?: string | null, maxLength = 88) {
+  if (!copy) return null;
+  const compact = copy.replace(/\s+/g, ' ').trim();
+  if (!compact) return null;
+  return compact.length > maxLength ? `${compact.slice(0, maxLength - 1).trimEnd()}…` : compact;
 }
 
 interface User {
@@ -839,16 +846,16 @@ export default function Dashboard() {
                 ? `Last touched ${updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
                 : `Started ${createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
               const latestExcerpt = shortenMemoryExcerpt(book.latest_memory_excerpt);
-              const supportingLine = hasMemories
+              const shelfNote = hasMemories
                 ? latestExcerpt
                   ? `“${latestExcerpt}”${book.latest_contributor_name ? ` — ${book.latest_contributor_name}` : ''}`
                   : memoryCount === 1
-                    ? 'One memory is already on the page.'
-                    : `${memoryCount} memories are already taking shape.`
-                : 'Open the book and capture the first scene while it is still vivid.';
+                    ? 'One memory already lives here.'
+                    : `${memoryCount} memories already live here.`
+                : shortenShelfNote(book.description, 82) || 'Open the book and capture the first scene while it is still vivid.';
               const nextStepBody = hasMemories
-                ? 'Open your book and keep writing from the moment you left off.'
-                : 'Open your book, choose a prompt, and capture the first scene while it is fresh.';
+                ? 'Pick up where you left off.'
+                : 'Begin the first memory.';
               return (
                 <div
                   key={book.id}
@@ -857,7 +864,7 @@ export default function Dashboard() {
                 >
                   <Link href={`/books/${book.id}`} className="block h-full group">
                     <div
-                      className="book-card relative h-full min-h-[228px] md:min-h-[252px] rounded-[30px] overflow-hidden cursor-pointer transition-all duration-300 group/card"
+                      className="book-card relative h-full min-h-[206px] md:min-h-[224px] rounded-[30px] overflow-hidden cursor-pointer transition-all duration-300 group/card"
                       style={{
                         background: 'linear-gradient(180deg, rgba(255,253,247,0.98) 0%, rgba(248,241,228,0.98) 100%)',
                         boxShadow: '0 10px 26px rgba(212,163,115,0.10), 0 22px 52px rgba(43,43,43,0.06)',
@@ -935,10 +942,6 @@ export default function Dashboard() {
                               )}
                             </div>
 
-                            <p className="mt-3 text-[0.95rem] leading-6 line-clamp-2" style={{ color: '#523A2A', fontFamily: 'var(--font-serif)' }}>
-                              {book.description || 'A new place to gather stories, voices, and keepsakes worth saving.'}
-                            </p>
-
                             <div className="mt-4 flex flex-wrap items-center gap-2">
                               <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.82)', color: '#302117', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}>
                                 {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'}
@@ -970,7 +973,7 @@ export default function Dashboard() {
                             ) : null}
 
                             <div
-                              className="mt-4 rounded-[22px] px-4 py-4"
+                              className="mt-4 rounded-[22px] px-4 py-3.5"
                               style={{
                                 background: hasMemories
                                   ? 'linear-gradient(180deg, rgba(255,255,255,0.68) 0%, rgba(252,246,235,0.94) 100%)'
@@ -979,15 +982,15 @@ export default function Dashboard() {
                               }}
                             >
                               <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
-                                {hasMemories ? 'Latest memory' : 'First page waiting'}
+                                {hasMemories ? 'Shelf note' : 'Why start here'}
                               </p>
-                              <p className="mt-2 text-[0.88rem] leading-6" style={{ color: hasMemories ? '#3F2E22' : '#5E4939', fontFamily: hasMemories ? 'var(--font-serif)' : 'var(--font-sans)', fontStyle: hasMemories ? 'italic' : 'normal' }}>
-                                {supportingLine}
+                              <p className="mt-2 text-[0.92rem] leading-6 line-clamp-3" style={{ color: hasMemories ? '#3F2E22' : '#5E4939', fontFamily: hasMemories ? 'var(--font-serif)' : 'var(--font-sans)', fontStyle: hasMemories ? 'italic' : 'normal' }}>
+                                {shelfNote}
                               </p>
                             </div>
 
-                            <div className="mt-auto flex items-end justify-between gap-3 pt-5">
-                              <p className="max-w-[13rem] text-[0.78rem] leading-5" style={{ color: '#7A6453', fontFamily: 'var(--font-sans)' }}>
+                            <div className="mt-auto flex items-end justify-between gap-3 pt-4">
+                              <p className="max-w-[12rem] text-[0.78rem] leading-5" style={{ color: '#7A6453', fontFamily: 'var(--font-sans)' }}>
                                 {nextStepBody}
                               </p>
                               <span className="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>

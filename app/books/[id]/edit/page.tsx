@@ -1266,7 +1266,21 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                             </label>
                           </div>
 
-                          <DropZone onFilesSelected={handlePhotoFiles} className="mt-2" />
+                          {photoItems.length === 0 ? (
+                            <DropZone onFilesSelected={handlePhotoFiles} className="mt-2" />
+                          ) : (
+                            <div
+                              className="mt-3 rounded-[1rem] border px-4 py-3"
+                              style={{
+                                backgroundColor: 'rgba(255,253,246,0.78)',
+                                borderColor: 'rgba(212,163,115,0.16)',
+                              }}
+                            >
+                              <p className="text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
+                                Your photos are already attached. Use <span style={{ color: 'var(--charcoal)', fontWeight: 600 }}>Add photos</span> to tuck in more without reopening a large drop area.
+                              </p>
+                            </div>
+                          )}
 
                           {mediaErrors.length > 0 && (
                             <div
@@ -1378,12 +1392,26 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                             )}
                           </div>
 
-                          <div className="mt-4">
-                            <DropZone
-                              onFilesSelected={(files) => handleAudioFileSelection(files)}
-                              accept="audio/*"
-                            />
-                          </div>
+                          {audioDraft ? (
+                            <div
+                              className="mt-4 rounded-[1rem] border px-4 py-3"
+                              style={{
+                                backgroundColor: 'rgba(255,253,246,0.78)',
+                                borderColor: 'rgba(212,163,115,0.16)',
+                              }}
+                            >
+                              <p className="text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
+                                Audio is already staged for this memory. Use <span style={{ color: 'var(--charcoal)', fontWeight: 600 }}>Add audio file</span> or record again if you want to replace it.
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="mt-4">
+                              <DropZone
+                                onFilesSelected={(files) => handleAudioFileSelection(files)}
+                                accept="audio/*"
+                              />
+                            </div>
+                          )}
 
                           <p className="mt-3 text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
                             Audio files up to 16MB. Recorded clips upload when you save.

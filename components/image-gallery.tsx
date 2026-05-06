@@ -215,13 +215,13 @@ function ImageCard({
           }}
         >
           <figcaption
-            className="min-w-0 truncate text-[0.72rem] uppercase tracking-[0.16em]"
+            className="min-w-0 truncate text-[0.76rem]"
             style={{
-              color: item.status === "error" ? "#8B5E4C" : "rgba(43,43,43,0.52)",
+              color: item.status === "error" ? "#8B5E4C" : "rgba(43,43,43,0.6)",
               fontFamily: "var(--font-sans)",
             }}
           >
-            {item.status === "uploaded" ? item.fileName : `Photo ${index + 1}`}
+            {item.status === "uploaded" ? formatPhotoLabel(item.fileName) : `Photo ${index + 1}`}
           </figcaption>
           <span
             className="shrink-0 text-[0.68rem]"
@@ -236,6 +236,13 @@ function ImageCard({
       </figure>
     </div>
   );
+}
+
+function formatPhotoLabel(fileName: string) {
+  const withoutExtension = fileName.replace(/\.[^.]+$/, '');
+  const cleaned = withoutExtension.replace(/[-_]+/g, ' ').trim();
+  if (!cleaned) return 'Saved photo';
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
 }
 
 export function ImageGallery({ items, onRemove, onRetry }: ImageGalleryProps) {
