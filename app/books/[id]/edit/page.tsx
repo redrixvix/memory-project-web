@@ -1768,7 +1768,11 @@ function handlePromptSelectChange(
 
 function getImageValidationError(file: File): string | null {
   if (!file.type.startsWith('image/')) {
-    return 'Please choose an image file.';
+    if (file.type.startsWith('audio/')) {
+      return 'This is an audio file — add it in Voice note instead.';
+    }
+
+    return 'Please choose an image file for Photo attachments.';
   }
 
   if (file.size > MAX_IMAGE_BYTES) {
@@ -1780,7 +1784,11 @@ function getImageValidationError(file: File): string | null {
 
 function getAudioValidationError(file: File): string | null {
   if (!file.type.startsWith('audio/')) {
-    return 'Please choose an audio file.';
+    if (file.type.startsWith('image/')) {
+      return 'This looks like a photo — add it in Photo attachments instead.';
+    }
+
+    return 'Please choose an audio file for Voice note.';
   }
 
   if (file.size > MAX_AUDIO_BYTES) {

@@ -304,14 +304,10 @@ export function DropZone({
       setIsDragging(false);
       if (disabled) return;
 
-      const files = Array.from(e.dataTransfer.files).filter((file) => {
-        if (acceptsAudio) return file.type.startsWith("audio/");
-        if (acceptsImages) return file.type.startsWith("image/");
-        return true;
-      });
+      const files = Array.from(e.dataTransfer.files);
       if (files.length > 0) onFilesSelected(files);
     },
-    [acceptsAudio, acceptsImages, disabled, onFilesSelected],
+    [disabled, onFilesSelected],
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -434,8 +430,8 @@ export function DropZone({
           }}
         >
           {acceptsAudio
-            ? "or click to browse from your device. MP3, M4A, and WAV upload cleanly here."
-            : "or click to browse from your device. Previews appear instantly."}
+            ? "or click to browse from your device. MP3, M4A, and WAV belong here."
+            : "or click to browse from your device. Images only — audio belongs in Voice note."}
         </p>
       </div>
     </div>

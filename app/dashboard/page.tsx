@@ -212,25 +212,90 @@ export default function Dashboard() {
 
   if (loading || loggedIn === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
-        <div className="w-full max-w-3xl px-6">
-          {/* Auth loading skeleton — warm shimmer that matches dashboard layout */}
-          <div className="mb-10">
-            <div className="h-9 w-56 rounded-xl mb-2 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.22)' }} />
-            <div className="h-4 w-40 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
+      <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
+        <header className="sticky top-0 z-20 h-12 md:h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
+          <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
+              <div className="hidden sm:block h-4 w-28 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
+            </div>
+            <div className="hidden md:block h-4 w-24 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+            <div className="h-9 w-9 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
           </div>
-          <div className="space-y-4">
-            {[1,2,3].map(i => (
-              <div key={i} className="rounded-2xl p-6 flex items-center gap-5" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.12)' }}>
-                <div className="w-12 h-18 rounded-xl shrink-0 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
-                <div className="flex-1 space-y-2.5">
-                  <div className="h-5 w-48 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
-                  <div className="h-3 w-32 rounded-md skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+        </header>
+
+        <main className="px-6 md:px-10 pt-5 md:pt-8 pb-10 max-w-5xl mx-auto w-full">
+          <div className="mb-5 md:mb-8 relative">
+            <div
+              className="absolute -top-2 left-0 right-0 h-px rounded-full overflow-hidden"
+              style={{ background: 'linear-gradient(to right, transparent 0%, rgba(212,163,115,0.25) 20%, rgba(212,163,115,0.25) 80%, transparent 100%)' }}
+            />
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <div className="h-10 w-56 rounded-2xl mb-2 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                <div className="h-4 w-44 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+              </div>
+              <div className="hidden sm:block h-11 w-32 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-3">
+              <div className="flex-1 h-12 rounded-2xl skeleton-pulse" style={{ backgroundColor: 'rgba(255,255,255,0.55)', border: '1px solid rgba(212,163,115,0.12)' }} />
+              <div className="h-12 w-40 rounded-2xl skeleton-pulse" style={{ backgroundColor: 'rgba(255,255,255,0.55)', border: '1px solid rgba(212,163,115,0.12)' }} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }, (_, i) => (
+              <div
+                key={i}
+                className="rounded-[30px] overflow-hidden min-h-[228px] md:min-h-[252px]"
+                style={{
+                  background: 'linear-gradient(180deg, rgba(255,253,247,0.98) 0%, rgba(250,244,233,0.98) 100%)',
+                  boxShadow: '0 6px 16px rgba(212,163,115,0.08), 0 20px 44px rgba(43,43,43,0.05)',
+                  border: '1px solid rgba(212,163,115,0.16)',
+                }}
+              >
+                <div className="p-4 md:p-6 h-full flex flex-col">
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <div className="flex gap-2">
+                      <div className="h-6 w-18 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
+                      <div className="h-6 w-20 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 w-12 rounded-full skeleton-pulse ml-auto" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+                      <div className="h-3 w-14 rounded-full skeleton-pulse ml-auto" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 md:gap-4 flex-1 min-h-0">
+                    <div className="shrink-0 rounded-[20px] p-2 md:rounded-[22px] md:p-2.5" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(250,237,205,0.46) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.82), 0 10px 24px rgba(212,163,115,0.12)' }}>
+                      <div className="w-[84px] h-[118px] rounded-[16px] skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                    </div>
+                    <div className="flex-1 min-w-0 flex flex-col gap-2.5 pt-1">
+                      <div className="h-5 w-4/5 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                      <div className="h-5 w-3/5 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
+                      <div className="h-4 w-full rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }} />
+                      <div className="h-4 w-11/12 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }} />
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        <div className="h-7 w-24 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
+                        <div className="h-7 w-28 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 md:mt-5 rounded-[20px] md:rounded-[22px] px-4 py-3 flex items-center justify-between gap-3" style={{ background: 'linear-gradient(180deg, rgba(255,250,240,0.96) 0%, rgba(248,239,224,0.96) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.75), 0 8px 18px rgba(212,163,115,0.12)', border: '1px solid rgba(212,163,115,0.18)' }}>
+                    <div className="min-w-0 flex-1">
+                      <div className="h-3 w-28 rounded-full skeleton-pulse mb-2" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
+                      <div className="h-4 w-full rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }} />
+                    </div>
+                    <div className="h-8 w-24 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </main>
+
         <style>{`
           @keyframes skeleton-shimmer {
             0% { opacity: 0.45; }
