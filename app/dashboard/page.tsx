@@ -96,7 +96,7 @@ function getPlanBadgeStyles(plan: string) {
 
   if (normalizedPlan === 'plus') {
     return {
-      backgroundColor: '#2D4A35',
+      backgroundColor: 'rgba(45,74,53,0.90)',
       color: '#E8F0E5',
     };
   }
@@ -110,7 +110,7 @@ function getPlanBadgeStyles(plan: string) {
 
   return {
     backgroundColor: 'rgba(212,163,115,0.25)',
-    color: '#4A4A3A',
+    color: 'var(--charcoal)',
   };
 }
 
@@ -399,7 +399,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5 group">
               <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center transition-all duration-200 group-hover:scale-105" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
-                <svg width="18" height="18" viewBox="0 0 22 22" fill="none" style={{ color: '#8A6A4A' }}>
+                <svg width="18" height="18" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
                   <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
                   <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
                 </svg>
@@ -546,7 +546,7 @@ export default function Dashboard() {
                     count: shelfCounts.shared,
                     description: 'Books with more than one contributor.',
                   },
-                ] as const).map(({ value, kicker, count, description, icon }) => {
+                ] as const).map(({ value, kicker, count, description, icon }, index) => {
                   const selected = shelfFilter === value;
                   return (
                     <button
@@ -556,8 +556,9 @@ export default function Dashboard() {
                         setShelfFilter(value);
                         setCurrentPage(1);
                       }}
-                      className="group relative rounded-[1.4rem] px-4 py-3.5 text-left transition-all duration-300 hover:-translate-y-0.5"
+                      className="group relative rounded-[1.4rem] px-4 py-3.5 text-left transition-all duration-300 hover:-translate-y-0.5 animate-fade-in"
                       style={{
+                        animationDelay: `${index * 60}ms`,
                         background: selected
                           ? 'linear-gradient(160deg, rgba(255,253,246,0.99) 0%, rgba(250,241,222,0.99) 100%)'
                           : 'rgba(255,252,245,0.88)',
@@ -590,16 +591,16 @@ export default function Dashboard() {
                               fill="none"
                               stroke="currentColor"
                               strokeWidth="2.2"
-                              style={{ color: selected ? '#6B4423' : '#8B7055' }}
+                              style={{ color: selected ? 'var(--charcoal)' : '#8B7055' }}
                             >
                               {icon}
                             </svg>
                           </div>
                           <div>
-                            <p className="text-[0.7rem] font-semibold tracking-[0.16em] uppercase" style={{ color: selected ? '#5C3D25' : '#7A6A50', fontFamily: 'var(--font-serif)' }}>
+                            <p className="text-[0.7rem] font-semibold tracking-[0.16em] uppercase" style={{ color: selected ? 'var(--charcoal)' : '#7A6A50', fontFamily: 'var(--font-serif)' }}>
                               {kicker}
                             </p>
-                            <p className="mt-1.5 text-[0.78rem] leading-5" style={{ color: '#4F3C2F', fontFamily: 'var(--font-sans)' }}>
+                            <p className="mt-1.5 text-[0.78rem] leading-5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
                               {description}
                             </p>
                           </div>
@@ -609,7 +610,7 @@ export default function Dashboard() {
                           <span 
                             className="text-[0.7rem] font-semibold tabular-nums tracking-tight" 
                             style={{ 
-                              color: selected ? '#8A6A3C' : '#9A8A70',
+                              color: selected ? 'var(--charcoal)' : '#9A8A70',
                               fontFamily: 'var(--font-serif)',
                               opacity: count > 0 ? 1 : 0.4,
                             }}
@@ -628,8 +629,8 @@ export default function Dashboard() {
 
               <div className="rounded-[1.5rem] px-4 py-3.5 flex flex-col gap-2 md:flex-row md:items-center md:justify-between" style={{ background: 'linear-gradient(160deg, rgba(255,253,246,0.95) 0%, rgba(248,240,226,0.95) 100%)', border: '1px solid rgba(212,163,115,0.18)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 4px rgba(212,163,115,0.05)' }}>
                 <p className="text-sm leading-6" style={{ color: '#4A3728', fontFamily: 'var(--font-serif)' }}>
-                  <span className="font-semibold" style={{ color: '#24180F' }}>{shelfFilterMeta[shelfFilter].label}</span>
-                  <span style={{ color: '#7A6A55' }}> — {shelfFilterMeta[shelfFilter].summary}</span>
+                  <span className="font-semibold" style={{ color: 'var(--charcoal)' }}>{shelfFilterMeta[shelfFilter].label}</span>
+                  <span style={{ color: 'var(--muted-foreground)' }}> — {shelfFilterMeta[shelfFilter].summary}</span>
                 </p>
                 <p className="text-[0.7rem] uppercase tracking-[0.14em]" style={{ color: '#8B7055', fontFamily: 'var(--font-serif)' }}>
                   {filteredBooks.length > 0 ? `${filteredBooks.length} ready to browse` : 'Adjust search or start a new book'}
@@ -728,11 +729,25 @@ export default function Dashboard() {
 
             {/* Modal panel */}
             <div
-              className="relative w-full max-w-lg rounded-3xl overflow-hidden animate-fade-up flex flex-col"
+              className="relative w-full max-w-lg rounded-3xl overflow-hidden animate-fade-up flex flex-col focus:outline-none"
               style={{
                 maxHeight: '90vh',
-                backgroundColor: '#FDFCF5',
+                backgroundColor: 'var(--card)',
                 boxShadow: '0 40px 100px rgba(43,43,43,0.22), 0 12px 40px rgba(212,163,115,0.12)',
+              }}
+              // Trap focus inside the modal
+              onKeyDown={(e) => {
+                if (e.key === 'Tab') {
+                  const focusable = e.currentTarget.querySelectorAll<HTMLElement>(
+                    'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                  );
+                  const first = focusable[0];
+                  const last = focusable[focusable.length - 1];
+                  if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
+                    e.preventDefault();
+                    (e.shiftKey ? last : first)?.focus();
+                  }
+                }
               }}
             >
               {/* Warm top bar */}
@@ -746,7 +761,7 @@ export default function Dashboard() {
                     <h2 id="create-book-title" className="text-xl font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
                       Create a new memory book
                     </h2>
-                    <p className="text-sm mt-1" style={{ color: '#6A6A5A' }}>Give it a name — you can always change it later.</p>
+                    <p className="text-sm mt-1" style={{ color: 'var(--muted-foreground)' }}>Give it a name — you can always change it later.</p>
                   </div>
                   {!creating && (
                     <button
@@ -777,8 +792,8 @@ export default function Dashboard() {
                       required
                       autoFocus
                       placeholder="Ruth's Life Story"
-                      className="rounded-xl text-base w-full h-11"
-                      style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
+                      className="rounded-xl text-base w-full h-11 focus-visible:ring-offset-2"
+                      style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: 'var(--card)' }}
                     />
                   </div>
 
@@ -791,10 +806,10 @@ export default function Dashboard() {
                       id="modal-desc"
                       value={newDesc}
                       onChange={(e) => setNewDesc(e.target.value)}
-                      className="resize-none rounded-xl text-base w-full"
+                      className="resize-none rounded-xl text-base w-full focus-visible:ring-offset-2"
                       rows={2}
                       placeholder="A collection of memories from a wonderful life..."
-                      style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
+                      style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: 'var(--card)' }}
                     />
                   </div>
 
@@ -804,7 +819,7 @@ export default function Dashboard() {
                       <Label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                         Plan
                       </Label>
-                      <span className="text-xs" style={{ color: '#7A7A6A' }}>— select below</span>
+                      <span className="text-xs" style={{ color: 'var(--muted-foreground)' }}>— select below</span>
                     </div>
                     <div className="grid gap-3">
                       {BOOK_PLAN_OPTIONS.map((plan) => {
@@ -836,7 +851,7 @@ export default function Dashboard() {
                               <div
                                 className="absolute -top-2.5 left-4 px-2.5 py-0.5 rounded-full text-xs font-semibold"
                                 style={{
-                                  backgroundColor: isRecommended ? '#567C3B' : 'var(--bronze)',
+                                  backgroundColor: isRecommended ? 'var(--charcoal)' : 'var(--bronze)',
                                   color: isRecommended ? '#FDFCF5' : 'var(--charcoal)',
                                   fontFamily: 'var(--font-sans)',
                                   boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
@@ -908,14 +923,14 @@ export default function Dashboard() {
               </div>
 
               {/* Sticky footer with actions */}
-              <div className="shrink-0 px-6 py-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)', backgroundColor: '#FDFCF5' }}>
+              <div className="shrink-0 px-6 py-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)', backgroundColor: 'var(--card)' }}>
                 <div className="flex gap-3">
                   {!creating && (
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => { setShowCreate(false); setCreateError(''); }}
-                      className="rounded-full h-11 px-6 text-sm font-medium"
+                      className="rounded-full h-11 px-6 text-sm font-medium focus-visible:ring-offset-2"
                       style={{ borderColor: 'rgba(212,163,115,0.35)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
                     >
                       Cancel
@@ -925,12 +940,13 @@ export default function Dashboard() {
                     type="submit"
                     form="create-book-form"
                     disabled={creating || !newTitle.trim()}
-                    className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-300 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-0.5"
+                    className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-300 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-0.5 focus-visible:ring-offset-2"
                     style={{
-                      backgroundColor: creating ? 'rgba(158,120,69,0.65)' : !newTitle.trim() ? 'rgba(158,120,69,0.62)' : '#8A6A3C',
-                      color: !newTitle.trim() ? 'rgba(254,250,224,0.75)' : 'var(--cornsilk)',
+                      backgroundColor: creating || !newTitle.trim() ? 'var(--bronze)' : 'var(--bronze)',
+                      color: !newTitle.trim() ? 'rgba(254,250,224,0.75)' : 'var(--charcoal)',
                       boxShadow: !creating && newTitle.trim() ? '0 6px 24px rgba(212,163,115,0.4)' : 'none',
                       fontWeight: '600',
+                      opacity: creating || !newTitle.trim() ? 0.65 : 1,
                     }}
                   >
                     {creating ? (
@@ -1067,7 +1083,7 @@ export default function Dashboard() {
                                 {memoryCount > 0 ? `${memoryCount} ${memoryCount === 1 ? 'memory' : 'memories'} inside` : 'Still waiting for page one'}
                               </p>
                             </div>
-                            <svg className="mt-1 h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#7A6453' }}>
+                            <svg className="mt-1 h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
                               <path d="M5 12h14M12 5l7 7-7 7"/>
                             </svg>
                           </div>
@@ -1098,7 +1114,7 @@ export default function Dashboard() {
             {/* Elegant book illustration */}
             <div className="relative mb-10" style={{ width: 100, height: 130 }}>
               <div className="absolute inset-0 rounded-2xl" style={{
-                backgroundColor: '#FDFCF5',
+                backgroundColor: 'var(--card)',
                 border: '1.5px solid rgba(212,163,115,0.28)',
                 boxShadow: '0 12px 40px rgba(212,163,115,0.14), 4px 6px 0 rgba(212,163,115,0.10)',
                 transform: 'rotate(-2deg)',

@@ -242,10 +242,6 @@ body {
   animation: fade-out 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.animate-fade-out {
-  animation: fade-out 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
 .animate-breathe {
   animation: breathe 5s ease-in-out infinite;
 }

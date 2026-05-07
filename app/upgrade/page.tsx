@@ -210,7 +210,7 @@ export default function UpgradePage() {
           <div className="absolute inset-0 rounded-2xl" style={{ background: 'linear-gradient(to top, rgba(43,43,43,0.28) 0%, transparent 55%)', zIndex: 1 }} />
           <Image
             src="/images/book-product-3.jpg"
-            alt="Memory Project printed hardcover book"
+            alt="A beautifully printed Memory Project hardcover book, bound in warm linen-finish cover with gold foil title"
             width={480}
             height={220}
             className="block w-full object-cover"

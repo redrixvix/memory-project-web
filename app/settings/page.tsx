@@ -153,7 +153,7 @@ export default function SettingsPage() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
-          <p className="text-sm" style={{ color: '#5A5A4A' }}>Loading...</p>
+          <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>Loading...</p>
         </div>
       </div>
     );
@@ -177,7 +177,7 @@ export default function SettingsPage() {
         <div className="mb-8">
           <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Account</p>
           <h1 className="display-md mb-3" style={{ color: 'var(--charcoal)' }}>Settings</h1>
-          <p className="text-base" style={{ color: '#3A3020' }}>
+          <p className="text-base" style={{ color: 'var(--charcoal)' }}>
             Manage your profile and preferences.
           </p>
         </div>
@@ -334,7 +334,7 @@ export default function SettingsPage() {
                     </button>
                   ) : null}
                   {imageError && (
-                    <p className="text-xs mt-2" style={{ color: '#B91C1C' }}>{imageError}</p>
+                    <p className="text-xs mt-2" style={{ color: 'var(--destructive)' }}>{imageError}</p>
                   )}
                 </div>
                 {/* Upload hint — below avatar when no photo */}

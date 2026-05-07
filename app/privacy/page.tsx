@@ -57,7 +57,7 @@ export default function PrivacyPage() {
           <h1 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>
             Privacy Policy
           </h1>
-          <p className="text-sm" style={{ color: '#6A6A5A' }}>
+          <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
             Last updated: April 23, 2026
           </p>
         </div>
@@ -113,7 +113,7 @@ export default function PrivacyPage() {
               <h2 className="text-lg font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                 {section.title}
               </h2>
-              <p className="text-sm leading-relaxed" style={{ color: '#6A6A5A' }}>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
                 {section.body}
               </p>
             </div>
@@ -131,7 +131,7 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
             Questions about your privacy?
           </h2>
-          <p className="text-sm mb-6" style={{ color: '#6A6A5A' }}>
+          <p className="text-sm mb-6" style={{ color: 'var(--muted-foreground)' }}>
             We&apos;re happy to help. Send us a note anytime.
           </p>
           <Link

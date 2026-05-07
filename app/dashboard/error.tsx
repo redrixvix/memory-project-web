@@ -31,7 +31,7 @@ export default function DashboardError({
         <h2 className="text-xl font-medium mb-3" style={{ color: 'var(--charcoal)' }}>
           Something went wrong
         </h2>
-        <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>
+        <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>
           We couldn&apos;t load your books right now. This has been logged and we&apos;ll look into it.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">

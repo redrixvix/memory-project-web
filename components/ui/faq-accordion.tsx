@@ -35,22 +35,22 @@ export function FaqAccordion({ items, className = '' }: FaqAccordionProps) {
             <button
               type="button"
               onClick={() => setOpenIndex(isOpen ? null : i)}
-              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left group"
+              aria-label={item.q}
               aria-expanded={isOpen}
+              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left group"
             >
               <span
                 className="text-base font-medium transition-colors duration-200"
-                style={{
-                  color: isOpen ? 'var(--charcoal)' : 'var(--charcoal)',
-                  fontFamily: 'var(--font-serif)',
-                }}
+                style={{ fontFamily: 'var(--font-serif)' }}
               >
                 {item.q}
               </span>
               {/* Animated chevron — rotates when open */}
               <span
-                className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                className="shrink-0 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
                 style={{
+                  width: 44,
+                  height: 44,
                   backgroundColor: isOpen ? 'rgba(212,163,115,0.18)' : 'rgba(212,163,115,0.08)',
                   transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                 }}
@@ -69,26 +69,26 @@ export function FaqAccordion({ items, className = '' }: FaqAccordionProps) {
               </span>
             </button>
 
-            {/* Answer — animated reveal */}
+            {/* Answer — layout-reflow-free grid transition */}
             <div
-              className="overflow-hidden transition-all duration-350 ease-out"
               style={{
-                maxHeight: isOpen ? '500px' : '0px',
-                opacity: isOpen ? 1 : 0,
+                display: 'grid',
+                gridTemplateRows: isOpen ? '1fr' : '0fr',
+                transition: 'grid-template-rows 0.35s ease-out',
               }}
             >
-              <div
-                className="px-6 pb-6"
-                style={{
-                  borderTop: '1px solid rgba(212,163,115,0.08)',
-                }}
-              >
-                <p
-                  className="pt-5 text-sm leading-relaxed"
-                  style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)' }}
+              <div style={{ overflow: 'hidden' }}>
+                <div
+                  className="px-6 pb-6"
+                  style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}
                 >
-                  {item.a}
-                </p>
+                  <p
+                    className="pt-5 text-sm leading-relaxed"
+                    style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-sans)' }}
+                  >
+                    {item.a}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

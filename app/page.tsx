@@ -102,15 +102,15 @@ export default function Home() {
               </Link>
             ) : (
               <>
-                <Link href="/#how-it-works" className="text-sm transition-colors hidden sm:block" style={{ color: '#6A6A5A' }}>How It Works</Link>
+                <Link href="/#how-it-works" className="text-sm transition-colors hidden sm:block" style={{ color: 'var(--muted-foreground)' }}>How It Works</Link>
                 <Link
                 href="/pricing"
                 className="text-sm transition-colors hidden sm:block"
-                style={{ color: '#6A6A5A' }}
+                style={{ color: 'var(--muted-foreground)' }}
               >
                 Pricing
               </Link>
-                <Link href="/login" className="text-sm transition-colors hidden sm:block" style={{ color: '#6A6A5A' }}>Sign in</Link>
+                <Link href="/login" className="text-sm transition-colors hidden sm:block" style={{ color: 'var(--muted-foreground)' }}>Sign in</Link>
                 <Link
                   href="/signup"
                   className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
@@ -294,7 +294,7 @@ export default function Home() {
               <h2 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>
                 The Smith Family&apos;s Memory Book
               </h2>
-              <p className="text-sm leading-relaxed mb-8" style={{ color: '#6A6A5A' }}>
+              <p className="text-sm leading-relaxed mb-8" style={{ color: 'var(--muted-foreground)' }}>
                 12 memories, wedding stories, childhood memories, and more — all captured in a real family book you can read right now.
               </p>
               <Link
@@ -585,7 +585,7 @@ export default function Home() {
             <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
               Simple, honest pricing
             </h2>
-            <p className="text-sm mt-3" style={{ color: '#6A6A5A' }}>
+            <p className="text-sm mt-3" style={{ color: 'var(--muted-foreground)' }}>
               Start free. Pay only for printing.
             </p>
           </div>
@@ -597,7 +597,7 @@ export default function Home() {
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
                   <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$0</p>
-                  <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>forever</p>
+                  <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>forever</p>
                   <div className="rule mb-8" />
                   <ul className="space-y-3 mb-10">
                     {[
@@ -613,10 +613,8 @@ export default function Home() {
                       </li>
                     ))}
                     {['Photos & audio', 'Printed books'].map((feat, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: '#6A6A5A' }}>
-                        <svg className="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#B0B09A' }}>
-                          <path d="M18 6L6 18M6 6l12 12" />
-                        </svg>
+                      <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}>
+                        <span className="mt-1.5 w-3 h-px shrink-0 block" style={{ backgroundColor: 'var(--muted-foreground)', opacity: 0.3 }} />
                         {feat}
                       </li>
                     ))}
@@ -643,7 +641,7 @@ export default function Home() {
                 <CardContent className="pt-10">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>5GB Storage</p>
                   <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$50</p>
-                  <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>
+                  <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>for 5 years</p>
                   <div className="rule mb-8" />
                   <ul className="space-y-3 mb-10">
                     {[
@@ -677,7 +675,7 @@ export default function Home() {
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>15GB Storage</p>
                   <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$100</p>
-                  <p className="text-sm mb-8" style={{ color: '#6A6A5A' }}>for 5 years</p>
+                  <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>for 5 years</p>
                   <div className="rule mb-8" />
                   <ul className="space-y-3 mb-10">
                     {[
@@ -782,7 +780,7 @@ export default function Home() {
                     {step.title}
                   </h3>
                 </div>
-                <p className="text-sm leading-relaxed pl-16 md:pl-0" style={{ color: '#6A6A5A' }}>
+                <p className="text-sm leading-relaxed pl-16 md:pl-0" style={{ color: 'var(--muted-foreground)' }}>
                   {step.desc}
                 </p>
               </div>
@@ -799,7 +797,7 @@ export default function Home() {
           <h2 className="display-md" style={{ color: 'var(--charcoal)' }}>
             Every family has stories worth keeping
           </h2>
-          <p className="text-base font-light leading-relaxed" style={{ color: '#6A6A5A' }}>
+          <p className="text-base font-light leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
             Free to start. No credit card required.
           </p>
           <Link
@@ -827,7 +825,7 @@ export default function Home() {
                 </svg>
                 <span className="text-base font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
               </div>
-              <p className="text-sm leading-relaxed mb-6" style={{ color: '#6A6A5A' }}>
+              <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--muted-foreground)' }}>
                 Made with care for families who believe every story deserves to be remembered.
               </p>
               {/* Social icons */}
@@ -861,7 +859,7 @@ export default function Home() {
                   { href: '/signup', label: 'Get Started' },
                 ].map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-sm transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>
+                    <Link href={link.href} className="text-sm transition-colors hover:opacity-70" style={{ color: 'var(--muted-foreground)' }}>
                       {link.label}
                     </Link>
                   </li>
@@ -872,7 +870,7 @@ export default function Home() {
             {/* Col 3: CTA + email */}
             <div>
               <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Start your book</p>
-              <p className="text-sm mb-4" style={{ color: '#6A6A5A' }}>
+              <p className="text-sm mb-4" style={{ color: 'var(--muted-foreground)' }}>
                 Free to start. No credit card required.
               </p>
               <Link
@@ -882,7 +880,7 @@ export default function Home() {
               >
                 Create your book
               </Link>
-              <p className="text-xs" style={{ color: '#6A6A5A' }}>
+              <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
                 Questions?{' '}
                 <a href="mailto:hello@memoryproject.com" className="underline underline-offset-2 hover:opacity-70 transition-opacity" style={{ color: 'var(--bronze)' }}>
                   hello@memoryproject.com
@@ -894,12 +892,12 @@ export default function Home() {
           {/* Bottom bar */}
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.2), transparent)', marginBottom: 24 }} />
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-            <p className="text-xs" style={{ color: '#6A6A5A' }}>
+            <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
               © {new Date().getFullYear()} Memory Project · Made with love for families
             </p>
             <div className="flex items-center gap-4">
-              <Link href="/privacy" className="text-xs transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>Privacy Policy</Link>
-              <Link href="/terms" className="text-xs transition-colors hover:opacity-70" style={{ color: '#6A6A5A' }}>Terms of Service</Link>
+              <Link href="/privacy" className="text-xs transition-colors hover:opacity-70" style={{ color: 'var(--muted-foreground)' }}>Privacy Policy</Link>
+              <Link href="/terms" className="text-xs transition-colors hover:opacity-70" style={{ color: 'var(--muted-foreground)' }}>Terms of Service</Link>
             </div>
           </div>
         </div>

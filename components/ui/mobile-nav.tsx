@@ -51,6 +51,7 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
       {/* Drawer */}
       <div
         ref={drawerRef}
+        id="mobile-nav-drawer"
         className="fixed top-0 right-0 z-50 h-full w-72 shadow-2xl flex flex-col animate-slide-in"
         style={{ backgroundColor: 'rgba(254,250,224,0.96)', backdropFilter: 'blur(20px)', borderLeft: '1px solid rgba(212,163,115,0.2)' }}
       >
@@ -67,6 +68,7 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
             onClick={onClose}
             className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-70"
             style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A' }}
+            aria-label="Close navigation menu"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M18 6L6 18M6 6l12 12"/>

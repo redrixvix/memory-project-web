@@ -240,7 +240,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
                           <div key={j} className="img-frame rounded-xl overflow-hidden shadow-sm">
                             <Image
                               src={url}
-                              alt=""
+                              alt={`Memory photo ${j + 1} from "${memory.prompt_question || memory.answer_text.slice(0, 40)}"`}
                               width={160}
                               height={160}
                               unoptimized={true}

@@ -29,7 +29,7 @@ export default function SignupClient() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
-          <p className="text-sm" style={{ color: '#6A6A5A' }}>Loading...</p>
+          <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>Loading...</p>
         </div>
       </div>
     }>
@@ -152,7 +152,7 @@ function Signup() {
             Every great<br />story starts<br />with a first<br />word.
           </h2>
 
-          <p className="text-sm leading-relaxed max-w-sm mb-12" style={{ color: '#6A6A5A' }}>
+          <p className="text-sm leading-relaxed max-w-sm mb-12" style={{ color: 'var(--muted-foreground)' }}>
             Create your free account and write your first memory in minutes. No credit card needed.
           </p>
 
@@ -201,7 +201,7 @@ function Signup() {
             <h1 className="text-2xl font-medium mb-2" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
               Create your memory book
             </h1>
-            <p className="text-sm" style={{ color: '#6A6A5A' }}>Free forever — no credit card required</p>
+            <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>Free forever — no credit card required</p>
           </div>
 
           <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 4px rgba(212,163,115,0.06), 0 8px 16px rgba(212,163,115,0.08), 0 24px 48px rgba(212,163,115,0.06)' }}>
@@ -363,7 +363,7 @@ function Signup() {
                           </svg>
                           <div>
                             <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Check your email</p>
-                            <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>
+                            <p className="text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>
                               We sent a magic link to <strong>{email}</strong>. Click it to activate your account.
                             </p>
                           </div>
@@ -394,7 +394,7 @@ function Signup() {
                           </svg>
                           <div>
                             <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Verify your email</p>
-                            <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>
+                            <p className="text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>
                               Enter the 6-digit code we sent to <strong>{email}</strong> to finish creating your account.
                             </p>
                           </div>
@@ -475,11 +475,11 @@ function Signup() {
             </CardContent>
           </Card>
 
-          <p className="text-center mt-6 text-xs" style={{ color: '#6A6A5A' }}>
+          <p className="text-center mt-6 text-xs" style={{ color: 'var(--muted-foreground)' }}>
             By creating an account, you agree to our Terms of Service and Privacy Policy.
           </p>
 
-          <p className="text-center mt-6 text-sm" style={{ color: '#6A6A5A' }}>
+          <p className="text-center mt-6 text-sm" style={{ color: 'var(--muted-foreground)' }}>
             Already have an account?{' '}
             <Link href="/login" className="font-medium transition-colors hover:opacity-70 inline-flex items-center justify-center px-2 py-1 rounded-lg" style={{ color: 'var(--bronze)' }}>
               Sign in
