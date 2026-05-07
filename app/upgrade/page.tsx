@@ -96,6 +96,8 @@ export default function UpgradePage() {
   }, [requestedBookId, router]);
 
   const selectedBook = books.find((book) => String(book.id) === selectedBookId) ?? null;
+  const PLAN_ORDER: Record<BookPlan, number> = { free: 0, premium: 1, plus: 2 };
+  const isUpgrade = selectedBook && PLAN_ORDER[selectedPlan] > PLAN_ORDER[normalizeBookPlan(selectedBook.plan)];
 
   const handleSubmit = async () => {
     if (!selectedBook) {
@@ -175,17 +177,27 @@ export default function UpgradePage() {
           )}
           {books.length > 1 && (
             <div className="mt-2 flex justify-center">
-              <select
-                aria-label="Select a book to upgrade"
-                value={selectedBookId}
-                onChange={(e) => updateSelectedBook(e.target.value, books)}
-                className="rounded-xl px-3 py-1.5 text-xs"
-                style={{ border: '1px solid rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', outline: 'none' }}
-              >
-                {books.map(b => (
-                  <option key={b.id} value={b.id}>{b.title}</option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  aria-label="Select a book to upgrade"
+                  value={selectedBookId}
+                  onChange={(e) => updateSelectedBook(e.target.value, books)}
+                  className="rounded-xl pl-3 pr-8 py-1.5 text-xs appearance-none cursor-pointer"
+                  style={{ border: '1px solid rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', outline: 'none', boxShadow: '0 2px 8px rgba(212,163,115,0.08)' }}
+                >
+                  {books.map(b => (
+                    <option key={b.id} value={b.id}>{b.title}</option>
+                  ))}
+                </select>
+                <div
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                  style={{ color: 'var(--bronze)' }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -227,8 +239,8 @@ export default function UpgradePage() {
           {BOOK_PLAN_OPTIONS.map(plan => {
             const isCurrentPlan = selectedBook && normalizeBookPlan(selectedBook.plan) === plan.id;
             const isSelected = selectedPlan === plan.id;
-            const isPopular = plan.id === 'plus' && !isCurrentPlan;
             // Only show 'Most Popular' when the Plus plan is available for selection (not the current plan)
+            const isPopular = plan.id === 'plus' && !isCurrentPlan;
             const isPlus = plan.id === 'plus';
             const cardStyles = {
               backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(212,163,115,0.05)' : isPlus ? '#EDD9B4' : 'var(--papaya)',
@@ -391,7 +403,9 @@ export default function UpgradePage() {
                   Updating plan...
                 </span>
               ) : (
-                `Upgrade to ${getBookPlanLabel(selectedPlan)}`
+                isUpgrade
+                  ? `Upgrade to ${getBookPlanLabel(selectedPlan)}`
+                  : `Change to ${getBookPlanLabel(selectedPlan)}`
               )}
             </button>
             <p className="text-xs mt-3" style={{ color: '#5A5A48', fontFamily: 'var(--font-sans)' }}>
