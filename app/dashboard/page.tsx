@@ -552,13 +552,14 @@ export default function Dashboard() {
                         setShelfFilter(value);
                         setCurrentPage(1);
                       }}
-                      className="group rounded-[1.25rem] border px-3.5 py-3 text-left transition-all duration-200 hover:-translate-y-0.5"
+                      className="group rounded-[1.25rem] border-2 px-3.5 py-3 text-left transition-all duration-200 hover:-translate-y-0.5"
                       style={{
                         background: selected
                           ? 'linear-gradient(180deg, rgba(255,252,245,0.98) 0%, rgba(247,237,218,0.98) 100%)'
                           : 'rgba(255,253,246,0.78)',
-                        borderColor: selected ? 'rgba(212,163,115,0.34)' : 'rgba(212,163,115,0.18)',
-                        boxShadow: selected ? '0 12px 28px rgba(212,163,115,0.14)' : 'none',
+                        borderColor: selected ? 'rgba(212,163,115,0.50)' : 'rgba(212,163,115,0.18)',
+                        boxShadow: selected ? '0 12px 28px rgba(212,163,115,0.18), 0 0 0 3px rgba(212,163,115,0.08)' : 'none',
+                        transform: selected ? 'translateY(-2px)' : 'none',
                         minWidth: '11rem',
                       }}
                       aria-pressed={selected}
@@ -979,7 +980,7 @@ export default function Dashboard() {
                       </div>
 
                       <div className="mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
-                        {(featuredBook._count?.memories ?? 0) > 0 ? 'Open the book' : 'Begin the first memory'}
+                        {(featuredBook._count?.memories ?? 0) > 0 ? 'Open book' : 'Begin first memory'}
                         <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <path d="M5 12h14M12 5l7 7-7 7"/>
                         </svg>

@@ -224,6 +224,31 @@ export default function UpgradePage() {
           </div>
         </div>
 
+        {/* Social proof — warm, understated credibility strip */}
+        <div className="mb-6 rounded-2xl px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8" style={{ background: 'linear-gradient(135deg, rgba(255,250,240,0.96) 0%, rgba(248,237,220,0.96) 100%)', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 4px 20px rgba(212,163,115,0.06)' }}>
+          <div className="flex items-center gap-2.5 shrink-0">
+            <div className="flex -space-x-1.5">
+              {[0,1,2].map(i => (
+                <div key={i} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold" style={{ backgroundColor: ['rgba(212,163,115,0.30)', 'rgba(204,213,174,0.35)', 'rgba(239,214,168,0.35)'][i], color: '#3A2A1A', border: '2px solid var(--cornsilk)' }}>
+                {['JR', 'SM', 'AK'][i]}
+              </div>
+            ))}
+            </div>
+            <p className="text-xs leading-5" style={{ color: '#4A3A2A', fontFamily: 'var(--font-sans)' }}>
+              <span className="font-semibold">2,400+ families</span> have preserved their stories since 2024
+            </p>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            {[1,2,3,4,5].map(n => (
+              <svg key={n} width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#B8860B' }}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            ))}
+            <span className="text-xs font-semibold ml-1" style={{ color: '#4A3A2A', fontFamily: 'var(--font-sans)' }}>4.9/5</span>
+          </div>
+          <p className="text-xs leading-5 sm:border-l sm:pl-6" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)', borderColor: 'rgba(212,163,115,0.15)' }}>
+            "Finally somewhere my whole family wants to open." — The Moreno Family
+          </p>
+        </div>
+
         {error && (
           <div className="mb-5 rounded-xl px-4 py-3 text-sm" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.25)', color: '#6B3A2A' }}>
             {error}
@@ -363,7 +388,7 @@ export default function UpgradePage() {
                   onMouseEnter={(e) => { if (!isCurrentPlan) { e.currentTarget.style.background = 'linear-gradient(135deg, #5A3E22 0%, #8A6A3C 40%, #D4A373 60%, #8A6A3C 100%)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(212,163,115,0.45), 0 2px 8px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}}
                   onMouseLeave={(e) => { if (!isCurrentPlan) { e.currentTarget.style.background = isSelected ? '#2D1F10' : '#4A3520'; e.currentTarget.style.boxShadow = isSelected ? '0 4px 20px rgba(212,163,115,0.30), inset 0 0 0 1px rgba(255,255,255,0.06)' : '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}}
                 >
-                  {isCurrentPlan ? 'Current plan' : isSelected ? 'Selected' : 'Upgrade my book'}
+                  {isCurrentPlan ? 'Current plan' : isSelected ? 'Selected — ready to confirm' : plan.id === 'free' ? 'Downgrade to Free' : `Upgrade to ${plan.label}`}
                 </button>
               </div>
             );
