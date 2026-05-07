@@ -14,6 +14,7 @@ import { MobileNav } from '@/components/ui/mobile-nav';
 import { PremiumAudioPlayer } from '@/components/ui/premium-audio-player';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 import { getDisplayBookTitle } from '@/lib/display-book-title';
+import { getMemoryPromptGroups } from '@/lib/memory-prompts';
 
 interface Memory {
   id: number;
@@ -603,31 +604,57 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             <p className="text-base max-w-sm mx-auto leading-relaxed mb-8" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
               Every great story starts with a single memory.
             </p>
-            {/* 3 example prompt chips — spark inspiration */}
+            {/* Prompt chips — show 3 evocative prompts drawn from the curated library, shuffled per-book */}
             <div className="flex flex-wrap justify-center gap-2.5 mb-10">
-              {[
-                { label: "The best day of the trip", prompt: "Describe the best day of your vacation." },
-                { label: "A funny travel mishap", prompt: "Tell me about a funny or unexpected moment during your trip." },
-                { label: "A meal I'll never forget", prompt: "Describe a meal you'll never forget from this trip." },
-              ].map(({ label, prompt }) => (
-                <Link
-                  key={label}
-                  href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
-                  style={{
-                    backgroundColor: 'rgba(212,163,115,0.14)',
-                    color: '#4A3A2A',
-                    border: '1px solid rgba(212,163,115,0.30)',
-                    fontFamily: 'var(--font-sans)',
-                    boxShadow: '0 2px 8px rgba(212,163,115,0.10)',
-                  }}
-                >
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
-                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                  </svg>
-                  {label}
-                </Link>
-              ))}
+              {(() => {
+                const allPrompts = [
+                  'What do you remember about your grandparents?',
+                  'What was your wedding day like?',
+                  'Tell me about your first job.',
+                  'What was the best day of your life?',
+                  'Describe a typical Sunday morning growing up.',
+                  'Describe a holiday tradition you loved.',
+                  'Tell me about your best friend growing up.',
+                  'Describe a time you felt truly proud of yourself.',
+                  'Tell me about a trip that changed your perspective.',
+                  'What is your favorite memory with your parents?',
+                  'Tell me about the house you grew up in.',
+                  'What is a skill you are proud of learning?',
+                  'What is the most beautiful place you have ever seen?',
+                  'Describe a meal you will never forget.',
+                ];
+                // Deterministic Fisher-Yates shuffle using book id as seed
+                const seed = Number(id) || 1;
+                const result = [...allPrompts];
+                let s = seed;
+                for (let i = result.length - 1; i > 0; i--) {
+                  s = (s * 1103515245 + 12345) & 0x7fffffff;
+                  const j = s % (i + 1);
+                  [result[i], result[j]] = [result[j], result[i]];
+                }
+                return result.slice(0, 3).map(prompt => {
+                  const label = prompt.length > 45 ? prompt.split(/\s+/).slice(0, 6).join(' ') + '…' : prompt;
+                  return (
+                    <Link
+                      key={prompt}
+                      href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
+                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
+                      style={{
+                        backgroundColor: 'rgba(212,163,115,0.14)',
+                        color: '#4A3A2A',
+                        border: '1px solid rgba(212,163,115,0.30)',
+                        fontFamily: 'var(--font-sans)',
+                        boxShadow: '0 2px 8px rgba(212,163,115,0.10)',
+                      }}
+                    >
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                        <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                      </svg>
+                      {label}
+                    </Link>
+                  );
+                });
+              })()}
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
