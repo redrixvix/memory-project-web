@@ -108,7 +108,7 @@ export function PremiumAudioPlayer({
             {loadState === 'error' ? (
               <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
                 <p className="min-w-0 text-sm leading-5" style={{ color: '#5F4A3B', fontFamily: 'var(--font-sans)' }}>
-                  Playback preview couldn't load here. You can still keep the attachment or open the file directly.
+                  Your voice note is saved — tap to open and listen.
                 </p>
                 <a
                   href={src}

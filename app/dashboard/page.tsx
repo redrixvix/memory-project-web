@@ -516,7 +516,7 @@ export default function Dashboard() {
           {/* Search + sort — only shown when books exist */}
           {books.length > 0 && (
             <div className="mt-4 space-y-3">
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-3">
                 {([
                   {
                     value: 'all',
@@ -556,64 +556,82 @@ export default function Dashboard() {
                         setShelfFilter(value);
                         setCurrentPage(1);
                       }}
-                      className="group rounded-[1.25rem] border-2 px-3.5 py-3 text-left transition-all duration-200 hover:-translate-y-0.5"
+                      className="group relative rounded-[1.4rem] px-4 py-3.5 text-left transition-all duration-300 hover:-translate-y-0.5"
                       style={{
                         background: selected
-                          ? 'linear-gradient(135deg, rgba(255,252,245,1) 0%, rgba(252,244,228,1) 100%)'
-                          : 'rgba(255,253,246,0.92)',
-                        borderColor: selected ? 'rgba(212,163,115,0.60)' : 'rgba(212,163,115,0.18)',
+                          ? 'linear-gradient(160deg, rgba(255,253,246,0.99) 0%, rgba(250,241,222,0.99) 100%)'
+                          : 'rgba(255,252,245,0.88)',
+                        border: selected ? '1.5px solid rgba(212,163,115,0.50)' : '1.5px solid rgba(212,163,115,0.14)',
                         boxShadow: selected
-                          ? '0 12px 32px rgba(212,163,115,0.20), 0 0 0 3px rgba(212,163,115,0.06), inset 0 1px 0 rgba(255,255,255,0.8)'
-                          : '0 2px 8px rgba(212,163,115,0.06)',
-                        transform: selected ? 'translateY(-2px)' : 'none',
-                        minWidth: '12rem',
+                          ? '0 16px 40px rgba(212,163,115,0.16), 0 4px 12px rgba(212,163,115,0.08), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 0 0 1px rgba(212,163,115,0.04)'
+                          : '0 2px 8px rgba(212,163,115,0.05), inset 0 1px 0 rgba(255,255,255,0.6)',
+                        minWidth: '13rem',
                       }}
                       aria-pressed={selected}
                     >
+                      {/* Gold accent line on active - like gilt edge of a book */}
+                      {selected && (
+                        <div className="absolute left-0 right-0 top-0 h-0.5 rounded-t-[1.4rem]" style={{ background: 'linear-gradient(90deg, rgba(212,163,115,0.0) 0%, rgba(212,163,115,0.75) 20%, rgba(212,163,115,0.55) 80%, rgba(212,163,115,0.0) 100%)' }} />
+                      )}
                       <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-3">
                           <div
-                            className="w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 shrink-0"
+                            className="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 shrink-0"
                             style={{
-                              backgroundColor: selected ? 'rgba(212,163,115,0.18)' : 'rgba(212,163,115,0.08)',
+                              backgroundColor: selected ? 'rgba(212,163,115,0.15)' : 'rgba(212,163,115,0.06)',
                               transform: selected ? 'scale(1.08)' : 'none',
+                              boxShadow: selected ? 'inset 0 1px 0 rgba(255,255,255,0.8)' : 'none',
                             }}
                           >
                             <svg
-                              width="13"
-                              height="13"
+                              width="12"
+                              height="12"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
                               strokeWidth="2.2"
-                              style={{ color: selected ? '#7A5A3F' : '#8B6E58' }}
+                              style={{ color: selected ? '#6B4423' : '#8B7055' }}
                             >
                               {icon}
                             </svg>
                           </div>
                           <div>
-                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: selected ? '#7A5A3F' : '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                            <p className="text-[0.7rem] font-semibold tracking-[0.16em] uppercase" style={{ color: selected ? '#5C3D25' : '#7A6A50', fontFamily: 'var(--font-serif)' }}>
                               {kicker}
                             </p>
-                            <p className="mt-1 text-sm leading-5" style={{ color: '#4F3C2F', fontFamily: 'var(--font-sans)' }}>
+                            <p className="mt-1.5 text-[0.78rem] leading-5" style={{ color: '#4F3C2F', fontFamily: 'var(--font-sans)' }}>
                               {description}
                             </p>
                           </div>
                         </div>
-                        <span className="inline-flex min-w-8 items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold shrink-0" style={{ backgroundColor: selected ? 'var(--bronze)' : 'rgba(212,163,115,0.16)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
-                          {count}
-                        </span>
+                        {/* Elegant count - like a folio number */}
+                        <div className="flex flex-col items-end shrink-0 mt-0.5">
+                          <span 
+                            className="text-[0.7rem] font-semibold tabular-nums tracking-tight" 
+                            style={{ 
+                              color: selected ? '#8A6A3C' : '#9A8A70',
+                              fontFamily: 'var(--font-serif)',
+                              opacity: count > 0 ? 1 : 0.4,
+                            }}
+                          >
+                            {count}
+                          </span>
+                          <span className="text-[0.55rem] uppercase tracking-[0.12em] mt-0.5" style={{ color: '#A09080', fontFamily: 'var(--font-sans)' }}>
+                            {count === 1 ? 'vol.' : 'vols.'}
+                          </span>
+                        </div>
                       </div>
                     </button>
                   );
                 })}
               </div>
 
-              <div className="rounded-[1.3rem] border px-4 py-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between" style={{ background: 'rgba(255,253,246,0.72)', borderColor: 'rgba(212,163,115,0.18)' }}>
-                <p className="text-sm leading-6" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)' }}>
-                  <span className="font-semibold" style={{ color: '#302117' }}>{shelfFilterMeta[shelfFilter].label}.</span> {shelfFilterMeta[shelfFilter].summary}
+              <div className="rounded-[1.5rem] px-4 py-3.5 flex flex-col gap-2 md:flex-row md:items-center md:justify-between" style={{ background: 'linear-gradient(160deg, rgba(255,253,246,0.95) 0%, rgba(248,240,226,0.95) 100%)', border: '1px solid rgba(212,163,115,0.18)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 4px rgba(212,163,115,0.05)' }}>
+                <p className="text-sm leading-6" style={{ color: '#4A3728', fontFamily: 'var(--font-serif)' }}>
+                  <span className="font-semibold" style={{ color: '#24180F' }}>{shelfFilterMeta[shelfFilter].label}</span>
+                  <span style={{ color: '#7A6A55' }}> — {shelfFilterMeta[shelfFilter].summary}</span>
                 </p>
-                <p className="text-xs uppercase tracking-[0.16em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                <p className="text-[0.7rem] uppercase tracking-[0.14em]" style={{ color: '#8B7055', fontFamily: 'var(--font-serif)' }}>
                   {filteredBooks.length > 0 ? `${filteredBooks.length} ready to browse` : 'Adjust search or start a new book'}
                 </p>
               </div>
@@ -1173,7 +1191,7 @@ export default function Dashboard() {
               const wasSanitized = titleWasSanitized(book.title);
               const createdAt = new Date(book.created_at);
               const updatedAt = new Date(book.updated_at);
-              const draftLabel = `Draft from ${createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${createdAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+              const draftLabel = `Draft from ${createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
               const presenceLabel = hasMemories ? 'In progress' : 'Ready to begin';
               const timingLabel = hasMemories
                 ? `Last touched ${updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
