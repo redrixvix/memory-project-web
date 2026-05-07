@@ -352,17 +352,20 @@ export function DropZone({
       )}
       style={{
         borderColor: isDragging
-          ? "rgba(212,163,115,0.5)"
+          ? "rgba(212,163,115,0.6)"
           : isHovering
-            ? "rgba(212,163,115,0.34)"
-            : "rgba(212,163,115,0.2)",
+            ? "rgba(212,163,115,0.40)"
+            : "rgba(212,163,115,0.18)",
         backgroundColor: isDragging
-          ? "rgba(212,163,115,0.08)"
+          ? "rgba(212,163,115,0.10)"
           : isHovering
-            ? "rgba(250,237,205,0.42)"
-            : "rgba(255,253,246,0.82)",
+            ? "rgba(250,237,205,0.50)"
+            : "rgba(255,253,246,0.88)",
         minHeight: 148,
-        boxShadow: isDragging ? "0 18px 36px rgba(212,163,115,0.14)" : "none",
+        boxShadow: isDragging
+          ? "0 18px 40px rgba(212,163,115,0.18), inset 0 1px 0 rgba(255,255,255,0.9)"
+          : "0 1px 4px rgba(212,163,115,0.06), inset 0 1px 0 rgba(255,255,255,0.8)",
+        transition: "all 300ms cubic-bezier(0.34, 1.56, 0.64, 1)",
       }}
     >
       <input
@@ -375,71 +378,120 @@ export function DropZone({
         className="sr-only"
       />
 
-      <div className="absolute inset-0 opacity-[0.06]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 25% 25%, rgba(212,163,115,0.28) 0, transparent 42%), radial-gradient(circle at 75% 70%, rgba(204,213,174,0.3) 0, transparent 40%)",
-          }}
-        />
-      </div>
+      {/* Subtle paper texture overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          opacity: 0.04,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      {/* Warm gradient glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: isDragging
+            ? "radial-gradient(ellipse at 50% 0%, rgba(212,163,115,0.12) 0%, transparent 70%)"
+            : "radial-gradient(ellipse at 50% 100%, rgba(204,213,174,0.08) 0%, transparent 60%)",
+          transition: "background 400ms ease",
+        }}
+      />
 
       <div className="relative z-10 flex h-full flex-col items-center justify-center p-8 text-center">
+        {/* Scrapbook-style polaroid icon */}
         <div
-          className={cn("mb-4 flex h-14 w-14 items-center justify-center rounded-full transition-all duration-300", isDragging && "scale-110")}
+          className={cn(
+            "mb-4 flex items-center justify-center transition-all duration-400",
+            isDragging && "scale-110 rotate-[-3deg]",
+            !isDragging && isHovering && "scale-105",
+          )}
           style={{
-            backgroundColor: isDragging ? "rgba(212,163,115,0.15)" : "rgba(212,163,115,0.1)",
+            width: 64,
+            height: 64,
+            transform: isDragging ? "scale(1.12) rotate(-4deg)" : isHovering ? "scale(1.06)" : "scale(1)",
           }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              color: isDragging ? "var(--bronze)" : "rgba(43,43,43,0.8)",
-              transition: "color 300ms ease",
-            }}
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" x2="12" y1="3" y2="15" />
-          </svg>
+          {acceptsAudio ? (
+            /* Warm microphone / voice note icon */
+            <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Outer glow circle */}
+              <circle cx="26" cy="26" r="24" fill="rgba(212,163,115,0.08)" />
+              {/* Mic body - warm bronze */}
+              <rect x="20" y="14" width="12" height="20" rx="6" fill="rgba(212,163,115,0.22)" stroke="#D4A373" strokeWidth="1.6"/>
+              {/* Stand curve */}
+              <path d="M16 28C16 33.523 20.477 38 26 38C31.523 38 36 33.523 36 28" stroke="#D4A373" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+              {/* Stand line */}
+              <line x1="26" y1="38" x2="26" y2="43" stroke="#D4A373" strokeWidth="1.8" strokeLinecap="round"/>
+              {/* Sound waves */}
+              <path d="M40 20C42.5 22 44 25 44 28C44 31 42.5 34 40 36" stroke="#D4A373" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.6"/>
+              <path d="M44 17C48 20.5 50 25 50 29C50 33 48 37.5 44 41" stroke="#D4A373" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.35"/>
+              <path d="M12 20C9.5 22 8 25 8 28C8 31 9.5 34 12 36" stroke="#D4A373" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.6"/>
+              <path d="M8 17C4 20.5 2 25 2 29C2 33 4 37.5 8 41" stroke="#D4A373" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.35"/>
+            </svg>
+          ) : (
+            /* Polaroid-style photo frame */
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Polaroid frame outer */}
+              <rect x="8" y="12" width="48" height="40" rx="4" fill="rgba(212,163,115,0.12)" stroke="#D4A373" strokeWidth="1.6"/>
+              {/* Photo area */}
+              <rect x="13" y="17" width="38" height="28" rx="2" fill="rgba(212,163,115,0.10)" stroke="rgba(212,163,115,0.40)" strokeWidth="1"/>
+              {/* Mountain landscape inside photo */}
+              <path d="M13 40L22 30L28 35L35 28L51 40H13Z" fill="rgba(204,213,174,0.30)" stroke="rgba(212,163,115,0.50)" strokeWidth="1" strokeLinejoin="round"/>
+              {/* Sun/circle */}
+              <circle cx="42" cy="23" r="4" fill="rgba(212,163,115,0.35)"/>
+              {/* Bottom tape strip */}
+              <rect x="26" y="9" width="12" height="5" rx="1" fill="rgba(212,163,115,0.28)" stroke="rgba(212,163,115,0.40)" strokeWidth="0.8"/>
+              {/* Corner fold hint */}
+              <path d="M46 17L51 12L51 17Z" fill="rgba(212,163,115,0.15)"/>
+            </svg>
+          )}
         </div>
 
+        {/* Evocative scrapbook copy */}
         <p
-          className="mb-1 text-sm font-medium"
+          className="mb-2 text-sm font-medium"
           style={{
             color: "var(--charcoal)",
-            fontFamily: "var(--font-sans)",
+            fontFamily: "var(--font-serif)",
+            fontSize: "0.9rem",
+            letterSpacing: "0.01em",
           }}
         >
           {isDragging
             ? acceptsAudio
-              ? "Drop audio here"
-              : "Drop photos here"
+              ? "Let the moment breathe..."
+              : "Tuck it into the story..."
             : acceptsAudio
-              ? "Drag audio here"
-              : "Drag photos here"}
+              ? "Capture a voice note"
+              : "Add a photograph"}
         </p>
 
         <p
           className="max-w-xs text-xs leading-5"
           style={{
-            color: "rgba(43,43,43,0.75)",
+            color: "rgba(43,43,43,0.62)",
             fontFamily: "var(--font-sans)",
           }}
         >
           {acceptsAudio
-            ? "or click to browse from your device. MP3, M4A, and WAV belong here."
-            : "or click to browse from your device. Images only — audio belongs in Voice note."}
+            ? "Drag a recording here, or click to browse. MP3, M4A, WAV."
+            : "Drop it here, or click to browse. Images under 4MB."}
         </p>
+
+        {/* Decorative corner flourish */}
+        <div
+          className="absolute top-3 right-3 w-5 h-5 opacity-30"
+          style={{
+            background: "radial-gradient(circle at 50% 50%, rgba(212,163,115,0.6) 0%, transparent 70%)",
+          }}
+        />
+        <div
+          className="absolute bottom-3 left-3 w-4 h-4 opacity-20"
+          style={{
+            background: "radial-gradient(circle at 50% 50%, rgba(204,213,174,0.8) 0%, transparent 70%)",
+          }}
+        />
       </div>
     </div>
   );

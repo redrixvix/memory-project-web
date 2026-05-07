@@ -516,33 +516,37 @@ export default function Dashboard() {
           {/* Search + sort — only shown when books exist */}
           {books.length > 0 && (
             <div className="mt-4 space-y-3">
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2.5">
                 {([
                   {
                     value: 'all',
                     kicker: 'Full shelf',
+                    icon: '<path d="M4 6h16M4 10h16M4 14h10"/>',
                     count: shelfCounts.all,
                     description: 'See every keepsake at once.',
                   },
                   {
                     value: 'active',
                     kicker: 'Continue writing',
+                    icon: '<path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
                     count: shelfCounts.active,
                     description: 'Jump back into books that already hold memories.',
                   },
                   {
                     value: 'drafts',
                     kicker: 'Needs first page',
+                    icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/>',
                     count: shelfCounts.drafts,
                     description: 'Drafts still waiting for their opening scene.',
                   },
                   {
                     value: 'shared',
                     kicker: 'Family voices',
+                    icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
                     count: shelfCounts.shared,
                     description: 'Books with more than one contributor.',
                   },
-                ] as const).map(({ value, kicker, count, description }) => {
+                ] as const).map(({ value, kicker, count, description, icon }) => {
                   const selected = shelfFilter === value;
                   return (
                     <button
@@ -555,25 +559,48 @@ export default function Dashboard() {
                       className="group rounded-[1.25rem] border-2 px-3.5 py-3 text-left transition-all duration-200 hover:-translate-y-0.5"
                       style={{
                         background: selected
-                          ? 'linear-gradient(180deg, rgba(255,252,245,0.98) 0%, rgba(247,237,218,0.98) 100%)'
-                          : 'rgba(255,253,246,0.78)',
-                        borderColor: selected ? 'rgba(212,163,115,0.50)' : 'rgba(212,163,115,0.18)',
-                        boxShadow: selected ? '0 12px 28px rgba(212,163,115,0.18), 0 0 0 3px rgba(212,163,115,0.08)' : 'none',
+                          ? 'linear-gradient(135deg, rgba(255,252,245,1) 0%, rgba(252,244,228,1) 100%)'
+                          : 'rgba(255,253,246,0.92)',
+                        borderColor: selected ? 'rgba(212,163,115,0.60)' : 'rgba(212,163,115,0.18)',
+                        boxShadow: selected
+                          ? '0 12px 32px rgba(212,163,115,0.20), 0 0 0 3px rgba(212,163,115,0.06), inset 0 1px 0 rgba(255,255,255,0.8)'
+                          : '0 2px 8px rgba(212,163,115,0.06)',
                         transform: selected ? 'translateY(-2px)' : 'none',
-                        minWidth: '11rem',
+                        minWidth: '12rem',
                       }}
                       aria-pressed={selected}
                     >
                       <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: selected ? '#7A5A3F' : '#8B6E58', fontFamily: 'var(--font-sans)' }}>
-                            {kicker}
-                          </p>
-                          <p className="mt-1 text-sm leading-5" style={{ color: '#4F3C2F', fontFamily: 'var(--font-sans)' }}>
-                            {description}
-                          </p>
+                        <div className="flex items-center gap-2.5">
+                          <div
+                            className="w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 shrink-0"
+                            style={{
+                              backgroundColor: selected ? 'rgba(212,163,115,0.18)' : 'rgba(212,163,115,0.08)',
+                              transform: selected ? 'scale(1.08)' : 'none',
+                            }}
+                          >
+                            <svg
+                              width="13"
+                              height="13"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.2"
+                              style={{ color: selected ? '#7A5A3F' : '#8B6E58' }}
+                            >
+                              {icon}
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: selected ? '#7A5A3F' : '#8B6E58', fontFamily: 'var(--font-sans)' }}>
+                              {kicker}
+                            </p>
+                            <p className="mt-1 text-sm leading-5" style={{ color: '#4F3C2F', fontFamily: 'var(--font-sans)' }}>
+                              {description}
+                            </p>
+                          </div>
                         </div>
-                        <span className="inline-flex min-w-8 items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold" style={{ backgroundColor: selected ? 'var(--bronze)' : 'rgba(212,163,115,0.16)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                        <span className="inline-flex min-w-8 items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold shrink-0" style={{ backgroundColor: selected ? 'var(--bronze)' : 'rgba(212,163,115,0.16)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
                           {count}
                         </span>
                       </div>
@@ -592,11 +619,8 @@ export default function Dashboard() {
               </div>
 
             <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-              <div className="relative flex-1" style={{
-                  borderBottom: searchQuery ? '2px solid rgba(212,163,115,0.5)' : '2px solid rgba(212,163,115,0.18)',
-                  transition: 'border-color 0.3s ease',
-                }}>
-                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--bronze)' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <div className="relative flex-1">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'var(--bronze)' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
                 <input
@@ -607,15 +631,16 @@ export default function Dashboard() {
                     setCurrentPage(1);
                   }}
                   placeholder="Search your books..."
-                  className="w-full h-10 md:h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
+                  className="w-full h-11 pl-11 pr-10 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
                   style={{
                     backgroundColor: 'rgba(255,253,246,0.92)',
                     border: '1.5px solid rgba(212,163,115,0.30)',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-sans)',
+                    boxShadow: '0 1px 4px rgba(212,163,115,0.06)',
                   }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.65)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.08), 0 2px 8px rgba(212,163,115,0.06)'; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.30)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.color = 'var(--charcoal)'; }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.65)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.08), 0 2px 12px rgba(212,163,115,0.08)'; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.30)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(212,163,115,0.06)'; }}
                 />
                 {searchQuery && (
                   <button
@@ -635,7 +660,10 @@ export default function Dashboard() {
                 )}
               </div>
               {/* Sort controls */}
-              <div className="flex items-center gap-2 rounded-2xl p-1.5 shrink-0 lg:justify-self-end" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)' }}>
+              <div className="flex items-center gap-1.5 rounded-2xl px-3 py-2 shrink-0 lg:justify-self-end" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1.5px solid rgba(212,163,115,0.18)', boxShadow: '0 1px 4px rgba(212,163,115,0.06)' }}>
+                <svg className="w-3 h-3 mr-1" style={{ color: '#8B6E58' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M3 6h18M6 12h12M9 18h6"/>
+                </svg>
                 {([
                   { value: 'newest', label: 'Newest' },
                   { value: 'oldest', label: 'Oldest' },
@@ -648,10 +676,10 @@ export default function Dashboard() {
                       setSortOrder(value);
                       setCurrentPage(1);
                     }}
-                    className="rounded-xl px-5 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
+                    className="rounded-xl px-4 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
                     style={{
-                      backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
-                      color: sortOrder === value ? 'var(--charcoal)' : 'rgba(43,43,43,0.92)',
+                      backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.10)',
+                      color: sortOrder === value ? 'var(--charcoal)' : '#6A5A4A',
                       fontFamily: 'var(--font-sans)',
                       fontWeight: '600',
                     }}
