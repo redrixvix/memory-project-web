@@ -857,17 +857,64 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             )}
           </div>
 
-          {/* Subtle autosave indicator — no pill, just elegant small text */}
-          <div className="flex items-center gap-1.5 text-xs transition-all duration-500" style={{ fontFamily: 'var(--font-sans)' }}>
-            {saveState === 'saving' && (
-              <>
-                <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
-                <span className="italic" style={{ color: '#8A7A6A' }}>Saving...</span>
-              </>
-            )}
-            {saveState === 'saved' && (
-              <span className="italic" style={{ color: '#8A7A6A' }}>Last saved</span>
-            )}
+          {/* Save button — always visible in header */}
+          <div className="flex items-center gap-3">
+            {/* Autosave status */}
+            <div className="flex items-center gap-1.5 text-xs transition-all duration-500" style={{ fontFamily: 'var(--font-sans)' }}>
+              {saveState === 'saving' && (
+                <>
+                  <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
+                  <span className="italic" style={{ color: '#8A7A6A' }}>Saving...</span>
+                </>
+              )}
+              {saveState === 'saved' && (
+                <span className="italic" style={{ color: '#8A7A6A' }}>Saved</span>
+              )}
+              {saveState === 'idle' && answer.trim().length > 0 && (
+                <span className="italic" style={{ color: '#8A7A6A' }}>Unsaved</span>
+              )}
+              {saveState === 'idle' && !answer.trim() && (
+                <span style={{ color: '#8A7A6A' }}>Draft</span>
+              )}
+            </div>
+
+            {/* Primary Save Memory button — always visible */}
+            <button
+              type="button"
+              onClick={() => {
+                if (!isSubmitDisabled) {
+                  const form = document.querySelector('form');
+                  if (form) {
+                    const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+                    form.dispatchEvent(submitEvent);
+                  }
+                }
+              }}
+              disabled={isSubmitDisabled}
+              className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-semibold transition-all duration-200 hover:brightness-110 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'var(--bronze)',
+                color: 'var(--charcoal)',
+                boxShadow: '0 3px 12px rgba(212,163,115,0.35)',
+                fontFamily: 'var(--font-sans)',
+              }}
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-3.5 h-3.5 rounded-full animate-spin" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                  Saving...
+                </span>
+              ) : saveSuccess ? (
+                <span className="flex items-center gap-1.5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  Saved
+                </span>
+              ) : (
+                'Save Memory'
+              )}
+            </button>
           </div>
 
           {/* Mobile hamburger — shown only on small screens */}
