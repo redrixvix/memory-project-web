@@ -133,7 +133,7 @@ export default function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const BOOKS_PER_PAGE = 12;
+  const BOOKS_PER_PAGE = 18;
 
   useEffect(() => {
     async function fetchUserAndBooks() {
@@ -1033,6 +1033,9 @@ export default function Dashboard() {
                 <div className="mt-4 space-y-3">
                   {featuredQueue.length > 0 ? featuredQueue.map((book) => {
                     const memoryCount = book._count?.memories ?? 0;
+                    // Disambiguate duplicate titles in the queue
+                    const hasDupe = featuredQueue.filter(b => getDisplayBookTitle(b.title) === getDisplayBookTitle(book.title)).length > 1;
+                    const displayTitle = getDisplayBookTitle(book.title) + (hasDupe ? ` · #${book.id}` : '');
                     return (
                       <Link key={book.id} href={`/books/${book.id}`} className="group flex items-start gap-3 rounded-[22px] border px-4 py-3 transition-all duration-200 hover:-translate-y-0.5" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(250,244,233,0.92) 100%)', borderColor: 'rgba(212,163,115,0.14)' }}>
                         <div className="mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: memoryCount > 0 ? '#6B8E23' : 'var(--bronze)' }} />
@@ -1040,7 +1043,7 @@ export default function Dashboard() {
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
                               <p className="truncate text-[1rem] font-medium" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
-                                {getDisplayBookTitle(book.title)}
+                                {displayTitle}
                               </p>
                               <p className="mt-1 text-[0.8rem] uppercase tracking-[0.14em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
                                 {memoryCount > 0 ? `${memoryCount} ${memoryCount === 1 ? 'memory' : 'memories'} inside` : 'Still waiting for page one'}
@@ -1157,7 +1160,7 @@ export default function Dashboard() {
           </div>
         ) : (
           /* ── Book grid ── */
-          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 xl:gap-7">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-5 xl:gap-5">
             {paginatedBooks.map((book, i) => {
               const colorIdx = book.id % BOOK_COLORS.length;
               const bookColor = BOOK_COLORS[colorIdx];
@@ -1194,7 +1197,7 @@ export default function Dashboard() {
                 >
                   <Link href={`/books/${book.id}`} className="block h-full group">
                     <div
-                      className="book-card relative h-full min-h-[206px] md:min-h-[224px] rounded-[30px] overflow-hidden cursor-pointer transition-all duration-300 group/card"
+                      className="book-card relative h-full min-h-[172px] md:min-h-[186px] rounded-[26px] overflow-hidden cursor-pointer transition-all duration-300 group/card"
                       style={{
                         background: 'linear-gradient(180deg, rgba(255,253,247,0.98) 0%, rgba(248,241,228,0.98) 100%)',
                         boxShadow: '0 10px 26px rgba(212,163,115,0.10), 0 22px 52px rgba(43,43,43,0.06)',

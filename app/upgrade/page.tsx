@@ -300,9 +300,9 @@ export default function UpgradePage() {
                 {isPopular && (
                   <div
                     className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[0.7rem] font-bold tracking-[0.15em] uppercase px-3.5 py-1 rounded-full whitespace-nowrap"
-                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', letterSpacing: '0.15em' }}
+                    style={{ backgroundColor: '#2D4A35', color: '#E8F0E5', fontFamily: 'var(--font-sans)', letterSpacing: '0.15em', boxShadow: '0 2px 8px rgba(45,74,53,0.25)' }}
                   >
-                    Most Popular
+                    ⭐ Most Popular
                   </div>
                 )}
                 {/* Current plan badge */}
@@ -368,25 +368,31 @@ export default function UpgradePage() {
                   type="button"
                   onClick={handleCardClick}
                   disabled={isCurrentPlan ?? false}
-                  className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.97]"
+                  className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed"
                   style={{
                     backgroundColor: isSelected
-                      ? '#2D1F10'
+                      ? '#2D4A35'
                       : isCurrentPlan
-                        ? 'rgba(212,163,115,0.06)'
-                        : '#4A3520',
-                    color: isSelected || !isCurrentPlan
-                      ? 'var(--cornsilk)'
-                      : '#5A5A48',
+                        ? 'rgba(204,213,174,0.25)'
+                        : plan.id === 'free'
+                          ? 'rgba(212,163,115,0.12)'
+                          : '#4A3520',
+                    color: isSelected
+                      ? '#E8F0E5'
+                      : isCurrentPlan
+                        ? '#4A5A3A'
+                        : 'var(--cornsilk)',
                     fontFamily: 'var(--font-sans)',
                     boxShadow: isSelected
-                      ? '0 4px 20px rgba(212,163,115,0.30), inset 0 0 0 1px rgba(255,255,255,0.06)'
-                      : '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)',
+                      ? '0 4px 20px rgba(45,74,53,0.30), inset 0 0 0 1px rgba(255,255,255,0.08)'
+                      : plan.id === 'free'
+                        ? 'none'
+                        : '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)',
                     position: 'relative' as const,
                     overflow: 'hidden' as const,
                   }}
-                  onMouseEnter={(e) => { if (!isCurrentPlan) { e.currentTarget.style.background = 'linear-gradient(135deg, #5A3E22 0%, #8A6A3C 40%, #D4A373 60%, #8A6A3C 100%)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(212,163,115,0.45), 0 2px 8px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}}
-                  onMouseLeave={(e) => { if (!isCurrentPlan) { e.currentTarget.style.background = isSelected ? '#2D1F10' : '#4A3520'; e.currentTarget.style.boxShadow = isSelected ? '0 4px 20px rgba(212,163,115,0.30), inset 0 0 0 1px rgba(255,255,255,0.06)' : '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}}
+                  onMouseEnter={(e) => { if (!isCurrentPlan && !isSelected) { e.currentTarget.style.background = 'linear-gradient(135deg, #5A3E22 0%, #8A6A3C 40%, #D4A373 60%, #8A6A3C 100%)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(212,163,115,0.45), 0 2px 8px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}}
+                  onMouseLeave={(e) => { if (!isCurrentPlan && !isSelected) { e.currentTarget.style.background = '#4A3520'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}}
                 >
                   {isCurrentPlan ? 'Current plan' : isSelected ? 'Selected — ready to confirm' : plan.id === 'free' ? 'Downgrade to Free' : `Upgrade to ${plan.label}`}
                 </button>
