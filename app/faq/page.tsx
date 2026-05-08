@@ -162,7 +162,7 @@ export default function FaqPage() {
             background: 'rgba(254,250,224,0.92)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
-            borderColor: 'rgba(212,163,115,0.18)',
+            borderColor: 'var(--bronze-18)',
           }}
         >
           <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
@@ -201,13 +201,13 @@ export default function FaqPage() {
                 key={i}
                 className="group rounded-2xl overflow-hidden"
                 style={{
-                  backgroundColor: '#FDFCF5',
-                  border: '1px solid rgba(212,163,115,0.12)',
-                  boxShadow: '0 2px 12px rgba(212,163,115,0.06)',
+                  backgroundColor: 'var(--card)',
+                  border: '1px solid var(--bronze-12)',
+                  boxShadow: '0 2px 12px var(--bronze-06)',
                 }}
               >
                 <summary
-                  className="flex items-center justify-between gap-4 px-7 py-6 cursor-pointer list-none select-none"
+                  className="flex items-center justify-between gap-4 px-7 py-5 cursor-pointer list-none select-none min-h-[56px]"
                   style={{ color: 'var(--charcoal)' }}
                 >
                   <span className="text-base font-medium">{faq.q}</span>
@@ -218,6 +218,7 @@ export default function FaqPage() {
                     stroke="currentColor"
                     strokeWidth="2"
                     style={{ color: 'var(--bronze)' }}
+                    aria-hidden="true"
                   >
                     <path d="M6 9l6 6 6-6" />
                   </svg>
@@ -225,8 +226,8 @@ export default function FaqPage() {
                 <div
                   className="px-7 pb-7 text-sm leading-relaxed border-t"
                   style={{
-                    borderColor: 'rgba(212,163,115,0.1)',
-                    color: '#6A6A5A',
+                    borderColor: 'var(--bronze-10)',
+                    color: 'var(--muted-foreground)',
                     paddingTop: '1.25rem',
                   }}
                 >
@@ -241,17 +242,18 @@ export default function FaqPage() {
             className="mt-16 text-center rounded-2xl p-10"
             style={{
               backgroundColor: 'var(--papaya)',
-              border: '1px solid rgba(212,163,115,0.15)',
+              border: '1px solid var(--bronze-15)',
             }}
           >
             <h2 className="text-xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
               Still have questions?
             </h2>
-            <p className="text-sm mb-6" style={{ color: '#6A6A5A' }}>
+            <p className="text-sm mb-6" style={{ color: 'var(--muted-foreground)' }}>
               We&apos;d love to hear from you. Send us a note and we&apos;ll get back to you shortly.
             </p>
             <Link
               href="mailto:hello@memoryproject.com"
+              aria-label="Send us an email"
               className="inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
               style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
             >

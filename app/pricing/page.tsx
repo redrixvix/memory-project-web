@@ -74,7 +74,15 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
       {/* Minimal header */}
-      <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
+      <header
+        className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b"
+        style={{
+          background: 'rgba(254,250,224,0.92)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderColor: 'var(--bronze-18)',
+        }}
+      >
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
           <Link href="/" className="flex items-center gap-2.5">
             <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
@@ -83,7 +91,11 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </svg>
             <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
           </Link>
-          <Link href="/signup" className="h-9 flex items-center justify-center rounded-full px-5 text-sm font-medium" style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}>
+          <Link
+            href="/signup"
+            className="h-11 flex items-center justify-center rounded-full px-5 text-sm font-medium min-w-[88px] text-center"
+            style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+          >
             Get Started
           </Link>
         </div>
@@ -98,19 +110,26 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
           <p className="text-base" style={{ color: 'var(--muted-foreground)' }}>
             Start free. Pay only for printing.
           </p>
-          <p className="text-sm mt-2" style={{ color: 'var(--muted-foreground)', opacity: 0.65, fontFamily: 'var(--font-sans)' }}>
+          <p className="text-sm mt-2" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-sans)' }}>
             Join 12,000+ families preserving their stories
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 min-w-0">
           {/* Free — solid, confident styling */}
-          <Card className="p-7 rounded-2xl h-full flex flex-col" style={{ backgroundColor: 'var(--card)', border: '1.5px solid rgba(212,163,115,0.30)', boxShadow: '0 4px 24px rgba(212,163,115,0.08)' }}>
+          <Card
+            className="p-7 rounded-2xl h-full flex flex-col"
+            style={{
+              backgroundColor: 'var(--card)',
+              border: '1.5px solid var(--bronze-30)',
+              boxShadow: '0 4px 24px var(--bronze-08)',
+            }}
+          >
             <CardContent className="pt-0 flex flex-col flex-1">
               <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$0</p>
               <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>Unlimited text memories, forever free</p>
-              <div style={{ height: 1, background: 'rgba(212,163,115,0.25)', marginBottom: 32 }} />
+              <div style={{ height: 1, background: 'var(--bronze-25)', marginBottom: 32 }} />
               <ul className="space-y-3 mb-10 flex-1">
                 {[
                   'Unlimited text memories',
@@ -125,13 +144,21 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
                   </li>
                 ))}
                 {['Photos & audio', 'Printed books'].map((feat, j) => (
-                  <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}>
-                    <span className="mt-1.5 w-3 h-px shrink-0 block" style={{ backgroundColor: 'var(--muted-foreground)', opacity: 0.25 }} />
+                  <li key={j} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--muted-foreground)', opacity: 0.45, fontFamily: 'var(--font-sans)' }}>
+                    <span className="mt-1 w-3 h-px shrink-0 block" style={{ backgroundColor: 'currentColor' }} />
                     {feat}
                   </li>
                 ))}
               </ul>
-              <Link href="/signup" className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-85 active:scale-[0.98] mt-auto" style={{ border: '1.5px solid rgba(212,163,115,0.55)', color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.08)' }}>
+              <Link
+                href="/signup"
+                className="block text-center rounded-full py-3 text-sm font-semibold transition-all duration-200 hover:opacity-85 active:scale-[0.98] mt-auto min-h-[48px] flex items-center justify-center"
+                style={{
+                  border: '1.5px solid var(--bronze-55)',
+                  color: 'var(--charcoal)',
+                  backgroundColor: 'var(--bronze-08)',
+                }}
+              >
                 Get started free
               </Link>
               <div className="mt-4 flex items-center justify-center gap-1.5">
@@ -144,7 +171,14 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
           </Card>
 
           {/* Premium — featured card */}
-          <Card className="p-7 rounded-2xl h-full relative flex flex-col" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 16px 56px rgba(212,163,115,0.26)' }}>
+          <Card
+            className="p-7 rounded-2xl h-full relative flex flex-col"
+            style={{
+              backgroundColor: 'var(--papaya)',
+              border: '2px solid var(--bronze)',
+              boxShadow: '0 16px 56px var(--bronze-26)',
+            }}
+          >
             <div className="absolute -top-5 left-1/2 -translate-x-1/2">
               <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
                 Most Popular
@@ -153,8 +187,8 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             <CardContent className="pt-10 flex flex-col flex-1">
               <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Premium</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$50</p>
-              <p className="text-sm mb-8" style={{ color: "rgba(43,43,43,0.7)" }}>for 5 years</p>
-              <div style={{ height: 1, background: 'rgba(212,163,115,0.3)', marginBottom: 32 }} />
+              <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>for 5 years</p>
+              <div style={{ height: 1, background: 'var(--bronze-30)', marginBottom: 32 }} />
               <ul className="space-y-3 mb-10 flex-1">
                 {[
                   'Everything in Free',
@@ -170,25 +204,36 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
                   </li>
                 ))}
               </ul>
-              <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95 mt-auto" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
+              <Link
+                href={upgradeHref}
+                className="block text-center rounded-full py-3 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95 mt-auto min-h-[48px] flex items-center justify-center"
+                style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+              >
                 Upgrade
               </Link>
               <div className="mt-4 flex items-center justify-center gap-1.5">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--muted-foreground)', opacity: 0.55 }}>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                 </svg>
-                <span className="text-xs" style={{ color: '#9A9A8A', fontFamily: 'var(--font-sans)' }}>End-to-end encrypted · 5-year guarantee</span>
+                <span className="text-xs" style={{ color: 'var(--muted-foreground)', opacity: 0.65, fontFamily: 'var(--font-sans)' }}>End-to-end encrypted · 5-year guarantee</span>
               </div>
             </CardContent>
           </Card>
 
           {/* Plus — complete tier */}
-          <Card className="p-7 rounded-2xl h-full flex flex-col" style={{ backgroundColor: 'var(--card)', border: '1.5px solid rgba(212,163,115,0.25)', boxShadow: '0 4px 24px rgba(212,163,115,0.08)' }}>
+          <Card
+            className="p-7 rounded-2xl h-full flex flex-col"
+            style={{
+              backgroundColor: 'var(--card)',
+              border: '1.5px solid var(--bronze-25)',
+              boxShadow: '0 4px 24px var(--bronze-08)',
+            }}
+          >
             <CardContent className="pt-0 flex flex-col flex-1">
               <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Plus</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$100</p>
               <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>for 5 years</p>
-              <div style={{ height: 1, background: 'rgba(212,163,115,0.25)', marginBottom: 32 }} />
+              <div style={{ height: 1, background: 'var(--bronze-25)', marginBottom: 32 }} />
               <ul className="space-y-3 mb-10 flex-1">
                 {[
                   'Everything in Premium',
@@ -203,7 +248,11 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
                   </li>
                 ))}
               </ul>
-              <Link href={upgradeHref} className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-85 active:scale-[0.98] mt-auto" style={{ backgroundColor: 'rgba(212,163,115,0.22)', color: 'var(--charcoal)' }}>
+              <Link
+                href={upgradeHref}
+                className="block text-center rounded-full py-3 text-sm font-semibold transition-all duration-200 hover:opacity-85 active:scale-[0.98] mt-auto min-h-[48px] flex items-center justify-center"
+                style={{ backgroundColor: 'var(--bronze-22)', color: 'var(--charcoal)' }}
+              >
                 Upgrade
               </Link>
               <div className="mt-4 flex items-center justify-center gap-1.5">
@@ -218,7 +267,14 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
 
         {/* Single testimonial */}
         <div className="mt-16 max-w-xl mx-auto text-center">
-          <div className="p-8 rounded-2xl" style={{ backgroundColor: 'rgba(212,163,115,0.06)', border: '1px solid rgba(212,163,115,0.12)', boxShadow: '0 4px 24px rgba(212,163,115,0.06)' }}>
+          <div
+            className="p-8 rounded-2xl"
+            style={{
+              backgroundColor: 'var(--bronze-06)',
+              border: '1px solid var(--bronze-12)',
+              boxShadow: '0 4px 24px var(--bronze-06)',
+            }}
+          >
             <div className="flex justify-center gap-0.5 mb-5">
               {[1,2,3,4,5].map((_, si) => (
                 <svg key={si} width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--bronze)' }}>

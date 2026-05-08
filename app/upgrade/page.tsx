@@ -162,7 +162,7 @@ export default function UpgradePage() {
 
         {/* Page header — compact */}
         <div className="text-center mb-5 sm:mb-7">
-          <p className="label-caps mb-1.5" style={{ color: 'var(--bronze)' }}>Upgrade</p>
+          <p className="label-caps mb-1.5" style={{ color: '#8B6914' }}>Upgrade</p>
           <h1 className="text-lg sm:text-2xl md:text-3xl font-medium mb-1.5" style={{ color: 'var(--charcoal)' }}>
             Give your story a home that lasts a lifetime
           </h1>
@@ -336,7 +336,7 @@ export default function UpgradePage() {
                         Pay once, own forever
                       </div>
                     )}
-                    <p className="text-xs mt-1 leading-relaxed" style={{ color: '#4A4A3A' }}>{plan.description}</p>
+                    <p className="text-xs mt-1 leading-relaxed" style={{ color: '#3A2A1A' }}>{plan.description}</p>
                   </div>
                   {/* Selection indicator */}
                   {(isSelected || isCurrentPlan) && (

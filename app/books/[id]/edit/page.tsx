@@ -10,6 +10,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import type { OurFileRouter } from '@/app/api/uploadthing/core';
 import { Button } from '@/components/ui/button';
+import { StepProgress } from '@/components/ui/step-progress';
 import { ImageGallery, type ImageGalleryItem, DropZone } from '@/components/image-gallery';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -968,48 +969,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 <h1 className="text-xl md:text-2xl font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
-                {/* Step progress indicator — editorial style with warm palette */}
-                <div className="flex items-center gap-3 mt-5">
-                  {/* Step 1 — active */}
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
-                      style={{
-                        backgroundColor: 'var(--bronze)',
-                        color: 'var(--charcoal)',
-                        fontFamily: 'var(--font-serif)',
-                        boxShadow: '0 3px 10px rgba(212,163,115,0.30)',
-                      }}
-                    >
-                      1
-                    </div>
-                    <span className="text-xs font-semibold tracking-wide" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Write</span>
-                  </div>
-                  {/* Connector — elegant warm gradient line */}
-                  <div className="flex-1 max-w-[3rem] flex items-center">
-                    <div
-                      className="w-full h-0.5 rounded-full"
-                      style={{
-                        background: 'linear-gradient(to right, var(--bronze), rgba(212,163,115,0.35))',
-                      }}
-                    />
-                  </div>
-                  {/* Step 2 — inactive, muted but readable */}
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
-                      style={{
-                        backgroundColor: 'rgba(212,163,115,0.14)',
-                        color: 'rgba(43,43,43,0.72)',
-                        fontFamily: 'var(--font-serif)',
-                        border: '1.5px solid rgba(212,163,115,0.40)',
-                      }}
-                    >
-                      2
-                    </div>
-                    <span className="text-xs tracking-wide" style={{ color: 'rgba(43,43,43,0.72)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
-                  </div>
-                </div>
+                <StepProgress
+                  currentStep={attachedPhotoCount > 0 || hasAttachedAudio ? 2 : 1}
+                  writeComplete={answer.trim().length > 0}
+                  hasMedia={attachedPhotoCount > 0 || hasAttachedAudio}
+                  className="mt-5"
+                />
               </div>
 
             <form onSubmit={handleSubmit} className="relative">

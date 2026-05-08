@@ -42,6 +42,23 @@
   --chart-3: #B08968;
   --chart-4: #C4B7A6;
   --chart-5: var(--beige);
+
+  /* Bronze accent at semantic opacity steps */
+  --bronze-04: rgba(212,163,115,0.04);
+  --bronze-06: rgba(212,163,115,0.06);
+  --bronze-08: rgba(212,163,115,0.08);
+  --bronze-10: rgba(212,163,115,0.10);
+  --bronze-12: rgba(212,163,115,0.12);
+  --bronze-15: rgba(212,163,115,0.15);
+  --bronze-18: rgba(212,163,115,0.18);
+  --bronze-22: rgba(212,163,115,0.22);
+  --bronze-25: rgba(212,163,115,0.25);
+  --bronze-26: rgba(212,163,115,0.26);
+  --bronze-30: rgba(212,163,115,0.30);
+  --bronze-35: rgba(212,163,115,0.35);
+  --bronze-40: rgba(212,163,115,0.40);
+  --bronze-55: rgba(212,163,115,0.55);
+  --bronze-85: rgba(212,163,115,0.85);
   --radius: 0.75rem;
   --sidebar: var(--cornsilk);
   --sidebar-foreground: var(--charcoal);

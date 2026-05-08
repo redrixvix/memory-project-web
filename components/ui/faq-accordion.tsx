@@ -22,14 +22,12 @@ export function FaqAccordion({ items, className = '' }: FaqAccordionProps) {
         return (
           <div
             key={i}
-            className="rounded-2xl border overflow-hidden transition-all duration-300"
-            style={{
-              backgroundColor: isOpen ? 'rgba(212,163,115,0.04)' : '#FDFCF5',
-              borderColor: isOpen ? 'rgba(212,163,115,0.35)' : 'rgba(212,163,115,0.15)',
-              boxShadow: isOpen
-                ? '0 4px 20px rgba(212,163,115,0.10), inset 0 0 0 1px rgba(212,163,115,0.06)'
-                : '0 1px 6px rgba(212,163,115,0.04)',
-            }}
+            className={[
+              'rounded-2xl border overflow-hidden transition-all duration-300',
+              isOpen
+                ? 'bg-[var(--bronze-04)] border-[var(--bronze-35)] shadow-[0_4px_20px_rgba(212,163,115,0.10),inset_0_0_0_1px_rgba(212,163,115,0.06)]'
+                : 'bg-[var(--card)] border-[var(--bronze-15)] shadow-[0_1px_6px_rgba(212,163,115,0.04)]',
+            ].join(' ')}
           >
             {/* Question — clickable header */}
             <button
@@ -37,7 +35,7 @@ export function FaqAccordion({ items, className = '' }: FaqAccordionProps) {
               onClick={() => setOpenIndex(isOpen ? null : i)}
               aria-label={item.q}
               aria-expanded={isOpen}
-              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left group"
+              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left group min-h-[44px]"
             >
               <span
                 className="text-base font-medium transition-colors duration-200"
@@ -47,11 +45,13 @@ export function FaqAccordion({ items, className = '' }: FaqAccordionProps) {
               </span>
               {/* Animated chevron — rotates when open */}
               <span
-                className="shrink-0 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                className={[
+                  'shrink-0 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110',
+                  isOpen ? 'bg-[var(--bronze-18)]' : 'bg-[var(--bronze-08)]',
+                ].join(' ')}
                 style={{
                   width: 44,
                   height: 44,
-                  backgroundColor: isOpen ? 'rgba(212,163,115,0.18)' : 'rgba(212,163,115,0.08)',
                   transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                 }}
               >
@@ -80,7 +80,7 @@ export function FaqAccordion({ items, className = '' }: FaqAccordionProps) {
               <div style={{ overflow: 'hidden' }}>
                 <div
                   className="px-6 pb-6"
-                  style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}
+                  style={{ borderTop: '1px solid var(--bronze-08)' }}
                 >
                   <p
                     className="pt-5 text-sm leading-relaxed"

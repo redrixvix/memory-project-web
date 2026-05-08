@@ -811,18 +811,27 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             </div>
                           )}
 
-                          {/* Memory text — journal feel, constrained width with drop cap */}
-                          <p
-                            className="text-sm md:text-base whitespace-pre-wrap memory-answer-text"
-                            style={{
-                              color: 'var(--charcoal)',
-                              fontFamily: 'var(--font-serif)',
-                              maxWidth: useMediaRail ? '62ch' : '68ch',
-                              lineHeight: '2.0',
-                            }}
-                          >
-                            {memory.answer_text}
-                          </p>
+                          {/* Memory text — journal feel, constrained width */}
+                          {/* Drop cap only for substantial entries (>=2 words); short/broken-looking entries get normal rendering */}
+                          {(() => {
+                            const trimmed = (memory.answer_text || '').trim();
+                            const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
+                            const firstChar = trimmed[0] || '';
+                            const isLikelyBroken = wordCount <= 1 && /^[a-z]/.test(firstChar) && trimmed.length > 0 && trimmed.length <= 8;
+                            return (
+                              <p
+                                className={isLikelyBroken ? 'text-sm md:text-base whitespace-pre-wrap' : 'text-sm md:text-base whitespace-pre-wrap memory-answer-text'}
+                                style={{
+                                  color: 'var(--charcoal)',
+                                  fontFamily: 'var(--font-serif)',
+                                  maxWidth: useMediaRail ? '62ch' : '68ch',
+                                  lineHeight: '2.0',
+                                }}
+                              >
+                                {memory.answer_text}
+                              </p>
+                            );
+                          })()}
 
                           {/* Date + contributor — warm, book-journal style, no min-read metric */}
                           <div className="flex items-center gap-3 mt-4 pt-3 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
