@@ -1,0 +1,4 @@
+*.png export-ignore
+*.jpg export-ignore
+playwright/ export-ignore
+screenshots/ export-ignore
