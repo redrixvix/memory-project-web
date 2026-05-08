@@ -600,7 +600,7 @@ export default function Dashboard() {
                             <p className="text-[0.7rem] font-semibold tracking-[0.16em] uppercase" style={{ color: selected ? 'var(--charcoal)' : '#7A6A50', fontFamily: 'var(--font-serif)' }}>
                               {kicker}
                             </p>
-                            <p className="mt-1.5 text-[0.78rem] leading-5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
+                            <p className="mt-1.5 text-[0.78rem] leading-5" style={{ color: '#4A3A2A', fontFamily: 'var(--font-sans)' }}>
                               {description}
                             </p>
                           </div>
@@ -617,7 +617,7 @@ export default function Dashboard() {
                           >
                             {count}
                           </span>
-                          <span className="text-[0.55rem] uppercase tracking-[0.12em] mt-0.5" style={{ color: '#A09080', fontFamily: 'var(--font-sans)' }}>
+                          <span className="text-[0.55rem] uppercase tracking-[0.12em] mt-0.5" style={{ color: '#6A5A4A', fontFamily: 'var(--font-sans)' }}>
                             {count === 1 ? 'vol.' : 'vols.'}
                           </span>
                         </div>
@@ -630,9 +630,9 @@ export default function Dashboard() {
               <div className="rounded-[1.5rem] px-4 py-3.5 flex flex-col gap-2 md:flex-row md:items-center md:justify-between" style={{ background: 'linear-gradient(160deg, rgba(255,253,246,0.95) 0%, rgba(248,240,226,0.95) 100%)', border: '1px solid rgba(212,163,115,0.18)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 4px rgba(212,163,115,0.05)' }}>
                 <p className="text-sm leading-6" style={{ color: '#4A3728', fontFamily: 'var(--font-serif)' }}>
                   <span className="font-semibold" style={{ color: 'var(--charcoal)' }}>{shelfFilterMeta[shelfFilter].label}</span>
-                  <span style={{ color: 'var(--muted-foreground)' }}> — {shelfFilterMeta[shelfFilter].summary}</span>
+                  <span style={{ color: '#5A4A3A' }}> — {shelfFilterMeta[shelfFilter].summary}</span>
                 </p>
-                <p className="text-[0.7rem] uppercase tracking-[0.14em]" style={{ color: '#8B7055', fontFamily: 'var(--font-serif)' }}>
+                <p className="text-[0.7rem] uppercase tracking-[0.14em] font-medium" style={{ color: '#5A4A3A', fontFamily: 'var(--font-serif)' }}>
                   {filteredBooks.length > 0 ? `${filteredBooks.length} ready to browse` : 'Adjust search or start a new book'}
                 </p>
               </div>

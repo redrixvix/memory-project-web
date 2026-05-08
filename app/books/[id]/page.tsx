@@ -817,7 +817,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             const trimmed = (memory.answer_text || '').trim();
                             const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
                             const firstChar = trimmed[0] || '';
-                            const isLikelyBroken = wordCount <= 1 && /^[a-z]/.test(firstChar) && trimmed.length > 0 && trimmed.length <= 8;
+                            const isLikelyBroken = wordCount <= 1 && /^[a-z]/.test(firstChar.toLowerCase()) && trimmed.length > 0 && trimmed.length <= 15;
                             return (
                               <p
                                 className={isLikelyBroken ? 'text-sm md:text-base whitespace-pre-wrap' : 'text-sm md:text-base whitespace-pre-wrap memory-answer-text'}
