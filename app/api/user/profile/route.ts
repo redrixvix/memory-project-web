@@ -28,7 +28,7 @@ export async function PATCH(request: NextRequest) {
     const { name, profile_image_url } = body;
 
     const updates: string[] = [];
-    const values: any[] = [];
+    const values: Array<string | number | null> = [];
     let paramCount = 0;
 
     if (typeof name === 'string' && name.trim()) {
@@ -37,7 +37,7 @@ export async function PATCH(request: NextRequest) {
       values.push(name.trim());
     }
 
-    if (typeof profile_image_url === 'string') {
+    if (typeof profile_image_url === 'string' || profile_image_url === null) {
       paramCount++;
       updates.push(`profile_image_url = $${paramCount}`);
       values.push(profile_image_url);

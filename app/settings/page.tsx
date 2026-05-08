@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Label } from '@/components/ui/label';
@@ -21,9 +20,9 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveNotice, setSaveNotice] = useState<'profile' | 'photo' | null>(null);
   const [name, setName] = useState('');
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
-  const [profileImgBroken, setProfileImgBroken] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageError, setImageError] = useState('');
@@ -60,10 +59,20 @@ export default function SettingsPage() {
     void loadUser();
   }, [router]);
 
+  const showSavedState = (notice: 'profile' | 'photo') => {
+    setSaveNotice(notice);
+    setSaved(true);
+    window.setTimeout(() => {
+      setSaved(false);
+      setSaveNotice(null);
+    }, 2500);
+  };
+
   const handleSave = async () => {
     if (!name.trim()) return;
     setSaving(true);
     setSaved(false);
+    setSaveNotice(null);
     try {
       const res = await fetch('/api/user/profile', {
         method: 'PATCH',
@@ -73,8 +82,7 @@ export default function SettingsPage() {
       if (res.ok) {
         const data = await res.json();
         setUser(prev => prev ? { ...prev, name: data.name ?? name } : prev);
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2500);
+        showSavedState('profile');
       }
     } catch {
       // silent fail
@@ -122,14 +130,48 @@ export default function SettingsPage() {
       setProfileImageUrl(publicUrl);
 
       // Update user profile
-      await fetch('/api/user/profile', {
+      const profileRes = await fetch('/api/user/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profile_image_url: publicUrl }),
       });
 
+      if (!profileRes.ok) {
+        throw new Error('Uploaded photo but could not attach it to your profile.');
+      }
+
+      showSavedState('photo');
     } catch (err) {
       setImageError(err instanceof Error ? err.message : 'Failed to upload image. Please try again.');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleRemovePhoto = async () => {
+    if (!profileImageUrl || uploadingImage) return;
+
+    setUploadingImage(true);
+    setImageError('');
+    setSaved(false);
+    setSaveNotice(null);
+
+    try {
+      const res = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profile_image_url: null }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Could not remove your photo right now. Please try again.');
+      }
+
+      setProfileImageUrl(null);
+      setUser(prev => prev ? { ...prev, profile_image_url: undefined } : prev);
+      showSavedState('photo');
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : 'Could not remove your photo right now. Please try again.');
     } finally {
       setUploadingImage(false);
     }
@@ -243,12 +285,10 @@ export default function SettingsPage() {
                             if (img.naturalWidth <= 2 || img.naturalHeight <= 2) {
                               // 1x1 placeholder or broken image — treat as no photo
                               setProfileImageUrl(null);
-                              setProfileImgBroken(true);
                             }
                           }}
                           onError={() => {
                             setProfileImageUrl(null);
-                            setProfileImgBroken(true);
                           }}
                         />
                       </div>
@@ -323,14 +363,24 @@ export default function SettingsPage() {
                 <div className="flex-1 sm:pl-4 min-w-0">
                   {profileImageUrl ? (
                     <button
-                      onClick={() => setProfileImageUrl(null)}
-                      className="inline-flex items-center justify-center h-10 rounded-full px-5 text-xs font-semibold transition-all hover:brightness-95 active:scale-[0.97]"
+                      onClick={handleRemovePhoto}
+                      disabled={uploadingImage}
+                      className="inline-flex items-center justify-center h-10 rounded-full px-5 text-xs font-semibold transition-all hover:brightness-95 active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed"
                       style={{ color: '#6A3A2A', backgroundColor: 'rgba(180,80,60,0.10)', border: '1px solid rgba(180,80,60,0.20)' }}
                     >
-                      <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M18 6L6 18M6 6l12 12"/>
-                      </svg>
-                      Remove photo
+                      {uploadingImage ? (
+                        <>
+                          <div className="w-3.5 h-3.5 rounded-full animate-spin mr-1.5" style={{ border: '2px solid rgba(106,58,42,0.18)', borderTopColor: '#6A3A2A' }} />
+                          Removing…
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                          </svg>
+                          Remove photo
+                        </>
+                      )}
                     </button>
                   ) : null}
                   {imageError && (
@@ -439,7 +489,7 @@ export default function SettingsPage() {
                       </svg>
                     </div>
                     <span className="text-sm font-medium" style={{ fontFamily: 'var(--font-sans)' }}>
-                      Changes saved
+                      {saveNotice === 'photo' ? 'Photo updated' : 'Changes saved'}
                     </span>
                   </div>
                 )}
@@ -465,7 +515,7 @@ export default function SettingsPage() {
                       <polyline points="20 6 9 17 4 12"/>
                     </svg>
                   </div>
-                  <span className="text-sm font-medium">Profile updated</span>
+                  <span className="text-sm font-medium">{saveNotice === 'photo' ? 'Photo updated' : 'Profile updated'}</span>
                 </div>
               )}
             </div>
@@ -547,7 +597,7 @@ export default function SettingsPage() {
                       Export memories &amp; delete account
                     </p>
                     <p className="text-xs mt-0.5" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
-                      We'll notify you when these features are available.
+                      We&apos;ll notify you when these features are available.
                     </p>
                   </div>
                 </div>
@@ -588,7 +638,7 @@ export default function SettingsPage() {
                   <div>
                     <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Password</p>
                     <p className="text-xs mt-0.5" style={{ color: '#4A4A3A' }}>
-                      You haven't changed your password yet
+                      You haven&apos;t changed your password yet
                     </p>
                   </div>
                   <button
