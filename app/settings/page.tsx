@@ -324,7 +324,7 @@ export default function SettingsPage() {
                   {profileImageUrl ? (
                     <button
                       onClick={() => setProfileImageUrl(null)}
-                      className="inline-flex items-center justify-center h-9 rounded-full px-4 text-xs font-semibold transition-all hover:brightness-95 active:scale-[0.97]"
+                      className="inline-flex items-center justify-center h-10 rounded-full px-5 text-xs font-semibold transition-all hover:brightness-95 active:scale-[0.97]"
                       style={{ color: '#6A3A2A', backgroundColor: 'rgba(180,80,60,0.10)', border: '1px solid rgba(180,80,60,0.20)' }}
                     >
                       <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -593,7 +593,7 @@ export default function SettingsPage() {
                   </div>
                   <button
                     onClick={() => setShowPasswordForm(v => !v)}
-                    className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:opacity-80"
+                    className="inline-flex items-center justify-center h-10 rounded-full px-5 text-xs font-medium transition-all hover:opacity-80"
                     style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.2)' }}
                   >
                     {showPasswordForm ? 'Cancel' : 'Change password'}
@@ -609,15 +609,15 @@ export default function SettingsPage() {
                     )}
                     <div>
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>Current password</Label>
-                      <Input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="Current password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
+                      <Input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="Current password" className="h-10 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
                     </div>
                     <div>
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>New password</Label>
-                      <Input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="New password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
+                      <Input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="New password" className="h-10 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
                     </div>
                     <div>
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>Confirm new password</Label>
-                      <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm new password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
+                      <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm new password" className="h-10 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
                     </div>
                     <button
                       onClick={async () => {
@@ -638,7 +638,7 @@ export default function SettingsPage() {
                         finally { setChangingPassword(false); }
                       }}
                       disabled={changingPassword}
-                      className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:brightness-110 active:scale-[0.98]"
+                      className="inline-flex items-center justify-center h-10 rounded-full px-5 text-xs font-medium transition-all hover:brightness-110 active:scale-[0.98]"
                       style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
                     >
                       {changingPassword ? 'Updating…' : 'Update password'}
