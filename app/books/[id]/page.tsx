@@ -534,7 +534,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <button
                   type="button"
                   onClick={() => setMemorySort('newest')}
-                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
+                  className="rounded-full px-4 py-2.5 text-xs font-semibold transition-all duration-200 shrink-0"
                   style={{
                     backgroundColor: memorySort === 'newest' ? 'var(--bronze)' : 'transparent',
                     color: memorySort === 'newest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
@@ -547,7 +547,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <button
                   type="button"
                   onClick={() => setMemorySort('oldest')}
-                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
+                  className="rounded-full px-4 py-2.5 text-xs font-semibold transition-all duration-200 shrink-0"
                   style={{
                     backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
                     color: memorySort === 'oldest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
