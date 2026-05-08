@@ -858,84 +858,58 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             )}
           </div>
 
-          {/* Save button — always visible in header */}
           <div className="flex items-center gap-3">
-            {/* Autosave status */}
-            <div className="flex items-center gap-1.5 text-xs transition-all duration-500" style={{ fontFamily: 'var(--font-sans)' }}>
+            <div
+              className="hidden sm:flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all duration-500"
+              style={{
+                fontFamily: 'var(--font-sans)',
+                borderColor: 'rgba(212,163,115,0.16)',
+                backgroundColor: 'rgba(255,253,246,0.72)',
+                color: '#8A7A6A',
+              }}
+              aria-live="polite"
+            >
               {saveState === 'saving' && (
                 <>
                   <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
-                  <span className="italic" style={{ color: '#8A7A6A' }}>Saving...</span>
+                  <span className="italic">Saving draft…</span>
                 </>
               )}
               {saveState === 'saved' && (
-                <span className="italic" style={{ color: '#8A7A6A' }}>Saved</span>
+                <>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span className="italic">Draft saved</span>
+                </>
               )}
               {saveState === 'idle' && answer.trim().length > 0 && (
-                <span className="italic" style={{ color: '#8A7A6A' }}>Unsaved</span>
+                <span className="italic">Draft in progress</span>
               )}
               {saveState === 'idle' && !answer.trim() && (
-                <span style={{ color: '#8A7A6A' }}>Draft</span>
+                <span>Draft</span>
               )}
             </div>
 
-            {/* Primary Save Memory button — always visible */}
+            {/* Mobile hamburger — shown only on small screens */}
             <button
               type="button"
-              onClick={() => {
-                if (!isSubmitDisabled) {
-                  const form = document.querySelector('form');
-                  if (form) {
-                    const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
-                    form.dispatchEvent(submitEvent);
-                  }
-                }
+              onClick={() => setMobileNavOpen(true)}
+              className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95"
+              style={{ 
+                backgroundColor: 'rgba(212,163,115,0.12)',
+                color: 'var(--bronze)',
+                border: '1px solid rgba(212,163,115,0.18)',
               }}
-              disabled={isSubmitDisabled}
-              className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-semibold transition-all duration-200 hover:brightness-110 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{
-                backgroundColor: 'var(--bronze)',
-                color: 'var(--charcoal)',
-                boxShadow: '0 3px 12px rgba(212,163,115,0.35)',
-                fontFamily: 'var(--font-sans)',
-              }}
+              aria-label="Open navigation menu"
             >
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <div className="w-3.5 h-3.5 rounded-full animate-spin" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
-                  Saving...
-                </span>
-              ) : saveSuccess ? (
-                <span className="flex items-center gap-1.5">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                  Saved
-                </span>
-              ) : (
-                'Save Memory'
-              )}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
             </button>
           </div>
-
-          {/* Mobile hamburger — shown only on small screens */}
-          <button
-            type="button"
-            onClick={() => setMobileNavOpen(true)}
-            className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95"
-            style={{ 
-              backgroundColor: 'rgba(212,163,115,0.12)',
-              color: 'var(--bronze)',
-              border: '1px solid rgba(212,163,115,0.18)',
-            }}
-            aria-label="Open navigation menu"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
         </div>
       </header>
 
