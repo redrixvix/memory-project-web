@@ -982,7 +982,7 @@ export default function Dashboard() {
               </div>
               <p className="max-w-md text-sm leading-6 md:text-right" style={{ color: '#6A5648', fontFamily: 'var(--font-sans)' }}>
                 {activeBooks.length > 0
-                  ? `${activeBooks.length} books already hold memories. ${draftBooks.length} ${draftBooks.length === 1 ? 'draft is' : 'drafts are'} waiting for a first page.`
+                  ? `${activeBooks.length === 1 ? '1 book already holds' : `${activeBooks.length} books already hold`} memories. ${draftBooks.length === 1 ? '1 draft is' : `${draftBooks.length} drafts are`} waiting for a first page.`
                   : 'Start with a draft that already has a title and make it feel like a keepsake instead of a placeholder.'}
               </p>
             </div>
@@ -1041,11 +1041,8 @@ export default function Dashboard() {
                         </span>
                       </div>
 
-                      <div className="mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
-                        {(featuredBook._count?.memories ?? 0) > 0 ? 'Open book' : 'Begin first memory'}
-                        <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
+                      <div className="mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[11px] font-bold" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
+                        {(featuredBook._count?.memories ?? 0) > 0 ? 'Open' : 'Start'}
                       </div>
                     </div>
                   </div>
@@ -1357,14 +1354,11 @@ export default function Dashboard() {
                             </div>
 
                             <div className="mt-auto flex items-end justify-between gap-3 pt-4">
-                              <p className="max-w-[12rem] text-[0.78rem] leading-5" style={{ color: '#7A6453', fontFamily: 'var(--font-sans)' }}>
+                              <p className="max-w-[8rem] text-[0.78rem] leading-5" style={{ color: '#7A6453', fontFamily: 'var(--font-sans)' }}>
                                 {nextStepBody}
                               </p>
-                              <span className="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2.5 text-[11px] font-bold transition-all duration-300 group-hover:translate-x-0.5" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
-                                {hasMemories ? 'Open book' : 'Begin memory'}
-                                <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                                </svg>
+                              <span className="inline-flex shrink-0 flex-shrink-0 items-center justify-center gap-1 whitespace-nowrap rounded-full px-3 py-2.5 text-[11px] font-bold" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
+                                {hasMemories ? 'Open' : 'Start'}
                               </span>
                             </div>
                           </div>
