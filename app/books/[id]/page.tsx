@@ -43,6 +43,36 @@ interface BookMember {
 }
 
 const ACCENT_COLORS = ['var(--bronze)', 'var(--tea-green)', 'var(--papaya)'];
+const EMPTY_BOOK_PROMPTS = [
+  'What do you remember about your grandparents?',
+  'What was your wedding day like?',
+  'Tell me about your first job.',
+  'What was the best day of your life?',
+  'Describe a typical Sunday morning growing up.',
+  'Describe a holiday tradition you loved.',
+  'Tell me about your best friend growing up.',
+  'Describe a time you felt truly proud of yourself.',
+  'Tell me about a trip that changed your perspective.',
+  'What is your favorite memory with your parents?',
+  'Tell me about the house you grew up in.',
+  'What is a skill you are proud of learning?',
+  'What is the most beautiful place you have ever seen?',
+  'Describe a meal you will never forget.',
+];
+
+function getEmptyBookPrompts(bookId: string) {
+  const seed = Number(bookId) || 1;
+  const result = [...EMPTY_BOOK_PROMPTS];
+  let s = seed;
+
+  for (let i = result.length - 1; i > 0; i--) {
+    s = (s * 1103515245 + 12345) & 0x7fffffff;
+    const j = s % (i + 1);
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+
+  return result.slice(0, 3);
+}
 
 function getPlanBadgeStyles(plan: string) {
   const normalizedPlan = normalizeBookPlan(plan);
@@ -229,6 +259,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   if (!book) return null;
 
   const displayTitle = getDisplayBookTitle(book.title);
+  const emptyBookPrompts = getEmptyBookPrompts(id);
+  const featuredEmptyPrompt = emptyBookPrompts[0];
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
@@ -608,59 +640,32 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             </p>
             {/* Prompt chips — show 3 evocative prompts drawn from the curated library, shuffled per-book */}
             <div className="flex flex-wrap justify-center gap-2.5 mb-10">
-              {(() => {
-                const allPrompts = [
-                  'What do you remember about your grandparents?',
-                  'What was your wedding day like?',
-                  'Tell me about your first job.',
-                  'What was the best day of your life?',
-                  'Describe a typical Sunday morning growing up.',
-                  'Describe a holiday tradition you loved.',
-                  'Tell me about your best friend growing up.',
-                  'Describe a time you felt truly proud of yourself.',
-                  'Tell me about a trip that changed your perspective.',
-                  'What is your favorite memory with your parents?',
-                  'Tell me about the house you grew up in.',
-                  'What is a skill you are proud of learning?',
-                  'What is the most beautiful place you have ever seen?',
-                  'Describe a meal you will never forget.',
-                ];
-                // Deterministic Fisher-Yates shuffle using book id as seed
-                const seed = Number(id) || 1;
-                const result = [...allPrompts];
-                let s = seed;
-                for (let i = result.length - 1; i > 0; i--) {
-                  s = (s * 1103515245 + 12345) & 0x7fffffff;
-                  const j = s % (i + 1);
-                  [result[i], result[j]] = [result[j], result[i]];
-                }
-                return result.slice(0, 3).map(prompt => {
-                  const label = prompt.length > 45 ? prompt.split(/\s+/).slice(0, 6).join(' ') + '…' : prompt;
-                  return (
-                    <Link
-                      key={prompt}
-                      href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
-                      style={{
-                        backgroundColor: 'rgba(212,163,115,0.14)',
-                        color: '#4A3A2A',
-                        border: '1px solid rgba(212,163,115,0.30)',
-                        fontFamily: 'var(--font-sans)',
-                        boxShadow: '0 2px 8px rgba(212,163,115,0.10)',
-                      }}
-                    >
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
-                        <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                      </svg>
-                      {label}
-                    </Link>
-                  );
-                });
-              })()}
+              {emptyBookPrompts.map(prompt => {
+                const label = prompt.length > 45 ? prompt.split(/\s+/).slice(0, 6).join(' ') + '…' : prompt;
+                return (
+                  <Link
+                    key={prompt}
+                    href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
+                    style={{
+                      backgroundColor: 'rgba(212,163,115,0.14)',
+                      color: '#4A3A2A',
+                      border: '1px solid rgba(212,163,115,0.30)',
+                      fontFamily: 'var(--font-sans)',
+                      boxShadow: '0 2px 8px rgba(212,163,115,0.10)',
+                    }}
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                      <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                    </svg>
+                    {label}
+                  </Link>
+                );
+              })}
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href={`/books/${id}/edit`}
+                href={`/books/${id}/edit?prompt=${encodeURIComponent(featuredEmptyPrompt)}`}
                 className="inline-flex h-14 items-center justify-center rounded-full px-10 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-2xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-1 active:scale-95 group"
                 style={{ 
                   backgroundColor: 'var(--bronze)', 
@@ -673,11 +678,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M12 5v14M5 12h14"/>
                 </svg>
-                Add your first memory
+                Start with a guided prompt
               </Link>
-              {/* Preview button — only show when book has no memories */}
               <Link
-                href={`/books/${id}/preview`}
+                href={`/books/${id}/edit`}
                 className="inline-flex h-14 items-center justify-center rounded-full px-8 text-sm font-medium border-2 transition-all duration-300 hover:brightness-105 active:scale-95"
                 style={{ 
                   borderColor: 'rgba(212,163,115,0.45)', 
@@ -687,10 +691,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 }}
               >
                 <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                  <path d="M4 19.5V6.75C4 5.784 4.784 5 5.75 5h12.5"/>
+                  <path d="M8 8h10"/>
+                  <path d="M8 12h10"/>
+                  <path d="M8 16h6"/>
                 </svg>
-                Preview book
+                Write freely instead
               </Link>
             </div>
             <style>{`
