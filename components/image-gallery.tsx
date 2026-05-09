@@ -104,6 +104,7 @@ function ImageCard({
             <img
               src={item.previewUrl}
               alt={`Photo ${index + 1}`}
+              loading="lazy"
               className={cn(
                 "h-full w-full object-cover transition-opacity duration-300",
                 isLoaded ? "opacity-100" : "opacity-0",
