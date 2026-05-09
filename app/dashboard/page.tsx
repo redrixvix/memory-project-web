@@ -9,7 +9,6 @@ import { Dropdown, DropdownItem, DropdownDivider } from '@/components/ui/dropdow
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
 import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 import { MobileNav } from '@/components/ui/mobile-nav';
 
@@ -171,41 +170,40 @@ export default function Dashboard() {
     return () => document.removeEventListener('keydown', handleKey);
   }, [showCreate, creating]);
 
-  // Reset to page 1 whenever the filtered list changes — must be before early return
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, sortOrder]);
+  // Reset to page 1 whenever the filtered list changes — derived safely during render
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/');
+  };
 
   const createBook = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim()) {
-      setCreateError('Please enter a title for your book.');
-      return;
-    }
+    if (!newTitle.trim()) return;
     setCreating(true);
     setCreateError('');
     try {
       const res = await fetch('/api/books', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: newTitle, description: newDesc, plan: newPlan }),
+        body: JSON.stringify({ title: newTitle.trim(), description: newDesc.trim(), plan: newPlan }),
       });
-      if (res.ok) {
+      if (!res.ok) {
         const data = await res.json();
-        setNewTitle(''); setNewDesc('');
-        setNewPlan('free');
-        setShowCreate(false);
-        router.push(`/books/${data.book.id}`);
-      } else {
-        const err = await res.json().catch(() => ({}));
-        setCreateError(err.error || 'Failed to create book. Please try again.');
+        setCreateError(data.error || 'Failed to create book');
+        return;
       }
-    } finally { setCreating(false); }
-  };
-
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/');
+      const book = await res.json();
+      setBooks(prev => [book, ...prev]);
+      setNewTitle('');
+      setNewDesc('');
+      setShowCreate(false);
+      router.push(`/books/${book.id}`);
+    } catch {
+      setCreateError('Something went wrong. Please try again.');
+    } finally {
+      setCreating(false);
+    }
   };
 
   if (loading || loggedIn === null) {
