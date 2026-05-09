@@ -1117,14 +1117,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               e.preventDefault();
                               setActiveMenu(activeMenu === memory.id ? null : memory.id);
                             }}
-                            className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                            className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 opacity-100 md:opacity-0 md:group-hover/card:opacity-100 md:group-focus-within/card:opacity-100"
                             style={{
                               backgroundColor: 'rgba(212,163,115,0.10)',
                               color: '#5A3A2A',
-                              opacity: hoveredCard === memoryIndex ? 1 : 0,
                             }}
                             aria-label="Memory options"
                             aria-haspopup="menu"
+                            aria-expanded={activeMenu === memory.id}
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                               <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
