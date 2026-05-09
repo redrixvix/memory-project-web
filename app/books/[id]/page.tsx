@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState, use } from 'react';
+import { useCallback, useEffect, useMemo, useState, use } from 'react';
+import { getMemoryPromptGroups } from '@/lib/memory-prompts';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -79,7 +80,29 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [toastVisible, setToastVisible] = useState(false);
   // Delete confirm state
   const [deleteConfirm, setDeleteConfirm] = useState<{ memoryId: number } | null>(null);
-  // Memory sort order
+  // Pick 3 prompts from different categories for empty state inspiration chips
+  const emptyStatePrompts = useMemo(() => {
+    const groups = getMemoryPromptGroups();
+    if (groups.length < 3) return [];
+    // Stable selection using book id as seed
+    const seed = parseInt(id) || 1;
+    const selected: { label: string; prompt: string }[] = [];
+    const usedCategories = new Set<number>();
+    let attempt = 0;
+    while (selected.length < 3 && attempt < 30) {
+      const groupIdx = (seed + attempt * 7) % groups.length;
+      if (!usedCategories.has(groupIdx)) {
+        usedCategories.add(groupIdx);
+        const promptIdx = (seed + attempt * 11) % groups[groupIdx].prompts.length;
+        selected.push({
+          label: groups[groupIdx].prompts[promptIdx],
+          prompt: groups[groupIdx].prompts[promptIdx],
+        });
+      }
+      attempt++;
+    }
+    return selected;
+  }, [id]);
   const [memorySort, setMemorySort] = useState<'newest' | 'oldest'>('newest');
   // Mobile nav state
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -562,11 +585,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             </p>
             {/* 3 example prompt chips — spark inspiration */}
             <div className="flex flex-wrap justify-center gap-2.5 mb-10">
-              {[
-                { label: "The best day of the trip", prompt: "Describe the best day of your vacation." },
-                { label: "A funny travel mishap", prompt: "Tell me about a funny or unexpected moment during your trip." },
-                { label: "A meal I'll never forget", prompt: "Describe a meal you'll never forget from this trip." },
-              ].map(({ label, prompt }) => (
+              {emptyStatePrompts.map(({ label, prompt }) => (
                 <Link
                   key={label}
                   href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
