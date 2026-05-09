@@ -245,7 +245,7 @@ export default function UpgradePage() {
             <span className="text-xs font-semibold ml-1" style={{ color: '#4A3A2A', fontFamily: 'var(--font-sans)' }}>4.9/5</span>
           </div>
           <p className="text-xs leading-5 sm:border-l sm:pl-6" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)', borderColor: 'rgba(212,163,115,0.15)' }}>
-            "Finally somewhere my whole family wants to open." — The Moreno Family
+            &ldquo;Finally somewhere my whole family wants to open.&rdquo; — The Moreno Family
           </p>
         </div>
 
