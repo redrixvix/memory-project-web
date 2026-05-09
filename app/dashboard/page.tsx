@@ -506,10 +506,14 @@ export default function Dashboard() {
                       onChange={(e) => { setNewTitle(e.target.value); setCreateError(''); }}
                       required
                       autoFocus
+                      maxLength={100}
                       placeholder="Ruth's Life Story"
                       className="rounded-xl text-base w-full h-11"
                       style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
                     />
+                    <p className="text-xs text-right" style={{ color: newTitle.length >= 100 ? '#B84A2A' : '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                      {newTitle.length}/100
+                    </p>
                   </div>
 
                   {/* Description */}
@@ -523,9 +527,13 @@ export default function Dashboard() {
                       onChange={(e) => setNewDesc(e.target.value)}
                       className="resize-none rounded-xl text-base w-full"
                       rows={2}
+                      maxLength={500}
                       placeholder="A collection of memories from a wonderful life..."
                       style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
                     />
+                    <p className="text-xs text-right" style={{ color: newDesc.length >= 500 ? '#B84A2A' : '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
+                      {newDesc.length}/500
+                    </p>
                   </div>
 
                   {/* Plan selection */}
