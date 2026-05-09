@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useCallback, useEffect, useState, use } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -141,15 +141,15 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handlePhotoError = (memoryIndex: number) => {
+  const handlePhotoError = useCallback((memoryIndex: number) => {
     setImageErrors(prev => ({ ...prev, [memoryIndex]: true }));
-  };
+  }, []);
 
-  const handlePhotoClick = (globalIndex: number, url: string) => {
+  const handlePhotoClick = useCallback((globalIndex: number, url: string) => {
     if (!imageErrors[globalIndex]) {
       setLightboxSrc(url);
     }
-  };
+  }, [imageErrors]);
 
   if (loading) {
     return (
