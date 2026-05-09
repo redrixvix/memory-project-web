@@ -117,8 +117,10 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-70"
-            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A' }}
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-70 focus-visible:ring-2 focus-visible:ring-offset-2"
+            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
+            onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.22)'; }}
+            onBlur={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.1)'; }}
             aria-label="Close navigation menu"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -132,8 +134,8 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
           <Link
             href="/"
             onClick={onClose}
-            className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-            style={{ color: 'var(--charcoal)' }}
+            className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+            style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
           >
             Home
           </Link>
@@ -142,31 +144,33 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
               <Link
                 href="/dashboard"
                 onClick={onClose}
-                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
               >
                 Dashboard
               </Link>
               <Link
                 href="/settings"
                 onClick={onClose}
-                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
               >
                 Settings
               </Link>
               <Link
                 href="/upgrade"
                 onClick={onClose}
-                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
               >
                 Upgrade plan
               </Link>
               <button
                 onClick={handleLogout}
-                className="block w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: '#B4503C' }}
+                className="block w-full text-left px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ color: '#B4503C', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
+                onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.12)'; }}
+                onBlur={(e) => { e.currentTarget.style.backgroundColor = ''; }}
               >
                 Sign out
               </button>
@@ -176,24 +180,24 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
               <Link
                 href="/#how-it-works"
                 onClick={onClose}
-                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
               >
                 How It Works
               </Link>
               <Link
                 href="/pricing"
                 onClick={onClose}
-                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
               >
                 Pricing
               </Link>
               <Link
                 href="/faq"
                 onClick={onClose}
-                className="block px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
               >
                 FAQ
               </Link>
@@ -201,8 +205,8 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
               <Link
                 href="/login"
                 onClick={onClose}
-                className="block px-4 py-3 rounded-xl text-sm transition-colors hover:bg-white/50"
-                style={{ color: '#6A6A5A' }}
+                className="block px-4 py-4 rounded-xl text-sm transition-colors hover:bg-white/50"
+                style={{ color: '#6A6A5A', minHeight: '48px', display: 'flex', alignItems: 'center' }}
               >
                 Sign in
               </Link>

@@ -195,13 +195,17 @@ export default function Login() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="w-full h-11 rounded-xl text-sm font-medium flex items-center justify-center gap-2.5 transition-all duration-200 hover:brightness-95 active:scale-[0.98]"
+                className="w-full h-11 rounded-xl text-sm font-medium flex items-center justify-center gap-2.5 transition-all duration-200 hover:brightness-95 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{
                   backgroundColor: '#ffffff',
                   color: '#3c4043',
                   border: '1px solid rgba(212,163,115,0.3)',
                   boxShadow: '0 2px 8px rgba(212,163,115,0.10), 0 1px 2px rgba(0,0,0,0.04)',
+                  ['--tw-ring-color' as string]: 'var(--bronze)',
+                  ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                 }}
+                onFocus={(e) => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.10), 0 1px 2px rgba(0,0,0,0.04), 0 0 0 3px rgba(212,163,115,0.25)'; }}
+                onBlur={(e) => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.10), 0 1px 2px rgba(0,0,0,0.04)'; }}
               >
                 <GoogleIcon />
                 Continue with Google
@@ -210,12 +214,16 @@ export default function Login() {
               {/* Passkey option — ghost/outlined style */}
               <button
                 type="button"
-                className="w-full h-9 rounded-xl text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[rgba(212,163,115,0.06)] active:scale-[0.98]"
+                className="w-full h-9 rounded-xl text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[rgba(212,163,115,0.06)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{
                   color: '#6A6A5A',
                   border: '1px solid rgba(212,163,115,0.22)',
                   backgroundColor: 'transparent',
+                  ['--tw-ring-color' as string]: 'var(--bronze)',
+                  ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                 }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.45)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.18)'; }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.22)'; e.currentTarget.style.boxShadow = 'none'; }}
                 onClick={() => window.location.href = '/api/auth/passkey?screen_hint=sign-in'}
               >
                 <KeyIcon />
@@ -311,7 +319,7 @@ export default function Login() {
                     <Button
                       type="submit"
                       disabled={magicLoading}
-                      className="w-full h-11 rounded-xl text-sm font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
+                      className="w-full h-12 rounded-xl text-sm font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
                       style={{ backgroundColor: 'transparent', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.35)', fontFamily: 'var(--font-sans)' }}
                     >
                       {magicLoading ? 'Sending...' : 'Send email code instead'}
