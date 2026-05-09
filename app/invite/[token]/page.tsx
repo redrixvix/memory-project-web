@@ -56,23 +56,6 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
     validateInvite();
   }, [token]);
 
-  const handleAcceptInvite = async () => {
-    if (!token || !inviteData) return;
-    try {
-      const res = await fetch(`/api/books/${inviteData.book_id}/members/accept?token=${token}`, {
-        method: 'POST',
-      });
-      if (res.ok) {
-        router.push(`/books/${inviteData.book_id}`);
-      } else {
-        const data = await res.json();
-        setError(data.error || 'Failed to accept invite');
-      }
-    } catch {
-      setError('Failed to accept invite');
-    }
-  };
-
   const handleJoinClick = () => {
     if (!token) return;
     // Store token in sessionStorage so signup can retrieve it

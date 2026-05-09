@@ -92,7 +92,7 @@ export default function UpgradePage() {
     return () => {
       cancelled = true;
     };
-  }, [requestedBookId, router]);
+  }, [requestedBookId, selectedBookId, router]);
 
   const selectedBook = books.find((book) => String(book.id) === selectedBookId) ?? null;
 

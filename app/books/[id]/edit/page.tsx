@@ -225,6 +225,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     }
 
     setTimeout(() => setDraftLoaded(true), 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftKey, id, memoryId, router, urlPrompt]);
 
   // Auto-focus textarea when navigated via a prompt link (e.g. from empty state chip)
@@ -474,7 +475,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           : item
       )));
     }
-  }, [startImageUpload]);
+  }, [startImageUpload, queueUploadedAssetForDeletion]);
 
   const handlePhotoFiles = useCallback((files: File[]) => {
     if (!files.length) {
@@ -807,7 +808,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b shrink-0" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
           <div className="flex items-center gap-3 min-w-0">
-            <Link href={`/books/${id}`} className="nav-link text-sm flex items-center gap-1.5 shrink-0" style={{ color: 'var(--charcoal)' }}>
+            <Link href={`/books/${id}`} className="nav-link text-sm flex items-center gap-1.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(212,163,115,0.5)] focus-visible:ring-offset-1 focus-visible:rounded-md" style={{ color: 'var(--charcoal)' }}>
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M15 18l-6-6 6-6" />
               </svg>
@@ -1034,7 +1035,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                           setPrompt(e.target.value);
                         }}
                         placeholder="What would you like this memory to begin with?"
-                        className="h-11 rounded-[1rem] border px-4 text-sm"
+                        className="h-11 rounded-[1rem] border px-4 text-sm focus-visible:ring-2 focus-visible:ring-[rgba(212,163,115,0.40)] focus-visible:border-[rgba(212,163,115,0.45)]"
                         style={{
                           borderColor: 'rgba(212,163,115,0.24)',
                           backgroundColor: 'rgba(255,253,246,0.88)',
