@@ -211,6 +211,7 @@ function Signup() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
+                aria-label="Continue with Google"
                 className="w-full h-11 rounded-full text-sm font-semibold flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-95 hover:brightness-105 hover:shadow-md focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{
                   backgroundColor: 'var(--charcoal)',

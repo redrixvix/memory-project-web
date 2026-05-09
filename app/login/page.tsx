@@ -195,6 +195,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
+                aria-label="Continue with Google"
                 className="w-full h-11 rounded-xl text-sm font-medium flex items-center justify-center gap-2.5 transition-all duration-200 hover:brightness-95 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{
                   backgroundColor: '#ffffff',
