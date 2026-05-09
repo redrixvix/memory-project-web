@@ -481,7 +481,7 @@ function Signup() {
 
           <p className="text-center mt-6 text-sm" style={{ color: 'var(--muted-foreground)' }}>
             Already have an account?{' '}
-            <Link href="/login" className="font-medium transition-colors hover:opacity-70 inline-flex items-center justify-center px-2 py-1 rounded-lg" style={{ color: 'var(--bronze)' }}>
+            <Link href="/login" className="nav-link font-medium inline-flex items-center justify-center px-2 py-1 rounded-lg" style={{ color: 'var(--bronze)' }}>
               Sign in
             </Link>
           </p>

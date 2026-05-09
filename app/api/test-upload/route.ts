@@ -16,8 +16,9 @@ export async function POST(request: NextRequest) {
 
     const result = await utapi.uploadFiles([utFile]);
     return NextResponse.json({ result: JSON.stringify(result) });
-  } catch (e: any) {
-    console.error('Error:', e.message);
-    return NextResponse.json({ error: e.message }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Unknown error';
+    console.error('Error:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

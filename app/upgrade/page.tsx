@@ -157,7 +157,7 @@ export default function UpgradePage() {
             </svg>
             <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
           </Link>
-          <Link href="/dashboard" className="text-sm transition-colors hover:opacity-70" style={{ color: '#4A4A3A' }}>
+          <Link href="/dashboard" className="nav-link text-sm" style={{ color: '#4A4A3A' }}>
             Back to dashboard
           </Link>
         </div>

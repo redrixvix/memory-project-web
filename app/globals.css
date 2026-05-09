@@ -935,7 +935,24 @@ textarea::placeholder {
 
 
 /* ─────────────────────────────────────────
-   Header action buttons — subtle, warm outline
+   Navigation link hover states
+───────────────────────────────────────── */
+
+.nav-link {
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+.nav-link:hover {
+  opacity: 0.65;
+}
+
+/* Nav link focus — keyboard accessible indicator */
+.nav-link:focus-visible {
+  outline: 2px solid var(--bronze);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Header action buttons — subtle, warm outline
 ───────────────────────────────────────── */
 
 .header-action-btn {

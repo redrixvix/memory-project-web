@@ -106,15 +106,15 @@ export default function Home() {
               </Link>
             ) : (
               <>
-                <Link href="/#how-it-works" className="text-sm transition-colors hidden sm:block" style={{ color: 'var(--muted-foreground)' }}>How It Works</Link>
+                <Link href="/#how-it-works" className="nav-link text-sm hidden sm:block" style={{ color: 'var(--muted-foreground)' }}>How It Works</Link>
                 <Link
                 href="/pricing"
-                className="text-sm transition-colors hidden sm:block"
+                className="nav-link text-sm hidden sm:block"
                 style={{ color: 'var(--muted-foreground)' }}
               >
                 Pricing
               </Link>
-                <Link href="/login" className="text-sm transition-colors hidden sm:block" style={{ color: 'var(--muted-foreground)' }}>Sign in</Link>
+                <Link href="/login" className="nav-link text-sm hidden sm:block" style={{ color: 'var(--muted-foreground)' }}>Sign in</Link>
                 <Link
                   href="/signup"
                   className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
@@ -835,7 +835,7 @@ export default function Home() {
               {/* Social icons */}
               <div className="flex gap-3">
                 {/* Instagram icon */}
-                <a href="#" aria-label="Memory Project on Instagram" className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-70" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <a href="#" aria-label="Memory Project on Instagram" className="nav-link w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--charcoal)' }}>
                     <rect x="2" y="2" width="20" height="20" rx="5"/>
                     <circle cx="12" cy="12" r="4"/>
@@ -843,7 +843,7 @@ export default function Home() {
                   </svg>
                 </a>
                 {/* Facebook icon */}
-                <a href="#" aria-label="Memory Project on Facebook" className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-70" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <a href="#" aria-label="Memory Project on Facebook" className="nav-link w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--charcoal)' }}>
                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                   </svg>
@@ -863,7 +863,7 @@ export default function Home() {
                   { href: '/signup', label: 'Get Started' },
                 ].map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-sm transition-colors hover:opacity-70" style={{ color: 'var(--muted-foreground)' }}>
+                    <Link href={link.href} className="nav-link text-sm" style={{ color: 'var(--muted-foreground)' }}>
                       {link.label}
                     </Link>
                   </li>

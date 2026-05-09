@@ -307,7 +307,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       <header className="sticky top-0 z-30 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.96)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.18)', boxShadow: '0 1px 0 rgba(212,163,115,0.08), 0 4px 24px rgba(212,163,115,0.04)' }}>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto gap-3">
           <div className="flex items-center gap-2 min-w-0">
-            <Link href="/dashboard" className="text-sm shrink-0 flex items-center gap-1.5 transition-colors hover:opacity-70" style={{ color: 'var(--charcoal)' }}>
+            <Link href="/dashboard" className="nav-link text-sm shrink-0 flex items-center gap-1.5" style={{ color: 'var(--charcoal)' }}>
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M15 18l-6-6 6-6"/>
               </svg>

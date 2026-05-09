@@ -98,7 +98,7 @@ export default function EditBookPage({ params }: { params: Promise<{ id: string 
         <div className="flex items-center justify-between w-full max-w-2xl mx-auto">
           <Link 
             href={`/books/${id}`} 
-            className="text-sm flex items-center gap-1.5 transition-colors hover:opacity-70"
+            className="nav-link text-sm flex items-center gap-1.5"
             style={{ color: '#6A6A5A' }}
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
