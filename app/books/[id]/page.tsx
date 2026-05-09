@@ -801,6 +801,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                       src={url}
                                       alt={`Memory photo ${photoIndex + 1}`}
                                       fill
+                                      sizes={
+                                        photoIndex === 0 && memory.photo_urls.length === 1
+                                          ? '(max-width: 768px) 100vw, 50vw'
+                                          : '(max-width: 768px) 50vw, 25vw'
+                                      }
+                                      loading="lazy"
                                       unoptimized={true}
                                       className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"
                                       onError={() => handlePhotoError(globalIndex)}
