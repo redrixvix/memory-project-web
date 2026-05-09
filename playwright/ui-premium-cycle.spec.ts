@@ -63,7 +63,7 @@ test('UI premium cycle - login, create memories, books, verify polish', async ({
   let bookUrl = '';
   const firstBookLink = page.locator('a[href*="/books/"]').first();
   if (await firstBookLink.isVisible({ timeout: 3000 })) {
-    bookUrl = await firstBookLink.getAttribute('href');
+    bookUrl = (await firstBookLink.getAttribute('href')) ?? '';
     await firstBookLink.click();
     await page.waitForLoadState('networkidle');
     await snap(page, '07-book-detail');

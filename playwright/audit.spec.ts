@@ -6,7 +6,7 @@ test('audit key UX flows with screenshots', async ({ page }) => {
   const dir = 'playwright/screens-cycle2/audit';
   const fs = require('fs');
   try { fs.mkdirSync(dir, { recursive: true }); } catch {}
-  const snap = (n) => page.screenshot({ path: `${dir}/a-${String(n).padStart(2,'0')}.png`, fullPage: false }).then(() => console.log(`📸 a-${String(n).padStart(2,'0')}`));
+  const snap = (n: number) => page.screenshot({ path: `${dir}/a-${String(n).padStart(2,'0')}.png`, fullPage: false }).then(() => console.log(`📸 a-${String(n).padStart(2,'0')}`));
 
   // Login
   await page.goto('/login');
