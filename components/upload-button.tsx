@@ -195,6 +195,7 @@ export function DropZone({
       onDrop={handleDrop}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      aria-label="Upload photos"
       className={cn(
         "relative cursor-pointer rounded-2xl border-2 border-dashed transition-all duration-300 overflow-hidden",
         className,
