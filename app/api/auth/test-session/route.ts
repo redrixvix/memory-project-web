@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
 import crypto from 'crypto';
 
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({ hasSession: false });
 }
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   // Create a test session for a known user
   const [{ id: userId }] = await sql`SELECT id FROM users LIMIT 1`;
   
