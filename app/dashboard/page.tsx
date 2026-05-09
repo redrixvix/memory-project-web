@@ -383,28 +383,44 @@ export default function Dashboard() {
   const totalPages = Math.max(1, Math.ceil(sortedBooks.length / BOOKS_PER_PAGE));
   const safePage = Math.min(currentPage, totalPages);
   const paginatedBooks = sortedBooks.slice((safePage - 1) * BOOKS_PER_PAGE, safePage * BOOKS_PER_PAGE);
-  const shelfFilterMeta: Record<ShelfFilter, { label: string; empty: string; summary: string }> = {
+  const shelfFilterMeta: Record<ShelfFilter, { label: string; empty: string; summary: string; collection: string }> = {
     all: {
       label: 'All books',
       empty: 'No books match this search yet.',
       summary: 'A full shelf with every keepsake and draft in one place.',
+      collection: 'your full shelf',
     },
     active: {
       label: 'Continue writing',
       empty: 'Nothing has memories yet — start a draft and this lane will light up.',
       summary: 'Books with real stories inside, ready to pick back up.',
+      collection: 'your in-progress shelf',
     },
     drafts: {
       label: 'Needs first page',
       empty: 'Every draft already has a first memory — a nice problem to have.',
       summary: 'Quietly titled books still waiting for the first scene.',
+      collection: 'your first-page shelf',
     },
     shared: {
       label: 'Family voices',
       empty: 'No shared keepsakes in this view yet.',
       summary: 'Books that already carry more than one family perspective.',
+      collection: 'your shared shelf',
     },
   };
+
+  const filteredLabel = shelfFilterMeta[shelfFilter].collection;
+  const resultsLabel = filteredBooks.length === 1 ? 'book' : 'books';
+  const searchLabel = searchQuery.trim();
+  const libraryStatus = filteredBooks.length === 0
+    ? shelfFilterMeta[shelfFilter].empty
+    : `${filteredBooks.length} ${resultsLabel} on ${filteredLabel}${searchLabel ? ` for “${searchLabel}”` : ''}${totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ''}`;
+  const shelfSummaryCta = filteredBooks.length > 0
+    ? `${filteredBooks.length} ${filteredBooks.length === 1 ? 'keepsake' : 'keepsakes'} ready to revisit`
+    : searchLabel
+      ? 'Try a different title, person, or keyword'
+      : 'Start a new book to begin this shelf';
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
@@ -510,9 +526,7 @@ export default function Dashboard() {
                 Your Library
               </h1>
               <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
-                {filteredBooks.length === 0
-                  ? shelfFilterMeta[shelfFilter].empty
-                  : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'book' : 'books'} in ${shelfFilterMeta[shelfFilter].label.toLowerCase()}${searchQuery ? ` matching "${searchQuery}"` : ''}${totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ''}`}
+                {libraryStatus}
               </p>
             </div>
             {books.length > 0 && (
@@ -650,7 +664,7 @@ export default function Dashboard() {
                   <span style={{ color: '#5A4A3A' }}> — {shelfFilterMeta[shelfFilter].summary}</span>
                 </p>
                 <p className="text-[0.7rem] uppercase tracking-[0.14em] font-medium" style={{ color: '#5A4A3A', fontFamily: 'var(--font-serif)' }}>
-                  {filteredBooks.length > 0 ? `${filteredBooks.length} ready to browse` : 'Adjust search or start a new book'}
+                  {shelfSummaryCta}
                 </p>
               </div>
 
