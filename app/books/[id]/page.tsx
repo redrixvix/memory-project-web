@@ -480,12 +480,13 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.4), transparent)' }} />
               {/* Sort controls */}
-              <div className="flex items-center gap-2.5 rounded-full px-4 py-2 overflow-x-auto ml-2" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.18)' }}>
+              <div className="flex items-center gap-2.5 rounded-full px-4 py-2 overflow-x-auto ml-2" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.18)' }} aria-label="Sort memories">
                 <span className="text-xs font-bold tracking-wide shrink-0" style={{ color: 'rgba(43,43,43,0.85)', fontFamily: 'var(--font-sans)' }}>Sort</span>
                 <div className="w-px h-3.5 shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
                 <button
                   type="button"
                   onClick={() => setMemorySort('newest')}
+                  aria-pressed={memorySort === 'newest'}
                   className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
                   style={{
                     backgroundColor: memorySort === 'newest' ? 'var(--bronze)' : 'transparent',
@@ -499,6 +500,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <button
                   type="button"
                   onClick={() => setMemorySort('oldest')}
+                  aria-pressed={memorySort === 'oldest'}
                   className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
                   style={{
                     backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
