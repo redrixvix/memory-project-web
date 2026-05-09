@@ -152,6 +152,8 @@ export function BookCover({ title, description, accentColor = 'var(--bronze)', p
                   alt=""
                   aria-hidden="true"
                   className="h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div
                   className="absolute inset-0"

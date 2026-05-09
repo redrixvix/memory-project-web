@@ -1,22 +1,19 @@
 'use client';
 
 import { generateReactHelpers } from '@uploadthing/react';
-import { useCallback, useEffect, useMemo, useRef, useState, use, startTransition } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, use } from 'react';
 import { MobileNav } from '@/components/ui/mobile-nav';
 import type { MutableRefObject } from 'react';
 import Link from 'next/link';
-import { getDisplayBookTitle } from '@/lib/display-book-title';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import type { OurFileRouter } from '@/app/api/uploadthing/core';
 import { Button } from '@/components/ui/button';
-import { StepProgress } from '@/components/ui/step-progress';
 import { ImageGallery, type ImageGalleryItem, DropZone } from '@/components/image-gallery';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { PremiumAudioPlayer } from '@/components/ui/premium-audio-player';
-import { normalizeBookPlan } from '@/lib/book-plan';
+import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 import { flattenMemoryPrompts, getMemoryPromptGroups, isMemoryPromptGroups, type MemoryPromptGroup } from '@/lib/memory-prompts';
 
 type SaveState = 'idle' | 'saving' | 'saved';
@@ -71,41 +68,26 @@ const MAX_AUDIO_BYTES = 16 * 1024 * 1024;
 const NO_PROMPT_VALUE = '__none__';
 const CUSTOM_PROMPT_VALUE = '__custom__';
 
-type WritingStageTone = 'starting' | 'warming' | 'steady' | 'ready';
+function getPlanBadgeStyles(plan: string) {
+  const normalizedPlan = normalizeBookPlan(plan);
 
-function getWritingStage(wordCount: number) {
-  if (wordCount === 0) {
+  if (normalizedPlan === 'plus') {
     return {
-      tone: 'starting' as WritingStageTone,
-      label: 'First lines',
-      title: 'Begin with one vivid detail.',
-      description: 'Start with a room, a smell, a voice, or the first image that returns to you.',
+      backgroundColor: '#2D4A35',
+      color: '#E8F0E5',
     };
   }
 
-  if (wordCount < 60) {
+  if (normalizedPlan === 'premium') {
     return {
-      tone: 'warming' as WritingStageTone,
-      label: 'Scene forming',
-      title: 'You have the opening—add what happened next.',
-      description: 'A few more sentences about what you saw, heard, or felt will make this memory feel lived in.',
-    };
-  }
-
-  if (wordCount < 180) {
-    return {
-      tone: 'steady' as WritingStageTone,
-      label: 'Memory unfolding',
-      title: 'The heart of the story is here.',
-      description: 'Add one small detail or reflection so future readers can feel why this moment mattered.',
+      backgroundColor: 'var(--bronze)',
+      color: 'var(--charcoal)',
     };
   }
 
   return {
-    tone: 'ready' as WritingStageTone,
-    label: 'Keepsake shape',
-    title: 'This memory already feels substantial.',
-    description: 'You can save now, or add a closing detail that ties the moment together.',
+    backgroundColor: 'rgba(212,163,115,0.25)',
+    color: '#4A4A3A',
   };
 }
 
@@ -115,6 +97,9 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const searchParams = useSearchParams();
   const memoryId = searchParams.get('memory');
   const urlPrompt = searchParams.get('prompt');
+
+  // Set initial prompt from URL param when creating a new memory (no memoryId, no draft)
+  const [initialPromptSet, setInitialPromptSet] = useState(false);
 
   const [book, setBook] = useState<Book | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -157,9 +142,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     () => photoItems.flatMap((item) => item.uploadedUrl ? [item.uploadedUrl] : []),
     [photoItems]
   );
-  const uploadingPhotoCount = photoItems.filter((item) => item.status === 'uploading').length;
-  const uploadedPhotoCount = photoItems.filter((item) => item.status === 'uploaded').length;
-  const hasUploadingPhotos = uploadingPhotoCount > 0;
+  const hasUploadingPhotos = photoItems.some((item) => item.status === 'uploading');
   const hasErroredPhotos = photoItems.some((item) => item.status === 'error');
   const hasBlockingRecorderState = recorderState === 'requesting' || recorderState === 'recording' || recorderState === 'processing';
   const isSubmitDisabled = loading || !answer.trim() || hasUploadingPhotos || hasBlockingRecorderState;
@@ -171,23 +154,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const { startUpload: startImageUpload } = useUploadThing('imageUploader');
   const { startUpload: startAudioUpload } = useUploadThing('audioUploader');
   const currentAudioUrl = audioDraft?.uploadedUrl ?? null;
-  const savedPromptLabel = (useCustomPrompt ? customPrompt : prompt).replace(/\s+/g, ' ').trim();
-  const savedPreview = answer.replace(/\s+/g, ' ').trim();
-  const successExcerpt = savedPreview.length > 190 ? `${savedPreview.slice(0, 187).trimEnd()}…` : savedPreview;
-  const attachedPhotoCount = photoItems.filter((item) => item.status !== 'error').length;
-  const hasAttachedAudio = Boolean(audioDraft?.uploadedUrl || audioDraft?.sourceFile || audioDraft?.previewUrl);
-  const saveReadinessMessage = !answer.trim()
-    ? 'Write a few lines and this memory will be ready to tuck away.'
-    : hasUploadingPhotos
-      ? `${uploadingPhotoCount} photo${uploadingPhotoCount === 1 ? ' is' : 's are'} still uploading. Saving will unlock as soon as the upload finishes.`
-      : hasBlockingRecorderState
-        ? 'Finish recording your voice note before saving this memory.'
-        : audioDraft?.sourceFile
-          ? 'Your voice note is staged and will upload the moment you save.'
-          : hasErroredPhotos
-            ? 'You can retry failed photos or save this memory without them.'
-            : 'Everything is ready. Save when this memory feels complete.';
-  const writingStage = getWritingStage(wordCount);
 
   useEffect(() => {
     photoItemsRef.current = photoItems;
@@ -255,28 +221,28 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     if (draft) {
       try {
         const parsed = JSON.parse(draft) as DraftState;
-        if (parsed.prompt) startTransition(() => setPrompt(parsed.prompt));
-        if (parsed.customPrompt) startTransition(() => setCustomPrompt(parsed.customPrompt));
+        if (parsed.prompt) setPrompt(parsed.prompt);
+        if (parsed.customPrompt) setCustomPrompt(parsed.customPrompt);
         if (parsed.answer) {
-          startTransition(() => setAnswer(parsed.answer));
-          startTransition(() => setWordCount(parsed.answer.trim() ? parsed.answer.trim().split(/\s+/).length : 0));
+          setAnswer(parsed.answer);
+          setWordCount(parsed.answer.trim() ? parsed.answer.trim().split(/\s+/).length : 0);
         }
         if (Array.isArray(parsed.photoUrls)) {
-          startTransition(() => setPhotoItems(createDraftPhotoItems(parsed.photoUrls)));
+          setPhotoItems(createDraftPhotoItems(parsed.photoUrls));
         }
         if (parsed.audioUrl) {
-          const audioUrl = parsed.audioUrl;
-          startTransition(() => setAudioDraft(createExistingAudioDraft(audioUrl)));
+          setAudioDraft(createExistingAudioDraft(parsed.audioUrl));
         }
       } catch {}
     }
 
     // If no memoryId, no draft, but URL has a prompt param, use it
     if (!memoryId && urlPrompt && !draft) {
-      startTransition(() => setPrompt(urlPrompt));
+      setPrompt(urlPrompt);
+      setInitialPromptSet(true);
     }
 
-    startTransition(() => setDraftLoaded(true));
+    setDraftLoaded(true);
   }, [draftKey, id, memoryId, router, urlPrompt]);
 
   // Auto-focus textarea when navigated via a prompt link (e.g. from empty state chip)
@@ -305,18 +271,18 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
   useEffect(() => {
     if (!prompt) {
-      startTransition(() => setUseCustomPrompt(false));
+      setUseCustomPrompt(false);
       return;
     }
 
     if (allPresetPrompts.includes(prompt)) {
-      startTransition(() => setUseCustomPrompt(false));
+      setUseCustomPrompt(false);
       return;
     }
 
-    startTransition(() => setUseCustomPrompt(true));
+    setUseCustomPrompt(true);
     if (customPrompt !== prompt) {
-      startTransition(() => setCustomPrompt(prompt));
+      setCustomPrompt(prompt);
     }
   }, [allPresetPrompts, customPrompt, prompt]);
 
@@ -329,7 +295,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       clearTimeout(saveTimerRef.current);
     }
 
-    startTransition(() => setSaveState('saving'));
+    setSaveState('saving');
     saveTimerRef.current = setTimeout(() => {
       try {
         const nextDraft: DraftState = {
@@ -811,9 +777,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       clearDraft();
       await flushRemovedUploads();
 
-      // Premium success moment — let the user choose what to do next
+      // Premium success moment — brief celebration before redirecting
       setSaveSuccess(true);
       setSaveState('saved');
+      setTimeout(() => {
+        router.push(`/books/${id}`);
+      }, 1600);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to save memory.';
       setAudioDraft((current) => current && current.sourceFile
@@ -865,64 +834,43 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
               <>
                 <span style={{ color: 'rgba(212,163,115,0.3)' }}>·</span>
                 <div className="text-base md:text-lg font-medium truncate" style={{ color: 'var(--charcoal)' }}>
-                  {getDisplayBookTitle(book.title)}
+                  {book.title}
                 </div>
               </>
             )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <div
-              className="hidden sm:flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-all duration-500"
-              style={{
-                fontFamily: 'var(--font-sans)',
-                borderColor: 'rgba(212,163,115,0.16)',
-                backgroundColor: 'rgba(255,253,246,0.72)',
-                color: '#8A7A6A',
-              }}
-              aria-live="polite"
-            >
-              {saveState === 'saving' && (
-                <>
-                  <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
-                  <span className="italic">Saving draft…</span>
-                </>
-              )}
-              {saveState === 'saved' && (
-                <>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                  <span className="italic">Draft saved</span>
-                </>
-              )}
-              {saveState === 'idle' && answer.trim().length > 0 && (
-                <span className="italic">Draft in progress</span>
-              )}
-              {saveState === 'idle' && !answer.trim() && (
-                <span>Draft</span>
-              )}
-            </div>
-
-            {/* Mobile hamburger — shown only on small screens */}
-            <button
-              type="button"
-              onClick={() => setMobileNavOpen(true)}
-              className="focus-ring md:hidden w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95"
-              style={{ 
-                backgroundColor: 'rgba(212,163,115,0.12)',
-                color: 'var(--bronze)',
-                border: '1px solid rgba(212,163,115,0.18)',
-              }}
-              aria-label="Open navigation menu"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            </button>
+          {/* Subtle autosave indicator — no pill, just elegant small text */}
+          <div className="flex items-center gap-1.5 text-xs transition-all duration-500" style={{ fontFamily: 'var(--font-sans)' }}>
+            {saveState === 'saving' && (
+              <>
+                <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
+                <span className="italic" style={{ color: '#8A7A6A' }}>Saving...</span>
+              </>
+            )}
+            {saveState === 'saved' && (
+              <span className="italic" style={{ color: '#8A7A6A' }}>Last saved</span>
+            )}
           </div>
+
+          {/* Mobile hamburger — shown only on small screens */}
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen(true)}
+            className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95"
+            style={{ 
+              backgroundColor: 'rgba(212,163,115,0.12)',
+              color: 'var(--bronze)',
+              border: '1px solid rgba(212,163,115,0.18)',
+            }}
+            aria-label="Open navigation menu"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
         </div>
       </header>
 
@@ -946,8 +894,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           <div className="relative px-5 py-5 md:px-10 md:py-7">
             <div className="border-b pb-6 md:pb-7" style={{ borderColor: 'rgba(212,163,115,0.14)', transition: 'opacity 0.4s ease' }}>
                 <div className="flex flex-wrap items-center gap-3 mb-3">
-                  <div className="inline-flex items-center gap-1.5 text-[11px] px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.08)', color: '#8A6A4A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.22)' }}>
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--bronze)' }}>
+                  <div className="flex items-center gap-1.5 text-xs px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(204,213,174,0.12)', color: '#4A5A35', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.25)' }}>
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#6B8055' }}>
                       <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
                     </svg>
                     Private
@@ -956,12 +904,48 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                 <h1 className="text-xl md:text-2xl font-medium mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                   {memoryId ? 'Edit Memory' : 'Add a Memory'}
                 </h1>
-                <StepProgress
-                  currentStep={attachedPhotoCount > 0 || hasAttachedAudio ? 2 : 1}
-                  writeComplete={answer.trim().length > 0}
-                  hasMedia={attachedPhotoCount > 0 || hasAttachedAudio}
-                  className="mt-5"
-                />
+                {/* Step progress indicator — editorial style with warm palette */}
+                <div className="flex items-center gap-3 mt-5">
+                  {/* Step 1 — active */}
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
+                      style={{
+                        backgroundColor: 'var(--bronze)',
+                        color: 'var(--charcoal)',
+                        fontFamily: 'var(--font-serif)',
+                        boxShadow: '0 2px 8px rgba(212,163,115,0.25)',
+                      }}
+                    >
+                      1
+                    </div>
+                    <span className="text-xs font-semibold tracking-wide" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Write</span>
+                  </div>
+                  {/* Connector — elegant warm line */}
+                  <div className="flex-1 max-w-[3rem]">
+                    <div
+                      className="h-0.5 rounded-full"
+                      style={{
+                        background: 'linear-gradient(to right, rgba(212,163,115,0.7), rgba(212,163,115,0.3))',
+                      }}
+                    />
+                  </div>
+                  {/* Step 2 — inactive */}
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
+                      style={{
+                        backgroundColor: 'rgba(212,163,115,0.10)',
+                        color: 'rgba(43,43,43,0.55)',
+                        fontFamily: 'var(--font-serif)',
+                        border: '1.5px solid rgba(212,163,115,0.25)',
+                      }}
+                    >
+                      2
+                    </div>
+                    <span className="text-xs tracking-wide" style={{ color: 'rgba(43,43,43,0.55)', fontFamily: 'var(--font-sans)' }}>Enrich &amp; Save</span>
+                  </div>
+                </div>
               </div>
 
             <form onSubmit={handleSubmit} className="relative">
@@ -989,7 +973,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <button
                       type="button"
                       onClick={() => { setPrompt(''); setUseCustomPrompt(false); setCustomPrompt(''); }}
-                      className="focus-ring text-xs underline-offset-2 hover:underline transition-all"
+                      className="text-xs underline-offset-2 hover:underline transition-all"
                       style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}
                     >
                       Clear prompt
@@ -1002,7 +986,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       value={promptLoadState === 'ready' || useCustomPrompt ? promptSelectValue : NO_PROMPT_VALUE}
                       onChange={(e) => handlePromptSelectChange(e.target.value, { customPrompt, setCustomPrompt, setPrompt, setUseCustomPrompt })}
                       disabled={promptLoadState === 'loading'}
-                      className="focus-ring w-full appearance-none rounded-[1.15rem] border px-4 py-3.5 pr-12 text-sm md:text-[0.95rem] transition-colors outline-none"
+                      className="w-full appearance-none rounded-[1.15rem] border px-4 py-3.5 pr-12 text-sm md:text-[0.95rem] transition-colors outline-none"
                       style={{
                         borderColor: 'rgba(212,163,115,0.20)',
                         backgroundColor: 'rgba(255,253,246,0.70)',
@@ -1095,7 +1079,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <button
                           type="button"
                           onClick={() => void loadPromptGroups()}
-                          className="focus-ring mt-3 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium"
+                          className="mt-3 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium"
                           style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
                         >
                           Retry prompts
@@ -1143,15 +1127,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       color: rgba(80, 75, 65, 0.80);
                       font-style: italic;
                     }
-                    /* Keyboard focus states — not shown for mouse users */
-                    .focus-ring:focus-visible {
-                      outline: 2px solid rgba(212,163,115,0.6);
-                      outline-offset: 2px;
-                    }
-                    button.focus-ring:focus-visible,
-                    a.focus-ring:focus-visible {
-                      box-shadow: 0 0 0 3px rgba(212,163,115,0.25) !important;
-                    }
                   `}</style>
                   <Textarea
                     autoFocus
@@ -1173,86 +1148,51 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     }}
                   />
                   {/* Autosave status — single, clean indicator above the textarea */}
-                  <div className="mt-3 flex flex-col gap-3 px-1">
-                    <div className="flex items-center justify-between gap-3">
-                      {saveState === 'saving' && wordCount > 0 && (
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
-                          <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Saving...</p>
-                        </div>
-                      )}
-                      {saveState === 'saved' && wordCount > 0 && (
-                        <div className="flex items-center gap-1.5">
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
-                            <path d="M20 6L9 17l-5-5"/>
-                          </svg>
-                          <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Saved</p>
-                        </div>
-                      )}
-                      {(saveState === 'idle' || wordCount === 0) && (
-                        <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
-                      )}
-                      {wordCount > 0 && (
-                        <div
-                          className="inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-xs transition-all duration-300"
-                          style={{
-                            backgroundColor: 'rgba(212,163,115,0.16)',
-                            boxShadow: '0 2px 12px rgba(212,163,115,0.15)',
-                            border: '1px solid rgba(212,163,115,0.30)',
-                          }}
-                        >
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                          </svg>
-                          <span className="font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', fontSize: '0.8rem', letterSpacing: '-0.01em' }}>
-                            {wordCount.toLocaleString()}
-                          </span>
-                          <span style={{ color: '#7A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.72rem' }}>words</span>
-                          {wordCount >= 20 && (
-                            <>
-                              <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
-                              <span style={{ color: '#7A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.72rem' }}>
-                                {Math.max(1, Math.round(wordCount / 200))} min
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    <div
-                      className="rounded-[1.15rem] border px-4 py-3.5"
-                      style={{
-                        backgroundColor: writingStage.tone === 'ready'
-                          ? 'rgba(204,213,174,0.18)'
-                          : writingStage.tone === 'steady'
-                            ? 'rgba(250,237,205,0.52)'
-                            : 'rgba(255,253,246,0.88)',
-                        borderColor: writingStage.tone === 'ready'
-                          ? 'rgba(160,177,122,0.32)'
-                          : 'rgba(212,163,115,0.18)',
-                        boxShadow: '0 8px 24px rgba(212,163,115,0.07)',
-                      }}
-                    >
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span
-                          className="inline-flex items-center rounded-full px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em]"
-                          style={{
-                            backgroundColor: writingStage.tone === 'ready' ? 'rgba(160,177,122,0.18)' : 'rgba(212,163,115,0.14)',
-                            color: writingStage.tone === 'ready' ? '#53613A' : '#8A6A4A',
-                            fontFamily: 'var(--font-sans)',
-                          }}
-                        >
-                          {writingStage.label}
-                        </span>
-                        <p className="text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                          {writingStage.title}
-                        </p>
+                  <div className="flex items-center justify-between mt-3 px-1">
+                    {saveState === 'saving' && wordCount > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
+                        <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Saving...</p>
                       </div>
-                      <p className="mt-2 text-sm leading-6" style={{ color: '#5A5145', fontFamily: 'var(--font-sans)' }}>
-                        {writingStage.description}
-                      </p>
-                    </div>
+                    )}
+                    {saveState === 'saved' && wordCount > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                          <path d="M20 6L9 17l-5-5"/>
+                        </svg>
+                        <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Saved</p>
+                      </div>
+                    )}
+                    {(saveState === 'idle' || wordCount === 0) && (
+                      <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
+                    )}
+                    {/* Word count pill — right-aligned */}
+                    {wordCount > 0 && (
+                      <div
+                        className="inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs transition-all duration-300"
+                        style={{
+                          backgroundColor: 'rgba(212,163,115,0.18)',
+                          boxShadow: '0 2px 12px rgba(212,163,115,0.20)',
+                          border: '1px solid rgba(212,163,115,0.35)',
+                        }}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                        </svg>
+                        <span className="font-bold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', fontSize: '0.75rem' }}>
+                          {wordCount.toLocaleString()}
+                        </span>
+                        <span style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>{wordCount === 1 ? 'word' : 'words'}</span>
+                        {wordCount >= 20 && (
+                          <>
+                            <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.30)' }} />
+                            <span style={{ color: '#5A5A4A', fontFamily: 'var(--font-sans)', fontSize: '0.7rem' }}>
+                              ~{Math.max(1, Math.round(wordCount / 200))} min
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </section>
@@ -1301,8 +1241,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               </p>
                             </div>
                             <label
-                              className="focus-ring inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200 hover:brightness-110 active:scale-[0.98] shadow-md"
-                              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', boxShadow: '0 4px 16px rgba(212,163,115,0.3)' }}
+                              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200 hover:brightness-110 active:scale-[0.98] shadow-md"
+                              style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', fontFamily: 'var(--font-sans)', boxShadow: '0 4px 16px rgba(43,43,43,0.2)' }}
                             >
                               <input
                                 type="file"
@@ -1323,21 +1263,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                             </label>
                           </div>
 
-                          {photoItems.length === 0 ? (
-                            <DropZone onFilesSelected={handlePhotoFiles} className="mt-2" />
-                          ) : (
-                            <div
-                              className="mt-3 rounded-[1rem] border px-4 py-3"
-                              style={{
-                                backgroundColor: 'rgba(255,253,246,0.78)',
-                                borderColor: 'rgba(212,163,115,0.16)',
-                              }}
-                            >
-                              <p className="text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
-                                Your photos are already attached. Use <span style={{ color: 'var(--charcoal)', fontWeight: 600 }}>Add photos</span> to tuck in more without reopening a large drop area.
-                              </p>
-                            </div>
-                          )}
+                          <DropZone onFilesSelected={handlePhotoFiles} className="mt-2" />
 
                           {mediaErrors.length > 0 && (
                             <div
@@ -1361,11 +1287,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                                   {photoItems.length} {photoItems.length === 1 ? 'photo' : 'photos'} attached
                                 </p>
                                 <p className="text-xs" style={{ color: hasErroredPhotos ? '#9A5A4A' : '#8E8478', fontFamily: 'var(--font-sans)' }}>
-                                  {hasUploadingPhotos
-                                    ? `${uploadedPhotoCount} of ${photoItems.length} photo${photoItems.length === 1 ? '' : 's'} ready — the rest are still uploading.`
-                                    : hasErroredPhotos
-                                      ? 'Retry failed photos or save without them.'
-                                      : 'Remove any photo you do not want to keep.'}
+                                  {hasUploadingPhotos ? 'Finishing uploads…' : hasErroredPhotos ? 'Retry failed uploads or save without them.' : 'Remove any photo you do not want to keep.'}
                                 </p>
                               </div>
                               <ImageGallery
@@ -1395,7 +1317,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
                           <div className="flex flex-wrap gap-3">
                             <label
-                              className="focus-ring inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
+                              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
                               style={{
                                 borderColor: 'rgba(212,163,115,0.24)',
                                 backgroundColor: '#FDFCF5',
@@ -1424,7 +1346,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               type="button"
                               onClick={recorderState === 'recording' ? handleStopRecording : () => void handleStartRecording()}
                               disabled={loading || recorderState === 'requesting' || recorderState === 'processing'}
-                              className="focus-ring inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-70 hover:brightness-105 active:scale-[0.98]"
+                              className="inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-70 hover:brightness-105 active:scale-[0.98]"
                               style={{
                                 backgroundColor: recorderState === 'recording' ? '#8A3F2B' : 'rgba(212,163,115,0.12)',
                                 color: recorderState === 'recording' ? 'var(--cornsilk)' : 'var(--charcoal)',
@@ -1452,27 +1374,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               </div>
                             )}
                           </div>
-
-                          {audioDraft ? (
-                            <div
-                              className="mt-4 rounded-[1rem] border px-4 py-3"
-                              style={{
-                                backgroundColor: 'rgba(255,253,246,0.78)',
-                                borderColor: 'rgba(212,163,115,0.16)',
-                              }}
-                            >
-                              <p className="text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
-                                Audio is already staged for this memory. Use <span style={{ color: 'var(--charcoal)', fontWeight: 600 }}>Add audio file</span> or record again if you want to replace it.
-                              </p>
-                            </div>
-                          ) : (
-                            <div className="mt-4">
-                              <DropZone
-                                onFilesSelected={(files) => handleAudioFileSelection(files)}
-                                accept="audio/*"
-                              />
-                            </div>
-                          )}
 
                           <p className="mt-3 text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
                             Audio files up to 16MB. Recorded clips upload when you save.
@@ -1525,11 +1426,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                                   Remove
                                 </button>
                               </div>
-                              <PremiumAudioPlayer
-                                key={audioDraft.previewUrl}
-                                src={audioDraft.previewUrl}
-                                loadingText={audioDraft.sourceFile ? 'Preparing your voice note…' : 'Loading saved voice note…'}
-                              />
+                              <audio src={audioDraft.previewUrl} controls className="h-10 w-full" />
                             </div>
                           )}
                         </div>
@@ -1586,108 +1483,70 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   boxShadow: '0 -8px 32px rgba(212,163,115,0.08)',
                 }}
               >
-                <div className="flex flex-col gap-3">
-                  <div
-                    className="rounded-[1.2rem] border px-4 py-3"
-                    style={{
-                      background: 'linear-gradient(180deg, rgba(255,253,246,0.94) 0%, rgba(248,239,224,0.88) 100%)',
-                      borderColor: 'rgba(212,163,115,0.18)',
-                    }}
-                  >
-                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                      <div>
-                        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8A6A4A', fontFamily: 'var(--font-sans)' }}>
-                          Ready to save
-                        </p>
-                        <p className="mt-1 text-sm leading-6" style={{ color: '#4A3A2B', fontFamily: 'var(--font-sans)' }}>
-                          {saveReadinessMessage}
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        <ReadinessPill label={answer.trim() ? 'Story written' : 'Story needed'} tone={answer.trim() ? 'ready' : 'waiting'} />
-                        <ReadinessPill
-                          label={hasUploadingPhotos ? `${uploadingPhotoCount} photo${uploadingPhotoCount === 1 ? '' : 's'} uploading` : attachedPhotoCount > 0 ? `${attachedPhotoCount} photo${attachedPhotoCount === 1 ? '' : 's'} attached` : 'No photos added'}
-                          tone={hasUploadingPhotos ? 'waiting' : hasErroredPhotos ? 'warning' : attachedPhotoCount > 0 ? 'ready' : 'neutral'}
-                        />
-                        <ReadinessPill
-                          label={hasBlockingRecorderState ? 'Recording in progress' : audioDraft?.sourceFile ? 'Voice note queued' : currentAudioUrl ? 'Voice note attached' : 'No voice note'}
-                          tone={hasBlockingRecorderState ? 'waiting' : (audioDraft?.sourceFile || currentAudioUrl) ? 'ready' : 'neutral'}
-                        />
-                      </div>
-                    </div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: '#4A4A3A' }}>
+                    {saveState === 'saving' && answer.trim().length > 0 && (
+                      <>
+                        <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
+                        <span>Saving draft...</span>
+                      </>
+                    )}
+                    {saveState === 'saved' && answer.trim().length > 0 && (
+                      <>
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                        <span>Draft saved</span>
+                      </>
+                    )}
+                    {saveState === 'idle' && (
+                      <span className="text-xs" style={{ color: '#4A4A3A' }}>
+                        Autosaves as you write
+                        {answer.trim().length > 0 && (
+                          <>
+                            {' '}
+                            <kbd className="ml-1.5 inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-[10px]" style={{ borderColor: 'rgba(212,163,115,0.25)', fontFamily: 'var(--font-sans)' }}>⌘S</kbd>
+                          </>
+                        )}
+                      </span>
+                    )}
                   </div>
 
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="hidden sm:flex items-center gap-2 text-xs" style={{ color: '#4A4A3A' }}>
-                      {saveState === 'saving' && answer.trim().length > 0 && (
+                  <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:items-center">
+                    <Link
+                      href={`/books/${id}`}
+                      className="inline-flex h-10 items-center justify-center rounded-full border px-5 text-sm font-medium transition-colors"
+                      style={{ borderColor: 'rgba(212,163,115,0.26)', color: 'var(--charcoal)', backgroundColor: 'rgba(255,253,246,0.9)' }}
+                    >
+                      Cancel
+                    </Link>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitDisabled}
+                      className="h-11 rounded-full px-8 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(196,148,106,0.4)] hover:-translate-y-0.5"
+                      style={{
+                        backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.55)' : 'var(--bronze)',
+                        color: isSubmitDisabled ? 'rgba(43,43,43,0.65)' : 'var(--charcoal)',
+                        boxShadow: isSubmitDisabled ? 'none' : '0 6px 24px rgba(212,163,115,0.3)',
+                      }}
+                      onMouseEnter={e => {
+                        if (!isSubmitDisabled) {
+                          e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.45)';
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (!isSubmitDisabled) {
+                          e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.3)';
+                        }
+                      }}
+                    >
+                      {loading ? (
                         <>
-                          <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.4)' }} />
-                          <span>Saving draft...</span>
+                          <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
+                          Saving...
                         </>
-                      )}
-                      {saveState === 'saved' && answer.trim().length > 0 && (
-                        <>
-                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
-                            <path d="M20 6L9 17l-5-5" />
-                          </svg>
-                          <span>Draft saved</span>
-                        </>
-                      )}
-                      {saveState === 'idle' && (
-                        <span className="text-xs" style={{ color: '#4A4A3A' }}>
-                          Autosaves as you write
-                          {answer.trim().length > 0 && (
-                            <>
-                              {' '}
-                              <kbd className="ml-1.5 inline-flex items-center gap-0.5 rounded-md border px-1.5 py-0.5 text-[10px]" style={{ borderColor: 'rgba(212,163,115,0.25)', fontFamily: 'var(--font-sans)' }}>⌘S</kbd>
-                            </>
-                          )}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:items-center">
-                      <Link
-                        href={`/books/${id}`}
-                        className="focus-ring inline-flex h-10 items-center justify-center rounded-full border px-5 text-sm font-medium transition-colors"
-                        style={{ borderColor: 'rgba(212,163,115,0.26)', color: 'var(--charcoal)', backgroundColor: 'rgba(255,253,246,0.9)' }}
-                      >
-                        Cancel
-                      </Link>
-                      <Button
-                        type="submit"
-                        disabled={isSubmitDisabled}
-                        className="focus-ring h-11 rounded-full px-8 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(196,148,106,0.4)] hover:-translate-y-0.5"
-                        style={{
-                          backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.55)' : 'var(--bronze)',
-                          color: isSubmitDisabled ? 'rgba(43,43,43,0.65)' : 'var(--charcoal)',
-                          boxShadow: isSubmitDisabled ? 'none' : '0 6px 24px rgba(212,163,115,0.3)',
-                        }}
-                        onMouseEnter={e => {
-                          if (!isSubmitDisabled) {
-                            e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.45)';
-                          }
-                        }}
-                        onMouseLeave={e => {
-                          if (!isSubmitDisabled) {
-                            e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.3)';
-                          }
-                        }}
-                      >
-                        {loading ? (
-                          <>
-                            <div className="w-4 h-4 rounded-full animate-spin mr-2" style={{ border: '2px solid rgba(43,43,43,0.2)', borderTopColor: 'var(--charcoal)' }} />
-                            Saving...
-                          </>
-                        ) : hasUploadingPhotos
-                          ? `Waiting for ${uploadingPhotoCount} photo${uploadingPhotoCount === 1 ? '' : 's'}`
-                          : hasBlockingRecorderState
-                            ? 'Finish recording first'
-                            : memoryId
-                              ? 'Update Memory'
-                              : 'Save Memory'}
-                      </Button>
-                    </div>
+                      ) : hasUploadingPhotos ? 'Uploading photos…' : hasBlockingRecorderState ? 'Finish recording first' : memoryId ? 'Update Memory' : 'Save Memory'}
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -1696,166 +1555,142 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             {/* ── Premium save success overlay ── */}
             {saveSuccess && (
               <div
-                className="absolute inset-0 z-30 flex items-center justify-center rounded-[2.25rem] px-5 py-6 md:px-8"
+                className="absolute inset-0 z-30 flex flex-col items-center justify-center rounded-[2.25rem] animate-fade-up"
                 style={{
-                  background: 'linear-gradient(180deg, rgba(45,36,24,0.18) 0%, rgba(45,36,24,0.38) 100%)',
-                  backdropFilter: 'blur(10px)',
-                  animation: 'successBackdropIn 0.28s ease-out both',
+                  background: 'linear-gradient(160deg, rgba(253,252,245,0.97) 0%, rgba(250,237,205,0.94) 100%)',
+                  animation: 'fadeInScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both',
                 }}
               >
                 <style>{`
-                  @keyframes successBackdropIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
+                  @keyframes fadeInScale {
+                    from { opacity: 0; transform: scale(0.92); }
+                    to { opacity: 1; transform: scale(1); }
                   }
-                  @keyframes successCardIn {
-                    from { opacity: 0; transform: translateY(16px) scale(0.98); }
-                    to { opacity: 1; transform: translateY(0) scale(1); }
+                  @keyframes drawCheck {
+                    to { stroke-dashoffset: 0; }
                   }
                   @keyframes popIn {
                     0% { transform: scale(0) rotate(-12deg); opacity: 0; }
-                    60% { transform: scale(1.12) rotate(3deg); }
-                    80% { transform: scale(0.96) rotate(-1deg); }
+                    60% { transform: scale(1.15) rotate(3deg); }
+                    80% { transform: scale(0.95) rotate(-1deg); }
                     100% { transform: scale(1) rotate(0deg); opacity: 1; }
                   }
+                  @keyframes shimmer {
+                    0% { opacity: 0.4; }
+                    50% { opacity: 0.8; }
+                    100% { opacity: 0.4; }
+                  }
                   .check-circle {
-                    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s both;
+                    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+                  }
+                  .check-path {
+                    stroke-dasharray: 30;
+                    stroke-dashoffset: 30;
+                    animation: drawCheck 0.4s ease-out 0.45s forwards;
+                  }
+                  .success-text {
+                    animation: fadeInScale 0.3s ease-out 0.55s both;
+                  }
+                  .success-sub {
+                    animation: fadeInScale 0.3s ease-out 0.7s both;
                   }
                 `}</style>
 
+                {/* Animated success circle */}
                 <div
-                  className="w-full max-w-[32rem] overflow-hidden rounded-[2rem] border"
+                  className="check-circle w-20 h-20 rounded-full flex items-center justify-center mb-6"
                   style={{
-                    background: 'linear-gradient(180deg, rgba(255,252,244,0.98) 0%, rgba(253,248,237,0.98) 100%)',
-                    borderColor: 'rgba(212,163,115,0.22)',
-                    boxShadow: '0 30px 80px rgba(43,43,43,0.20), 0 10px 30px rgba(43,43,43,0.10), inset 0 1px 0 rgba(255,255,255,0.85)',
-                    animation: 'successCardIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) both',
+                    background: 'linear-gradient(135deg, var(--tea-green) 0%, #8BAF6A 100%)',
+                    boxShadow: '0 12px 40px rgba(95,102,80,0.35), 0 4px 12px rgba(95,102,80,0.2), inset 0 1px 0 rgba(255,255,255,0.3)',
                   }}
                 >
-                  <div className="relative overflow-hidden px-6 py-6 md:px-8 md:py-7">
-                    <div
-                      className="absolute inset-x-0 top-0 h-24"
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                    <path
+                      className="check-path"
+                      d="M5 12l5 5L19 7"
+                      stroke="#FDFCF5"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+
+                {/* Success text */}
+                <p
+                  className="success-text text-2xl font-medium mb-2"
+                  style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
+                >
+                  {memoryId ? 'Memory updated' : 'Memory saved'}
+                </p>
+                <p
+                  className="success-sub text-sm"
+                  style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}
+                >
+                  See it in your book, or keep building.
+                </p>
+
+                <div className="success-sub mt-8 flex flex-col sm:flex-row gap-3 items-center">
+                  {!memoryId && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSaveSuccess(false);
+                        setSaveState('idle');
+                        setAnswer('');
+                        setWordCount(0);
+                        setPrompt('');
+                        setUseCustomPrompt(false);
+                        setCustomPrompt('');
+                        clearDraft();
+                        setAudioDraft(null);
+                        router.refresh();
+                      }}
+                      className="inline-flex items-center gap-2 h-11 rounded-full px-6 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
                       style={{
-                        background: 'linear-gradient(180deg, rgba(204,213,174,0.28) 0%, rgba(204,213,174,0.08) 55%, transparent 100%)',
+                        backgroundColor: 'var(--charcoal)',
+                        color: 'var(--cornsilk)',
+                        fontFamily: 'var(--font-sans)',
+                        boxShadow: '0 4px 20px rgba(43,43,43,0.22)',
+                      }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 5v14M5 12h14"/>
+                      </svg>
+                      Add another
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/books/${id}`)}
+                    className="inline-flex items-center gap-2 h-11 rounded-full px-6 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                    style={{
+                      backgroundColor: 'rgba(212,163,115,0.12)',
+                      color: 'var(--charcoal)',
+                      fontFamily: 'var(--font-sans)',
+                      border: '1px solid rgba(212,163,115,0.22)',
+                    }}
+                  >
+                    View book
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Progress dots */}
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
+                  {[0, 1, 2].map(i => (
+                    <div
+                      key={i}
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{
+                        backgroundColor: 'var(--bronze)',
+                        opacity: 0.4,
+                        animation: `shimmer 1.2s ease-in-out ${i * 0.2}s infinite`,
                       }}
                     />
-                    <div className="relative flex flex-col gap-6">
-                      <div className="flex items-start gap-4">
-                        <div
-                          className="check-circle flex h-16 w-16 shrink-0 items-center justify-center rounded-full"
-                          style={{
-                            background: 'linear-gradient(135deg, #93AA71 0%, #718A53 100%)',
-                            boxShadow: '0 12px 34px rgba(95,102,80,0.24), inset 0 1px 0 rgba(255,255,255,0.38)',
-                          }}
-                        >
-                          <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
-                            <path
-                              d="M5 12l5 5L19 7"
-                              stroke="#FDFCF5"
-                              strokeWidth="2.7"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-
-                        <div className="min-w-0 flex-1 pt-1">
-                          <p
-                            className="mb-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em]"
-                            style={{ color: '#7B6444', fontFamily: 'var(--font-sans)' }}
-                          >
-                            {memoryId ? 'Updated in your keepsake' : 'Saved to your keepsake'}
-                          </p>
-                          <h2
-                            className="text-[1.8rem] leading-[1.05] font-medium"
-                            style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}
-                          >
-                            {memoryId ? 'Your memory feels polished now.' : 'That memory is safely tucked in.'}
-                          </h2>
-                          <p
-                            className="mt-2 max-w-[28rem] text-sm leading-6"
-                            style={{ color: '#4F4231', fontFamily: 'var(--font-sans)' }}
-                          >
-                            {memoryId ? 'You can head back to the book or keep refining the details while the moment is fresh.' : 'Take a quick look in the book, or keep the storytelling flow going with another memory.'}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div
-                        className="grid gap-3 rounded-[1.4rem] border px-4 py-4 md:grid-cols-[1.4fr_1fr]"
-                        style={{
-                          backgroundColor: 'rgba(255,255,255,0.54)',
-                          borderColor: 'rgba(212,163,115,0.18)',
-                        }}
-                      >
-                        <div className="min-w-0">
-                          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8A6A4A', fontFamily: 'var(--font-sans)' }}>
-                            Memory preview
-                          </p>
-                          <p className="mt-2 text-sm leading-6" style={{ color: '#3E3224' }}>
-                            “{successExcerpt || 'Your words are ready in the book.'}”
-                          </p>
-                          {savedPromptLabel && (
-                            <p className="mt-3 text-[0.8rem] leading-5" style={{ color: '#6A5843', fontFamily: 'var(--font-sans)' }}>
-                              Prompt: {savedPromptLabel}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex flex-wrap content-start gap-2 md:justify-end">
-                          <SuccessMetaPill label={`${wordCount} words`} />
-                          <SuccessMetaPill label={attachedPhotoCount === 1 ? '1 photo' : `${attachedPhotoCount} photos`} />
-                          <SuccessMetaPill label={hasAttachedAudio ? 'Voice note attached' : 'No voice note'} />
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSaveSuccess(false);
-                            setSaveState('idle');
-                            if (memoryId) {
-                              router.refresh();
-                              return;
-                            }
-                            setAnswer('');
-                            setWordCount(0);
-                            setPrompt('');
-                            setUseCustomPrompt(false);
-                            setCustomPrompt('');
-                            clearDraft();
-                            setAudioDraft(null);
-                            router.refresh();
-                          }}
-                          className="focus-ring inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200 hover:bg-white active:scale-[0.98]"
-                          style={{
-                            border: '1px solid rgba(212,163,115,0.22)',
-                            color: 'var(--charcoal)',
-                            backgroundColor: 'rgba(255,255,255,0.72)',
-                            fontFamily: 'var(--font-sans)',
-                          }}
-                        >
-                          {memoryId ? 'Keep refining' : 'Add another memory'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => router.push(`/books/${id}`)}
-                          className="focus-ring inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition-all duration-200 hover:translate-y-[-1px] active:scale-[0.98]"
-                          style={{
-                            backgroundColor: 'var(--bronze)',
-                            color: 'var(--cornsilk)',
-                            fontFamily: 'var(--font-sans)',
-                            boxShadow: '0 12px 28px rgba(124, 91, 54, 0.24)',
-                          }}
-                        >
-                          View book
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -1863,59 +1698,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         </article>
       </main>
     </div>
-  );
-}
-
-function SuccessMetaPill({ label }: { label: string }) {
-  return (
-    <span
-      className="inline-flex items-center rounded-full px-3 py-1.5 text-[0.72rem] font-medium"
-      style={{
-        backgroundColor: 'rgba(212,163,115,0.12)',
-        color: '#4A3A28',
-        border: '1px solid rgba(212,163,115,0.16)',
-        fontFamily: 'var(--font-sans)',
-      }}
-    >
-      {label}
-    </span>
-  );
-}
-
-function ReadinessPill({ label, tone }: { label: string; tone: 'ready' | 'waiting' | 'warning' | 'neutral' }) {
-  const styles = {
-    ready: {
-      backgroundColor: 'rgba(204,213,174,0.32)',
-      borderColor: 'rgba(133,153,87,0.22)',
-      color: '#3F4B25',
-    },
-    waiting: {
-      backgroundColor: 'rgba(212,163,115,0.16)',
-      borderColor: 'rgba(212,163,115,0.24)',
-      color: '#6D4E2D',
-    },
-    warning: {
-      backgroundColor: 'rgba(185,28,28,0.08)',
-      borderColor: 'rgba(185,28,28,0.18)',
-      color: '#8A3F2B',
-    },
-    neutral: {
-      backgroundColor: 'rgba(255,255,255,0.65)',
-      borderColor: 'rgba(212,163,115,0.16)',
-      color: '#5E5142',
-    },
-  }[tone];
-
-  return (
-    <span
-      className="inline-flex items-center rounded-full border px-3 py-1.5 text-[0.72rem] font-medium"
-      style={{
-        ...styles,
-        fontFamily: 'var(--font-sans)',
-      }}
-    >
-      {label}
-    </span>
   );
 }
 
@@ -1978,11 +1760,7 @@ function handlePromptSelectChange(
 
 function getImageValidationError(file: File): string | null {
   if (!file.type.startsWith('image/')) {
-    if (file.type.startsWith('audio/')) {
-      return 'This is an audio file — add it in Voice note instead.';
-    }
-
-    return 'Please choose an image file for Photo attachments.';
+    return 'Please choose an image file.';
   }
 
   if (file.size > MAX_IMAGE_BYTES) {
@@ -1994,11 +1772,7 @@ function getImageValidationError(file: File): string | null {
 
 function getAudioValidationError(file: File): string | null {
   if (!file.type.startsWith('audio/')) {
-    if (file.type.startsWith('image/')) {
-      return 'This looks like a photo — add it in Photo attachments instead.';
-    }
-
-    return 'Please choose an audio file for Voice note.';
+    return 'Please choose an audio file.';
   }
 
   if (file.size > MAX_AUDIO_BYTES) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -9,10 +9,9 @@ import { Dropdown, DropdownItem, DropdownDivider } from '@/components/ui/dropdow
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
 import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 import { MobileNav } from '@/components/ui/mobile-nav';
-import { BookCover } from '@/components/ui/book-cover';
-import { getDisplayBookTitle, titleWasSanitized } from '@/lib/display-book-title';
 
 interface Book {
   id: number;
@@ -24,25 +23,8 @@ interface Book {
   updated_at: string;
   role: string;
   owner_name: string;
-  latest_memory_excerpt?: string | null;
-  latest_contributor_name?: string | null;
-  preview_photo_url?: string | null;
   _count?: { memories: number };
   contributors?: {id: number, name: string, profile_image_url: string, google_id: string}[];
-}
-
-function shortenMemoryExcerpt(excerpt?: string | null) {
-  if (!excerpt) return null;
-  const compact = excerpt.replace(/\s+/g, ' ').trim();
-  if (!compact) return null;
-  return compact.length > 110 ? `${compact.slice(0, 107).trimEnd()}…` : compact;
-}
-
-function shortenShelfNote(copy?: string | null, maxLength = 88) {
-  if (!copy) return null;
-  const compact = copy.replace(/\s+/g, ' ').trim();
-  if (!compact) return null;
-  return compact.length > maxLength ? `${compact.slice(0, maxLength - 1).trimEnd()}…` : compact;
 }
 
 interface User {
@@ -52,8 +34,6 @@ interface User {
   profileImageUrl?: string | null;
   googleId?: string | null;
 }
-
-type ShelfFilter = 'all' | 'active' | 'drafts' | 'shared';
 
 const BOOK_COLORS = [
   'var(--bronze)',
@@ -96,7 +76,7 @@ function getPlanBadgeStyles(plan: string) {
 
   if (normalizedPlan === 'plus') {
     return {
-      backgroundColor: 'rgba(45,74,53,0.90)',
+      backgroundColor: '#2D4A35',
       color: '#E8F0E5',
     };
   }
@@ -110,7 +90,7 @@ function getPlanBadgeStyles(plan: string) {
 
   return {
     backgroundColor: 'rgba(212,163,115,0.25)',
-    color: 'var(--charcoal)',
+    color: '#4A4A3A',
   };
 }
 
@@ -129,12 +109,10 @@ export default function Dashboard() {
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
   const [showFab, setShowFab] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [shelfFilter, setShelfFilter] = useState<ShelfFilter>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const createTitleInputRef = useRef<HTMLInputElement | null>(null);
 
-  const BOOKS_PER_PAGE = 18;
+  const BOOKS_PER_PAGE = 12;
 
   useEffect(() => {
     async function fetchUserAndBooks() {
@@ -180,36 +158,23 @@ export default function Dashboard() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const resetCreateBookDraft = () => {
-    setShowCreate(false);
-    setNewTitle('');
-    setNewDesc('');
-    setNewPlan('premium');
-    setCreateError('');
-  };
-
-  // Close modal on Escape, focus the first field, and keep the page from scrolling underneath.
+  // Close modal on Escape
   useEffect(() => {
     if (!showCreate) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const focusTimer = window.setTimeout(() => createTitleInputRef.current?.focus(), 40);
-
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !creating) {
-        resetCreateBookDraft();
+        setShowCreate(false);
+        setCreateError('');
       }
     };
-
     document.addEventListener('keydown', handleKey);
-
-    return () => {
-      window.clearTimeout(focusTimer);
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener('keydown', handleKey);
-    };
+    return () => document.removeEventListener('keydown', handleKey);
   }, [showCreate, creating]);
+
+  // Reset to page 1 whenever the filtered list changes — must be before early return
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, sortOrder]);
 
   const createBook = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -227,7 +192,9 @@ export default function Dashboard() {
       });
       if (res.ok) {
         const data = await res.json();
-        resetCreateBookDraft();
+        setNewTitle(''); setNewDesc('');
+        setNewPlan('free');
+        setShowCreate(false);
         router.push(`/books/${data.book.id}`);
       } else {
         const err = await res.json().catch(() => ({}));
@@ -243,90 +210,25 @@ export default function Dashboard() {
 
   if (loading || loggedIn === null) {
     return (
-      <div className="min-h-screen" role="status" aria-label="Loading dashboard…" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
-        <header className="sticky top-0 z-20 h-12 md:h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
-          <div className="flex items-center justify-between w-full max-w-6xl mx-auto">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
-              <div className="hidden sm:block h-4 w-28 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
-            </div>
-            <div className="hidden md:block h-4 w-24 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
-            <div className="h-9 w-9 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
+        <div className="w-full max-w-3xl px-6">
+          {/* Auth loading skeleton — warm shimmer that matches dashboard layout */}
+          <div className="mb-10">
+            <div className="h-9 w-56 rounded-xl mb-2 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.22)' }} />
+            <div className="h-4 w-40 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
           </div>
-        </header>
-
-        <main className="px-6 md:px-10 pt-5 md:pt-8 pb-10 max-w-6xl mx-auto w-full">
-          <div className="mb-5 md:mb-8 relative">
-            <div
-              className="absolute -top-2 left-0 right-0 h-px rounded-full overflow-hidden"
-              style={{ background: 'linear-gradient(to right, transparent 0%, rgba(212,163,115,0.25) 20%, rgba(212,163,115,0.25) 80%, transparent 100%)' }}
-            />
-            <div className="flex items-end justify-between gap-4">
-              <div>
-                <div className="h-10 w-56 rounded-2xl mb-2 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
-                <div className="h-4 w-44 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
-              </div>
-              <div className="hidden sm:block h-11 w-32 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-3">
-              <div className="flex-1 h-12 rounded-2xl skeleton-pulse" style={{ backgroundColor: 'rgba(255,255,255,0.55)', border: '1px solid rgba(212,163,115,0.12)' }} />
-              <div className="h-12 w-40 rounded-2xl skeleton-pulse" style={{ backgroundColor: 'rgba(255,255,255,0.55)', border: '1px solid rgba(212,163,115,0.12)' }} />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 xl:gap-7">
-            {Array.from({ length: 6 }, (_, i) => (
-              <div
-                key={i}
-                className="rounded-[30px] overflow-hidden min-h-[228px] md:min-h-[252px]"
-                style={{
-                  background: 'linear-gradient(180deg, rgba(255,253,247,0.98) 0%, rgba(250,244,233,0.98) 100%)',
-                  boxShadow: '0 6px 16px rgba(212,163,115,0.08), 0 20px 44px rgba(43,43,43,0.05)',
-                  border: '1px solid rgba(212,163,115,0.16)',
-                }}
-              >
-                <div className="p-4 md:p-6 h-full flex flex-col">
-                  <div className="flex items-start justify-between gap-3 mb-4">
-                    <div className="flex gap-2">
-                      <div className="h-6 w-18 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
-                      <div className="h-6 w-20 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-3 w-12 rounded-full skeleton-pulse ml-auto" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
-                      <div className="h-3 w-14 rounded-full skeleton-pulse ml-auto" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3 md:gap-4 flex-1 min-h-0">
-                    <div className="shrink-0 rounded-[20px] p-2 md:rounded-[22px] md:p-2.5" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(250,237,205,0.46) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.82), 0 10px 24px rgba(212,163,115,0.12)' }}>
-                      <div className="w-[84px] h-[118px] rounded-[16px] skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
-                    </div>
-                    <div className="flex-1 min-w-0 flex flex-col gap-2.5 pt-1">
-                      <div className="h-5 w-4/5 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
-                      <div className="h-5 w-3/5 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
-                      <div className="h-4 w-full rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }} />
-                      <div className="h-4 w-11/12 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }} />
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        <div className="h-7 w-24 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
-                        <div className="h-7 w-28 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 md:mt-5 rounded-[20px] md:rounded-[22px] px-4 py-3 flex items-center justify-between gap-3" style={{ background: 'linear-gradient(180deg, rgba(255,250,240,0.96) 0%, rgba(248,239,224,0.96) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.75), 0 8px 18px rgba(212,163,115,0.12)', border: '1px solid rgba(212,163,115,0.18)' }}>
-                    <div className="min-w-0 flex-1">
-                      <div className="h-3 w-28 rounded-full skeleton-pulse mb-2" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
-                      <div className="h-4 w-full rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }} />
-                    </div>
-                    <div className="h-8 w-24 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.16)' }} />
-                  </div>
+          <div className="space-y-4">
+            {[1,2,3].map(i => (
+              <div key={i} className="rounded-2xl p-6 flex items-center gap-5" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.12)' }}>
+                <div className="w-12 h-18 rounded-xl shrink-0 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
+                <div className="flex-1 space-y-2.5">
+                  <div className="h-5 w-48 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                  <div className="h-3 w-32 rounded-md skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
                 </div>
               </div>
             ))}
           </div>
-        </main>
-
+        </div>
         <style>{`
           @keyframes skeleton-shimmer {
             0% { opacity: 0.45; }
@@ -339,100 +241,36 @@ export default function Dashboard() {
     );
   }
 
-  // Filter books by search query, then let the shelf view narrow the moment that needs attention.
-  const searchFilteredBooks = searchQuery.trim()
+  // Filter books by search query
+  const filteredBooks = searchQuery.trim()
     ? books.filter(book =>
-        getDisplayBookTitle(book.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
         book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (book.description && book.description.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     : books;
 
-  const shelfCounts = {
-    all: searchFilteredBooks.length,
-    active: searchFilteredBooks.filter((book) => (book._count?.memories ?? 0) > 0).length,
-    drafts: searchFilteredBooks.filter((book) => (book._count?.memories ?? 0) === 0).length,
-    shared: searchFilteredBooks.filter((book) => (book.contributors?.length ?? 0) > 1).length,
-  };
-
-  const filteredBooks = searchFilteredBooks.filter((book) => {
-    if (shelfFilter === 'active') return (book._count?.memories ?? 0) > 0;
-    if (shelfFilter === 'drafts') return (book._count?.memories ?? 0) === 0;
-    if (shelfFilter === 'shared') return (book.contributors?.length ?? 0) > 1;
-    return true;
-  });
-
-  const sortedBooks = filteredBooks
+  const totalPages = Math.max(1, Math.ceil(filteredBooks.length / BOOKS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedBooks = filteredBooks
     .slice()
     .sort((a, b) => {
       if (sortOrder === 'newest') return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
       if (sortOrder === 'oldest') return new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
-      return getDisplayBookTitle(a.title).localeCompare(getDisplayBookTitle(b.title));
-    });
-
-  const activeBooks = sortedBooks.filter((book) => (book._count?.memories ?? 0) > 0);
-  const draftBooks = sortedBooks.filter((book) => (book._count?.memories ?? 0) === 0);
-  const featuredBook = activeBooks[0] ?? sortedBooks[0] ?? null;
-  const featuredQueue = featuredBook
-    ? [
-        ...activeBooks.filter((book) => book.id !== featuredBook.id),
-        ...draftBooks.filter((book) => book.id !== featuredBook.id),
-      ].slice(0, 3)
-    : [];
-
-  const totalPages = Math.max(1, Math.ceil(sortedBooks.length / BOOKS_PER_PAGE));
-  const safePage = Math.min(currentPage, totalPages);
-  const paginatedBooks = sortedBooks.slice((safePage - 1) * BOOKS_PER_PAGE, safePage * BOOKS_PER_PAGE);
-  const shelfFilterMeta: Record<ShelfFilter, { label: string; empty: string; summary: string; collection: string }> = {
-    all: {
-      label: 'All books',
-      empty: 'No books match this search yet.',
-      summary: 'A full shelf with every keepsake and draft in one place.',
-      collection: 'your full shelf',
-    },
-    active: {
-      label: 'Continue writing',
-      empty: 'Nothing has memories yet — start a draft and this lane will light up.',
-      summary: 'Books with real stories inside, ready to pick back up.',
-      collection: 'your in-progress shelf',
-    },
-    drafts: {
-      label: 'Needs first page',
-      empty: 'Every draft already has a first memory — a nice problem to have.',
-      summary: 'Quietly titled books still waiting for the first scene.',
-      collection: 'your first-page shelf',
-    },
-    shared: {
-      label: 'Family voices',
-      empty: 'No shared keepsakes in this view yet.',
-      summary: 'Books that already carry more than one family perspective.',
-      collection: 'your shared shelf',
-    },
-  };
-
-  const filteredLabel = shelfFilterMeta[shelfFilter].collection;
-  const resultsLabel = filteredBooks.length === 1 ? 'book' : 'books';
-  const searchLabel = searchQuery.trim();
-  const libraryStatus = filteredBooks.length === 0
-    ? shelfFilterMeta[shelfFilter].empty
-    : `${filteredBooks.length} ${resultsLabel} on ${filteredLabel}${searchLabel ? ` for “${searchLabel}”` : ''}${totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ''}`;
-  const shelfSummaryCta = filteredBooks.length > 0
-    ? `${filteredBooks.length} ${filteredBooks.length === 1 ? 'keepsake' : 'keepsakes'} ready to revisit`
-    : searchLabel
-      ? 'Try a different title, person, or keyword'
-      : 'Start a new book to begin this shelf';
+      return a.title.localeCompare(b.title);
+    })
+    .slice((safePage - 1) * BOOKS_PER_PAGE, safePage * BOOKS_PER_PAGE);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
       {/* ── TOP NAV ── */}
-      <header className="sticky top-0 z-20 h-12 md:h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
-        <div className="flex items-center justify-between w-full max-w-6xl mx-auto">
+      <header className="sticky top-0 z-20 h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
+        <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
           {/* Left: Logo */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center transition-all duration-200 group-hover:scale-105" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
-                <svg width="18" height="18" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 group-hover:scale-105" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <svg width="18" height="18" viewBox="0 0 22 22" fill="none" style={{ color: '#8A6A4A' }}>
                   <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
                   <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
                 </svg>
@@ -452,7 +290,7 @@ export default function Dashboard() {
             <Dropdown
               trigger={
                 <div className="flex items-center gap-2 cursor-pointer group">
-                  <Avatar name={user.name} imageUrl={user.profileImageUrl || null} className="w-8 h-8 md:w-9 md:h-9" />
+                  <Avatar name={user.name} imageUrl={user.profileImageUrl || null} className="w-9 h-9" />
                   <svg className="w-3.5 h-3.5 shrink-0 transition-transform duration-200 hidden sm:block" style={{ color: '#6A6A5A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="m6 9 6 6 6-6" />
                   </svg>
@@ -511,10 +349,10 @@ export default function Dashboard() {
       <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} />
 
       {/* ── MAIN CONTENT ── */}
-      <main className="px-6 md:px-10 pt-5 md:pt-8 pb-10 max-w-6xl mx-auto w-full">
+      <main className="px-6 md:px-10 pt-8 pb-10 max-w-5xl mx-auto w-full">
 
         {/* Header row — compact, editorial */}
-        <div className="mb-5 md:mb-8 relative">
+        <div className="mb-8 relative">
           {/* Decorative warm accent — subtle top line */}
           <div
             className="absolute -top-2 left-0 right-0 h-px rounded-full overflow-hidden"
@@ -525,8 +363,10 @@ export default function Dashboard() {
               <h1 className="display-md font-medium tracking-tight mb-0.5" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                 Your Library
               </h1>
-              <p className="text-sm" style={{ color: '#6A6A5A', fontFamily: 'var(--font-serif)' }}>
-                {libraryStatus}
+              <p className="text-sm" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                {filteredBooks.length === 0
+                  ? 'Your stories are waiting to be captured.'
+                  : `${filteredBooks.length} ${filteredBooks.length === 1 ? 'book' : 'books'}${searchQuery ? ` matching "${searchQuery}"` : ''}${totalPages > 1 ? ` · page ${safePage} of ${totalPages}` : ''}`}
               </p>
             </div>
             {books.length > 0 && (
@@ -546,159 +386,33 @@ export default function Dashboard() {
 
           {/* Search + sort — only shown when books exist */}
           {books.length > 0 && (
-            <div className="mt-4 space-y-3">
-              <div className="flex flex-wrap items-center gap-3">
-                {([
-                  {
-                    value: 'all',
-                    kicker: 'Full shelf',
-                    icon: '<path d="M4 6h16M4 10h16M4 14h10"/>',
-                    count: shelfCounts.all,
-                    description: 'See every keepsake at once.',
-                  },
-                  {
-                    value: 'active',
-                    kicker: 'Continue writing',
-                    icon: '<path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
-                    count: shelfCounts.active,
-                    description: 'Jump back into books that already hold memories.',
-                  },
-                  {
-                    value: 'drafts',
-                    kicker: 'Needs first page',
-                    icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/>',
-                    count: shelfCounts.drafts,
-                    description: 'Drafts still waiting for their opening scene.',
-                  },
-                  {
-                    value: 'shared',
-                    kicker: 'Family voices',
-                    icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
-                    count: shelfCounts.shared,
-                    description: 'Books with more than one contributor.',
-                  },
-                ] as const).map(({ value, kicker, count, description, icon }, index) => {
-                  const selected = shelfFilter === value;
-                  return (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => {
-                        setShelfFilter(value);
-                        setCurrentPage(1);
-                      }}
-                      className="group relative rounded-[1.4rem] px-4 py-3.5 text-left transition-all duration-300 hover:-translate-y-0.5 animate-fade-in"
-                      style={{
-                        animationDelay: `${index * 60}ms`,
-                        background: selected
-                          ? 'linear-gradient(160deg, rgba(255,253,246,0.99) 0%, rgba(250,241,222,0.99) 100%)'
-                          : 'rgba(255,252,245,0.88)',
-                        border: selected ? '1.5px solid rgba(212,163,115,0.50)' : '1.5px solid rgba(212,163,115,0.14)',
-                        boxShadow: selected
-                          ? '0 16px 40px rgba(212,163,115,0.16), 0 4px 12px rgba(212,163,115,0.08), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 0 0 1px rgba(212,163,115,0.04)'
-                          : '0 2px 8px rgba(212,163,115,0.05), inset 0 1px 0 rgba(255,255,255,0.6)',
-                        minWidth: '13rem',
-                      }}
-                      aria-pressed={selected}
-                    >
-                      {/* Gold accent line on active - like gilt edge of a book */}
-                      {selected && (
-                        <div className="absolute left-0 right-0 top-0 h-0.5 rounded-t-[1.4rem]" style={{ background: 'linear-gradient(90deg, rgba(212,163,115,0.0) 0%, rgba(212,163,115,0.75) 20%, rgba(212,163,115,0.55) 80%, rgba(212,163,115,0.0) 100%)' }} />
-                      )}
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 shrink-0"
-                            style={{
-                              backgroundColor: selected ? 'rgba(212,163,115,0.15)' : 'rgba(212,163,115,0.06)',
-                              transform: selected ? 'scale(1.08)' : 'none',
-                              boxShadow: selected ? 'inset 0 1px 0 rgba(255,255,255,0.8)' : 'none',
-                            }}
-                          >
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.2"
-                              style={{ color: selected ? 'var(--charcoal)' : '#8B7055' }}
-                            >
-                              {icon}
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-[0.7rem] font-semibold tracking-[0.16em] uppercase" style={{ color: selected ? 'var(--charcoal)' : '#7A6A50', fontFamily: 'var(--font-serif)' }}>
-                              {kicker}
-                            </p>
-                            <p className="mt-1.5 text-[0.78rem] leading-5" style={{ color: '#4A3A2A', fontFamily: 'var(--font-sans)' }}>
-                              {description}
-                            </p>
-                          </div>
-                        </div>
-                        {/* Elegant count - like a folio number */}
-                        <div className="flex flex-col items-end shrink-0 mt-0.5">
-                          <span 
-                            className="text-[0.7rem] font-semibold tabular-nums tracking-tight" 
-                            style={{ 
-                              color: selected ? 'var(--charcoal)' : '#9A8A70',
-                              fontFamily: 'var(--font-serif)',
-                              opacity: count > 0 ? 1 : 0.4,
-                            }}
-                          >
-                            {count}
-                          </span>
-                          <span className="text-[0.55rem] uppercase tracking-[0.12em] mt-0.5" style={{ color: '#6A5A4A', fontFamily: 'var(--font-sans)' }}>
-                            {count === 1 ? 'vol.' : 'vols.'}
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="rounded-[1.5rem] px-4 py-3.5 flex flex-col gap-2 md:flex-row md:items-center md:justify-between" style={{ background: 'linear-gradient(160deg, rgba(255,253,246,0.95) 0%, rgba(248,240,226,0.95) 100%)', border: '1px solid rgba(212,163,115,0.18)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 4px rgba(212,163,115,0.05)' }}>
-                <p className="text-sm leading-6" style={{ color: '#4A3728', fontFamily: 'var(--font-serif)' }}>
-                  <span className="font-semibold" style={{ color: 'var(--charcoal)' }}>{shelfFilterMeta[shelfFilter].label}</span>
-                  <span style={{ color: '#5A4A3A' }}> — {shelfFilterMeta[shelfFilter].summary}</span>
-                </p>
-                <p className="text-[0.7rem] uppercase tracking-[0.14em] font-medium" style={{ color: '#5A4A3A', fontFamily: 'var(--font-serif)' }}>
-                  {shelfSummaryCta}
-                </p>
-              </div>
-
-            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-              <div className="relative flex-1">
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'var(--bronze)' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4">
+              <div className="relative flex-1" style={{
+                  borderBottom: searchQuery ? '2px solid rgba(212,163,115,0.5)' : '2px solid rgba(212,163,115,0.18)',
+                  transition: 'border-color 0.3s ease',
+                }}>
+                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--bronze)' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search your books..."
-                  className="w-full h-11 pl-11 pr-10 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
+                  className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
                   style={{
                     backgroundColor: 'rgba(255,253,246,0.92)',
                     border: '1.5px solid rgba(212,163,115,0.30)',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: '0 1px 4px rgba(212,163,115,0.06)',
                   }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.65)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.08), 0 2px 12px rgba(212,163,115,0.08)'; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.30)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(212,163,115,0.06)'; }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.65)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.08), 0 2px 8px rgba(212,163,115,0.06)'; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.30)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.color = 'var(--charcoal)'; }}
                 />
                 {searchQuery && (
                   <button
                     type="button"
-                    onClick={() => {
-                      setSearchQuery('');
-                      setCurrentPage(1);
-                    }}
+                    onClick={() => setSearchQuery('')}
                     className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-full transition-opacity hover:opacity-70"
                     style={{ color: '#7A7A6A', backgroundColor: 'rgba(212,163,115,0.1)' }}
                     aria-label="Clear search"
@@ -710,10 +424,7 @@ export default function Dashboard() {
                 )}
               </div>
               {/* Sort controls */}
-              <div className="flex items-center gap-1.5 rounded-2xl px-3 py-2 shrink-0 lg:justify-self-end" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1.5px solid rgba(212,163,115,0.18)', boxShadow: '0 1px 4px rgba(212,163,115,0.06)' }}>
-                <svg className="w-3 h-3 mr-1" style={{ color: '#8B6E58' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M3 6h18M6 12h12M9 18h6"/>
-                </svg>
+              <div className="flex items-center gap-1 rounded-2xl p-1.5 shrink-0" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)' }}>
                 {([
                   { value: 'newest', label: 'Newest' },
                   { value: 'oldest', label: 'Oldest' },
@@ -722,15 +433,13 @@ export default function Dashboard() {
                   <button
                     key={value}
                     type="button"
-                    onClick={() => {
-                      setSortOrder(value);
-                      setCurrentPage(1);
-                    }}
-                    className="rounded-xl px-4 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
+                    onClick={() => setSortOrder(value)}
+                    className="rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
                     style={{
-                      backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.10)',
-                      color: sortOrder === value ? 'var(--charcoal)' : '#6A5A4A',
+                      backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
+                      color: sortOrder === value ? 'var(--charcoal)' : 'var(--charcoal)',
                       fontFamily: 'var(--font-sans)',
+                      minWidth: '56px',
                       fontWeight: '600',
                     }}
                   >
@@ -739,7 +448,6 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
-          </div>
           )}
         </div>
 
@@ -755,30 +463,16 @@ export default function Dashboard() {
             <div
               className="absolute inset-0"
               style={{ backgroundColor: 'rgba(43,43,43,0.62)' }}
-              onClick={() => { if (!creating) { resetCreateBookDraft(); } }}
+              onClick={() => { if (!creating) { setShowCreate(false); setCreateError(''); } }}
             />
 
             {/* Modal panel */}
             <div
-              className="relative w-full max-w-lg rounded-3xl overflow-hidden animate-fade-up flex flex-col focus:outline-none"
+              className="relative w-full max-w-lg rounded-3xl overflow-hidden animate-fade-up flex flex-col"
               style={{
                 maxHeight: '90vh',
-                backgroundColor: 'var(--card)',
+                backgroundColor: '#FDFCF5',
                 boxShadow: '0 40px 100px rgba(43,43,43,0.22), 0 12px 40px rgba(212,163,115,0.12)',
-              }}
-              // Trap focus inside the modal
-              onKeyDown={(e) => {
-                if (e.key === 'Tab') {
-                  const focusable = e.currentTarget.querySelectorAll<HTMLElement>(
-                    'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-                  );
-                  const first = focusable[0];
-                  const last = focusable[focusable.length - 1];
-                  if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
-                    e.preventDefault();
-                    (e.shiftKey ? last : first)?.focus();
-                  }
-                }
               }}
             >
               {/* Warm top bar */}
@@ -792,12 +486,12 @@ export default function Dashboard() {
                     <h2 id="create-book-title" className="text-xl font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
                       Create a new memory book
                     </h2>
-                    <p className="text-sm mt-1" style={{ color: 'var(--muted-foreground)' }}>Give it a name — you can always change it later.</p>
+                    <p className="text-sm mt-1" style={{ color: '#6A6A5A' }}>Give it a name — you can always change it later.</p>
                   </div>
                   {!creating && (
                     <button
                       type="button"
-                      onClick={() => { resetCreateBookDraft(); }}
+                      onClick={() => { setShowCreate(false); setCreateError(''); }}
                       className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:opacity-80 active:scale-95 shrink-0 hover:bg-[rgba(212,163,115,0.2)]"
                       style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--charcoal)' }}
                       aria-label="Close"
@@ -816,7 +510,6 @@ export default function Dashboard() {
                       Book title <span style={{ color: 'var(--bronze)' }}>*</span>
                     </Label>
                     <Input
-                      ref={createTitleInputRef}
                       id="modal-title"
                       type="text"
                       value={newTitle}
@@ -824,8 +517,8 @@ export default function Dashboard() {
                       required
                       autoFocus
                       placeholder="Ruth's Life Story"
-                      className="rounded-xl text-base w-full h-11 focus-visible:ring-offset-2"
-                      style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: 'var(--card)' }}
+                      className="rounded-xl text-base w-full h-11"
+                      style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
                     />
                   </div>
 
@@ -838,10 +531,10 @@ export default function Dashboard() {
                       id="modal-desc"
                       value={newDesc}
                       onChange={(e) => setNewDesc(e.target.value)}
-                      className="resize-none rounded-xl text-base w-full focus-visible:ring-offset-2"
+                      className="resize-none rounded-xl text-base w-full"
                       rows={2}
                       placeholder="A collection of memories from a wonderful life..."
-                      style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: 'var(--card)' }}
+                      style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
                     />
                   </div>
 
@@ -851,7 +544,7 @@ export default function Dashboard() {
                       <Label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                         Plan
                       </Label>
-                      <span className="text-xs" style={{ color: 'var(--muted-foreground)' }}>— select below</span>
+                      <span className="text-xs" style={{ color: '#7A7A6A' }}>— select below</span>
                     </div>
                     <div className="grid gap-3">
                       {BOOK_PLAN_OPTIONS.map((plan) => {
@@ -883,7 +576,7 @@ export default function Dashboard() {
                               <div
                                 className="absolute -top-2.5 left-4 px-2.5 py-0.5 rounded-full text-xs font-semibold"
                                 style={{
-                                  backgroundColor: isRecommended ? 'var(--charcoal)' : 'var(--bronze)',
+                                  backgroundColor: isRecommended ? '#567C3B' : 'var(--bronze)',
                                   color: isRecommended ? '#FDFCF5' : 'var(--charcoal)',
                                   fontFamily: 'var(--font-sans)',
                                   boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
@@ -955,14 +648,14 @@ export default function Dashboard() {
               </div>
 
               {/* Sticky footer with actions */}
-              <div className="shrink-0 px-6 py-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)', backgroundColor: 'var(--card)' }}>
+              <div className="shrink-0 px-6 py-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)', backgroundColor: '#FDFCF5' }}>
                 <div className="flex gap-3">
                   {!creating && (
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => { resetCreateBookDraft(); }}
-                      className="rounded-full h-11 px-6 text-sm font-medium focus-visible:ring-offset-2"
+                      onClick={() => { setShowCreate(false); setCreateError(''); }}
+                      className="rounded-full h-11 px-6 text-sm font-medium"
                       style={{ borderColor: 'rgba(212,163,115,0.35)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
                     >
                       Cancel
@@ -972,13 +665,12 @@ export default function Dashboard() {
                     type="submit"
                     form="create-book-form"
                     disabled={creating || !newTitle.trim()}
-                    className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-300 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-0.5 focus-visible:ring-offset-2"
+                    className="flex-1 rounded-full h-12 text-sm font-semibold transition-all duration-300 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-0.5"
                     style={{
-                      backgroundColor: creating || !newTitle.trim() ? 'var(--bronze)' : 'var(--bronze)',
-                      color: !newTitle.trim() ? 'rgba(254,250,224,0.75)' : 'var(--charcoal)',
+                      backgroundColor: creating ? 'rgba(158,120,69,0.65)' : !newTitle.trim() ? 'rgba(158,120,69,0.62)' : '#8A6A3C',
+                      color: !newTitle.trim() ? 'rgba(254,250,224,0.75)' : 'var(--cornsilk)',
                       boxShadow: !creating && newTitle.trim() ? '0 6px 24px rgba(212,163,115,0.4)' : 'none',
                       fontWeight: '600',
-                      opacity: creating || !newTitle.trim() ? 0.65 : 1,
                     }}
                   >
                     {creating ? (
@@ -1001,149 +693,13 @@ export default function Dashboard() {
           </div>
         )}
 
-        {!searchQuery && featuredBook && (
-          <section className="mb-8 md:mb-10 animate-fade-up">
-            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
-                  Reading room
-                </p>
-                <h2 className="mt-2 text-[1.85rem] font-medium tracking-tight" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
-                  {activeBooks.length > 0 ? 'Continue where the story still feels warm.' : 'Choose the first keepsake worth opening tonight.'}
-                </h2>
-              </div>
-              <p className="max-w-md text-sm leading-6 md:text-right" style={{ color: '#6A5648', fontFamily: 'var(--font-sans)' }}>
-                {activeBooks.length > 0
-                  ? `${activeBooks.length === 1 ? '1 book already holds' : `${activeBooks.length} books already hold`} memories. ${draftBooks.length === 1 ? '1 draft is' : `${draftBooks.length} drafts are`} waiting for a first page.`
-                  : 'Start with a draft that already has a title and make it feel like a keepsake instead of a placeholder.'}
-              </p>
-            </div>
-
-            <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(320px,0.9fr)]">
-              <Link href={`/books/${featuredBook.id}`} className="group block">
-                <article
-                  className="relative overflow-hidden rounded-[32px] border p-6 md:p-7 transition-all duration-300 group-hover:-translate-y-1"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(255,251,242,0.98) 0%, rgba(246,236,219,0.96) 100%)',
-                    borderColor: 'rgba(212,163,115,0.2)',
-                    boxShadow: '0 18px 42px rgba(212,163,115,0.14), 0 20px 50px rgba(43,43,43,0.06)',
-                  }}
-                >
-                  <div className="absolute inset-y-0 left-0 w-1.5" style={{ background: 'linear-gradient(180deg, rgba(212,163,115,0.95) 0%, rgba(107,142,35,0.85) 100%)' }} />
-                  <div className="absolute right-0 top-0 h-28 w-28 rounded-full blur-3xl" style={{ background: 'rgba(212,163,115,0.12)' }} />
-
-                  <div className="relative grid gap-5 md:grid-cols-[132px_minmax(0,1fr)] md:items-center">
-                    <div className="mx-auto md:mx-0 rounded-[24px] p-3" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(250,237,205,0.48) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.88), 0 12px 28px rgba(212,163,115,0.14)' }}>
-                      <BookCover
-                        title={featuredBook.title}
-                        description={featuredBook.description}
-                        accentColor={BOOK_COLORS[featuredBook.id % BOOK_COLORS.length]}
-                        plan={featuredBook.plan}
-                        previewImageUrl={featuredBook.preview_photo_url}
-                      />
-                    </div>
-
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]" style={{ backgroundColor: 'rgba(85,103,72,0.12)', color: '#46563C', fontFamily: 'var(--font-sans)' }}>
-                          {(featuredBook._count?.memories ?? 0) > 0 ? 'Best next step' : 'Start here'}
-                        </span>
-                        {featuredBook.plan && featuredBook.plan !== 'free' && (
-                          <span className="inline-flex items-center text-[10px] font-semibold px-2.5 py-1 rounded-full" style={getPlanBadgeStyles(featuredBook.plan)}>
-                            {getBookPlanLabel(featuredBook.plan, featuredBook.storage_tier)}
-                          </span>
-                        )}
-                      </div>
-
-                      <h3 className="mt-4 text-[1.9rem] leading-tight font-medium tracking-tight" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
-                        {getDisplayBookTitle(featuredBook.title)}
-                      </h3>
-                      <p className="mt-2 max-w-2xl text-[0.98rem] leading-7" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)' }}>
-                        {(featuredBook._count?.memories ?? 0) > 0
-                          ? shortenShelfNote(shortenMemoryExcerpt(featuredBook.latest_memory_excerpt) ? `“${shortenMemoryExcerpt(featuredBook.latest_memory_excerpt)}”${featuredBook.latest_contributor_name ? ` — ${featuredBook.latest_contributor_name}` : ''}` : `${featuredBook._count?.memories ?? 0} memories already live here.`, 180)
-                          : shortenShelfNote(featuredBook.description, 180) || 'Open this draft and capture the first scene while it is still close.'}
-                      </p>
-
-                      <div className="mt-5 flex flex-wrap items-center gap-2.5">
-                        <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.82)', color: '#302117', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}>
-                          {featuredBook._count?.memories ?? 0} {(featuredBook._count?.memories ?? 0) === 1 ? 'memory' : 'memories'}
-                        </span>
-                        <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#5F4A3B', fontFamily: 'var(--font-sans)' }}>
-                          Updated {new Date(featuredBook.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                        </span>
-                      </div>
-
-                      <div className="mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[11px] font-bold" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
-                        {(featuredBook._count?.memories ?? 0) > 0 ? 'Open' : 'Start'}
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              </Link>
-
-              <div className="rounded-[30px] border p-4 md:p-5" style={{ background: 'rgba(255,252,245,0.9)', borderColor: 'rgba(212,163,115,0.18)', boxShadow: '0 14px 32px rgba(212,163,115,0.08)' }}>
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
-                      Up next
-                    </p>
-                    <p className="mt-1 text-sm leading-6" style={{ color: '#6A5648', fontFamily: 'var(--font-sans)' }}>
-                      A shorter queue so the library feels curated instead of endless.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-4 space-y-3">
-                  {featuredQueue.length > 0 ? featuredQueue.map((book) => {
-                    const memoryCount = book._count?.memories ?? 0;
-                    // Disambiguate duplicate titles in the queue
-                    const hasDupe = featuredQueue.filter(b => getDisplayBookTitle(b.title) === getDisplayBookTitle(book.title)).length > 1;
-                    const displayTitle = getDisplayBookTitle(book.title) + (hasDupe ? ` · #${book.id}` : '');
-                    return (
-                      <Link key={book.id} href={`/books/${book.id}`} className="group flex items-start gap-3 rounded-[22px] border px-4 py-3 transition-all duration-200 hover:-translate-y-0.5" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(250,244,233,0.92) 100%)', borderColor: 'rgba(212,163,115,0.14)' }}>
-                        <div className="mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: memoryCount > 0 ? '#6B8E23' : 'var(--bronze)' }} />
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0">
-                              <p className="truncate text-[1rem] font-medium" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
-                                {displayTitle}
-                              </p>
-                              <p className="mt-1 text-[0.8rem] uppercase tracking-[0.14em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
-                                {memoryCount > 0 ? `${memoryCount} ${memoryCount === 1 ? 'memory' : 'memories'} inside` : 'Still waiting for page one'}
-                              </p>
-                            </div>
-                            <svg className="mt-1 h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
-                              <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
-                          </div>
-                          <p className="mt-2 line-clamp-2 text-[0.92rem] leading-6" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)' }}>
-                            {memoryCount > 0
-                              ? shortenShelfNote(shortenMemoryExcerpt(book.latest_memory_excerpt) ? `“${shortenMemoryExcerpt(book.latest_memory_excerpt)}”` : 'Pick up where this story left off.', 110)
-                              : shortenShelfNote(book.description, 110) || 'Add the opening memory while the details are still vivid.'}
-                          </p>
-                        </div>
-                      </Link>
-                    );
-                  }) : (
-                    <div className="rounded-[22px] border px-4 py-4" style={{ borderColor: 'rgba(212,163,115,0.14)', background: 'rgba(255,255,255,0.66)' }}>
-                      <p className="text-sm leading-6" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)' }}>
-                        Once you have a few books, this queue will keep the next meaningful action within reach.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
         {/* ── Empty state — editorial card style ── */}
         {books.length === 0 && !showCreate ? (
           <div className="flex flex-col items-center justify-center py-20 animate-fade-up">
             {/* Elegant book illustration */}
             <div className="relative mb-10" style={{ width: 100, height: 130 }}>
               <div className="absolute inset-0 rounded-2xl" style={{
-                backgroundColor: 'var(--card)',
+                backgroundColor: '#FDFCF5',
                 border: '1.5px solid rgba(212,163,115,0.28)',
                 boxShadow: '0 12px 40px rgba(212,163,115,0.14), 4px 6px 0 rgba(212,163,115,0.10)',
                 transform: 'rotate(-2deg)',
@@ -1182,218 +738,203 @@ export default function Dashboard() {
               Free to start — takes about 5 minutes.
             </p>
           </div>
-        ) : filteredBooks.length === 0 ? (
-          <div className="animate-fade-up rounded-[2rem] border px-6 py-8 md:px-8 md:py-9" style={{ background: 'linear-gradient(180deg, rgba(255,252,245,0.95) 0%, rgba(247,239,226,0.95) 100%)', borderColor: 'rgba(212,163,115,0.18)', boxShadow: '0 18px 40px rgba(212,163,115,0.08)' }}>
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
-              Shelf view empty
-            </p>
-            <h2 className="mt-3 text-2xl font-medium tracking-tight" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
-              {shelfFilterMeta[shelfFilter].empty}
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)' }}>
-              Try another shelf view, clear your search, or open a new book so this library still feels curated instead of crowded.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              {searchQuery && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setCurrentPage(1);
-                  }}
-                  className="rounded-full h-10 px-5 text-sm font-medium"
-                  style={{ borderColor: 'rgba(212,163,115,0.28)', color: 'var(--charcoal)', backgroundColor: 'rgba(255,253,246,0.9)' }}
-                >
-                  Clear search
-                </Button>
-              )}
-              <Button
-                type="button"
-                onClick={() => {
-                  setShelfFilter('all');
-                  setCurrentPage(1);
-                }}
-                className="rounded-full h-10 px-5 text-sm font-medium"
-                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
-              >
-                Show full shelf
-              </Button>
-            </div>
-          </div>
         ) : (
           /* ── Book grid ── */
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 xl:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {paginatedBooks.map((book, i) => {
               const colorIdx = book.id % BOOK_COLORS.length;
               const bookColor = BOOK_COLORS[colorIdx];
               const spineColor = BOOK_SPINE_COLORS[colorIdx];
               const spineHoverColor = BOOK_SPINE_HOVER_COLORS[colorIdx];
-              const memoryCount = book._count?.memories ?? 0;
-              const contributorCount = book.contributors?.length ?? 0;
-              const hasMemories = memoryCount > 0;
-              const displayTitle = getDisplayBookTitle(book.title);
-              const wasSanitized = titleWasSanitized(book.title);
-              const createdAt = new Date(book.created_at);
-              const updatedAt = new Date(book.updated_at);
-              const draftLabel = `Draft from ${createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-              const presenceLabel = hasMemories ? 'In progress' : 'Ready to begin';
-              const timingLabel = hasMemories
-                ? `Last touched ${updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
-                : `Started ${createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-              const latestExcerpt = shortenMemoryExcerpt(book.latest_memory_excerpt);
-              const shelfNote = hasMemories
-                ? latestExcerpt
-                  ? `“${latestExcerpt}”${book.latest_contributor_name ? ` — ${book.latest_contributor_name}` : ''}`
-                  : memoryCount === 1
-                    ? 'One memory already lives here.'
-                    : `${memoryCount} memories already live here.`
-                : shortenShelfNote(book.description, 82) || 'Open the book and capture the first scene while it is still vivid.';
-              const nextStepBody = hasMemories
-                ? 'Pick up where you left off.'
-                : 'Begin the first memory.';
               return (
                 <div
                   key={book.id}
                   className="animate-fade-up"
-                  style={{ animationDelay: `${i * 0.06}s`, minHeight: 0 }}
+                  style={{ animationDelay: `${i * 0.06}s` }}
                 >
                   <Link href={`/books/${book.id}`} className="block h-full group">
                     <div
-                      className="book-card relative h-full min-h-[172px] md:min-h-[186px] rounded-[26px] overflow-hidden cursor-pointer transition-all duration-300 group/card"
+                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 group/card hover:-translate-y-2"
                       style={{
-                        background: 'linear-gradient(180deg, rgba(255,253,247,0.98) 0%, rgba(248,241,228,0.98) 100%)',
-                        boxShadow: '0 10px 26px rgba(212,163,115,0.10), 0 22px 52px rgba(43,43,43,0.06)',
-                        border: '1px solid rgba(212,163,115,0.16)',
+                        backgroundColor: '#FEFCF4',
+                        boxShadow: '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)',
+                        border: '1px solid rgba(212,163,115,0.10)',
+                        borderLeft: `4px solid ${spineColor}`,
+                        borderLeftColor: spineColor,
+                        minHeight: '220px',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = `0 24px 56px rgba(212,163,115,0.22), 0 16px 32px rgba(43,43,43,0.10), inset 0 0 0 1px rgba(212,163,115,0.14), 0 0 32px ${bookColor}08`;
-                        e.currentTarget.style.transform = 'translateY(-4px)';
+                        e.currentTarget.style.boxShadow = `0 8px 32px rgba(212,163,115,0.18), 0 24px 60px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.08)`;
+                        e.currentTarget.style.borderLeft = `4px solid ${spineHoverColor}`;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = '0 10px 26px rgba(212,163,115,0.10), 0 22px 52px rgba(43,43,43,0.06)';
-                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)';
+                        e.currentTarget.style.borderLeft = `4px solid ${spineColor}`;
                       }}
                     >
-                      <div
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[30px]"
-                        style={{ background: `radial-gradient(ellipse at 22% 18%, ${bookColor}16 0%, transparent 60%)` }}
+                      {/* Warm hover glow */}
+                      <div 
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
+                        style={{ background: `radial-gradient(ellipse at 30% 50%, ${bookColor}12 0%, transparent 60%)` }}
                       />
 
-                      <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ background: `linear-gradient(180deg, ${spineHoverColor} 0%, ${spineColor} 100%)` }} />
-                      <div className="absolute inset-x-6 top-0 h-px opacity-80" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)' }} />
+                      {/* Decorative corner flourish — top right */}
+                      <div
+                        className="absolute top-0 right-0 w-20 h-20 pointer-events-none overflow-hidden"
+                      >
+                        <div
+                          className="absolute top-0 right-0 w-16 h-16 rounded-full opacity-[0.07]"
+                          style={{ background: `radial-gradient(circle, ${bookColor} 0%, transparent 70%)` }}
+                        />
+                      </div>
 
-                      <div className="relative flex h-full flex-col p-5 md:p-6">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex min-w-0 flex-wrap items-center gap-2">
-                            <span
-                              className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]"
-                              style={{
-                                backgroundColor: hasMemories ? 'rgba(85,103,72,0.12)' : 'rgba(212,163,115,0.16)',
-                                color: hasMemories ? '#46563C' : '#7A5A3F',
-                                fontFamily: 'var(--font-sans)',
-                              }}
-                            >
-                              {presenceLabel}
-                            </span>
-                            {book.plan && book.plan !== 'free' && (
-                              <span
-                                className="inline-flex items-center text-[10px] font-semibold px-2.5 py-1 rounded-full"
-                                style={getPlanBadgeStyles(book.plan)}
-                              >
-                                {getBookPlanLabel(book.plan, book.storage_tier)}
-                              </span>
-                            )}
+                      {/* Main content area — outer flex-col + min-height ensures footer always at same vertical position */}
+                      <div className="relative flex flex-col justify-between min-h-[220px] p-6 pl-8">
+                        {/* Inner flex row: book illustration + text content */}
+                  {/* Book illustration with shimmer for premium plans */}
+                        <div
+                          className="shrink-0 group/book"
+                          style={{
+                            marginTop: 4,
+                            width: 72,
+                            height: 96,
+                            borderRadius: 10,
+                            background: `linear-gradient(160deg, #FEFCF4 0%, #F8F5E0 60%, #EDE5C8 100%)`,
+                            border: '1px solid rgba(212,163,115,0.28)',
+                            boxShadow: `3px 4px 16px rgba(43,43,43,0.10), 5px 8px 24px ${bookColor}18, inset 0 0 0 0.5px rgba(255,255,255,0.8)`,
+                            overflow: 'hidden',
+                            flexDirection: 'column',
+                            position: 'relative',
+                            transition: 'transform 0.3s ease',
+                          }}
+                        >
+                          {/* Subtle shimmer overlay for premium/plus plans */}
+                          {book.plan !== 'free' && (
+                            <div className="shimmer" style={{
+                              position: 'absolute',
+                              inset: 0,
+                              background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)',
+                              animation: 'shimmer 3s ease-in-out infinite',
+                              pointerEvents: 'none',
+                            }} />
+                          )}
+                          <style>{`
+                            @keyframes shimmer {
+                              0%, 100% { transform: translateX(-100%); }
+                              50% { transform: translateX(100%); }
+                            }
+                          `}</style>
+                          {/* Spine strip */}
+                          <div style={{
+                            position: 'absolute',
+                            left: 0, top: 0, bottom: 0,
+                            width: 6,
+                            background: `linear-gradient(to bottom, ${bookColor}dd, ${bookColor}55)`,
+                            borderRadius: '10px 0 0 10px',
+                          }} />
+                          {/* Decorative cover lines */}
+                          <div className="pt-4 px-3.5 pl-3 flex-1 flex flex-col justify-center">
+                            <div style={{ height: 1.5, backgroundColor: 'rgba(212,163,115,0.30)', marginBottom: 8 }} />
+                            {[1,2,3,4,5].map((_, li) => (
+                              <div key={li} style={{
+                                height: 2.5,
+                                width: `${60 + li * 8}%`,
+                                backgroundColor: li % 2 === 0 ? 'rgba(212,163,115,0.20)' : 'rgba(204,213,174,0.35)',
+                                borderRadius: 2,
+                                marginBottom: 4,
+                              }} />
+                            ))}
+                            {/* Title block */}
+                            <div style={{
+                              height: 4,
+                              width: '80%',
+                              backgroundColor: `${bookColor}55`,
+                              borderRadius: 2,
+                              marginTop: 10,
+                            }} />
                           </div>
-                          <p className="shrink-0 text-[0.68rem] uppercase tracking-[0.16em]" style={{ color: '#9A806A', fontFamily: 'var(--font-sans)' }}>
-                            {hasMemories ? 'Recently held' : 'Fresh pages'}
-                          </p>
                         </div>
 
-                        <div className="mt-5 flex items-start gap-4 md:gap-5 flex-1 min-h-0">
-                          <div className="shrink-0 rounded-[22px] p-2.5" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(250,237,205,0.48) 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.88), 0 12px 28px rgba(212,163,115,0.14)' }}>
-                            <div className="origin-top-left scale-[1.02]">
-                              <BookCover
-                                title={book.title}
-                                description={book.description}
-                                accentColor={bookColor}
-                                plan={book.plan}
-                                previewImageUrl={book.preview_photo_url}
-                              />
-                            </div>
-                          </div>
-
-                          <div className="flex min-w-0 flex-1 flex-col">
-                            <div>
-                              <h3 className="text-[1.2rem] font-medium leading-snug line-clamp-2" style={{ color: '#24180F', fontFamily: 'var(--font-serif)' }}>
-                                {displayTitle}
-                              </h3>
-                              <p className="mt-2 text-[0.84rem] uppercase tracking-[0.14em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
-                                {timingLabel}
-                              </p>
-                              {wasSanitized && (
-                                <p className="mt-1 text-[11px] uppercase tracking-[0.16em]" style={{ color: '#927762', fontFamily: 'var(--font-sans)' }}>
-                                  {draftLabel}
-                                </p>
-                              )}
-                            </div>
-
-                            <div className="mt-4 flex flex-wrap items-center gap-2">
-                              <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.82)', color: '#302117', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}>
-                                {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'}
-                              </span>
-                              {contributorCount > 1 && (
-                                <span className="inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.26)', color: '#42503A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(204,213,174,0.24)' }}>
-                                  {contributorCount} contributors
-                                </span>
-                              )}
-                            </div>
-
-                            {contributorCount > 1 ? (
-                              <div className="mt-3 flex items-center gap-2.5">
-                                <div className="flex -space-x-1.5">
-                                  {book.contributors?.slice(0, 3).map((c) => (
-                                    <Avatar
-                                      key={c.id}
-                                      name={c.name || 'Contributor'}
-                                      imageUrl={c.profile_image_url}
-                                      className="ring-2 ring-[#FEFCF4]"
-                                      size={22}
-                                    />
-                                  ))}
-                                </div>
-                                <span className="text-[11px]" style={{ color: '#756253', fontFamily: 'var(--font-sans)' }}>
-                                  Family can add to this keepsake.
-                                </span>
-                              </div>
-                            ) : null}
-
-                            <div
-                              className="mt-4 rounded-[22px] px-4 py-3.5"
-                              style={{
-                                background: hasMemories
-                                  ? 'linear-gradient(180deg, rgba(255,255,255,0.68) 0%, rgba(252,246,235,0.94) 100%)'
-                                  : 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,250,242,0.92) 100%)',
-                                border: '1px solid rgba(212,163,115,0.14)',
-                              }}
+                        {/* Right: Content */}
+                        <div className="flex-1 min-w-0">
+                          {/* Plan badge */}
+                          {book.plan && book.plan !== 'free' && (
+                            <span
+                              className="inline-block text-[10px] font-semibold px-2.5 py-0.5 rounded-full mb-2"
+                              style={getPlanBadgeStyles(book.plan)}
                             >
-                              <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: '#8B6E58', fontFamily: 'var(--font-sans)' }}>
-                                {hasMemories ? 'Shelf note' : 'Why start here'}
-                              </p>
-                              <p className="mt-2 text-[0.92rem] leading-6 line-clamp-3" style={{ color: hasMemories ? '#3F2E22' : '#5E4939', fontFamily: hasMemories ? 'var(--font-serif)' : 'var(--font-sans)', fontStyle: hasMemories ? 'italic' : 'normal' }}>
-                                {shelfNote}
-                              </p>
-                            </div>
+                              {getBookPlanLabel(book.plan, book.storage_tier)}
+                            </span>
+                          )}
 
-                            <div className="mt-auto flex items-end justify-between gap-3 pt-4">
-                              <p className="max-w-[8rem] text-[0.78rem] leading-5" style={{ color: '#7A6453', fontFamily: 'var(--font-sans)' }}>
-                                {nextStepBody}
-                              </p>
-                              <span className="inline-flex shrink-0 flex-shrink-0 items-center justify-center gap-1 whitespace-nowrap rounded-full px-3 py-2.5 text-[11px] font-bold" style={{ backgroundColor: '#4A3120', color: '#FEFAE0', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em', boxShadow: '0 12px 24px rgba(74,49,32,0.18)' }}>
-                                {hasMemories ? 'Open' : 'Start'}
+                          {/* Title */}
+                          <h3 className="text-xl font-medium leading-snug mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                            {book.title}
+                          </h3>
+
+                          {/* Description — only show when present */}
+                          {book.description ? (
+                            <p className="text-sm leading-relaxed line-clamp-2" style={{ color: '#2A2A1A', fontFamily: 'var(--font-serif)' }}>
+                              {book.description}
+                            </p>
+                          ) : (
+                            /* Placeholder line keeps card height consistent when no description */
+                            <div aria-hidden="true" className="text-sm leading-relaxed" style={{ color: '#2A2A1A', fontFamily: 'var(--font-serif)', opacity: 0 }}>
+                              —
+                            </div>
+                          )}
+
+
+                          {/* Contributors — only show when multiple */}
+                          {book.contributors && book.contributors.length > 1 && (
+                            <div className="flex items-center gap-2 mt-3">
+                              <div className="flex -space-x-1.5">
+                                {book.contributors.slice(0, 3).map((c) => (
+                                  <Avatar
+                                    key={c.id}
+                                    name={c.name || 'Contributor'}
+                                    imageUrl={c.profile_image_url}
+                                    className="ring-2 ring-[#FEFCF4]"
+                                    size={22}
+                                  />
+                                ))}
+                              </div>
+                              <span className="text-[11px]" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>
+                                {book.contributors.length} contributors
                               </span>
                             </div>
-                          </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Footer — elevated action strip for premium feel */}
+                      <div className="px-6 pl-8 pb-5" style={{ marginTop: 'auto' }}>
+                        <div
+                          className="flex items-center justify-between gap-2 rounded-2xl px-4 py-2.5 transition-all duration-300 group-hover:gap-3 group-hover:bg-[rgba(212,163,115,0.06)]"
+                          style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}
+                        >
+                          <span 
+                            className="text-xs font-semibold"
+                            style={{ 
+                              color: '#5A3A2A',
+                              fontFamily: 'var(--font-sans)',
+                              letterSpacing: '0.02em',
+                            }}
+                          >
+                            {book._count?.memories === 0
+                              ? 'Begin writing'
+                              : `${book._count?.memories ?? 0} ${book._count?.memories === 1 ? 'memory' : 'memories'} collected`}
+                          </span>
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold px-3.5 py-1.5 rounded-full transition-all duration-300" style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: '#5A3A2A', fontFamily: 'var(--font-sans)', letterSpacing: '0.03em' }}>
+                            {book._count?.memories === 0 ? 'Start' : 'View'}
+                            <svg
+                              className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0"
+                              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                              style={{ color: '#8A6A4A' }}
+                            >
+                              <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1405,7 +946,7 @@ export default function Dashboard() {
         )}
 
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-1.5 mt-7 md:mt-10">
+            <div className="flex items-center justify-center gap-1.5 mt-10">
               <button
                 type="button"
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
@@ -1429,7 +970,7 @@ export default function Dashboard() {
                 return acc;
               }, []).map((item, idx) =>
                 item === '…' ? (
-                  <span key={`ellipsis-${idx}`} className="w-9 h-9 flex items-center justify-center text-sm" style={{ color: 'rgba(43,43,43,0.60)' }}>…</span>
+                  <span key={`ellipsis-${idx}`} className="w-9 h-9 flex items-center justify-center text-sm" style={{ color: 'var(--charcoal)' }}>…</span>
                 ) : (
                   <button
                     key={item}

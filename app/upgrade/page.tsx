@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { Check } from 'lucide-react';
 
 import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
-import { AppShellHeader } from '@/components/ui/app-shell-header';
 
 interface Book {
   id: number;
@@ -96,8 +95,6 @@ export default function UpgradePage() {
   }, [requestedBookId, router]);
 
   const selectedBook = books.find((book) => String(book.id) === selectedBookId) ?? null;
-  const PLAN_ORDER: Record<BookPlan, number> = { free: 0, premium: 1, plus: 2 };
-  const isUpgrade = selectedBook && PLAN_ORDER[selectedPlan] > PLAN_ORDER[normalizeBookPlan(selectedBook.plan)];
 
   const handleSubmit = async () => {
     if (!selectedBook) {
@@ -138,7 +135,7 @@ export default function UpgradePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--cornsilk)' }} role="status">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
           <p className="text-sm" style={{ color: '#4A4A3A' }}>Loading...</p>
@@ -150,23 +147,31 @@ export default function UpgradePage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
-      <AppShellHeader
-        current="Plans"
-        links={[
-          { href: '/dashboard', label: 'Dashboard' },
-          { href: '/settings', label: 'Settings' },
-        ]}
-      />
+      {/* ── TOP NAV ── */}
+      <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
+        <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
+              <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
+              <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+            </svg>
+            <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
+          </Link>
+          <Link href="/dashboard" className="text-sm transition-colors hover:opacity-70" style={{ color: '#4A4A3A' }}>
+            Back to dashboard
+          </Link>
+        </div>
+      </header>
 
-      <main className="px-6 md:px-10 py-8 max-w-4xl mx-auto w-full flex-1">
+      <main className="px-6 md:px-10 py-8 max-w-4xl mx-auto w-full">
 
         {/* Page header — compact */}
         <div className="text-center mb-5 sm:mb-7">
-          <p className="label-caps mb-1.5" style={{ color: '#8B6914' }}>Upgrade</p>
+          <p className="label-caps mb-1.5" style={{ color: 'var(--bronze)' }}>Upgrade</p>
           <h1 className="text-lg sm:text-2xl md:text-3xl font-medium mb-1.5" style={{ color: 'var(--charcoal)' }}>
             Give your story a home that lasts a lifetime
           </h1>
-          <p className="text-xs sm:text-sm max-w-md mx-auto hidden sm:block" style={{ color: '#5A5A4A' }}>
+          <p className="text-xs sm:text-sm max-w-md mx-auto hidden sm:block" style={{ color: '#4A4A3A' }}>
             Preserve photos, voice recordings, and order a beautiful printed heirloom — all secured for generations.
           </p>
           {/* Mobile book context — single line */}
@@ -177,27 +182,17 @@ export default function UpgradePage() {
           )}
           {books.length > 1 && (
             <div className="mt-2 flex justify-center">
-              <div className="relative">
-                <select
-                  aria-label="Select a book to upgrade"
-                  value={selectedBookId}
-                  onChange={(e) => updateSelectedBook(e.target.value, books)}
-                  className="rounded-xl pl-3 pr-8 py-1.5 text-xs appearance-none cursor-pointer"
-                  style={{ border: '1px solid rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', outline: 'none', boxShadow: '0 2px 8px rgba(212,163,115,0.08)' }}
-                >
-                  {books.map(b => (
-                    <option key={b.id} value={b.id}>{b.title}</option>
-                  ))}
-                </select>
-                <div
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
-                  style={{ color: 'var(--bronze)' }}
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M6 9l6 6 6-6"/>
-                  </svg>
-                </div>
-              </div>
+              <select
+                aria-label="Select a book to upgrade"
+                value={selectedBookId}
+                onChange={(e) => updateSelectedBook(e.target.value, books)}
+                className="rounded-xl px-3 py-1.5 text-xs"
+                style={{ border: '1px solid rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', outline: 'none' }}
+              >
+                {books.map(b => (
+                  <option key={b.id} value={b.id}>{b.title}</option>
+                ))}
+              </select>
             </div>
           )}
         </div>
@@ -210,7 +205,7 @@ export default function UpgradePage() {
           <div className="absolute inset-0 rounded-2xl" style={{ background: 'linear-gradient(to top, rgba(43,43,43,0.28) 0%, transparent 55%)', zIndex: 1 }} />
           <Image
             src="/images/book-product-3.jpg"
-            alt="A beautifully printed Memory Project hardcover book, bound in warm linen-finish cover with gold foil title"
+            alt="Memory Project printed hardcover book"
             width={480}
             height={220}
             className="block w-full object-cover"
@@ -222,31 +217,6 @@ export default function UpgradePage() {
               Beautifully printed hardcover books — from $99
             </p>
           </div>
-        </div>
-
-        {/* Social proof — warm, understated credibility strip */}
-        <div className="mb-6 rounded-2xl px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8" style={{ background: 'linear-gradient(135deg, rgba(255,250,240,0.96) 0%, rgba(248,237,220,0.96) 100%)', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 4px 20px rgba(212,163,115,0.06)' }}>
-          <div className="flex items-center gap-2.5 shrink-0">
-            <div className="flex -space-x-1.5">
-              {[0,1,2].map(i => (
-                <div key={i} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold" style={{ backgroundColor: ['rgba(212,163,115,0.30)', 'rgba(204,213,174,0.35)', 'rgba(239,214,168,0.35)'][i], color: '#3A2A1A', border: '2px solid var(--cornsilk)' }}>
-                {['JR', 'SM', 'AK'][i]}
-              </div>
-            ))}
-            </div>
-            <p className="text-xs leading-5" style={{ color: '#4A3A2A', fontFamily: 'var(--font-sans)' }}>
-              <span className="font-semibold">2,400+ families</span> have preserved their stories since 2024
-            </p>
-          </div>
-          <div className="flex items-center gap-1 shrink-0">
-            {[1,2,3,4,5].map(n => (
-              <svg key={n} width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style={{ color: '#B8860B' }}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            ))}
-            <span className="text-xs font-semibold ml-1" style={{ color: '#4A3A2A', fontFamily: 'var(--font-sans)' }}>4.9/5</span>
-          </div>
-          <p className="text-xs leading-5 sm:border-l sm:pl-6" style={{ color: '#5A4637', fontFamily: 'var(--font-sans)', borderColor: 'rgba(212,163,115,0.15)' }}>
-            &ldquo;Finally somewhere my whole family wants to open.&rdquo; — The Moreno Family
-          </p>
         </div>
 
         {error && (
@@ -264,49 +234,20 @@ export default function UpgradePage() {
           {BOOK_PLAN_OPTIONS.map(plan => {
             const isCurrentPlan = selectedBook && normalizeBookPlan(selectedBook.plan) === plan.id;
             const isSelected = selectedPlan === plan.id;
-            // Only show 'Most Popular' when the Plus plan is available for selection (not the current plan)
-            const isPopular = plan.id === 'plus' && !isCurrentPlan;
+            const isPopular = plan.id === 'premium' && !isCurrentPlan;
             const isPlus = plan.id === 'plus';
-            const isFreePlan = plan.id === 'free';
             const cardStyles = {
-              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(212,163,115,0.05)' : isPlus ? '#EDD9B4' : 'var(--papaya)',
-              border: isSelected ? '2px solid #7A5A30' : isCurrentPlan ? '1.5px dashed rgba(212,163,115,0.30)' : isPlus ? '1px solid rgba(196,168,120,0.35)' : '1px solid rgba(212,163,115,0.2)',
+              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? '#F5EDD8' : '#FDF8EE',
+              border: isSelected ? '2px solid #C49438' : isCurrentPlan ? '1.5px solid rgba(212,163,115,0.35)' : isPlus ? '1.5px solid rgba(196,168,120,0.38)' : '1.5px solid rgba(212,163,115,0.25)',
               boxShadow: isSelected
-                ? '0 10px 36px rgba(212,163,115,0.26), 0 0 0 4px rgba(212,163,115,0.1)'
+                ? '0 12px 40px rgba(212,163,115,0.30), 0 0 0 4px rgba(212,163,115,0.12)'
                 : isCurrentPlan
-                  ? '0 0 0 0 rgba(212,163,115,0)'
-                  : '0 3px 12px rgba(212,163,115,0.07)',
-              opacity: isCurrentPlan ? 0.72 : 1,
-              transform: isSelected ? 'scale(1.015)' : 'scale(1)',
-              transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  ? '0 4px 16px rgba(212,163,115,0.08)'
+                  : '0 4px 20px rgba(212,163,115,0.09)',
+              opacity: isCurrentPlan ? 0.85 : 1,
+              transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+              transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
             };
-            const buttonBaseStyles = isSelected
-              ? {
-                  background: '#2D4A35',
-                  color: '#E8F0E5',
-                  boxShadow: '0 4px 20px rgba(45,74,53,0.30), inset 0 0 0 1px rgba(255,255,255,0.08)',
-                  border: '1px solid transparent',
-                }
-              : isCurrentPlan
-                ? {
-                    background: 'rgba(204,213,174,0.25)',
-                    color: '#4A5A3A',
-                    boxShadow: 'none',
-                    border: '1px solid rgba(90,122,74,0.12)',
-                  }
-                : isFreePlan
-                  ? {
-                      background: 'linear-gradient(180deg, #F9F1E3 0%, #F3E2C9 100%)',
-                      color: '#4E3822',
-                      boxShadow: 'inset 0 0 0 1px rgba(120,85,45,0.18), 0 6px 18px rgba(120,85,45,0.10)',
-                      border: '1px solid rgba(120,85,45,0.18)',
-                    }
-                  : {
-                      background: '#4A3520',
-                      color: 'var(--cornsilk)',
-                      boxShadow: '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)',
-                      border: '1px solid transparent',
-                    };
             const handleCardClick = () => { if (!isCurrentPlan) setSelectedPlan(plan.id); };
             return (
               <div
@@ -327,17 +268,17 @@ export default function UpgradePage() {
                 {/* Popular badge */}
                 {isPopular && (
                   <div
-                    className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[0.7rem] font-bold tracking-[0.15em] uppercase px-3.5 py-1 rounded-full whitespace-nowrap"
-                    style={{ backgroundColor: '#2D4A35', color: '#E8F0E5', fontFamily: 'var(--font-sans)', letterSpacing: '0.15em', boxShadow: '0 2px 8px rgba(45,74,53,0.25)' }}
+                    className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[0.6rem] font-bold tracking-[0.18em] uppercase px-3.5 py-1 rounded-full whitespace-nowrap"
+                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', letterSpacing: '0.15em' }}
                   >
-                    ⭐ Most Popular
+                    Most Popular
                   </div>
                 )}
                 {/* Current plan badge */}
                 {isCurrentPlan && (
                   <div
-                    className="absolute top-3 right-3 flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full"
-                    style={{ backgroundColor: '#A07850', color: '#FDFCF5', fontFamily: 'var(--font-sans)', border: '1px solid rgba(180,140,90,0.5)', boxShadow: '0 2px 8px rgba(160,120,80,0.25)', letterSpacing: '0.05em' }}
+                    className="absolute top-3 right-3 flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: '#6A6A5A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.18)' }}
                   >
                     <Check size={9} strokeWidth={3} />
                     Current
@@ -346,25 +287,25 @@ export default function UpgradePage() {
 
                 <div className="flex items-start justify-between mb-3 gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[0.65rem] font-semibold tracking-[0.12em] uppercase mb-1" style={{ color: isCurrentPlan ? '#5A5A48' : '#6B4423', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
+                    <p className="text-[0.65rem] font-semibold tracking-[0.12em] uppercase mb-1" style={{ color: isCurrentPlan ? '#9A8A6A' : 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>{plan.label}</p>
                     <div className="flex items-baseline gap-1.5 flex-wrap">
-                      <p className="text-xl font-medium" style={{ color: isCurrentPlan ? '#5A5A48' : 'var(--charcoal)' }}>{plan.price}</p>
+                      <p className="text-xl font-medium" style={{ color: isCurrentPlan ? '#6A5A3A' : 'var(--charcoal)' }}>{plan.price}</p>
                     </div>
                     {plan.id !== 'free' && (
                       <div
                         className="mt-2 text-[10px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap inline-block"
                         style={{
-                          backgroundColor: isCurrentPlan ? 'rgba(212,163,115,0.08)' : 'rgba(212,163,115,0.15)',
-                          color: isCurrentPlan ? '#5A5A48' : '#5A3A1A',
+                          backgroundColor: isCurrentPlan ? 'rgba(212,163,115,0.10)' : 'rgba(212,163,115,0.15)',
+                          color: isCurrentPlan ? '#6A5A3A' : '#5A3A1A',
                           fontFamily: 'var(--font-sans)',
-                          border: `1px solid ${isCurrentPlan ? 'rgba(212,163,115,0.15)' : 'rgba(212,163,115,0.30)'}`,
+                          border: `1px solid ${isCurrentPlan ? 'rgba(212,163,115,0.22)' : 'rgba(212,163,115,0.30)'}`,
                           letterSpacing: '0.04em',
                         }}
                       >
                         Pay once, own forever
                       </div>
                     )}
-                    <p className="text-xs mt-1 leading-relaxed" style={{ color: '#3A2A1A' }}>{plan.description}</p>
+                    <p className="text-xs mt-1 leading-relaxed" style={{ color: isCurrentPlan ? 'var(--charcoal)' : '#4A4A3A' }}>{plan.description}</p>
                   </div>
                   {/* Selection indicator */}
                   {(isSelected || isCurrentPlan) && (
@@ -372,7 +313,7 @@ export default function UpgradePage() {
                       className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5"
                       style={{ backgroundColor: isSelected ? 'var(--charcoal)' : 'rgba(204,213,174,0.3)', border: isCurrentPlan ? '1px solid rgba(212,163,115,0.25)' : 'none' }}
                     >
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: isSelected ? 'var(--cornsilk)' : '#5A5A48' }}>
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: isSelected ? 'var(--cornsilk)' : 'var(--charcoal)' }}>
                         <path d="M20 6L9 17l-5-5"/>
                       </svg>
                     </div>
@@ -383,8 +324,8 @@ export default function UpgradePage() {
 
                 <ul className="space-y-2 mb-5">
                   {plan.features.map((feat, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm" style={{ color: '#3A2A1A' }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0 mt-0.5" style={{ color: isCurrentPlan ? '#5A5A48' : '#7A5A2A' }}>
+                    <li key={i} className="flex items-start gap-2 text-sm" style={{ color: isCurrentPlan ? '#6A5A3A' : 'var(--charcoal)' }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0 mt-0.5" style={{ color: isCurrentPlan ? '#9A8A6A' : 'var(--bronze)' }}>
                         <path d="M20 6L9 17l-5-5"/>
                       </svg>
                       <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem' }}>{feat}</span>
@@ -396,36 +337,25 @@ export default function UpgradePage() {
                   type="button"
                   onClick={handleCardClick}
                   disabled={isCurrentPlan ?? false}
-                  className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed hover:-translate-y-0.5"
+                  className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.97]"
                   style={{
-                    background: buttonBaseStyles.background,
-                    color: buttonBaseStyles.color,
+                    backgroundColor: isSelected
+                      ? '#4A3520'
+                      : isCurrentPlan
+                        ? 'rgba(212,163,115,0.04)'
+                        : '#6B4A28',
+                    color: isSelected
+                      ? 'var(--cornsilk)'
+                      : isCurrentPlan
+                        ? '#7A6A4A'
+                        : 'var(--cornsilk)',
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: buttonBaseStyles.boxShadow,
-                    border: buttonBaseStyles.border,
-                    position: 'relative' as const,
-                    overflow: 'hidden' as const,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isCurrentPlan && !isSelected) {
-                      e.currentTarget.style.background = isFreePlan
-                        ? 'linear-gradient(180deg, #FBF6ED 0%, #EFD6B6 100%)'
-                        : 'linear-gradient(135deg, #5A3E22 0%, #8A6A3C 40%, #D4A373 60%, #8A6A3C 100%)';
-                      e.currentTarget.style.boxShadow = isFreePlan
-                        ? 'inset 0 0 0 1px rgba(120,85,45,0.24), 0 10px 26px rgba(120,85,45,0.16)'
-                        : '0 6px 28px rgba(212,163,115,0.45), 0 2px 8px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.08)';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isCurrentPlan && !isSelected) {
-                      e.currentTarget.style.background = buttonBaseStyles.background;
-                      e.currentTarget.style.boxShadow = buttonBaseStyles.boxShadow;
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }
+                    boxShadow: !isCurrentPlan ? '0 4px 16px rgba(212,163,115,0.28)' : 'none',
+                    border: isCurrentPlan ? '1.5px solid rgba(212,163,115,0.28)' : 'none',
+                    letterSpacing: '0.01em',
                   }}
                 >
-                  {isCurrentPlan ? 'Current plan' : isSelected ? 'Selected — ready to confirm' : plan.id === 'free' ? 'Downgrade to Free' : `Upgrade to ${plan.label}`}
+                  {isCurrentPlan ? 'Current plan' : isSelected ? 'Selected' : 'Choose plan'}
                 </button>
               </div>
             );
@@ -439,24 +369,12 @@ export default function UpgradePage() {
               type="button"
               onClick={handleSubmit}
               disabled={submitting}
-              className="h-13 rounded-full px-10 text-sm font-semibold transition-all duration-300 active:scale-[0.97] hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="h-13 rounded-full px-10 text-sm font-semibold transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: 'var(--bronze)',
                 color: 'var(--charcoal)',
                 fontFamily: 'var(--font-sans)',
                 boxShadow: '0 6px 28px rgba(212,163,115,0.36), 0 2px 8px rgba(212,163,115,0.16)',
-                position: 'relative' as const,
-                overflow: 'hidden' as const,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #C49A6C 0%, #D4A373 30%, #E8C89A 50%, #D4A373 70%, #C49A6C 100%)';
-                e.currentTarget.style.boxShadow = '0 10px 40px rgba(212,163,115,0.50), 0 3px 12px rgba(0,0,0,0.15)';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'var(--bronze)';
-                e.currentTarget.style.boxShadow = '0 6px 28px rgba(212,163,115,0.36), 0 2px 8px rgba(212,163,115,0.16)';
-                e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               {submitting ? (
@@ -465,27 +383,15 @@ export default function UpgradePage() {
                   Updating plan...
                 </span>
               ) : (
-                isUpgrade
-                  ? `Upgrade to ${getBookPlanLabel(selectedPlan)}`
-                  : `Change to ${getBookPlanLabel(selectedPlan)}`
+                `Upgrade to ${getBookPlanLabel(selectedPlan)}`
               )}
             </button>
-            <p className="text-xs mt-3" style={{ color: '#5A5A48', fontFamily: 'var(--font-sans)' }}>
+            <p className="text-xs mt-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
               Plans are per-book. Each book can be on its own plan.
             </p>
           </div>
         )}
       </main>
-
-      {/* Footer */}
-      <footer className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 py-6 text-xs" style={{ fontFamily: 'var(--font-sans)', color: '#9A8A78' }}>
-        <span>Memory Project</span>
-        <div className="flex items-center gap-6">
-          <a href="/privacy" className="hover:opacity-70 transition-opacity" style={{ color: '#9A8A78' }}>Privacy</a>
-          <a href="/terms" className="hover:opacity-70 transition-opacity" style={{ color: '#9A8A78' }}>Terms</a>
-          <a href="/faq" className="hover:opacity-70 transition-opacity" style={{ color: '#9A8A78' }}>FAQ</a>
-        </div>
-      </footer>
     </div>
   );
 }

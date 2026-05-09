@@ -1,19 +1,18 @@
 'use client';
 
-import { useCallback, useEffect, useState, use } from 'react';
+import { useEffect, useState, use } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Lightbox } from '@/components/ui/lightbox';
 import { MembersModal } from '@/components/ui/members-modal';
 import { Avatar } from '@/components/ui/avatar';
 import { Toast } from '@/components/ui/toast';
 import { MobileNav } from '@/components/ui/mobile-nav';
-import { PremiumAudioPlayer } from '@/components/ui/premium-audio-player';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
-import { getDisplayBookTitle } from '@/lib/display-book-title';
 
 interface Memory {
   id: number;
@@ -36,72 +35,7 @@ interface Book {
   owner_name: string;
 }
 
-interface BookMember {
-  user_id: number;
-  role: string;
-}
-
-interface LocalDraftSummary {
-  prompt: string;
-  customPrompt: string;
-  answer: string;
-  photoUrls: string[];
-  audioUrl: string | null;
-}
-
 const ACCENT_COLORS = ['var(--bronze)', 'var(--tea-green)', 'var(--papaya)'];
-const EMPTY_BOOK_PROMPTS = [
-  'What do you remember about your grandparents?',
-  'What was your wedding day like?',
-  'Tell me about your first job.',
-  'What was the best day of your life?',
-  'Describe a typical Sunday morning growing up.',
-  'Describe a holiday tradition you loved.',
-  'Tell me about your best friend growing up.',
-  'Describe a time you felt truly proud of yourself.',
-  'Tell me about a trip that changed your perspective.',
-  'What is your favorite memory with your parents?',
-  'Tell me about the house you grew up in.',
-  'What is a skill you are proud of learning?',
-  'What is the most beautiful place you have ever seen?',
-  'Describe a meal you will never forget.',
-];
-
-function getEmptyBookPrompts(bookId: string) {
-  const seed = Number(bookId) || 1;
-  const result = [...EMPTY_BOOK_PROMPTS];
-  let s = seed;
-
-  for (let i = result.length - 1; i > 0; i--) {
-    s = (s * 1103515245 + 12345) & 0x7fffffff;
-    const j = s % (i + 1);
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-
-  return result.slice(0, 3);
-}
-
-function readLocalDraftSummary(bookId: string): LocalDraftSummary | null {
-  if (typeof window === 'undefined') return null;
-
-  try {
-    const rawDraft = localStorage.getItem(`draft-${bookId}-new`);
-    if (!rawDraft) return null;
-
-    const parsed = JSON.parse(rawDraft) as LocalDraftSummary;
-    if (!parsed?.answer?.trim()) return null;
-
-    return {
-      prompt: parsed.prompt ?? '',
-      customPrompt: parsed.customPrompt ?? '',
-      answer: parsed.answer ?? '',
-      photoUrls: Array.isArray(parsed.photoUrls) ? parsed.photoUrls : [],
-      audioUrl: parsed.audioUrl ?? null,
-    };
-  } catch {
-    return null;
-  }
-}
 
 function getPlanBadgeStyles(plan: string) {
   const normalizedPlan = normalizeBookPlan(plan);
@@ -138,7 +72,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
-  const [localDraft] = useState<LocalDraftSummary | null>(() => readLocalDraftSummary(id));
   // Per-photo error state for graceful degradation in the grid
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   // Toast state
@@ -169,17 +102,17 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
   });
 
-  // Compute chronological chapter numbers (oldest = Chapter 1) regardless of sort order
-  const chronologicalMemories = [...memories].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-  const chapterNumberMap = new Map<number, number>();
-  chronologicalMemories.forEach((m, i) => chapterNumberMap.set(m.id, i + 1));
-  const draftWordCount = localDraft?.answer.trim().split(/\s+/).filter(Boolean).length ?? 0;
-  const draftPromptLabel = (localDraft?.customPrompt || localDraft?.prompt || '').trim();
-  const draftPreview = localDraft?.answer.replace(/\s+/g, ' ').trim() ?? '';
-  const draftExcerpt = draftPreview.length > 170 ? `${draftPreview.slice(0, 167).trimEnd()}…` : draftPreview;
-  const hasLocalDraft = memories.length === 0 && draftPreview.length > 0;
+  useEffect(() => {
+    fetchBook();
 
-  const fetchBook = useCallback(async () => {
+    const handleScroll = () => {
+      setShowTopBtn(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [id]);
+
+  const fetchBook = async () => {
     try {
       const res = await fetch(`/api/books/${id}`);
       if (res.status === 401) { router.push('/login'); setLoading(false); return; }
@@ -200,7 +133,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           const meRes = await fetch('/api/auth/me');
           if (meRes.ok) {
             const me = await meRes.json();
-            const self = ((membersData.data as BookMember[] | undefined) || []).find((member) => member.user_id === me.user?.id);
+            const self = (membersData.data || []).find((m: any) => m.user_id === me.user?.id);
             if (self) {
               setCurrentUserId(self.user_id);
               setCurrentUserRole(self.role);
@@ -216,22 +149,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     } finally {
       setLoading(false);
     }
-  }, [id, router]);
-
-  useEffect(() => {
-    const fetchTimer = window.setTimeout(() => {
-      void fetchBook();
-    }, 0);
-
-    const handleScroll = () => {
-      setShowTopBtn(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.clearTimeout(fetchTimer);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [fetchBook]);
+  };
 
   const handleDeleteMemory = async (memoryId: number) => {
     const res = await fetch(`/api/memories/${memoryId}`, { method: 'DELETE' });
@@ -254,7 +172,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
   if (loading) {
     return (
-      <div role="status" aria-label="Loading book memories…" className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
+      <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
         <div className="max-w-5xl mx-auto px-6 py-12">
           {/* Header skeleton */}
           <div className="mb-8">
@@ -292,10 +210,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   }
 
   if (!book) return null;
-
-  const displayTitle = getDisplayBookTitle(book.title);
-  const emptyBookPrompts = getEmptyBookPrompts(id);
-  const featuredEmptyPrompt = emptyBookPrompts[0];
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
@@ -392,7 +306,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       {/* ── TOP NAV ── */}
       <header className="sticky top-0 z-30 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.96)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.18)', boxShadow: '0 1px 0 rgba(212,163,115,0.08), 0 4px 24px rgba(212,163,115,0.04)' }}>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto gap-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <Link href="/dashboard" className="text-sm shrink-0 flex items-center gap-1.5 transition-colors hover:opacity-70" style={{ color: 'var(--charcoal)' }}>
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M15 18l-6-6 6-6"/>
@@ -400,8 +314,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <span>Dashboard</span>
             </Link>
           </div>
-          <div className="flex items-center gap-2.5 shrink-1 min-w-0">
-            {/* Members button — hidden on mobile to prevent horizontal overflow */}
+          <div className="flex items-center gap-2.5 shrink-0">
+            {/* Members button */}
             <button
               type="button"
               onClick={() => setShowMembersModal(true)}
@@ -430,7 +344,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               Add Memory
             </Link>
 
-            {/* Share button — hidden on mobile */}
+            {/* Share button */}
             <button
               type="button"
               onClick={() => {
@@ -453,8 +367,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-colors hover:opacity-70"
               style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
               aria-label="Open navigation menu"
-              aria-expanded={mobileNavOpen}
-              aria-controls="mobile-nav-drawer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M3 12h18M3 6h18M3 18h18"/>
@@ -494,17 +406,17 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           className="rounded-3xl p-5 md:p-6 relative overflow-hidden transition-all duration-500"
           style={{
             background: memories.length > 0
-    ? 'linear-gradient(160deg, rgba(212,163,115,0.14) 0%, rgba(204,213,174,0.10) 50%, rgba(212,163,115,0.06) 100%)'
-    : 'linear-gradient(135deg, rgba(212,163,115,0.10) 0%, rgba(204,213,174,0.07) 100%)',
-            border: '1px solid rgba(212,163,115,0.18)',
+    ? 'linear-gradient(135deg, rgba(212,163,115,0.12) 0%, rgba(204,213,174,0.08) 100%)'
+    : 'linear-gradient(135deg, rgba(212,163,115,0.09) 0%, rgba(204,213,174,0.06) 100%)',
+            border: '1px solid rgba(212,163,115,0.14)',
             marginBottom: memories.length === 0 ? '1.5rem' : '2rem',
-            boxShadow: '0 6px 32px rgba(212,163,115,0.10), inset 0 1px 0 rgba(255,255,255,0.8)',
+            boxShadow: '0 4px 24px rgba(212,163,115,0.08), inset 0 1px 0 rgba(255,255,255,0.7)',
           }}
         >
-          {/* Decorative corner accent — larger and more prominent */}
+          {/* Decorative corner accent */}
           <div
-            className="absolute top-0 right-0 w-48 h-48 rounded-full opacity-25 pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(212,163,115,0.5) 0%, rgba(204,213,174,0.2) 40%, transparent 70%)' }}
+            className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-20 pointer-events-none"
+            style={{ background: 'radial-gradient(circle, rgba(212,163,115,0.4) 0%, transparent 70%)' }}
           />
           {/* Warm left stripe */}
           <div
@@ -513,19 +425,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           />
           {/* Bottom warm fade */}
           <div
-            className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
-            style={{ background: 'linear-gradient(to top, rgba(212,163,115,0.06), transparent)' }}
+            className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none"
+            style={{ background: 'linear-gradient(to top, rgba(212,163,115,0.04), transparent)' }}
           />
-          {/* Subtle ambient book-glow behind title */}
-          <div
-            className="absolute top-4 left-12 w-64 h-16 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse, rgba(212,163,115,0.15) 0%, transparent 70%)', filter: 'blur(12px)' }}
-          />
-          <div className="flex items-start justify-between gap-4 flex-wrap pl-3 relative z-10">
+          <div className="flex items-start justify-between gap-4 flex-wrap pl-3">
             <div className="flex flex-col gap-2 flex-1 min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="display-md font-medium tracking-tight leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)', textShadow: '0 2px 12px rgba(212,163,115,0.12)' }}>
-                  {displayTitle}
+                <h1 className="display-md font-medium tracking-tight leading-tight" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+                  {book.title}
                 </h1>
                 {book.plan && book.plan !== 'free' && (
                   <span className="text-xs font-semibold px-3 py-1 rounded-full shrink-0" style={getPlanBadgeStyles(book.plan)}>
@@ -536,11 +443,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   <Link
                     href={`/books/${book.id}/edit/book`}
                     className="shrink-0 h-9 rounded-2xl flex items-center gap-2 px-4 text-xs font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
-                    style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: '#6A5A3A', border: '1px solid rgba(212,163,115,0.18)', fontFamily: 'var(--font-sans)' }}
+                    style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: '#6A5A3A', border: '1px solid rgba(212,163,115,0.22)', fontFamily: 'var(--font-sans)', boxShadow: '0 2px 8px rgba(212,163,115,0.08)' }}
                     aria-label="Edit book details"
                     title="Edit book"
                   >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ color: 'var(--bronze)' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ color: 'var(--bronze)' }}>
                       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                     </svg>
@@ -595,13 +502,13 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.4), transparent)' }} />
               {/* Sort controls */}
-              <div className="flex items-center gap-2.5 rounded-full px-2 py-2 overflow-x-auto flex-shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.18)' }}>
+              <div className="flex items-center gap-2.5 rounded-full px-4 py-2 overflow-x-auto ml-2" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.18)' }}>
                 <span className="text-xs font-bold tracking-wide shrink-0" style={{ color: 'rgba(43,43,43,0.85)', fontFamily: 'var(--font-sans)' }}>Sort</span>
                 <div className="w-px h-3.5 shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
                 <button
                   type="button"
                   onClick={() => setMemorySort('newest')}
-                  className="rounded-full px-4 py-2.5 text-xs font-semibold transition-all duration-200 shrink-0"
+                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
                   style={{
                     backgroundColor: memorySort === 'newest' ? 'var(--bronze)' : 'transparent',
                     color: memorySort === 'newest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
@@ -614,7 +521,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <button
                   type="button"
                   onClick={() => setMemorySort('oldest')}
-                  className="rounded-full px-4 py-2.5 text-xs font-semibold transition-all duration-200 shrink-0"
+                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
                   style={{
                     backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
                     color: memorySort === 'oldest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
@@ -669,99 +576,52 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <div className="absolute top-6 -left-3 w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--tea-green)', opacity: 0.6 }} />
               <div className="absolute bottom-2 left-0 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--bronze)', opacity: 0.3 }} />
             </div>
-            <h2 className="text-2xl md:text-3xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-              {hasLocalDraft ? 'Pick up where you left off' : 'Start your memory book'}
-            </h2>
+            <h2 className="text-2xl md:text-3xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>Start your memory book</h2>
             <p className="text-base max-w-sm mx-auto leading-relaxed mb-8" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
-              {hasLocalDraft ? 'Your last draft is still here, waiting for the next detail that makes it feel whole.' : 'Every great story starts with a single memory.'}
+              Every great story starts with a single memory.
             </p>
-            {hasLocalDraft ? (
-              <div
-                className="mx-auto mb-10 max-w-2xl rounded-[28px] border px-5 py-5 text-left md:px-7 md:py-6"
-                style={{
-                  background: 'linear-gradient(145deg, rgba(255,251,240,0.94), rgba(250,245,231,0.98))',
-                  borderColor: 'rgba(212,163,115,0.26)',
-                  boxShadow: '0 20px 50px rgba(122, 90, 49, 0.10), inset 0 1px 0 rgba(255,255,255,0.55)',
-                }}
-              >
-                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: '#8A6A49', fontFamily: 'var(--font-sans)' }}>
-                  <span>Unsaved draft</span>
-                  <span aria-hidden="true">•</span>
-                  <span>{draftWordCount} {draftWordCount === 1 ? 'word' : 'words'}</span>
-                  {localDraft?.photoUrls?.length ? <><span aria-hidden="true">•</span><span>{localDraft.photoUrls.length} photo{localDraft.photoUrls.length === 1 ? '' : 's'}</span></> : null}
-                  {localDraft?.audioUrl ? <><span aria-hidden="true">•</span><span>voice note ready</span></> : null}
-                </div>
-                {draftPromptLabel ? (
-                  <p className="mt-4 text-sm font-semibold" style={{ color: '#5A4631', fontFamily: 'var(--font-sans)' }}>
-                    {draftPromptLabel}
-                  </p>
-                ) : null}
-                <p className="mt-3 text-base leading-7 md:text-lg" style={{ color: '#4F463C', fontFamily: 'var(--font-serif)' }}>
-                  “{draftExcerpt}”
-                </p>
-              </div>
-            ) : (
-              <div className="flex flex-wrap justify-center gap-2.5 mb-10">
-                {emptyBookPrompts.map(prompt => {
-                  const label = prompt.length > 45 ? prompt.split(/\s+/).slice(0, 6).join(' ') + '…' : prompt;
-                  return (
-                    <Link
-                      key={prompt}
-                      href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
-                      style={{
-                        backgroundColor: 'rgba(212,163,115,0.14)',
-                        color: '#4A3A2A',
-                        border: '1px solid rgba(212,163,115,0.30)',
-                        fontFamily: 'var(--font-sans)',
-                        boxShadow: '0 2px 8px rgba(212,163,115,0.10)',
-                      }}
-                    >
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
-                        <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                      </svg>
-                      {label}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href={hasLocalDraft ? `/books/${id}/edit` : `/books/${id}/edit?prompt=${encodeURIComponent(featuredEmptyPrompt)}`}
-                className="inline-flex h-14 items-center justify-center rounded-full px-10 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-2xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-1 active:scale-95 group"
-                style={{ 
-                  backgroundColor: 'var(--bronze)', 
-                  color: 'var(--charcoal)', 
-                  boxShadow: '0 6px 28px rgba(212,163,115,0.35)',
-                  fontFamily: 'var(--font-sans)',
-                  animation: 'gentle-pulse 3s ease-in-out infinite',
-                }}
-              >
-                <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M12 5v14M5 12h14"/>
-                </svg>
-                {hasLocalDraft ? 'Resume your draft' : 'Start with a guided prompt'}
-              </Link>
-              <Link
-                href={hasLocalDraft ? `/books/${id}/edit?prompt=${encodeURIComponent(featuredEmptyPrompt)}` : `/books/${id}/edit`}
-                className="inline-flex h-14 items-center justify-center rounded-full px-8 text-sm font-medium border-2 transition-all duration-300 hover:brightness-105 active:scale-95"
-                style={{ 
-                  borderColor: 'rgba(212,163,115,0.45)', 
-                  color: 'var(--charcoal)',
-                  backgroundColor: 'rgba(212,163,115,0.08)',
-                  fontFamily: 'var(--font-sans)',
-                }}
-              >
-                <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 19.5V6.75C4 5.784 4.784 5 5.75 5h12.5"/>
-                  <path d="M8 8h10"/>
-                  <path d="M8 12h10"/>
-                  <path d="M8 16h6"/>
-                </svg>
-                {hasLocalDraft ? 'Start a fresh memory instead' : 'Write freely instead'}
-              </Link>
+            {/* 3 example prompt chips — spark inspiration */}
+            <div className="flex flex-wrap justify-center gap-2.5 mb-10">
+              {[
+                { label: "The best day of the trip", prompt: "Describe the best day of your vacation." },
+                { label: "A funny travel mishap", prompt: "Tell me about a funny or unexpected moment during your trip." },
+                { label: "A meal I'll never forget", prompt: "Describe a meal you'll never forget from this trip." },
+              ].map(({ label, prompt }) => (
+                <Link
+                  key={label}
+                  href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
+                  style={{
+                    backgroundColor: 'rgba(212,163,115,0.14)',
+                    color: '#4A3A2A',
+                    border: '1px solid rgba(212,163,115,0.30)',
+                    fontFamily: 'var(--font-sans)',
+                    boxShadow: '0 2px 8px rgba(212,163,115,0.10)',
+                  }}
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                  </svg>
+                  {label}
+                </Link>
+              ))}
             </div>
+            <Link
+              href={`/books/${id}/edit`}
+              className="inline-flex h-14 items-center justify-center rounded-full px-10 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-2xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-1 active:scale-95 group"
+              style={{ 
+                backgroundColor: 'var(--bronze)', 
+                color: 'var(--charcoal)', 
+                boxShadow: '0 6px 28px rgba(212,163,115,0.35)',
+                fontFamily: 'var(--font-sans)',
+                animation: 'gentle-pulse 3s ease-in-out infinite',
+              }}
+            >
+              <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Add your first memory
+            </Link>
             <style>{`
               @keyframes gentle-pulse {
                 0%, 100% { box-shadow: 0 6px 28px rgba(212,163,115,0.35); }
@@ -774,9 +634,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           <div className="space-y-5 md:space-y-7">
             {sortedMemories.map((memory, memoryIndex) => {
               const accentColor = ACCENT_COLORS[memoryIndex % ACCENT_COLORS.length];
-              const photoCount = memory.photo_urls?.length ?? 0;
-              const hasAudio = Boolean(memory.audio_url);
-              const useMediaRail = photoCount === 1 || (hasAudio && photoCount <= 1);
+              const isEven = memoryIndex % 2 === 0;
               return (
                 <div
                   key={memory.id}
@@ -794,14 +652,13 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     onMouseLeave={() => setHoveredCard(null)}
                     style={{
                       backgroundColor: '#FDFCF5',
-                      border: hoveredCard === memoryIndex ? '1px solid rgba(212,163,115,0.22)' : '1px solid rgba(212,163,115,0.06)',
+                      border: hoveredCard === memoryIndex ? '1px solid rgba(212,163,115,0.18)' : '1px solid rgba(212,163,115,0.06)',
                       boxShadow: hoveredCard === memoryIndex
-                        ? '0 20px 56px rgba(212,163,115,0.26), 0 10px 30px rgba(212,163,115,0.14), 0 1px 0 rgba(212,163,115,0.18) inset'
+                        ? '0 16px 48px rgba(212,163,115,0.22), 0 8px 24px rgba(212,163,115,0.12), 0 1px 0 rgba(212,163,115,0.15) inset'
                         : '0 4px 20px rgba(212,163,115,0.08), 0 1px 4px rgba(212,163,115,0.05)',
                       backgroundImage: hoveredCard === memoryIndex
-                        ? 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.12) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.14) 0%, transparent 50%)'
+                        ? 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.10) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.12) 0%, transparent 50%)'
                         : 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.08) 0%, transparent 50%)',
-                      transform: hoveredCard === memoryIndex ? 'translateY(-3px) scale(1.005)' : 'translateY(0) scale(1)',
                     }}
                   >
                     {/* Warm page-edge accent — left side with book spine feel */}
@@ -826,10 +683,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         }}
                       >
                         <span className="text-lg font-bold tracking-tight" style={{ color: accentColor, lineHeight: 1, fontFamily: 'Georgia, serif' }}>
-                          {String(chapterNumberMap.get(memory.id) || memoryIndex + 1).padStart(2, '0')}
+                          {String(memoryIndex + 1).padStart(2, '0')}
                         </span>
                         <div className="w-px h-5 rounded-full" style={{ backgroundColor: `${accentColor}55` }} />
-                        <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: `${accentColor}aa`, fontFamily: 'var(--font-sans)' }}>Chapter {chapterNumberMap.get(memory.id)}</span>
+                        <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: `${accentColor}aa`, fontFamily: 'var(--font-sans)' }}>Chapter {memoryIndex + 1}</span>
                       </div>
 
                       {/* Prompt question as elegant chapter opener */}
@@ -841,7 +698,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               className="text-2xl leading-none mt-[-2px] shrink-0"
                               style={{ color: 'rgba(212,163,115,0.4)', fontFamily: 'Georgia, serif' }}
                             >
-                              &ldquo;
+                              "
                             </span>
                             <p
                               className="text-sm md:text-base italic leading-relaxed"
@@ -856,211 +713,69 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         </div>
                       )}
 
-                      <div className={useMediaRail ? 'grid gap-4 lg:grid-cols-[minmax(0,1.52fr)_minmax(14.5rem,0.82fr)] lg:items-start' : ''}>
-                        <div>
-                          {/* Media chips */}
-                          {(photoCount > 0 || hasAudio) && !useMediaRail && (
-                            <div className="flex flex-wrap items-center gap-2 mb-4">
-                              {photoCount > 0 && (
-                                <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}>
-                                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-                                  </svg>
-                                  {photoCount} {photoCount === 1 ? 'photo' : 'photos'}
-                                </div>
-                              )}
-                              {hasAudio && (
-                                <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: 'var(--charcoal)' }}>
-                                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
-                                    <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-                                  </svg>
-                                  Voice note
-                                </div>
-                              )}
+                      {/* Media chips */}
+                      {(memory.photo_urls?.length > 0 || memory.audio_url) && (
+                        <div className="flex flex-wrap items-center gap-2 mb-4">
+                          {memory.photo_urls?.length > 0 && (
+                            <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}>
+                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                              </svg>
+                              {memory.photo_urls.length} {memory.photo_urls.length === 1 ? 'photo' : 'photos'}
                             </div>
                           )}
+                          {memory.audio_url && (
+                            <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.18)', color: 'var(--charcoal)' }}>
+                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5F6650' }}>
+                                <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+                              </svg>
+                              Voice note
+                            </div>
+                          )}
+                        </div>
+                      )}
 
-                          {/* Memory text — journal feel, constrained width */}
-                          {/* Drop cap only for substantial entries (>=2 words); short/broken-looking entries get normal rendering */}
-                          {(() => {
-                            const trimmed = (memory.answer_text || '').trim();
-                            const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
-                            const firstChar = trimmed[0] || '';
-                            const isLikelyBroken = wordCount <= 1 && /^[a-z]/.test(firstChar.toLowerCase()) && trimmed.length > 0 && trimmed.length <= 15;
-                            return (
-                              <p
-                                className={isLikelyBroken ? 'text-sm md:text-base whitespace-pre-wrap' : 'text-sm md:text-base whitespace-pre-wrap memory-answer-text'}
-                                style={{
-                                  color: 'var(--charcoal)',
-                                  fontFamily: 'var(--font-serif)',
-                                  maxWidth: useMediaRail ? '62ch' : '68ch',
-                                  lineHeight: '2.0',
-                                }}
-                              >
-                                {memory.answer_text}
-                              </p>
-                            );
-                          })()}
+                      {/* Memory text — journal feel, constrained width */}
+                      <p
+                        className="text-sm md:text-base leading-[1.85] whitespace-pre-wrap"
+                        style={{
+                          color: 'var(--charcoal)',
+                          fontFamily: 'var(--font-serif)',
+                          maxWidth: '68ch',
+                          lineHeight: '1.9',
+                        }}
+                      >
+                        {memory.answer_text}
+                      </p>
 
-                          {/* Date + contributor — warm, book-journal style, no min-read metric */}
-                          <div className="flex items-center gap-3 mt-4 pt-3 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
-                            {memory.contributor_name ? (
-                              <div className="flex items-center gap-2">
-                                <Avatar
-                                  name={memory.contributor_name}
-                                  imageUrl={memory.contributor_avatar || null}
-                                  size={32}
-                                />
-                                <span className="text-xs" style={{ color: 'rgba(43,43,43,0.78)', fontFamily: 'var(--font-sans)' }}>
-                                  {memory.contributor_name}
-                                </span>
-                              </div>
-                            ) : null}
-                            <span className="text-sm" style={{ color: '#7A6A5A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
-                              {(() => {
-                                const d = new Date(memory.created_at);
-                                const dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                                const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-                                return `Added ${dateStr} · ${timeStr}`;
-                              })()}
+                      {/* Date + contributor — warm, book-journal style, no min-read metric */}
+                      <div className="flex items-center gap-3 mt-4 pt-3 border-t flex-wrap" style={{ borderColor: 'rgba(212,163,115,0.08)' }}>
+                        {memory.contributor_name ? (
+                          <div className="flex items-center gap-2">
+                            <Avatar
+                              name={memory.contributor_name}
+                              imageUrl={memory.contributor_avatar || null}
+                              size={24}
+                            />
+                            <span className="text-xs" style={{ color: 'rgba(43,43,43,0.78)', fontFamily: 'var(--font-sans)' }}>
+                              {memory.contributor_name}
                             </span>
                           </div>
-                        </div>
-
-                        {useMediaRail && (photoCount > 0 || hasAudio) && (
-                          <aside
-                            className="lg:mt-1 space-y-3.5"
-                            style={{
-                              background: 'linear-gradient(180deg, rgba(250,237,205,0.34) 0%, rgba(255,253,246,0.92) 100%)',
-                              border: '1px solid rgba(212,163,115,0.16)',
-                              borderRadius: '1.25rem',
-                              padding: '0.9rem',
-                              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.72), 0 10px 28px rgba(212,163,115,0.08)',
-                            }}
-                          >
-                            <div>
-                              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em]" style={{ color: '#8A735E', fontFamily: 'var(--font-sans)' }}>
-                                Keepsakes
-                              </p>
-                              <div className="mt-2 flex flex-wrap items-center gap-2">
-                                {photoCount > 0 && (
-                                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.68rem] font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: '#6D5237', fontFamily: 'var(--font-sans)' }}>
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                      <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-                                    </svg>
-                                    {photoCount} {photoCount === 1 ? 'photo' : 'photos'}
-                                  </span>
-                                )}
-                                {hasAudio && (
-                                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.68rem] font-medium" style={{ backgroundColor: 'rgba(204,213,174,0.22)', color: '#4E5D46', fontFamily: 'var(--font-sans)' }}>
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-                                    </svg>
-                                    Voice note
-                                  </span>
-                                )}
-                              </div>
-                              <p className="mt-2 text-xs leading-5" style={{ color: '#7A6A60', fontFamily: 'var(--font-sans)' }}>
-                                Open the keepsakes that were saved alongside this chapter.
-                              </p>
-                            </div>
-
-                            {photoCount === 1 && memory.photo_urls?.[0] && (() => {
-                              const url = memory.photo_urls[0];
-                              const globalIndex = memoryIndex * 100;
-                              const hasError = !!imageErrors[globalIndex];
-                              return (
-                                <div
-                                  className="relative img-frame overflow-hidden cursor-pointer group transition-all duration-300 hover:ring-2 hover:ring-[rgba(212,163,115,0.35)] hover:shadow-[0_10px_24px_rgba(212,163,115,0.18)]"
-                                  style={{ aspectRatio: '5 / 4', borderRadius: '1rem' }}
-                                >
-                                  {hasError ? (
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-[1rem]" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'rgba(43,43,43,0.3)' }}>
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                                        <circle cx="8.5" cy="8.5" r="1.5" />
-                                        <polyline points="21 15 16 10 5 21" />
-                                      </svg>
-                                      <span className="text-[0.65rem] font-medium" style={{ color: 'rgba(43,43,43,0.4)', fontFamily: 'var(--font-sans)' }}>Unavailable</span>
-                                    </div>
-                                  ) : (
-                                    <>
-                                      <Image
-                                        src={url}
-                                        alt="Memory photo"
-                                        fill
-                                        unoptimized={true}
-                                        className="object-cover rounded-[1rem] transition-transform duration-500 group-hover:scale-105"
-                                        onError={() => handlePhotoError(globalIndex)}
-                                      />
-                                      <button
-                                        type="button"
-                                        onClick={() => handlePhotoClick(globalIndex, url)}
-                                        className="absolute inset-0 flex items-end justify-start p-3 opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-[1rem]"
-                                        aria-label="View photo fullscreen"
-                                        style={{ background: 'linear-gradient(to top, rgba(43,43,43,0.4) 0%, rgba(43,43,43,0.06) 55%, transparent 100%)' }}
-                                      >
-                                        <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[0.68rem] font-medium" style={{ backgroundColor: 'rgba(254,250,224,0.94)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
-                                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
-                                          </svg>
-                                          View photo
-                                        </div>
-                                      </button>
-                                    </>
-                                  )}
-                                </div>
-                              );
-                            })()}
-
-                            {hasAudio && (
-                              <div
-                                className="p-4 rounded-[1rem] relative overflow-hidden"
-                                style={{
-                                  background: 'linear-gradient(135deg, rgba(204,213,174,0.16) 0%, rgba(212,163,115,0.1) 100%)',
-                                  border: '1px solid rgba(212,163,115,0.18)',
-                                  boxShadow: '0 4px 18px rgba(212,163,115,0.07), inset 0 1px 0 rgba(255,255,255,0.5)',
-                                }}
-                              >
-                                <div className="absolute inset-0 opacity-[0.06] pointer-events-none flex items-center justify-center gap-0.5">
-                                  {[...Array(24)].map((_, i) => (
-                                    <div
-                                      key={i}
-                                      className="w-0.5 rounded-full"
-                                      style={{
-                                        height: `${8 + Math.abs(Math.sin(i * 0.8) * 10 + Math.cos(i * 1.4) * 6)}px`,
-                                        backgroundColor: 'var(--bronze)',
-                                      }}
-                                    />
-                                  ))}
-                                </div>
-                                <div className="relative flex items-center gap-3">
-                                  <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--bronze)', boxShadow: '0 4px 12px rgba(212,163,115,0.28)' }}>
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
-                                      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-                                    </svg>
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] mb-2" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
-                                      Voice Note
-                                    </p>
-                                    <PremiumAudioPlayer
-                                      key={memory.audio_url ?? `voice-note-${memory.id}`}
-                                      src={memory.audio_url}
-                                      loadingText="Loading voice note…"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </aside>
-                        )}
+                        ) : null}
+                        <span className="text-sm" style={{ color: '#7A6A5A', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+                          {(() => {
+                            const d = new Date(memory.created_at);
+                            const dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                            const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                            return `Added ${dateStr} · ${timeStr}`;
+                          })()}
+                        </span>
                       </div>
 
                       {/* Photo grid — premium album-style with hover reveal */}
-                      {photoCount > 1 && (
+                      {memory.photo_urls && memory.photo_urls.length > 0 && (
                         <div
-                          className={`mt-5 photo-grid photo-grid--${Math.min(photoCount, 4)}`}
+                          className={`mt-5 photo-grid photo-grid--${Math.min(memory.photo_urls.length, 4)}`}
                         >
                           {memory.photo_urls.map((url, photoIndex) => {
                             const globalIndex = memoryIndex * 100 + photoIndex;
@@ -1068,10 +783,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             return (
                               <div
                                 key={photoIndex}
-                                className="relative img-frame overflow-hidden cursor-pointer group transition-all duration-300 hover:ring-2 hover:ring-[rgba(212,163,115,0.35)] hover:shadow-[0_4px_16px_rgba(212,163,115,0.18)]"
+                                className="relative img-frame overflow-hidden cursor-pointer group"
                                 style={{
-                                  aspectRatio: '1',
-                                  borderRadius: '12px',
+                                  aspectRatio: photoIndex === 0 && memory.photo_urls.length === 1 ? '4/3' : '1',
                                 }}
                               >
                                 {hasError ? (
@@ -1079,12 +793,26 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                     className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl"
                                     style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}
                                   >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'rgba(43,43,43,0.3)' }}>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="24"
+                                      height="24"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      style={{ color: 'rgba(43,43,43,0.3)' }}
+                                    >
                                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                                       <circle cx="8.5" cy="8.5" r="1.5" />
                                       <polyline points="21 15 16 10 5 21" />
                                     </svg>
-                                    <span className="text-[0.65rem] font-medium" style={{ color: 'rgba(43,43,43,0.4)', fontFamily: 'var(--font-sans)' }}>
+                                    <span
+                                      className="text-[0.65rem] font-medium"
+                                      style={{ color: 'rgba(43,43,43,0.4)', fontFamily: 'var(--font-sans)' }}
+                                    >
                                       Unavailable
                                     </span>
                                   </div>
@@ -1098,22 +826,34 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                       className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"
                                       onError={() => handlePhotoError(globalIndex)}
                                     />
+                                    {/* Hover overlay with expand hint */}
                                     <button
                                       type="button"
                                       onClick={() => handlePhotoClick(globalIndex, url)}
                                       className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-xl"
                                       aria-label={`View photo ${photoIndex + 1} fullscreen`}
-                                      style={{ background: 'linear-gradient(to top, rgba(43,43,43,0.45) 0%, rgba(43,43,43,0.1) 50%, transparent 100%)' }}
+                                      style={{
+                                        background: 'linear-gradient(to top, rgba(43,43,43,0.45) 0%, rgba(43,43,43,0.1) 50%, transparent 100%)',
+                                      }}
                                     >
-                                      <div className="w-10 h-10 rounded-full flex items-center justify-center mb-1 transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: 'rgba(254,250,224,0.95)', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
+                                      <div
+                                        className="w-10 h-10 rounded-full flex items-center justify-center mb-1 transition-transform duration-300 group-hover:scale-110"
+                                        style={{ backgroundColor: 'rgba(254,250,224,0.95)', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
+                                      >
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
                                           <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
                                         </svg>
                                       </div>
                                     </button>
-                                    <div className="absolute bottom-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ backgroundColor: 'rgba(254,250,224,0.9)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>
-                                      {photoIndex + 1} / {photoCount}
-                                    </div>
+                                    {/* Photo index badge */}
+                                    {memory.photo_urls.length > 1 && (
+                                      <div
+                                        className="absolute bottom-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                        style={{ backgroundColor: 'rgba(254,250,224,0.9)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                                      >
+                                        {photoIndex + 1} / {memory.photo_urls.length}
+                                      </div>
+                                    )}
                                   </>
                                 )}
                               </div>
@@ -1123,7 +863,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       )}
 
                       {/* Audio — premium styled card with waveform icon */}
-                      {!useMediaRail && hasAudio && (
+                      {memory.audio_url && (
                         <div
                           className="mt-5 p-5 rounded-2xl relative overflow-hidden"
                           style={{
@@ -1132,6 +872,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             boxShadow: '0 4px 20px rgba(212,163,115,0.08), inset 0 1px 0 rgba(255,255,255,0.5)',
                           }}
                         >
+                          {/* Subtle decorative waveform lines */}
                           <div className="absolute inset-0 opacity-[0.06] pointer-events-none flex items-center justify-center gap-0.5">
                             {[...Array(30)].map((_, i) => (
                               <div
@@ -1157,10 +898,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--bronze)', fontFamily: 'var(--font-sans)' }}>
                                 Voice Note
                               </p>
-                              <PremiumAudioPlayer
-                                key={memory.audio_url ?? `voice-note-${memory.id}`}
+                              <audio
                                 src={memory.audio_url}
-                                loadingText="Loading voice note…"
+                                controls
+                                className="w-full rounded-xl audio-player"
+                                style={{ height: '40px', borderRadius: '10px' }}
                               />
                             </div>
                           </div>
@@ -1180,14 +922,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               e.preventDefault();
                               setActiveMenu(activeMenu === memory.id ? null : memory.id);
                             }}
-                            className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 opacity-100 md:opacity-0 md:group-hover/card:opacity-100 md:group-focus-within/card:opacity-100"
+                            className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
                             style={{
                               backgroundColor: 'rgba(212,163,115,0.10)',
                               color: '#5A3A2A',
+                              opacity: hoveredCard === memoryIndex ? 1 : 0,
                             }}
                             aria-label="Memory options"
                             aria-haspopup="menu"
-                            aria-expanded={activeMenu === memory.id}
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                               <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
@@ -1249,47 +991,34 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         )}
 
         {memories.length > 0 && (
-          <div
-            className="mt-8 rounded-[28px] border px-5 py-5 md:px-7 md:py-6"
-            style={{
-              background: 'linear-gradient(180deg, rgba(255,250,240,0.98) 0%, rgba(250,241,226,0.98) 100%)',
-              borderColor: 'rgba(212,163,115,0.2)',
-              boxShadow: '0 14px 34px rgba(212,163,115,0.12), inset 0 1px 0 rgba(255,255,255,0.82)',
-            }}
-          >
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-6">
-              <div className="min-w-0">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em]" style={{ color: '#8A6A4A', fontFamily: 'var(--font-sans)' }}>
-                  Next step
-                </p>
-                <h3 className="mt-2 text-xl md:text-2xl font-medium tracking-tight" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
-                  {memories.length === 1 ? 'See how this chapter reads in the book.' : 'See how these chapters read in the book.'}
-                </h3>
-                <p className="mt-2 text-sm leading-6 max-w-2xl" style={{ color: '#5B4636', fontFamily: 'var(--font-sans)' }}>
-                  Open the print preview to check pacing, flow, and keepsakes before you add more memories or order your book.
-                </p>
-              </div>
-              <div className="flex shrink-0 flex-col items-start gap-2 md:items-end">
-                <Link
-                  href={`/books/${id}/preview`}
-                  className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-300 hover:brightness-105 hover:shadow-xl hover:shadow-[rgba(74,49,32,0.22)] hover:-translate-y-0.5 active:scale-95"
-                  style={{
-                    backgroundColor: '#4A3120',
-                    color: '#FEFAE0',
-                    boxShadow: '0 10px 24px rgba(74,49,32,0.18)',
-                  }}
-                >
-                  <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-                  </svg>
-                  Preview your book
-                </Link>
-                <p className="text-xs" style={{ color: '#6B5848', fontFamily: 'var(--font-sans)' }}>
-                  Layout preview before ordering
-                </p>
-              </div>
+          <div className="mt-12 text-center">
+            {/* Decorative divider */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="h-px w-12 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
+              <svg width="16" height="16" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)', opacity: 0.5 }}>
+                <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
+                <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+              </svg>
+              <div className="h-px w-12 rounded-full" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
             </div>
+            <Link
+              href={`/books/${id}/preview`}
+              className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-300 hover:brightness-105 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.25)] hover:-translate-y-0.5 active:scale-95"
+              style={{ 
+                backgroundColor: 'var(--bronze)', 
+                color: 'var(--charcoal)',
+                boxShadow: '0 4px 20px rgba(212,163,115,0.2)',
+              }}
+            >
+              <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              Preview your book
+            </Link>
+            <p className="mt-4 text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
+              Print preview — see your book before ordering
+            </p>
           </div>
         )}
       </main>
