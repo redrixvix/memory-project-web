@@ -128,10 +128,12 @@ export default function Home() {
 
           {/* Mobile hamburger */}
           <button
-            className="flex sm:hidden w-11 h-11 rounded-full items-center justify-center transition-colors hover:opacity-70"
+            className="flex sm:hidden w-11 h-11 rounded-full items-center justify-center transition-colors hover:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open navigation menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 12h18M3 6h18M3 18h18"/>
@@ -141,7 +143,7 @@ export default function Home() {
       </header>
 
       {/* Mobile nav drawer */}
-      <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} />
+      <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} id="mobile-nav" />
 
       {/* ══════════════════════════════════════════
           TASK 1: HERO REDESIGN — 60/40 split
@@ -183,16 +185,16 @@ export default function Home() {
               <Link
                 href="/signup"
                 aria-label="Start your free book"
-                className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95 shadow-sm"
-                style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+                className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 shadow-sm"
+                style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
               >
                 Start your free book
               </Link>
               <Link
                 href="/pricing"
                 aria-label="View pricing"
-                className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap border transition-all duration-200 hover:opacity-80 active:scale-95"
-                style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', borderWidth: '1.5px' }}
+                className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap border transition-all duration-200 hover:opacity-80 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', borderWidth: '1.5px', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
               >
                 View pricing
               </Link>
@@ -833,9 +835,9 @@ export default function Home() {
                 Made with care for families who believe every story deserves to be remembered.
               </p>
               {/* Social icons */}
-              <div className="flex gap-3">
+              <div className="flex gap-2.5">
                 {/* Instagram icon */}
-                <a href="#" aria-label="Memory Project on Instagram" className="nav-link w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <a href="#" aria-label="Memory Project on Instagram" className="nav-link w-11 h-11 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--charcoal)' }}>
                     <rect x="2" y="2" width="20" height="20" rx="5"/>
                     <circle cx="12" cy="12" r="4"/>
@@ -843,7 +845,7 @@ export default function Home() {
                   </svg>
                 </a>
                 {/* Facebook icon */}
-                <a href="#" aria-label="Memory Project on Facebook" className="nav-link w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <a href="#" aria-label="Memory Project on Facebook" className="nav-link w-11 h-11 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--charcoal)' }}>
                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                   </svg>

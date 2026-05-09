@@ -10,9 +10,10 @@ interface MobileNavProps {
   isOpen: boolean;
   onClose: () => void;
   loggedIn: boolean;
+  id?: string;
 }
 
-export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
+export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const focusableElementsRef = useRef<Element[]>([]);
@@ -102,7 +103,7 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
       {/* Drawer */}
       <div
         ref={drawerRef}
-        id="mobile-nav-drawer"
+        id={id}
         className="fixed top-0 right-0 z-50 h-full w-72 shadow-2xl flex flex-col animate-slide-in"
         style={{ backgroundColor: 'rgba(254,250,224,0.96)', backdropFilter: 'blur(20px)', borderLeft: '1px solid rgba(212,163,115,0.2)' }}
       >
