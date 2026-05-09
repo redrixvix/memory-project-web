@@ -138,7 +138,7 @@ export default function UpgradePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--cornsilk)' }}>
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--cornsilk)' }} role="status">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
           <p className="text-sm" style={{ color: '#4A4A3A' }}>Loading...</p>
