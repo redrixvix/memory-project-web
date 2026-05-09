@@ -109,8 +109,15 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recorderStreamRef = useRef<MediaStream | null>(null);
   const recorderChunksRef = useRef<Blob[]>([]);
+  const customPromptRef = useRef(customPrompt);
   const activePlan = normalizeBookPlan(book?.plan, book?.storage_tier);
   const canUseMedia = activePlan !== 'free';
+  // Syncs customPromptRef so the effect below can read the latest value without needing
+  // it as a dependency (avoids a cascade of re-renders when prompt changes)
+  useEffect(() => {
+    customPromptRef.current = customPrompt;
+  }, [customPrompt]);
+
   const allPresetPrompts = useMemo(() => flattenMemoryPrompts(promptGroups), [promptGroups]);
   const promptOptionCount = allPresetPrompts.length;
   const uploadedPhotoUrls = useMemo(
@@ -254,11 +261,12 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       return;
     }
 
+    const nextCustom = customPromptRef.current !== prompt ? prompt : customPromptRef.current;
     setUseCustomPrompt(true);
-    if (customPrompt !== prompt) {
-      setCustomPrompt(prompt);
+    if (nextCustom !== customPromptRef.current) {
+      setCustomPrompt(nextCustom);
     }
-  }, [allPresetPrompts, customPrompt, prompt]);
+  }, [allPresetPrompts, prompt]);
 
   useEffect(() => {
     if (!draftLoaded) {
