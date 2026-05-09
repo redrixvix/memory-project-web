@@ -120,27 +120,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       const data = await res.json();
       setBook(data.book);
       setMemories(data.memories || []);
-      // Fetch current user's membership
-      if (data.membership) {
-        setCurrentUserId(data.membership.user_id);
-        setCurrentUserRole(data.membership.role);
-      } else {
-        // Fallback: fetch members list to find self
-        const membersRes = await fetch(`/api/books/${id}/members`);
-        if (membersRes.ok) {
-          const membersData = await membersRes.json();
-          // Find current user by checking /api/auth/me
-          const meRes = await fetch('/api/auth/me');
-          if (meRes.ok) {
-            const me = await meRes.json();
-            const self = (membersData.data || []).find((m: any) => m.user_id === me.user?.id);
-            if (self) {
-              setCurrentUserId(self.user_id);
-              setCurrentUserRole(self.role);
-            }
-          }
-        }
-      }
+      setCurrentUserId(data.current_user_id ?? null);
+      setCurrentUserRole(data.current_user_role ?? null);
     } catch (err) {
       console.error('Failed to fetch book', err);
       setToastMessage('Failed to load book. Please refresh.');

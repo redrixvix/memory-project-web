@@ -113,6 +113,8 @@ export async function GET(
       },
       memories,
       membership,
+      current_user_id: user.id,
+      current_user_role: membership?.role ?? 'owner',
     });
   } catch (error) {
     console.error('Get book error:', error);
