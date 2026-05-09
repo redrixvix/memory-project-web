@@ -33,20 +33,19 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
   const [orderSuccess, setOrderSuccess] = useState(false);
 
   useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        const res = await fetch(`/api/books/${id}`);
+        if (res.status === 401) { router.push('/login'); return; }
+        if (res.status === 404) { router.push('/dashboard'); return; }
+        const data = await res.json();
+        setBook(data.book);
+        setMemories(data.memories || []);
+      } catch { console.error('Failed to fetch book'); }
+      finally { setLoading(false); }
+    };
     void fetchBook();
-  }, [id]);
-
-  const fetchBook = async () => {
-    try {
-      const res = await fetch(`/api/books/${id}`);
-      if (res.status === 401) { router.push('/login'); return; }
-      if (res.status === 404) { router.push('/dashboard'); return; }
-      const data = await res.json();
-      setBook(data.book);
-      setMemories(data.memories || []);
-    } catch { console.error('Failed to fetch book'); }
-    finally { setLoading(false); }
-  };
+  }, [id, router]);
 
   const handleOrderPrint = async () => {
     setShowOrderModal(true);
