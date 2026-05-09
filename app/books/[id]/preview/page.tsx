@@ -33,7 +33,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
   const [orderSuccess, setOrderSuccess] = useState(false);
 
   useEffect(() => {
-    fetchBook();
+    void fetchBook();
   }, [id]);
 
   const fetchBook = async () => {
@@ -92,7 +92,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
       >
         <div className="flex items-center justify-between w-full max-w-2xl mx-auto">
           <div className="flex items-center gap-3">
-            <Link href={`/books/${id}`} className="text-sm flex items-center gap-1.5 transition-colors hover:opacity-70" style={{ color: 'var(--charcoal)' }}>
+            <Link href={`/books/${id}`} className="text-sm flex items-center gap-1.5 transition-colors hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bronze)] rounded-md" style={{ color: 'var(--charcoal)' }}>
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M15 18l-6-6 6-6"/>
               </svg>

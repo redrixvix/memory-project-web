@@ -35,9 +35,15 @@ export function Dropdown({ trigger, children, align = 'right', className }: Drop
 
   return (
     <div ref={ref} className={cn('relative inline-block', className)}>
-      <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="cursor-pointer"
+        aria-expanded={isOpen}
+        aria-haspopup="menu"
+      >
         {trigger}
-      </div>
+      </button>
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />

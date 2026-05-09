@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { PremiumAudioPlayer } from '@/components/ui/premium-audio-player';
-import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
+import { normalizeBookPlan } from '@/lib/book-plan';
 import { flattenMemoryPrompts, getMemoryPromptGroups, isMemoryPromptGroups, type MemoryPromptGroup } from '@/lib/memory-prompts';
 
 type SaveState = 'idle' | 'saving' | 'saved';
@@ -109,38 +109,12 @@ function getWritingStage(wordCount: number) {
   };
 }
 
-function getPlanBadgeStyles(plan: string) {
-  const normalizedPlan = normalizeBookPlan(plan);
-
-  if (normalizedPlan === 'plus') {
-    return {
-      backgroundColor: '#2D4A35',
-      color: '#E8F0E5',
-    };
-  }
-
-  if (normalizedPlan === 'premium') {
-    return {
-      backgroundColor: 'var(--bronze)',
-      color: 'var(--charcoal)',
-    };
-  }
-
-  return {
-    backgroundColor: 'rgba(212,163,115,0.25)',
-    color: '#4A4A3A',
-  };
-}
-
 export default function EditMemory({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
   const memoryId = searchParams.get('memory');
   const urlPrompt = searchParams.get('prompt');
-
-  // Set initial prompt from URL param when creating a new memory (no memoryId, no draft)
-  const [initialPromptSet, setInitialPromptSet] = useState(false);
 
   const [book, setBook] = useState<Book | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -299,7 +273,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     // If no memoryId, no draft, but URL has a prompt param, use it
     if (!memoryId && urlPrompt && !draft) {
       setPrompt(urlPrompt);
-      setInitialPromptSet(true);
     }
 
     setDraftLoaded(true);
