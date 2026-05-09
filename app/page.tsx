@@ -12,7 +12,7 @@ import SeoSchema from '@/components/seo-schema';
 
 export default function Home() {
   const router = useRouter();
-  const [loggedIn, setLoggedIn] = useState<boolean | null>(null); // null = loading
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -21,16 +21,16 @@ export default function Home() {
       .then(r => r.json())
       .then(data => {
         if (data.user) {
-          // Logged in — send to dashboard immediately
           router.replace('/dashboard');
         } else {
           setLoggedIn(false);
         }
       })
       .catch(() => setLoggedIn(false));
+
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    // Scroll-reveal via IntersectionObserver
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -48,7 +48,7 @@ export default function Home() {
       window.removeEventListener('scroll', handleScroll);
       observer.disconnect();
     };
-  }, []);
+  }, [router]);
 
   const memories = [
     {
