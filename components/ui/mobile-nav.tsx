@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+
+const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -13,6 +15,7 @@ interface MobileNavProps {
 export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const focusableElementsRef = useRef<Element[]>([]);
 
   useEffect(() => {
     if (isOpen) {
@@ -23,9 +26,57 @@ export function MobileNav({ isOpen, onClose, loggedIn }: MobileNavProps) {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  const trapFocus = useCallback(() => {
+    if (!drawerRef.current) return;
+    const focusable = Array.from(
+      drawerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+    );
+    focusableElementsRef.current = focusable;
+    // Roving tabindex: all except first get -1
+    focusable.forEach((el, i) => {
+      el.setAttribute('tabindex', i === 0 ? '0' : '-1');
+    });
+    // Focus first element
+    focusable[0]?.focus();
+  }, []);
+
+  const releaseFocus = useCallback(() => {
+    focusableElementsRef.current.forEach(el => {
+      el.removeAttribute('tabindex');
+    });
+    focusableElementsRef.current = [];
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      trapFocus();
+    } else {
+      releaseFocus();
+    }
+    return () => releaseFocus();
+  }, [isOpen, trapFocus, releaseFocus]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') { onClose(); return; }
+      if (e.key !== 'Tab') return;
+      const focusable = focusableElementsRef.current;
+      if (focusable.length === 0) return;
+      const first = focusable[0] as HTMLElement;
+      const last = focusable[focusable.length - 1] as HTMLElement;
+      const active = document.activeElement;
+
+      if (e.shiftKey) {
+        if (active === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     if (isOpen) document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
