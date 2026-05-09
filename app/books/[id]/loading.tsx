@@ -1,7 +1,7 @@
 'use client';
 export default function Loading() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
+    <div role="status" aria-label="Loading book…" className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
       <div className="max-w-3xl mx-auto px-6 py-12">
         {/* Header skeleton */}
         <div className="mb-8">
