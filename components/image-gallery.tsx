@@ -334,6 +334,8 @@ export function DropZone({
     }
   };
 
+  const dropZoneLabel = acceptsAudio ? "Upload audio recording" : "Upload photo";
+
   return (
     <div
       role="button"
@@ -345,6 +347,8 @@ export function DropZone({
       onDrop={handleDrop}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      aria-label={dropZoneLabel}
+      aria-disabled={disabled}
       className={cn(
         "relative cursor-pointer overflow-hidden rounded-[1.35rem] border transition-all duration-300",
         isDragging && "scale-[1.01]",
@@ -376,6 +380,7 @@ export function DropZone({
         onChange={handleInputChange}
         disabled={disabled}
         className="sr-only"
+        aria-label={dropZoneLabel}
       />
 
       {/* Subtle paper texture overlay */}
