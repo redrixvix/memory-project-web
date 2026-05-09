@@ -49,8 +49,9 @@ export async function POST(request: NextRequest) {
     const utapi = new UTApi();
     const result = await utapi.uploadFiles([utFile]);
 
-    const uploaded = result[0] as any;
-    const publicUrl = uploaded.data?.ufsUrl ?? uploaded.ufsUrl ?? uploaded.url;
+    const uploaded = result[0];
+    const data = uploaded as { data?: { ufsUrl?: string }; ufsUrl?: string; url?: string } | undefined;
+    const publicUrl = data?.data?.ufsUrl ?? data?.ufsUrl ?? data?.url ?? '';
 
     await sql`
       UPDATE users
@@ -59,8 +60,9 @@ export async function POST(request: NextRequest) {
     `;
 
     return NextResponse.json({ url: publicUrl });
-  } catch (error: any) {
-    console.error('Profile image upload error:', error.message);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal server error';
+    console.error('Profile image upload error:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
