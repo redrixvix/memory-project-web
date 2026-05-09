@@ -14,7 +14,6 @@ import { MobileNav } from '@/components/ui/mobile-nav';
 import { PremiumAudioPlayer } from '@/components/ui/premium-audio-player';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
 import { getDisplayBookTitle } from '@/lib/display-book-title';
-import { getMemoryPromptGroups } from '@/lib/memory-prompts';
 
 interface Memory {
   id: number;
@@ -40,6 +39,14 @@ interface Book {
 interface BookMember {
   user_id: number;
   role: string;
+}
+
+interface LocalDraftSummary {
+  prompt: string;
+  customPrompt: string;
+  answer: string;
+  photoUrls: string[];
+  audioUrl: string | null;
 }
 
 const ACCENT_COLORS = ['var(--bronze)', 'var(--tea-green)', 'var(--papaya)'];
@@ -72,6 +79,28 @@ function getEmptyBookPrompts(bookId: string) {
   }
 
   return result.slice(0, 3);
+}
+
+function readLocalDraftSummary(bookId: string): LocalDraftSummary | null {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const rawDraft = localStorage.getItem(`draft-${bookId}-new`);
+    if (!rawDraft) return null;
+
+    const parsed = JSON.parse(rawDraft) as LocalDraftSummary;
+    if (!parsed?.answer?.trim()) return null;
+
+    return {
+      prompt: parsed.prompt ?? '',
+      customPrompt: parsed.customPrompt ?? '',
+      answer: parsed.answer ?? '',
+      photoUrls: Array.isArray(parsed.photoUrls) ? parsed.photoUrls : [],
+      audioUrl: parsed.audioUrl ?? null,
+    };
+  } catch {
+    return null;
+  }
 }
 
 function getPlanBadgeStyles(plan: string) {
@@ -109,6 +138,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  const [localDraft] = useState<LocalDraftSummary | null>(() => readLocalDraftSummary(id));
   // Per-photo error state for graceful degradation in the grid
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   // Toast state
@@ -143,6 +173,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const chronologicalMemories = [...memories].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
   const chapterNumberMap = new Map<number, number>();
   chronologicalMemories.forEach((m, i) => chapterNumberMap.set(m.id, i + 1));
+  const draftWordCount = localDraft?.answer.trim().split(/\s+/).filter(Boolean).length ?? 0;
+  const draftPromptLabel = (localDraft?.customPrompt || localDraft?.prompt || '').trim();
+  const draftPreview = localDraft?.answer.replace(/\s+/g, ' ').trim() ?? '';
+  const draftExcerpt = draftPreview.length > 170 ? `${draftPreview.slice(0, 167).trimEnd()}…` : draftPreview;
+  const hasLocalDraft = memories.length === 0 && draftPreview.length > 0;
 
   const fetchBook = useCallback(async () => {
     try {
@@ -634,38 +669,66 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <div className="absolute top-6 -left-3 w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--tea-green)', opacity: 0.6 }} />
               <div className="absolute bottom-2 left-0 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--bronze)', opacity: 0.3 }} />
             </div>
-            <h2 className="text-2xl md:text-3xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>Start your memory book</h2>
+            <h2 className="text-2xl md:text-3xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+              {hasLocalDraft ? 'Pick up where you left off' : 'Start your memory book'}
+            </h2>
             <p className="text-base max-w-sm mx-auto leading-relaxed mb-8" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
-              Every great story starts with a single memory.
+              {hasLocalDraft ? 'Your last draft is still here, waiting for the next detail that makes it feel whole.' : 'Every great story starts with a single memory.'}
             </p>
-            {/* Prompt chips — show 3 evocative prompts drawn from the curated library, shuffled per-book */}
-            <div className="flex flex-wrap justify-center gap-2.5 mb-10">
-              {emptyBookPrompts.map(prompt => {
-                const label = prompt.length > 45 ? prompt.split(/\s+/).slice(0, 6).join(' ') + '…' : prompt;
-                return (
-                  <Link
-                    key={prompt}
-                    href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
-                    style={{
-                      backgroundColor: 'rgba(212,163,115,0.14)',
-                      color: '#4A3A2A',
-                      border: '1px solid rgba(212,163,115,0.30)',
-                      fontFamily: 'var(--font-sans)',
-                      boxShadow: '0 2px 8px rgba(212,163,115,0.10)',
-                    }}
-                  >
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
-                      <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                    </svg>
-                    {label}
-                  </Link>
-                );
-              })}
-            </div>
+            {hasLocalDraft ? (
+              <div
+                className="mx-auto mb-10 max-w-2xl rounded-[28px] border px-5 py-5 text-left md:px-7 md:py-6"
+                style={{
+                  background: 'linear-gradient(145deg, rgba(255,251,240,0.94), rgba(250,245,231,0.98))',
+                  borderColor: 'rgba(212,163,115,0.26)',
+                  boxShadow: '0 20px 50px rgba(122, 90, 49, 0.10), inset 0 1px 0 rgba(255,255,255,0.55)',
+                }}
+              >
+                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: '#8A6A49', fontFamily: 'var(--font-sans)' }}>
+                  <span>Unsaved draft</span>
+                  <span aria-hidden="true">•</span>
+                  <span>{draftWordCount} {draftWordCount === 1 ? 'word' : 'words'}</span>
+                  {localDraft?.photoUrls?.length ? <><span aria-hidden="true">•</span><span>{localDraft.photoUrls.length} photo{localDraft.photoUrls.length === 1 ? '' : 's'}</span></> : null}
+                  {localDraft?.audioUrl ? <><span aria-hidden="true">•</span><span>voice note ready</span></> : null}
+                </div>
+                {draftPromptLabel ? (
+                  <p className="mt-4 text-sm font-semibold" style={{ color: '#5A4631', fontFamily: 'var(--font-sans)' }}>
+                    {draftPromptLabel}
+                  </p>
+                ) : null}
+                <p className="mt-3 text-base leading-7 md:text-lg" style={{ color: '#4F463C', fontFamily: 'var(--font-serif)' }}>
+                  “{draftExcerpt}”
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-wrap justify-center gap-2.5 mb-10">
+                {emptyBookPrompts.map(prompt => {
+                  const label = prompt.length > 45 ? prompt.split(/\s+/).slice(0, 6).join(' ') + '…' : prompt;
+                  return (
+                    <Link
+                      key={prompt}
+                      href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
+                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
+                      style={{
+                        backgroundColor: 'rgba(212,163,115,0.14)',
+                        color: '#4A3A2A',
+                        border: '1px solid rgba(212,163,115,0.30)',
+                        fontFamily: 'var(--font-sans)',
+                        boxShadow: '0 2px 8px rgba(212,163,115,0.10)',
+                      }}
+                    >
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                        <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                      </svg>
+                      {label}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href={`/books/${id}/edit?prompt=${encodeURIComponent(featuredEmptyPrompt)}`}
+                href={hasLocalDraft ? `/books/${id}/edit` : `/books/${id}/edit?prompt=${encodeURIComponent(featuredEmptyPrompt)}`}
                 className="inline-flex h-14 items-center justify-center rounded-full px-10 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-2xl hover:shadow-[rgba(212,163,115,0.45)] hover:-translate-y-1 active:scale-95 group"
                 style={{ 
                   backgroundColor: 'var(--bronze)', 
@@ -678,10 +741,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <svg className="w-5 h-5 mr-3 transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M12 5v14M5 12h14"/>
                 </svg>
-                Start with a guided prompt
+                {hasLocalDraft ? 'Resume your draft' : 'Start with a guided prompt'}
               </Link>
               <Link
-                href={`/books/${id}/edit`}
+                href={hasLocalDraft ? `/books/${id}/edit?prompt=${encodeURIComponent(featuredEmptyPrompt)}` : `/books/${id}/edit`}
                 className="inline-flex h-14 items-center justify-center rounded-full px-8 text-sm font-medium border-2 transition-all duration-300 hover:brightness-105 active:scale-95"
                 style={{ 
                   borderColor: 'rgba(212,163,115,0.45)', 
@@ -696,7 +759,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   <path d="M8 12h10"/>
                   <path d="M8 16h6"/>
                 </svg>
-                Write freely instead
+                {hasLocalDraft ? 'Start a fresh memory instead' : 'Write freely instead'}
               </Link>
             </div>
             <style>{`
