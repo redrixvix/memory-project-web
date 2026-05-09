@@ -67,7 +67,9 @@ export default function Error({
             className="text-sm leading-relaxed"
             style={{ color: '#6A6A5A' }}
           >
-            We ran into an unexpected error loading this page. Your memories are safe — let&apos;s try again.
+            {error?.message
+              ? error.message
+              : "We ran into an unexpected error loading this page. Your memories are safe — let's try again."}
           </p>
         </div>
 
