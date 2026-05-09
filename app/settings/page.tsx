@@ -354,6 +354,7 @@ export default function SettingsPage() {
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
+                  aria-label="Display name"
                   className="w-full rounded-xl px-4 py-3 text-base outline-none transition-all duration-200"
                   style={{
                     border: '1.5px solid rgba(212,163,115,0.45)',
@@ -369,11 +370,15 @@ export default function SettingsPage() {
 
               {/* Email (read-only — clearly non-editable) */}
               <div className="grid gap-2">
-                <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                <label htmlFor="email-display" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                   Email address
-                </span>
+                </label>
                 <div
+                  id="email-display"
                   className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-default select-none"
+                  role="textbox"
+                  aria-readonly="true"
+                  tabIndex={0}
                   style={{
                     backgroundColor: 'rgba(204,213,174,0.06)',
                     border: '1px solid rgba(212,163,115,0.12)',
@@ -540,7 +545,7 @@ export default function SettingsPage() {
                       Export memories &amp; delete account
                     </p>
                     <p className="text-xs mt-0.5" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>
-                      We'll notify you when these features are available.
+                      We&apos;ll notify you when these features are available.
                     </p>
                   </div>
                 </div>
@@ -581,7 +586,7 @@ export default function SettingsPage() {
                   <div>
                     <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Password</p>
                     <p className="text-xs mt-0.5" style={{ color: '#4A4A3A' }}>
-                      You haven't changed your password yet
+                      You haven&apos;t changed your password yet
                     </p>
                   </div>
                   <button
@@ -602,15 +607,15 @@ export default function SettingsPage() {
                     )}
                     <div>
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>Current password</Label>
-                      <Input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="Current password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
+                      <Input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="Current password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} onFocus={e => { e.currentTarget.style.borderColor = 'var(--bronze)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.18)'; }} onBlur={e => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.55)'; e.currentTarget.style.boxShadow = 'none'; }} />
                     </div>
                     <div>
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>New password</Label>
-                      <Input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="New password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
+                      <Input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="New password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} onFocus={e => { e.currentTarget.style.borderColor = 'var(--bronze)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.18)'; }} onBlur={e => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.55)'; e.currentTarget.style.boxShadow = 'none'; }} />
                     </div>
                     <div>
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>Confirm new password</Label>
-                      <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm new password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} />
+                      <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm new password" className="h-9 rounded-lg text-sm" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} onFocus={e => { e.currentTarget.style.borderColor = 'var(--bronze)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.18)'; }} onBlur={e => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.55)'; e.currentTarget.style.boxShadow = 'none'; }} />
                     </div>
                     <button
                       onClick={async () => {
