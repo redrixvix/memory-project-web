@@ -267,6 +267,7 @@ export default function UpgradePage() {
             // Only show 'Most Popular' when the Plus plan is available for selection (not the current plan)
             const isPopular = plan.id === 'plus' && !isCurrentPlan;
             const isPlus = plan.id === 'plus';
+            const isFreePlan = plan.id === 'free';
             const cardStyles = {
               backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? 'rgba(212,163,115,0.05)' : isPlus ? '#EDD9B4' : 'var(--papaya)',
               border: isSelected ? '2px solid #7A5A30' : isCurrentPlan ? '1.5px dashed rgba(212,163,115,0.30)' : isPlus ? '1px solid rgba(196,168,120,0.35)' : '1px solid rgba(212,163,115,0.2)',
@@ -279,6 +280,33 @@ export default function UpgradePage() {
               transform: isSelected ? 'scale(1.015)' : 'scale(1)',
               transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
             };
+            const buttonBaseStyles = isSelected
+              ? {
+                  background: '#2D4A35',
+                  color: '#E8F0E5',
+                  boxShadow: '0 4px 20px rgba(45,74,53,0.30), inset 0 0 0 1px rgba(255,255,255,0.08)',
+                  border: '1px solid transparent',
+                }
+              : isCurrentPlan
+                ? {
+                    background: 'rgba(204,213,174,0.25)',
+                    color: '#4A5A3A',
+                    boxShadow: 'none',
+                    border: '1px solid rgba(90,122,74,0.12)',
+                  }
+                : isFreePlan
+                  ? {
+                      background: 'linear-gradient(180deg, #F9F1E3 0%, #F3E2C9 100%)',
+                      color: '#4E3822',
+                      boxShadow: 'inset 0 0 0 1px rgba(120,85,45,0.18), 0 6px 18px rgba(120,85,45,0.10)',
+                      border: '1px solid rgba(120,85,45,0.18)',
+                    }
+                  : {
+                      background: '#4A3520',
+                      color: 'var(--cornsilk)',
+                      boxShadow: '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)',
+                      border: '1px solid transparent',
+                    };
             const handleCardClick = () => { if (!isCurrentPlan) setSelectedPlan(plan.id); };
             return (
               <div
@@ -368,31 +396,34 @@ export default function UpgradePage() {
                   type="button"
                   onClick={handleCardClick}
                   disabled={isCurrentPlan ?? false}
-                  className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed"
+                  className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed hover:-translate-y-0.5"
                   style={{
-                    backgroundColor: isSelected
-                      ? '#2D4A35'
-                      : isCurrentPlan
-                        ? 'rgba(204,213,174,0.25)'
-                        : plan.id === 'free'
-                          ? 'rgba(212,163,115,0.12)'
-                          : '#4A3520',
-                    color: isSelected
-                      ? '#E8F0E5'
-                      : isCurrentPlan
-                        ? '#4A5A3A'
-                        : 'var(--cornsilk)',
+                    background: buttonBaseStyles.background,
+                    color: buttonBaseStyles.color,
                     fontFamily: 'var(--font-sans)',
-                    boxShadow: isSelected
-                      ? '0 4px 20px rgba(45,74,53,0.30), inset 0 0 0 1px rgba(255,255,255,0.08)'
-                      : plan.id === 'free'
-                        ? 'none'
-                        : '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)',
+                    boxShadow: buttonBaseStyles.boxShadow,
+                    border: buttonBaseStyles.border,
                     position: 'relative' as const,
                     overflow: 'hidden' as const,
                   }}
-                  onMouseEnter={(e) => { if (!isCurrentPlan && !isSelected) { e.currentTarget.style.background = 'linear-gradient(135deg, #5A3E22 0%, #8A6A3C 40%, #D4A373 60%, #8A6A3C 100%)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(212,163,115,0.45), 0 2px 8px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}}
-                  onMouseLeave={(e) => { if (!isCurrentPlan && !isSelected) { e.currentTarget.style.background = '#4A3520'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(74,53,32,0.18), inset 0 0 0 1px rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}}
+                  onMouseEnter={(e) => {
+                    if (!isCurrentPlan && !isSelected) {
+                      e.currentTarget.style.background = isFreePlan
+                        ? 'linear-gradient(180deg, #FBF6ED 0%, #EFD6B6 100%)'
+                        : 'linear-gradient(135deg, #5A3E22 0%, #8A6A3C 40%, #D4A373 60%, #8A6A3C 100%)';
+                      e.currentTarget.style.boxShadow = isFreePlan
+                        ? 'inset 0 0 0 1px rgba(120,85,45,0.24), 0 10px 26px rgba(120,85,45,0.16)'
+                        : '0 6px 28px rgba(212,163,115,0.45), 0 2px 8px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.08)';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isCurrentPlan && !isSelected) {
+                      e.currentTarget.style.background = buttonBaseStyles.background;
+                      e.currentTarget.style.boxShadow = buttonBaseStyles.boxShadow;
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }
+                  }}
                 >
                   {isCurrentPlan ? 'Current plan' : isSelected ? 'Selected — ready to confirm' : plan.id === 'free' ? 'Downgrade to Free' : `Upgrade to ${plan.label}`}
                 </button>
