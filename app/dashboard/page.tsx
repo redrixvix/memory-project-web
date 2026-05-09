@@ -229,14 +229,6 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-        <style>{`
-          @keyframes skeleton-shimmer {
-            0% { opacity: 0.45; }
-            50% { opacity: 0.85; }
-            100% { opacity: 0.45; }
-          }
-          .skeleton-pulse { animation: skeleton-shimmer 1.8s ease-in-out infinite; }
-        `}</style>
       </div>
     );
   }
