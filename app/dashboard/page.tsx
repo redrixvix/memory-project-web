@@ -243,7 +243,7 @@ export default function Dashboard() {
 
   if (loading || loggedIn === null) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
+      <div className="min-h-screen" role="status" aria-label="Loading dashboard…" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
         <header className="sticky top-0 z-20 h-12 md:h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
           <div className="flex items-center justify-between w-full max-w-6xl mx-auto">
             <div className="flex items-center gap-3">
