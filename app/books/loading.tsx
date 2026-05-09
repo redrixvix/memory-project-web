@@ -1,7 +1,7 @@
 'use client';
 export default function Loading() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)' }}>
+    <div role="status" aria-label="Loading books…" className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)' }}>
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="h-7 w-32 rounded-lg mb-8 animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
