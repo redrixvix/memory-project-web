@@ -337,6 +337,7 @@ export default function UpgradePage() {
                   type="button"
                   onClick={handleCardClick}
                   disabled={isCurrentPlan ?? false}
+                  aria-label={plan.label + ' plan — ' + (isCurrentPlan ? 'Current plan' : isSelected ? 'Selected' : 'Choose plan')}
                   className="w-full h-10 rounded-full text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.97]"
                   style={{
                     backgroundColor: isSelected
