@@ -1,7 +1,7 @@
 'use client';
 
 import { generateReactHelpers } from '@uploadthing/react';
-import { useCallback, useEffect, useMemo, useRef, useState, use } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, use, startTransition } from 'react';
 import { MobileNav } from '@/components/ui/mobile-nav';
 import type { MutableRefObject } from 'react';
 import Link from 'next/link';
@@ -255,27 +255,28 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     if (draft) {
       try {
         const parsed = JSON.parse(draft) as DraftState;
-        if (parsed.prompt) setPrompt(parsed.prompt);
-        if (parsed.customPrompt) setCustomPrompt(parsed.customPrompt);
+        if (parsed.prompt) startTransition(() => setPrompt(parsed.prompt));
+        if (parsed.customPrompt) startTransition(() => setCustomPrompt(parsed.customPrompt));
         if (parsed.answer) {
-          setAnswer(parsed.answer);
-          setWordCount(parsed.answer.trim() ? parsed.answer.trim().split(/\s+/).length : 0);
+          startTransition(() => setAnswer(parsed.answer));
+          startTransition(() => setWordCount(parsed.answer.trim() ? parsed.answer.trim().split(/\s+/).length : 0));
         }
         if (Array.isArray(parsed.photoUrls)) {
-          setPhotoItems(createDraftPhotoItems(parsed.photoUrls));
+          startTransition(() => setPhotoItems(createDraftPhotoItems(parsed.photoUrls)));
         }
         if (parsed.audioUrl) {
-          setAudioDraft(createExistingAudioDraft(parsed.audioUrl));
+          const audioUrl = parsed.audioUrl;
+          startTransition(() => setAudioDraft(createExistingAudioDraft(audioUrl)));
         }
       } catch {}
     }
 
     // If no memoryId, no draft, but URL has a prompt param, use it
     if (!memoryId && urlPrompt && !draft) {
-      setPrompt(urlPrompt);
+      startTransition(() => setPrompt(urlPrompt));
     }
 
-    setDraftLoaded(true);
+    startTransition(() => setDraftLoaded(true));
   }, [draftKey, id, memoryId, router, urlPrompt]);
 
   // Auto-focus textarea when navigated via a prompt link (e.g. from empty state chip)
@@ -304,18 +305,18 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
   useEffect(() => {
     if (!prompt) {
-      setUseCustomPrompt(false);
+      startTransition(() => setUseCustomPrompt(false));
       return;
     }
 
     if (allPresetPrompts.includes(prompt)) {
-      setUseCustomPrompt(false);
+      startTransition(() => setUseCustomPrompt(false));
       return;
     }
 
-    setUseCustomPrompt(true);
+    startTransition(() => setUseCustomPrompt(true));
     if (customPrompt !== prompt) {
-      setCustomPrompt(prompt);
+      startTransition(() => setCustomPrompt(prompt));
     }
   }, [allPresetPrompts, customPrompt, prompt]);
 
@@ -328,7 +329,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       clearTimeout(saveTimerRef.current);
     }
 
-    setSaveState('saving');
+    startTransition(() => setSaveState('saving'));
     saveTimerRef.current = setTimeout(() => {
       try {
         const nextDraft: DraftState = {
@@ -907,7 +908,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
             <button
               type="button"
               onClick={() => setMobileNavOpen(true)}
-              className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95"
+              className="focus-ring md:hidden w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95"
               style={{ 
                 backgroundColor: 'rgba(212,163,115,0.12)',
                 color: 'var(--bronze)',
@@ -988,7 +989,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <button
                       type="button"
                       onClick={() => { setPrompt(''); setUseCustomPrompt(false); setCustomPrompt(''); }}
-                      className="text-xs underline-offset-2 hover:underline transition-all"
+                      className="focus-ring text-xs underline-offset-2 hover:underline transition-all"
                       style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}
                     >
                       Clear prompt
@@ -1001,7 +1002,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       value={promptLoadState === 'ready' || useCustomPrompt ? promptSelectValue : NO_PROMPT_VALUE}
                       onChange={(e) => handlePromptSelectChange(e.target.value, { customPrompt, setCustomPrompt, setPrompt, setUseCustomPrompt })}
                       disabled={promptLoadState === 'loading'}
-                      className="w-full appearance-none rounded-[1.15rem] border px-4 py-3.5 pr-12 text-sm md:text-[0.95rem] transition-colors outline-none"
+                      className="focus-ring w-full appearance-none rounded-[1.15rem] border px-4 py-3.5 pr-12 text-sm md:text-[0.95rem] transition-colors outline-none"
                       style={{
                         borderColor: 'rgba(212,163,115,0.20)',
                         backgroundColor: 'rgba(255,253,246,0.70)',
@@ -1094,7 +1095,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <button
                           type="button"
                           onClick={() => void loadPromptGroups()}
-                          className="mt-3 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium"
+                          className="focus-ring mt-3 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium"
                           style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
                         >
                           Retry prompts
@@ -1141,6 +1142,15 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     .memory-textarea::placeholder {
                       color: rgba(80, 75, 65, 0.80);
                       font-style: italic;
+                    }
+                    /* Keyboard focus states — not shown for mouse users */
+                    .focus-ring:focus-visible {
+                      outline: 2px solid rgba(212,163,115,0.6);
+                      outline-offset: 2px;
+                    }
+                    button.focus-ring:focus-visible,
+                    a.focus-ring:focus-visible {
+                      box-shadow: 0 0 0 3px rgba(212,163,115,0.25) !important;
                     }
                   `}</style>
                   <Textarea
@@ -1291,7 +1301,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               </p>
                             </div>
                             <label
-                              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200 hover:brightness-110 active:scale-[0.98] shadow-md"
+                              className="focus-ring inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200 hover:brightness-110 active:scale-[0.98] shadow-md"
                               style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', boxShadow: '0 4px 16px rgba(212,163,115,0.3)' }}
                             >
                               <input
@@ -1385,7 +1395,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
                           <div className="flex flex-wrap gap-3">
                             <label
-                              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
+                              className="focus-ring inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
                               style={{
                                 borderColor: 'rgba(212,163,115,0.24)',
                                 backgroundColor: '#FDFCF5',
@@ -1414,7 +1424,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                               type="button"
                               onClick={recorderState === 'recording' ? handleStopRecording : () => void handleStartRecording()}
                               disabled={loading || recorderState === 'requesting' || recorderState === 'processing'}
-                              className="inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-70 hover:brightness-105 active:scale-[0.98]"
+                              className="focus-ring inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-70 hover:brightness-105 active:scale-[0.98]"
                               style={{
                                 backgroundColor: recorderState === 'recording' ? '#8A3F2B' : 'rgba(212,163,115,0.12)',
                                 color: recorderState === 'recording' ? 'var(--cornsilk)' : 'var(--charcoal)',
@@ -1639,7 +1649,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:items-center">
                       <Link
                         href={`/books/${id}`}
-                        className="inline-flex h-10 items-center justify-center rounded-full border px-5 text-sm font-medium transition-colors"
+                        className="focus-ring inline-flex h-10 items-center justify-center rounded-full border px-5 text-sm font-medium transition-colors"
                         style={{ borderColor: 'rgba(212,163,115,0.26)', color: 'var(--charcoal)', backgroundColor: 'rgba(255,253,246,0.9)' }}
                       >
                         Cancel
@@ -1647,7 +1657,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                       <Button
                         type="submit"
                         disabled={isSubmitDisabled}
-                        className="h-11 rounded-full px-8 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(196,148,106,0.4)] hover:-translate-y-0.5"
+                        className="focus-ring h-11 rounded-full px-8 text-sm font-semibold disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.97] hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(196,148,106,0.4)] hover:-translate-y-0.5"
                         style={{
                           backgroundColor: isSubmitDisabled ? 'rgba(212,163,115,0.55)' : 'var(--bronze)',
                           color: isSubmitDisabled ? 'rgba(43,43,43,0.65)' : 'var(--charcoal)',
@@ -1817,7 +1827,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                             setAudioDraft(null);
                             router.refresh();
                           }}
-                          className="inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200 hover:bg-white active:scale-[0.98]"
+                          className="focus-ring inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200 hover:bg-white active:scale-[0.98]"
                           style={{
                             border: '1px solid rgba(212,163,115,0.22)',
                             color: 'var(--charcoal)',
@@ -1830,7 +1840,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                         <button
                           type="button"
                           onClick={() => router.push(`/books/${id}`)}
-                          className="inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition-all duration-200 hover:translate-y-[-1px] active:scale-[0.98]"
+                          className="focus-ring inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition-all duration-200 hover:translate-y-[-1px] active:scale-[0.98]"
                           style={{
                             backgroundColor: 'var(--bronze)',
                             color: 'var(--cornsilk)',
