@@ -130,6 +130,9 @@ export function MembersModal({ bookId, onClose, currentUserId, currentUserRole }
 
       {/* Panel */}
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="members-modal-title"
         className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md overflow-y-auto members-panel"
         style={{ backgroundColor: 'var(--cornsilk)' }}
       >
@@ -138,7 +141,7 @@ export function MembersModal({ bookId, onClose, currentUserId, currentUserRole }
           className="sticky top-0 z-10 flex items-center justify-between px-6 py-5 border-b"
           style={{ backgroundColor: 'rgba(254,250,224,0.95)', backdropFilter: 'blur(12px)', borderColor: 'rgba(212,163,115,0.18)' }}
         >
-          <h2 className="text-lg font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
+          <h2 id="members-modal-title" className="text-lg font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
             Members
           </h2>
           <button
