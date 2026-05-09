@@ -71,6 +71,44 @@ const MAX_AUDIO_BYTES = 16 * 1024 * 1024;
 const NO_PROMPT_VALUE = '__none__';
 const CUSTOM_PROMPT_VALUE = '__custom__';
 
+type WritingStageTone = 'starting' | 'warming' | 'steady' | 'ready';
+
+function getWritingStage(wordCount: number) {
+  if (wordCount === 0) {
+    return {
+      tone: 'starting' as WritingStageTone,
+      label: 'First lines',
+      title: 'Begin with one vivid detail.',
+      description: 'Start with a room, a smell, a voice, or the first image that returns to you.',
+    };
+  }
+
+  if (wordCount < 60) {
+    return {
+      tone: 'warming' as WritingStageTone,
+      label: 'Scene forming',
+      title: 'You have the opening—add what happened next.',
+      description: 'A few more sentences about what you saw, heard, or felt will make this memory feel lived in.',
+    };
+  }
+
+  if (wordCount < 180) {
+    return {
+      tone: 'steady' as WritingStageTone,
+      label: 'Memory unfolding',
+      title: 'The heart of the story is here.',
+      description: 'Add one small detail or reflection so future readers can feel why this moment mattered.',
+    };
+  }
+
+  return {
+    tone: 'ready' as WritingStageTone,
+    label: 'Keepsake shape',
+    title: 'This memory already feels substantial.',
+    description: 'You can save now, or add a closing detail that ties the moment together.',
+  };
+}
+
 function getPlanBadgeStyles(plan: string) {
   const normalizedPlan = normalizeBookPlan(plan);
 
@@ -175,6 +213,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           : hasErroredPhotos
             ? 'You can retry failed photos or save this memory without them.'
             : 'Everything is ready. Save when this memory feels complete.';
+  const writingStage = getWritingStage(wordCount);
 
   useEffect(() => {
     photoItemsRef.current = photoItems;
@@ -1151,51 +1190,86 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                     }}
                   />
                   {/* Autosave status — single, clean indicator above the textarea */}
-                  <div className="flex items-center justify-between mt-3 px-1">
-                    {saveState === 'saving' && wordCount > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
-                        <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Saving...</p>
-                      </div>
-                    )}
-                    {saveState === 'saved' && wordCount > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
-                          <path d="M20 6L9 17l-5-5"/>
-                        </svg>
-                        <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Saved</p>
-                      </div>
-                    )}
-                    {(saveState === 'idle' || wordCount === 0) && (
-                      <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
-                    )}
-                    {/* Word count pill — right-aligned, editorial warmth */}
-                    {wordCount > 0 && (
-                      <div
-                        className="inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-xs transition-all duration-300"
-                        style={{
-                          backgroundColor: 'rgba(212,163,115,0.16)',
-                          boxShadow: '0 2px 12px rgba(212,163,115,0.15)',
-                          border: '1px solid rgba(212,163,115,0.30)',
-                        }}
-                      >
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
-                          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                        </svg>
-                        <span className="font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', fontSize: '0.8rem', letterSpacing: '-0.01em' }}>
-                          {wordCount.toLocaleString()}
+                  <div className="mt-3 flex flex-col gap-3 px-1">
+                    <div className="flex items-center justify-between gap-3">
+                      {saveState === 'saving' && wordCount > 0 && (
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--bronze)' }} />
+                          <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Saving...</p>
+                        </div>
+                      )}
+                      {saveState === 'saved' && wordCount > 0 && (
+                        <div className="flex items-center gap-1.5">
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)' }}>
+                            <path d="M20 6L9 17l-5-5"/>
+                          </svg>
+                          <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Saved</p>
+                        </div>
+                      )}
+                      {(saveState === 'idle' || wordCount === 0) && (
+                        <p className="text-xs" style={{ color: '#4A4A3A', fontFamily: 'var(--font-sans)' }}>Autosaves as you write</p>
+                      )}
+                      {wordCount > 0 && (
+                        <div
+                          className="inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-xs transition-all duration-300"
+                          style={{
+                            backgroundColor: 'rgba(212,163,115,0.16)',
+                            boxShadow: '0 2px 12px rgba(212,163,115,0.15)',
+                            border: '1px solid rgba(212,163,115,0.30)',
+                          }}
+                        >
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                          </svg>
+                          <span className="font-semibold" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', fontSize: '0.8rem', letterSpacing: '-0.01em' }}>
+                            {wordCount.toLocaleString()}
+                          </span>
+                          <span style={{ color: '#7A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.72rem' }}>words</span>
+                          {wordCount >= 20 && (
+                            <>
+                              <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
+                              <span style={{ color: '#7A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.72rem' }}>
+                                {Math.max(1, Math.round(wordCount / 200))} min
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <div
+                      className="rounded-[1.15rem] border px-4 py-3.5"
+                      style={{
+                        backgroundColor: writingStage.tone === 'ready'
+                          ? 'rgba(204,213,174,0.18)'
+                          : writingStage.tone === 'steady'
+                            ? 'rgba(250,237,205,0.52)'
+                            : 'rgba(255,253,246,0.88)',
+                        borderColor: writingStage.tone === 'ready'
+                          ? 'rgba(160,177,122,0.32)'
+                          : 'rgba(212,163,115,0.18)',
+                        boxShadow: '0 8px 24px rgba(212,163,115,0.07)',
+                      }}
+                    >
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className="inline-flex items-center rounded-full px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em]"
+                          style={{
+                            backgroundColor: writingStage.tone === 'ready' ? 'rgba(160,177,122,0.18)' : 'rgba(212,163,115,0.14)',
+                            color: writingStage.tone === 'ready' ? '#53613A' : '#8A6A4A',
+                            fontFamily: 'var(--font-sans)',
+                          }}
+                        >
+                          {writingStage.label}
                         </span>
-                        <span style={{ color: '#7A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.72rem' }}>words</span>
-                        {wordCount >= 20 && (
-                          <>
-                            <div className="w-px h-3" style={{ backgroundColor: 'rgba(212,163,115,0.25)' }} />
-                            <span style={{ color: '#7A6A5A', fontFamily: 'var(--font-sans)', fontSize: '0.72rem' }}>
-                              {Math.max(1, Math.round(wordCount / 200))} min
-                            </span>
-                          </>
-                        )}
+                        <p className="text-sm font-medium" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
+                          {writingStage.title}
+                        </p>
                       </div>
-                    )}
+                      <p className="mt-2 text-sm leading-6" style={{ color: '#5A5145', fontFamily: 'var(--font-sans)' }}>
+                        {writingStage.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </section>
