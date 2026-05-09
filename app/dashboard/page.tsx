@@ -742,7 +742,23 @@ export default function Dashboard() {
                   className="animate-fade-up"
                   style={{ animationDelay: `${i * 0.06}s` }}
                 >
-                  <Link href={`/books/${book.id}`} className="block h-full group">
+                  <Link
+                    href={`/books/${book.id}`}
+                    className="block h-full group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A373] focus-visible:ring-offset-2"
+                    aria-label={`${book.title} — ${book.contributors?.length ?? 0} ${(book.contributors?.length ?? 0) === 1 ? 'contributor' : 'contributors'}`}
+                    onMouseEnter={(e) => {
+                      const card = e.currentTarget.querySelector('.book-card') as HTMLElement | null;
+                      if (!card) return;
+                      card.style.boxShadow = `0 8px 32px rgba(212,163,115,0.18), 0 24px 60px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.08)`;
+                      card.style.borderLeft = `4px solid ${spineHoverColor}`;
+                    }}
+                    onMouseLeave={(e) => {
+                      const card = e.currentTarget.querySelector('.book-card') as HTMLElement | null;
+                      if (!card) return;
+                      card.style.boxShadow = '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)';
+                      card.style.borderLeft = `4px solid ${spineColor}`;
+                    }}
+                  >
                     <div
                       className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 group/card hover:-translate-y-2"
                       style={{
@@ -752,14 +768,6 @@ export default function Dashboard() {
                         borderLeft: `4px solid ${spineColor}`,
                         borderLeftColor: spineColor,
                         minHeight: '220px',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = `0 8px 32px rgba(212,163,115,0.18), 0 24px 60px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.08)`;
-                        e.currentTarget.style.borderLeft = `4px solid ${spineHoverColor}`;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)';
-                        e.currentTarget.style.borderLeft = `4px solid ${spineColor}`;
                       }}
                     >
                       {/* Warm hover glow */}
