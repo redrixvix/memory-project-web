@@ -203,27 +203,28 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     if (draft) {
       try {
         const parsed = JSON.parse(draft) as DraftState;
-        if (parsed.prompt) setPrompt(parsed.prompt);
-        if (parsed.customPrompt) setCustomPrompt(parsed.customPrompt);
+        // Defer state updates to avoid cascading renders from synchronous setState in effect
+        if (parsed.prompt) setTimeout(() => setPrompt(parsed.prompt), 0);
+        if (parsed.customPrompt) setTimeout(() => setCustomPrompt(parsed.customPrompt), 0);
         if (parsed.answer) {
-          setAnswer(parsed.answer);
-          setWordCount(parsed.answer.trim() ? parsed.answer.trim().split(/\s+/).length : 0);
+          setTimeout(() => setAnswer(parsed.answer), 0);
+          setTimeout(() => setWordCount(parsed.answer.trim() ? parsed.answer.trim().split(/\s+/).length : 0), 0);
         }
         if (Array.isArray(parsed.photoUrls)) {
-          setPhotoItems(createDraftPhotoItems(parsed.photoUrls));
+          setTimeout(() => setPhotoItems(createDraftPhotoItems(parsed.photoUrls)), 0);
         }
         if (parsed.audioUrl) {
-          setAudioDraft(createExistingAudioDraft(parsed.audioUrl));
+          setTimeout(() => setAudioDraft(createExistingAudioDraft(parsed.audioUrl as string)), 0);
         }
       } catch {}
     }
 
     // If no memoryId, no draft, but URL has a prompt param, use it
     if (!memoryId && urlPrompt && !draft) {
-      setPrompt(urlPrompt);
+      setTimeout(() => setPrompt(urlPrompt), 0);
     }
 
-    setDraftLoaded(true);
+    setTimeout(() => setDraftLoaded(true), 0);
   }, [draftKey, id, memoryId, router, urlPrompt]);
 
   // Auto-focus textarea when navigated via a prompt link (e.g. from empty state chip)
@@ -252,19 +253,19 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
 
   useEffect(() => {
     if (!prompt) {
-      setUseCustomPrompt(false);
+      setTimeout(() => setUseCustomPrompt(false), 0);
       return;
     }
 
     if (allPresetPrompts.includes(prompt)) {
-      setUseCustomPrompt(false);
+      setTimeout(() => setUseCustomPrompt(false), 0);
       return;
     }
 
     const nextCustom = customPromptRef.current !== prompt ? prompt : customPromptRef.current;
-    setUseCustomPrompt(true);
+    setTimeout(() => setUseCustomPrompt(true), 0);
     if (nextCustom !== customPromptRef.current) {
-      setCustomPrompt(nextCustom);
+      setTimeout(() => setCustomPrompt(nextCustom), 0);
     }
   }, [allPresetPrompts, prompt]);
 
@@ -277,8 +278,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       clearTimeout(saveTimerRef.current);
     }
 
-    setSaveState('saving');
     saveTimerRef.current = setTimeout(() => {
+      setSaveState('saving');
       try {
         const nextDraft: DraftState = {
           prompt,
@@ -839,8 +840,8 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           <button
             type="button"
             onClick={() => setMobileNavOpen(true)}
-            className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95"
-            style={{ 
+            className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(212,163,115,0.5)] focus-visible:ring-offset-1"
+            style={{
               backgroundColor: 'rgba(212,163,115,0.12)',
               color: 'var(--bronze)',
               border: '1px solid rgba(212,163,115,0.18)',
