@@ -73,6 +73,10 @@ export default function Home() {
 
   return (
     <>
+      {/* Skip to main content — WCAG 2.1 SC 2.4.1 "Bypass Blocks" */}
+      <style>{`.skip-link{position:fixed;top:0;left:0;z-index:9999;padding:.75rem 1.25rem;background:var(--bronze);color:var(--charcoal);font-weight:600;font-size:.875rem;border-radius:0 0 .5rem;transform:translateY(-100%);transition:transform .15s;text-decoration:none}.skip-link:focus{transform:translateY(0)}`}</style>
+      <a href="#main" className="skip-link">Skip to main content</a>
+
       <div className="min-h-screen" style={{ fontFamily: "var(--font-serif)" }}>
         <SeoSchema />
 
@@ -124,7 +128,7 @@ export default function Home() {
 
           {/* Mobile hamburger */}
           <button
-            className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-colors hover:opacity-70"
+            className="flex sm:hidden w-11 h-11 rounded-full items-center justify-center transition-colors hover:opacity-70"
             style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open navigation menu"
@@ -142,7 +146,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════
           TASK 1: HERO REDESIGN — 60/40 split
       ══════════════════════════════════════════ */}
-      <section id="main-content" className="relative min-h-screen flex items-center px-6 md:px-10 overflow-hidden" style={{ backgroundColor: 'var(--cornsilk)' }}>
+      <main id="main" className="relative min-h-screen flex items-center px-6 md:px-10 overflow-hidden" style={{ backgroundColor: 'var(--cornsilk)' }}>
         {/* Subtle grain only — no orb */}
         <div className="hero-ambient" />
 
@@ -232,7 +236,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </main>
 
       {/* ── TRUST BAR ── */}
       <section className="py-5 px-6 md:px-10 border-y" style={{ backgroundColor: 'var(--beige)', borderColor: 'rgba(212,163,115,0.12)' }}>
