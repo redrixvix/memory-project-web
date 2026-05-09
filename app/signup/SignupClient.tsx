@@ -23,6 +23,20 @@ const KeyIcon = () => (
   </svg>
 );
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function getPasswordStrength(pw: string): { level: 0 | 1 | 2 | 3; label: string; color: string } {
+  if (!pw) return { level: 0, label: '', color: '' };
+  const hasUpper = /[A-Z]/.test(pw);
+  const hasLower = /[a-z]/.test(pw);
+  const hasDigit = /\d/.test(pw);
+  const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pw);
+  const variety = [hasUpper, hasLower, hasDigit, hasSpecial].filter(Boolean).length;
+  if (pw.length < 6 || variety === 0) return { level: 1, label: 'Weak', color: 'rgba(180,60,60,0.7)' };
+  if (pw.length < 10 || variety < 3) return { level: 2, label: 'Fair', color: 'rgba(184,134,11,0.75)' };
+  return { level: 3, label: 'Strong', color: 'rgba(85,107,47,0.8)' };
+}
+
 export default function SignupClient() {
   return (
     <Suspense fallback={
@@ -43,6 +57,7 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState('');
   const [code, setCode] = useState('');
   const [flowStep, setFlowStep] = useState<'entry' | 'magic_sent' | 'email_verification'>('entry');
   const [pendingAuthenticationToken, setPendingAuthenticationToken] = useState('');
@@ -299,13 +314,19 @@ function Signup() {
                         type="email"
                         id="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => { setEmail(e.target.value); if (emailError && EMAIL_REGEX.test(e.target.value)) setEmailError(''); }}
+                        onBlur={(e) => { if (e.target.value && !EMAIL_REGEX.test(e.target.value)) setEmailError('Please enter a valid email address.'); }}
                         required
                         autoComplete="email"
                         placeholder="ruth@example.com"
                         className="text-sm rounded-xl h-11"
-                        style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
+                        style={{ borderColor: emailError ? 'rgba(180,60,60,0.5)' : 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
                       />
+                      {emailError && (
+                        <p role="alert" className="text-xs mt-1" style={{ color: 'rgba(180,60,60,0.85)' }}>
+                          {emailError}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -330,6 +351,23 @@ function Signup() {
                           )}
                         </button>
                       </div>
+                      {password && (() => {
+                        const strength = getPasswordStrength(password);
+                        return (
+                          <div className="mt-2">
+                            <div className="flex gap-1 mb-1">
+                              {[1, 2, 3].map((tier) => (
+                                <div
+                                  key={tier}
+                                  className="h-1 flex-1 rounded-full transition-all duration-300"
+                                  style={{ backgroundColor: tier <= strength.level ? strength.color : 'rgba(212,163,115,0.15)' }}
+                                />
+                              ))}
+                            </div>
+                            <p className="text-xs" style={{ color: strength.color }}>{strength.label}</p>
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     <Button

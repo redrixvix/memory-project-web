@@ -22,10 +22,13 @@ const KeyIcon = () => (
   </svg>
 );
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState('');
   const [code, setCode] = useState('');
   const [codeFlow, setCodeFlow] = useState<'magic' | 'email_verification' | null>(null);
   const [pendingAuthenticationToken, setPendingAuthenticationToken] = useState('');
@@ -259,11 +262,18 @@ export default function Login() {
                     <Label htmlFor="email" className="text-sm" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Email</Label>
                     <Input
                       type="email" id="email" value={email}
-                      onChange={(e) => setEmail(e.target.value)} required
+                      onChange={(e) => { setEmail(e.target.value); if (emailError && EMAIL_REGEX.test(e.target.value)) setEmailError(''); }}
+                      onBlur={(e) => { if (e.target.value && !EMAIL_REGEX.test(e.target.value)) setEmailError('Please enter a valid email address.'); }}
+                      required
                       autoComplete="email" placeholder="you@example.com"
                       className="text-sm rounded-xl h-11"
-                      style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FFFDF8' }}
+                      style={{ borderColor: emailError ? 'rgba(180,60,60,0.5)' : 'rgba(212,163,115,0.3)', backgroundColor: '#FFFDF8' }}
                     />
+                    {emailError && (
+                      <p role="alert" className="text-xs mt-1" style={{ color: 'rgba(180,60,60,0.85)' }}>
+                        {emailError}
+                      </p>
+                    )}
                   </div>
 
                   <form onSubmit={handlePasswordLogin} className="space-y-4">
