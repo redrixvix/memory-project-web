@@ -1191,7 +1191,7 @@ export default function Dashboard() {
           </div>
         ) : (
           /* ── Book grid ── */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-5 xl:gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 xl:gap-6">
             {paginatedBooks.map((book, i) => {
               const colorIdx = book.id % BOOK_COLORS.length;
               const bookColor = BOOK_COLORS[colorIdx];
