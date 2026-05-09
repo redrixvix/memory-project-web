@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -132,6 +132,7 @@ export default function Dashboard() {
   const [shelfFilter, setShelfFilter] = useState<ShelfFilter>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const createTitleInputRef = useRef<HTMLInputElement | null>(null);
 
   const BOOKS_PER_PAGE = 18;
 
@@ -179,17 +180,35 @@ export default function Dashboard() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close modal on Escape
+  const resetCreateBookDraft = () => {
+    setShowCreate(false);
+    setNewTitle('');
+    setNewDesc('');
+    setNewPlan('premium');
+    setCreateError('');
+  };
+
+  // Close modal on Escape, focus the first field, and keep the page from scrolling underneath.
   useEffect(() => {
     if (!showCreate) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const focusTimer = window.setTimeout(() => createTitleInputRef.current?.focus(), 40);
+
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !creating) {
-        setShowCreate(false);
-        setCreateError('');
+        resetCreateBookDraft();
       }
     };
+
     document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
+
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKey);
+    };
   }, [showCreate, creating]);
 
   const createBook = async (e: React.FormEvent) => {
@@ -208,9 +227,7 @@ export default function Dashboard() {
       });
       if (res.ok) {
         const data = await res.json();
-        setNewTitle(''); setNewDesc('');
-        setNewPlan('free');
-        setShowCreate(false);
+        resetCreateBookDraft();
         router.push(`/books/${data.book.id}`);
       } else {
         const err = await res.json().catch(() => ({}));
@@ -724,7 +741,7 @@ export default function Dashboard() {
             <div
               className="absolute inset-0"
               style={{ backgroundColor: 'rgba(43,43,43,0.62)' }}
-              onClick={() => { if (!creating) { setShowCreate(false); setCreateError(''); } }}
+              onClick={() => { if (!creating) { resetCreateBookDraft(); } }}
             />
 
             {/* Modal panel */}
@@ -766,7 +783,7 @@ export default function Dashboard() {
                   {!creating && (
                     <button
                       type="button"
-                      onClick={() => { setShowCreate(false); setCreateError(''); }}
+                      onClick={() => { resetCreateBookDraft(); }}
                       className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:opacity-80 active:scale-95 shrink-0 hover:bg-[rgba(212,163,115,0.2)]"
                       style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--charcoal)' }}
                       aria-label="Close"
@@ -785,6 +802,7 @@ export default function Dashboard() {
                       Book title <span style={{ color: 'var(--bronze)' }}>*</span>
                     </Label>
                     <Input
+                      ref={createTitleInputRef}
                       id="modal-title"
                       type="text"
                       value={newTitle}
@@ -929,7 +947,7 @@ export default function Dashboard() {
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => { setShowCreate(false); setCreateError(''); }}
+                      onClick={() => { resetCreateBookDraft(); }}
                       className="rounded-full h-11 px-6 text-sm font-medium focus-visible:ring-offset-2"
                       style={{ borderColor: 'rgba(212,163,115,0.35)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
                     >
