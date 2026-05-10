@@ -755,14 +755,14 @@ export default function Dashboard() {
           </div>
         ) : (
           /* ── Book grid ── */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ul role="list" aria-label="Your memory books" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {paginatedBooks.map((book, i) => {
               const colorIdx = book.id % BOOK_COLORS.length;
               const bookColor = BOOK_COLORS[colorIdx];
               const spineColor = BOOK_SPINE_COLORS[colorIdx];
               const spineHoverColor = BOOK_SPINE_HOVER_COLORS[colorIdx];
               return (
-                <div
+                <li role="listitem"
                   key={book.id}
                   className="animate-fade-up"
                   style={{ animationDelay: `${i * 0.06}s` }}
@@ -956,10 +956,10 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </Link>
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
 
           {totalPages > 1 && (
