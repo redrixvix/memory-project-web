@@ -1,12 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState, use } from 'react';
-import { getMemoryPromptGroups } from '@/lib/memory-prompts';
+import { useEffect, useState, use } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Lightbox } from '@/components/ui/lightbox';
 import { MembersModal } from '@/components/ui/members-modal';
 import { Avatar } from '@/components/ui/avatar';
@@ -80,29 +80,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [toastVisible, setToastVisible] = useState(false);
   // Delete confirm state
   const [deleteConfirm, setDeleteConfirm] = useState<{ memoryId: number } | null>(null);
-  // Pick 3 prompts from different categories for empty state inspiration chips
-  const emptyStatePrompts = useMemo(() => {
-    const groups = getMemoryPromptGroups();
-    if (groups.length < 3) return [];
-    // Stable selection using book id as seed
-    const seed = parseInt(id) || 1;
-    const selected: { label: string; prompt: string }[] = [];
-    const usedCategories = new Set<number>();
-    let attempt = 0;
-    while (selected.length < 3 && attempt < 30) {
-      const groupIdx = (seed + attempt * 7) % groups.length;
-      if (!usedCategories.has(groupIdx)) {
-        usedCategories.add(groupIdx);
-        const promptIdx = (seed + attempt * 11) % groups[groupIdx].prompts.length;
-        selected.push({
-          label: groups[groupIdx].prompts[promptIdx],
-          prompt: groups[groupIdx].prompts[promptIdx],
-        });
-      }
-      attempt++;
-    }
-    return selected;
-  }, [id]);
+  // Memory sort order
   const [memorySort, setMemorySort] = useState<'newest' | 'oldest'>('newest');
   // Mobile nav state
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -124,27 +102,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
   });
 
-  const fetchBook = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/books/${id}`);
-      if (res.status === 401) { router.push('/login'); setLoading(false); return; }
-      if (res.status === 404) { router.push('/dashboard'); setLoading(false); return; }
-      const data = await res.json();
-      setBook(data.book);
-      setMemories(data.memories || []);
-      setCurrentUserId(data.current_user_id ?? null);
-      setCurrentUserRole(data.current_user_role ?? null);
-    } catch (err) {
-      console.error('Failed to fetch book', err);
-      setToastMessage('Failed to load book. Please refresh.');
-      setToastVariant('error');
-      setToastVisible(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [id, router]);
-
-  /* eslint-disable react-hooks/set-state-in-effect -- cascading render from fetchBook is intentional */
   useEffect(() => {
     fetchBook();
 
@@ -153,8 +110,46 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [fetchBook]);
-  /* eslint-enable react-hooks/set-state-in-effect */
+  }, [id]);
+
+  const fetchBook = async () => {
+    try {
+      const res = await fetch(`/api/books/${id}`);
+      if (res.status === 401) { router.push('/login'); setLoading(false); return; }
+      if (res.status === 404) { router.push('/dashboard'); setLoading(false); return; }
+      const data = await res.json();
+      setBook(data.book);
+      setMemories(data.memories || []);
+      // Fetch current user's membership
+      if (data.membership) {
+        setCurrentUserId(data.membership.user_id);
+        setCurrentUserRole(data.membership.role);
+      } else {
+        // Fallback: fetch members list to find self
+        const membersRes = await fetch(`/api/books/${id}/members`);
+        if (membersRes.ok) {
+          const membersData = await membersRes.json();
+          // Find current user by checking /api/auth/me
+          const meRes = await fetch('/api/auth/me');
+          if (meRes.ok) {
+            const me = await meRes.json();
+            const self = (membersData.data || []).find((m: any) => m.user_id === me.user?.id);
+            if (self) {
+              setCurrentUserId(self.user_id);
+              setCurrentUserRole(self.role);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch book', err);
+      setToastMessage('Failed to load book. Please refresh.');
+      setToastVariant('error');
+      setToastVisible(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDeleteMemory = async (memoryId: number) => {
     const res = await fetch(`/api/memories/${memoryId}`, { method: 'DELETE' });
@@ -165,15 +160,15 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handlePhotoError = useCallback((memoryIndex: number) => {
+  const handlePhotoError = (memoryIndex: number) => {
     setImageErrors(prev => ({ ...prev, [memoryIndex]: true }));
-  }, []);
+  };
 
-  const handlePhotoClick = useCallback((globalIndex: number, url: string) => {
+  const handlePhotoClick = (globalIndex: number, url: string) => {
     if (!imageErrors[globalIndex]) {
       setLightboxSrc(url);
     }
-  }, [imageErrors]);
+  };
 
   if (loading) {
     return (
@@ -181,13 +176,13 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         <div className="max-w-5xl mx-auto px-6 py-12">
           {/* Header skeleton */}
           <div className="mb-8">
-            <div className="h-8 w-64 rounded-xl mb-3 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
-            <div className="h-4 w-48 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }} />
+            <div className="h-8 w-64 rounded-xl mb-3 animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+            <div className="h-4 w-48 rounded-lg animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }} />
           </div>
           {/* Memory card skeletons */}
           <div className="space-y-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="rounded-2xl p-5 skeleton-pulse" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)' }}>
+              <div key={i} className="rounded-2xl p-5 animate-pulse" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)' }}>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
                   <div className="flex-1 space-y-2.5">
@@ -206,6 +201,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             ))}
           </div>
         </div>
+        <style>{`
+          @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.85; } }
+          .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
+        `}</style>
       </div>
     );
   }
@@ -308,7 +307,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       <header className="sticky top-0 z-30 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.96)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.18)', boxShadow: '0 1px 0 rgba(212,163,115,0.08), 0 4px 24px rgba(212,163,115,0.04)' }}>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto gap-3">
           <div className="flex items-center gap-2 min-w-0">
-            <Link href="/dashboard" className="nav-link text-sm shrink-0 flex items-center gap-1.5" style={{ color: 'var(--charcoal)' }}>
+            <Link href="/dashboard" className="text-sm shrink-0 flex items-center gap-1.5 transition-colors hover:opacity-70" style={{ color: 'var(--charcoal)' }}>
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M15 18l-6-6 6-6"/>
               </svg>
@@ -400,7 +399,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       </header>
 
       {/* ── MAIN ── */}
-      <main id="main" className="px-6 md:px-10 py-5 md:py-7 max-w-5xl mx-auto w-full">
+      <main className="px-6 md:px-10 py-5 md:py-7 max-w-5xl mx-auto w-full">
 
         {/* Book hero — compact when empty, expanded when has memories */}
         <div
@@ -503,41 +502,35 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               </h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.4), transparent)' }} />
               {/* Sort controls */}
-              <div className="relative ml-2">
-                <div className="flex items-center gap-2.5 rounded-full px-4 py-2 overflow-x-auto" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.18)' }} aria-label="Sort memories">
-                  <span className="text-xs font-bold tracking-wide shrink-0" style={{ color: 'rgba(43,43,43,0.85)', fontFamily: 'var(--font-sans)' }}>Sort</span>
-                  <div className="w-px h-3.5 shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
-                  <button
-                    type="button"
-                    onClick={() => setMemorySort('newest')}
-                    aria-pressed={memorySort === 'newest'}
-                    className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
-                    style={{
-                      backgroundColor: memorySort === 'newest' ? 'var(--bronze)' : 'transparent',
-                      color: memorySort === 'newest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
-                      fontFamily: 'var(--font-sans)',
-                      boxShadow: memorySort === 'newest' ? '0 2px 8px rgba(212,163,115,0.25)' : 'none',
-                    }}
-                  >
-                    New
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMemorySort('oldest')}
-                    aria-pressed={memorySort === 'oldest'}
-                    className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
-                    style={{
-                      backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
-                      color: memorySort === 'oldest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
-                      fontFamily: 'var(--font-sans)',
-                      boxShadow: memorySort === 'oldest' ? '0 2px 8px rgba(212,163,115,0.25)' : 'none',
-                    }}
-                  >
-                    Old
-                  </button>
-                </div>
-                {/* Gradient fade — indicates horizontal scroll */}
-                <div className="absolute inset-y-0 right-0 w-6 pointer-events-none rounded-full" style={{ background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.18))' }} />
+              <div className="flex items-center gap-2.5 rounded-full px-4 py-2 overflow-x-auto ml-2" style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.18)' }}>
+                <span className="text-xs font-bold tracking-wide shrink-0" style={{ color: 'rgba(43,43,43,0.85)', fontFamily: 'var(--font-sans)' }}>Sort</span>
+                <div className="w-px h-3.5 shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
+                <button
+                  type="button"
+                  onClick={() => setMemorySort('newest')}
+                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
+                  style={{
+                    backgroundColor: memorySort === 'newest' ? 'var(--bronze)' : 'transparent',
+                    color: memorySort === 'newest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
+                    fontFamily: 'var(--font-sans)',
+                    boxShadow: memorySort === 'newest' ? '0 2px 8px rgba(212,163,115,0.25)' : 'none',
+                  }}
+                >
+                  New
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMemorySort('oldest')}
+                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
+                  style={{
+                    backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
+                    color: memorySort === 'oldest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
+                    fontFamily: 'var(--font-sans)',
+                    boxShadow: memorySort === 'oldest' ? '0 2px 8px rgba(212,163,115,0.25)' : 'none',
+                  }}
+                >
+                  Old
+                </button>
               </div>
             </div>
           </div>
@@ -589,7 +582,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             </p>
             {/* 3 example prompt chips — spark inspiration */}
             <div className="flex flex-wrap justify-center gap-2.5 mb-10">
-              {emptyStatePrompts.map(({ label, prompt }) => (
+              {[
+                { label: "The best day of the trip", prompt: "Describe the best day of your vacation." },
+                { label: "A funny travel mishap", prompt: "Tell me about a funny or unexpected moment during your trip." },
+                { label: "A meal I'll never forget", prompt: "Describe a meal you'll never forget from this trip." },
+              ].map(({ label, prompt }) => (
                 <Link
                   key={label}
                   href={`/books/${id}/edit?prompt=${encodeURIComponent(prompt)}`}
@@ -637,6 +634,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           <div className="space-y-5 md:space-y-7">
             {sortedMemories.map((memory, memoryIndex) => {
               const accentColor = ACCENT_COLORS[memoryIndex % ACCENT_COLORS.length];
+              const isEven = memoryIndex % 2 === 0;
               return (
                 <div
                   key={memory.id}
@@ -696,11 +694,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                         <div className="mb-5">
                           <div className="flex items-start gap-3">
                             {/* Decorative quote mark */}
-                            <span
+                            <span 
                               className="text-2xl leading-none mt-[-2px] shrink-0"
                               style={{ color: 'rgba(212,163,115,0.4)', fontFamily: 'Georgia, serif' }}
                             >
-                              &ldquo;
+                              "
                             </span>
                             <p
                               className="text-sm md:text-base italic leading-relaxed"
@@ -824,12 +822,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                       src={url}
                                       alt={`Memory photo ${photoIndex + 1}`}
                                       fill
-                                      sizes={
-                                        photoIndex === 0 && memory.photo_urls.length === 1
-                                          ? '(max-width: 768px) 100vw, 50vw'
-                                          : '(max-width: 768px) 50vw, 25vw'
-                                      }
-                                      loading="lazy"
                                       unoptimized={true}
                                       className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"
                                       onError={() => handlePhotoError(globalIndex)}
