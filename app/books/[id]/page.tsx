@@ -938,7 +938,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                       }}
                                     >
                                       <div
-                                        className="w-10 h-10 rounded-full flex items-center justify-center mb-1 transition-transform duration-300 group-hover:scale-110"
+                                        className="w-12 h-12 rounded-full flex items-center justify-center mb-1 transition-transform duration-300 group-hover:scale-110"
                                         style={{ backgroundColor: 'rgba(254,250,224,0.95)', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
                                       >
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--charcoal)' }}>
@@ -1023,7 +1023,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               e.preventDefault();
                               setActiveMenu(activeMenu === memory.id ? null : memory.id);
                             }}
-                            className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                            className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                             style={{
                               backgroundColor: 'rgba(212,163,115,0.10)',
                               color: '#5A3A2A',
