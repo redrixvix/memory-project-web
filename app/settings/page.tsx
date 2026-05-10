@@ -349,9 +349,9 @@ export default function SettingsPage() {
 
               {/* Name field */}
               <div className="grid gap-2">
-                <label htmlFor="display-name" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
-                  Display name
-                </label>
+<Label htmlFor="display-name" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                  Name
+                </Label>
                 <input
                   id="display-name"
                   type="text"
@@ -373,9 +373,9 @@ export default function SettingsPage() {
 
               {/* Email (read-only — clearly non-editable) */}
               <div className="grid gap-2">
-                <label htmlFor="email-display" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                <Label htmlFor="email-display" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                   Email address
-                </label>
+                </Label>
                 <div
                   id="email-display"
                   className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-default select-none"
