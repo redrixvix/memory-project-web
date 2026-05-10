@@ -280,11 +280,11 @@ export default function UpgradeClient() {
 
         {/* Plan radio cards — tight, above fold */}
         <div
-          role="group"
+          role="radiogroup"
           aria-label="Pricing plans: Free, Plus at $50, or Premium at $100. Lifetime access included."
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"
         >
-          {BOOK_PLAN_OPTIONS.map(plan => {
+          {BOOK_PLAN_OPTIONS.map((plan, planIndex) => {
             const isCurrentPlan = selectedBook && normalizeBookPlan(selectedBook.plan) === plan.id;
             const isSelected = selectedPlan === plan.id;
             const isPopular = plan.id === 'premium' && !isCurrentPlan;
@@ -302,17 +302,39 @@ export default function UpgradeClient() {
               transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
             };
             const handleCardClick = () => { if (!isCurrentPlan) setSelectedPlan(plan.id); };
+            const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+              if (isCurrentPlan) return;
+              let nextIndex = planIndex;
+              if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                nextIndex = (planIndex + 1) % BOOK_PLAN_OPTIONS.length;
+              } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                nextIndex = (planIndex - 1 + BOOK_PLAN_OPTIONS.length) % BOOK_PLAN_OPTIONS.length;
+              } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleCardClick();
+                return;
+              }
+              if (nextIndex !== planIndex) {
+                const nextPlan = BOOK_PLAN_OPTIONS[nextIndex];
+                if (!selectedBook || normalizeBookPlan(selectedBook.plan) !== nextPlan.id) {
+                  setSelectedPlan(nextPlan.id);
+                }
+              }
+            };
             return (
               <div
                 key={plan.id}
-                role="button"
-                tabIndex={isCurrentPlan ? -1 : 0}
+                role="radio"
+                tabIndex={isCurrentPlan ? -1 : isSelected ? 0 : -1}
                 onClick={handleCardClick}
-                onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !isCurrentPlan) { e.preventDefault(); handleCardClick(); }}}
+                onKeyDown={handleKeyDown}
                 className={`text-left rounded-2xl p-5 relative ${!isCurrentPlan ? 'cursor-pointer' : ''} plan-card`}
                 style={cardStyles}
-                aria-pressed={isSelected}
+                aria-checked={isSelected}
                 aria-disabled={isCurrentPlan ? true : undefined}
+                aria-label={plan.label + ' plan — ' + plan.price + (isCurrentPlan ? ', current plan' : isSelected ? ', selected' : '')}
               >
                 {/* Plus gold accent */}
                 {isPlus && !isCurrentPlan && (
