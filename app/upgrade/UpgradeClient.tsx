@@ -290,14 +290,14 @@ export default function UpgradeClient() {
             const isPopular = plan.id === 'premium' && !isCurrentPlan;
             const isPlus = plan.id === 'plus';
             const cardStyles = {
-              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? '#F5EDD8' : '#FDF8EE',
-              border: isSelected ? '2px solid #C49438' : isCurrentPlan ? '1.5px solid rgba(212,163,115,0.35)' : isPlus ? '1.5px solid rgba(196,168,120,0.38)' : '1.5px solid rgba(212,163,115,0.25)',
+              backgroundColor: isSelected ? '#FDFCF5' : isCurrentPlan ? '#F0E8D8' : '#FDF8EE',
+              border: isSelected ? '2px solid #C49438' : isCurrentPlan ? '1.5px dashed rgba(180,150,100,0.55)' : isPlus ? '1.5px solid rgba(196,168,120,0.38)' : '1.5px solid rgba(212,163,115,0.25)',
               boxShadow: isSelected
                 ? '0 12px 40px rgba(212,163,115,0.30), 0 0 0 4px rgba(212,163,115,0.12)'
                 : isCurrentPlan
                   ? '0 4px 16px rgba(212,163,115,0.08)'
                   : '0 4px 20px rgba(212,163,115,0.09)',
-              opacity: isCurrentPlan ? 0.85 : 1,
+              cursor: isCurrentPlan ? 'default' : 'pointer',
               transform: isSelected ? 'scale(1.02)' : 'scale(1)',
               transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
             };

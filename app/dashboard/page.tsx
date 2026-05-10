@@ -382,7 +382,7 @@ export default function Dashboard() {
               <Button
                 onClick={() => setShowCreate(true)}
                 type="button"
-                className="rounded-full shrink-0 h-11 px-6 text-sm font-semibold transition-all duration-300 active:scale-95 hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(212,163,115,0.3)] hover:-translate-y-0.5"
+                className="rounded-full shrink-0 h-11 px-6 text-sm font-semibold transition-all duration-300 active:scale-95 hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(212,163,115,0.3)] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A373] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgba(254,250,224,0.85)]"
                 style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.25)' }}
               >
                 <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -442,14 +442,13 @@ export default function Dashboard() {
                     key={value}
                     type="button"
                     onClick={() => setSortOrder(value)}
-                    className="sort-btn rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
+                    className="sort-btn rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0 focus-visible:outline-none"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
                       color: sortOrder === value ? 'var(--charcoal)' : 'var(--charcoal)',
                       fontFamily: 'var(--font-sans)',
                       minWidth: '56px',
                       fontWeight: '600',
-                      outline: 'none',
                       boxShadow: sortOrder === value ? '0 0 0 3px rgba(212,163,115,0.35)' : 'none',
                     }}
                   >
@@ -744,7 +743,7 @@ export default function Dashboard() {
             <Button
               onClick={() => setShowCreate(true)}
               type="button"
-              className="rounded-full h-12 px-8 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.3)] active:scale-95"
+              className="rounded-full h-12 px-8 text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-xl hover:shadow-[rgba(212,163,115,0.3)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A373] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgba(254,250,224,0.85)]"
               style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.25)' }}
             >
               <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
