@@ -86,10 +86,19 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [deletingId, setDeletingId] = useState<number | null>(null);
   // Memory sort order
   const [memorySort, setMemorySort] = useState<'newest' | 'oldest'>('newest');
+  // Memory search state
+  const [memorySearch, setMemorySearch] = useState('');
+  const [memorySearchInput, setMemorySearchInput] = useState('');
   // Mobile nav state
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   // Overflow menu for memory actions
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
+
+  // Debounced memory search
+  useEffect(() => {
+    const timer = setTimeout(() => setMemorySearch(memorySearchInput), 300);
+    return () => clearTimeout(timer);
+  }, [memorySearchInput]);
 
   // Close menu on outside click
   useEffect(() => {
@@ -101,7 +110,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   }, [activeMenu]);
 
   // Computed sorted memories
-  const sortedMemories = [...memories].sort((a, b) => {
+  const filteredMemories = memories.filter(m => {
+    if (!memorySearch) return true;
+    const q = memorySearch.toLowerCase();
+    return (m.prompt_question?.toLowerCase().includes(q) ?? false) || m.answer_text.toLowerCase().includes(q);
+  });
+  const sortedMemories = [...filteredMemories].sort((a, b) => {
     if (memorySort === 'newest') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
   });
@@ -520,6 +534,38 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 Your Memories
               </h2>
               <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.4), transparent)' }} />
+              {/* Search input */}
+              <div
+                role="search"
+                className="flex items-center gap-2 rounded-full px-4 py-2 overflow-x-auto"
+                style={{ backgroundColor: 'rgba(212,163,115,0.10)', border: '1px solid rgba(212,163,115,0.18)' }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ color: 'rgba(43,43,43,0.5)' }}>
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input
+                  type="search"
+                  value={memorySearchInput}
+                  onChange={e => setMemorySearchInput(e.target.value)}
+                  placeholder="Search memories…"
+                  aria-label="Search memories"
+                  className="bg-transparent text-xs font-medium focus:outline-none placeholder:text-[rgba(43,43,43,0.45)] shrink-0 min-w-0"
+                  style={{ color: 'rgba(43,43,43,0.85)', fontFamily: 'var(--font-sans)', width: '12ch' }}
+                />
+                {memorySearchInput && (
+                  <button
+                    type="button"
+                    onClick={() => setMemorySearchInput('')}
+                    aria-label="Clear search"
+                    className="flex items-center justify-center w-4 h-4 rounded-full transition-colors hover:opacity-70"
+                    style={{ color: 'rgba(43,43,43,0.5)' }}
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M18 6 6 18M6 6l12 12"/>
+                    </svg>
+                  </button>
+                )}
+              </div>
               {/* Sort controls */}
               <div
                 role="group"
@@ -836,6 +882,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               >
                                 {hasError ? (
                                   <div
+                                    role="status"
+                                    aria-live="polite"
+                                    aria-label="Photo unavailable"
                                     className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl"
                                     style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}
                                   >
