@@ -111,15 +111,15 @@ export default function Home() {
               </Link>
             ) : (
               <>
-                <Link href="/#how-it-works" className="nav-link text-sm hidden sm:block" style={{ color: 'var(--muted-foreground)' }}>How It Works</Link>
+                <Link href="/#how-it-works" className="nav-link text-sm hidden sm:block transition-opacity hover:opacity-80" style={{ color: 'var(--muted-foreground)' }}>How It Works</Link>
                 <Link
                 href="/pricing"
-                className="nav-link text-sm hidden sm:block"
+                className="nav-link text-sm hidden sm:block transition-opacity hover:opacity-80"
                 style={{ color: 'var(--muted-foreground)' }}
               >
                 Pricing
               </Link>
-                <Link href="/login" className="nav-link text-sm hidden sm:block" style={{ color: 'var(--muted-foreground)' }}>Sign in</Link>
+                <Link href="/login" className="nav-link text-sm hidden sm:block transition-opacity hover:opacity-80" style={{ color: 'var(--muted-foreground)' }}>Sign in</Link>
                 <Link
                   href="/signup"
                   className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
@@ -133,7 +133,7 @@ export default function Home() {
 
           {/* Mobile hamburger */}
           <button
-            className="flex sm:hidden w-11 h-11 rounded-full items-center justify-center transition-colors hover:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            className="flex sm:hidden w-12 h-12 rounded-full items-center justify-center transition-colors hover:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open navigation menu"
@@ -787,7 +787,7 @@ export default function Home() {
                   )}
                 </div>
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }} aria-hidden="true">
                     {step.icon}
                   </div>
                   <h3 className="text-xl font-medium pt-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
