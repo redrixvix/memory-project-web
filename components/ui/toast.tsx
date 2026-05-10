@@ -35,7 +35,7 @@ export function Toast({ message, visible, onDismiss, duration = 3000, variant = 
     variant === "success"
       ? "rgba(204,213,174,0.95)"
       : variant === "error"
-        ? "rgba(212,163,115,0.95)"
+        ? "rgba(180,60,60,0.92)"
         : "rgba(43,43,43,0.92)";
 
   const textColor = variant === "default" ? "var(--cornsilk)" : "var(--charcoal)";
