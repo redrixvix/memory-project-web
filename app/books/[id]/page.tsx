@@ -1,12 +1,11 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState, use, useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Lightbox } from '@/components/ui/lightbox';
 import { MembersModal } from '@/components/ui/members-modal';
 import { Avatar } from '@/components/ui/avatar';
@@ -102,17 +101,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
   });
 
-  useEffect(() => {
-    fetchBook();
-
-    const handleScroll = () => {
-      setShowTopBtn(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [id]);
-
-  const fetchBook = async () => {
+  const fetchBook = useCallback(async () => {
     try {
       const res = await fetch(`/api/books/${id}`);
       if (res.status === 401) { router.push('/login'); setLoading(false); return; }
@@ -133,7 +122,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           const meRes = await fetch('/api/auth/me');
           if (meRes.ok) {
             const me = await meRes.json();
-            const self = (membersData.data || []).find((m: any) => m.user_id === me.user?.id);
+            const self = (membersData.data || []).find((m: { user_id?: number }) => m.user_id === me.user?.id);
             if (self) {
               setCurrentUserId(self.user_id);
               setCurrentUserRole(self.role);
@@ -149,7 +138,19 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, router]);
+
+  useEffect(() => {
+    fetchBook(); // eslint-disable-line react-hooks/set-state-in-effect
+
+    const handleScroll = () => {
+      setShowTopBtn(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+    // fetchBook is stable (useCallback with [id, router]) — intentionally not in deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const handleDeleteMemory = async (memoryId: number) => {
     const res = await fetch(`/api/memories/${memoryId}`, { method: 'DELETE' });
@@ -634,7 +635,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           <div className="space-y-5 md:space-y-7">
             {sortedMemories.map((memory, memoryIndex) => {
               const accentColor = ACCENT_COLORS[memoryIndex % ACCENT_COLORS.length];
-              const isEven = memoryIndex % 2 === 0;
               return (
                 <div
                   key={memory.id}
@@ -698,7 +698,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               className="text-2xl leading-none mt-[-2px] shrink-0"
                               style={{ color: 'rgba(212,163,115,0.4)', fontFamily: 'Georgia, serif' }}
                             >
-                              "
+                              &#8220;
                             </span>
                             <p
                               className="text-sm md:text-base italic leading-relaxed"
