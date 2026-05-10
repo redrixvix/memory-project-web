@@ -3,9 +3,9 @@
 @import "./shadcn-tailwind.css";
 
 /* Vercel's stripped Git checkout can confuse Tailwind v4 auto source detection. */
-@source "../app";
-@source "../components";
-@source "../lib";
+@source "./app";
+@source "./components";
+@source "./lib";
 
 @custom-variant dark (&:is(.dark *));
 
