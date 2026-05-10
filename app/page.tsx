@@ -452,19 +452,18 @@ export default function Home() {
                 key={i}
                 className={`reveal ${i === 0 ? 'md:col-span-7' : 'md:col-span-5'}`}
               >
-                <Card
-                  tabIndex={0}
-                  role="article"
-                  aria-label={`Memory: ${card.title}`}
-                  className="relative overflow-hidden rounded-2xl card-hover"
+                <Link
+                  href="/signup"
+                  aria-label={`Read memory: ${card.title}`}
+                  className="block rounded-2xl card-hover focus-visible:ring-2 focus-visible:ring-offset-2"
                   style={
                     i === 0
-                      ? { backgroundColor: '#FDFCF5', boxShadow: '0 8px 32px rgba(212,163,115,0.1)', border: 'none', height: '100%', outline: 'none' }
-                      : { backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 12px rgba(212,163,115,0.05)', height: '100%', outline: 'none' }
+                      ? { backgroundColor: '#FDFCF5', boxShadow: '0 8px 32px rgba(212,163,115,0.1)', border: 'none', height: '100%', textDecoration: 'none' }
+                      : { backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 12px rgba(212,163,115,0.05)', height: '100%', textDecoration: 'none' }
                   }
                 >
                   {/* Top color bar */}
-                  <div className="h-1 w-full" style={{ backgroundColor: card.accent }} />
+                  <div className="h-1 w-full rounded-t-2xl" style={{ backgroundColor: card.accent }} />
                   <CardContent className="pt-7 pb-8 px-7">
                     <p className="label-caps mb-4" style={{ color: card.accent }}>{card.num}</p>
                     <h3 className="text-xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)', lineHeight: 1.3 }}>
@@ -475,8 +474,7 @@ export default function Home() {
                       {card.preview}
                     </p>
                     <div className="mt-6">
-                      <Link
-                        href="/signup"
+                      <span
                         className="text-xs font-medium flex items-center gap-1.5 transition-colors group"
                         style={{ color: card.accent }}
                       >
@@ -484,10 +482,10 @@ export default function Home() {
                         <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <path d="M5 12h14M12 5l7 7-7 7" />
                         </svg>
-                      </Link>
+                      </span>
                     </div>
                   </CardContent>
-                </Card>
+                </Link>
               </div>
             ))}
           </div>
