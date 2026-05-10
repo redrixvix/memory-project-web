@@ -41,10 +41,50 @@ export default function SignupClient() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
-          <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>Loading...</p>
+        <div className="w-full max-w-sm px-6">
+          {/* Logo skeleton */}
+          <div className="flex justify-center mb-10">
+            <div className="w-10 h-10 rounded-2xl animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
+          </div>
+          {/* Card skeleton */}
+          <div
+            className="rounded-3xl p-8 animate-pulse"
+            style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.1)', boxShadow: '0 8px 32px rgba(212,163,115,0.08)' }}
+          >
+            {/* Heading skeleton */}
+            <div className="h-7 w-40 rounded-xl mb-2" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+            <div className="h-4 w-56 rounded-lg mb-8" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }} />
+            {/* Google button skeleton */}
+            <div className="h-11 w-full rounded-full mb-6" style={{ backgroundColor: 'rgba(212,163,115,0.1)', border: '1px solid rgba(212,163,115,0.15)' }} />
+            {/* Divider skeleton */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
+              <div className="h-3 w-6 rounded-md" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
+              <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
+            </div>
+            {/* Name field skeleton */}
+            <div className="mb-4">
+              <div className="h-3 w-16 rounded-md mb-2" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
+              <div className="h-11 w-full rounded-xl" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.1)' }} />
+            </div>
+            {/* Email field skeleton */}
+            <div className="mb-4">
+              <div className="h-3 w-12 rounded-md mb-2" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
+              <div className="h-11 w-full rounded-xl" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.1)' }} />
+            </div>
+            {/* Password field skeleton */}
+            <div className="mb-6">
+              <div className="h-3 w-20 rounded-md mb-2" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
+              <div className="h-11 w-full rounded-xl" style={{ backgroundColor: 'rgba(212,163,115,0.08)', border: '1px solid rgba(212,163,115,0.1)' }} />
+            </div>
+            {/* Submit button skeleton */}
+            <div className="h-11 w-full rounded-full" style={{ backgroundColor: 'rgba(43,43,43,0.08)' }} />
+          </div>
         </div>
+        <style>{`
+          @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.85; } }
+          .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
+        `}</style>
       </div>
     }>
       <Signup />
