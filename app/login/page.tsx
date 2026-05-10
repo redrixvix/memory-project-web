@@ -262,11 +262,16 @@ export default function Login() {
                     <Label htmlFor="email" className="text-sm" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}>Email</Label>
                     <Input
                       type="email" id="email" value={email}
-                      onChange={(e) => { setEmail(e.target.value); if (emailError && EMAIL_REGEX.test(e.target.value)) setEmailError(''); }}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (emailError && EMAIL_REGEX.test(e.target.value)) setEmailError('');
+                        else if (e.target.value && !EMAIL_REGEX.test(e.target.value)) setEmailError('Please enter a valid email address.');
+                      }}
                       onBlur={(e) => { if (e.target.value && !EMAIL_REGEX.test(e.target.value)) setEmailError('Please enter a valid email address.'); }}
                       required
                       autoComplete="email" placeholder="you@example.com"
                       aria-describedby="email-error"
+                      aria-invalid={emailError ? 'true' : undefined}
                       className="text-sm rounded-xl h-11"
                       style={{ borderColor: emailError ? 'rgba(180,60,60,0.5)' : 'rgba(212,163,115,0.3)', backgroundColor: '#FFFDF8' }}
                     />
