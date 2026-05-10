@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node checks/validate-built-css.cjs",
     "start": "next start",
     "lint": "eslint",
     "smoke:visual": "node checks/visual-smoke-check.cjs"
