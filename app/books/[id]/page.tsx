@@ -72,7 +72,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   // Per-photo error state for graceful degradation in the grid
-  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   // Toast state
   const [toastMessage, setToastMessage] = useState('');
   const [toastVariant, setToastVariant] = useState<'default' | 'success' | 'error'>('default');
@@ -161,12 +161,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handlePhotoError = (memoryIndex: number) => {
-    setImageErrors(prev => ({ ...prev, [memoryIndex]: true }));
+  const handlePhotoError = (memoryId: number, photoIndex: number) => {
+    const key = `${memoryId}-${photoIndex}`;
+    setImageErrors(prev => ({ ...prev, [key]: true }));
   };
 
-  const handlePhotoClick = (globalIndex: number, url: string) => {
-    if (!imageErrors[globalIndex]) {
+  const handlePhotoClick = (memoryId: number, photoIndex: number, url: string) => {
+    const key = `${memoryId}-${photoIndex}`;
+    if (!imageErrors[key]) {
       setLightboxSrc(url);
     }
   };
@@ -784,8 +786,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                           className={`mt-5 photo-grid photo-grid--${Math.min(memory.photo_urls.length, 4)}`}
                         >
                           {memory.photo_urls.map((url, photoIndex) => {
-                            const globalIndex = memoryIndex * 100 + photoIndex;
-                            const hasError = !!imageErrors[globalIndex];
+                            const errorKey = `${memory.id}-${photoIndex}`;
+                            const hasError = !!imageErrors[errorKey];
                             return (
                               <div
                                 key={photoIndex}
@@ -831,12 +833,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                       loading="lazy"
                                       unoptimized={true}
                                       className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"
-                                      onError={() => handlePhotoError(globalIndex)}
+                                      onError={() => handlePhotoError(memory.id, photoIndex)}
                                     />
                                     {/* Hover overlay with expand hint */}
                                     <button
                                       type="button"
-                                      onClick={() => handlePhotoClick(globalIndex, url)}
+                                      onClick={() => handlePhotoClick(memory.id, photoIndex, url)}
                                       className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-xl"
                                       aria-label={`View photo ${photoIndex + 1} fullscreen`}
                                       style={{
