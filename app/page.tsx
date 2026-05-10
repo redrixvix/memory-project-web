@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -16,21 +16,9 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/auth/me')
-      .then(r => r.json())
-      .then(data => {
-        if (data.user) {
-          router.replace('/dashboard');
-        } else {
-          setLoggedIn(false);
-        }
-      })
-      .catch(() => setLoggedIn(false));
+  const handleScroll = useCallback(() => setScrolled(window.scrollY > 40), []);
 
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
+  const observeReveal = useCallback(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -43,12 +31,29 @@ export default function Home() {
       { threshold: 0.15 }
     );
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    return observer;
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(r => r.json())
+      .then(data => {
+        if (data.user) {
+          router.replace('/dashboard');
+        } else {
+          setLoggedIn(false);
+        }
+      })
+      .catch(() => setLoggedIn(false));
+
+    const observer = observeReveal();
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       observer.disconnect();
     };
-  }, [router]);
+  }, [router, handleScroll, observeReveal]);
 
   const memories = [
     {
@@ -74,7 +79,7 @@ export default function Home() {
   return (
     <>
       {/* Skip to main content — WCAG 2.1 SC 2.4.1 "Bypass Blocks" */}
-      <style>{`.skip-link{position:fixed;top:0;left:0;z-index:9999;padding:.75rem 1.25rem;background:var(--bronze);color:var(--charcoal);font-weight:600;font-size:.875rem;border-radius:0 0 .5rem;transform:translateY(-100%);transition:transform .15s;text-decoration:none}.skip-link:focus{transform:translateY(0)}`}</style>
+      <style>{`.skip-link{position:fixed;top:0;left:0;z-index:9999;padding:.75rem 1.25rem;background:var(--bronze);color:var(--charcoal);font-weight:600;font-size:.875rem;border-radius:0 0 .5rem;transform:translateY(-100%);transition:transform .15s;text-decoration:none}.skip-link:focus{transform:translateY(0)}.cta-btn:focus-visible{outline:2px solid var(--bronze);outline-offset:3px;box-shadow:0 0 0 4px var(--cornsilk)}`}</style>
       <a href="#main" className="skip-link">Skip to main content</a>
 
       <div className="min-h-screen" style={{ fontFamily: "var(--font-serif)" }}>
