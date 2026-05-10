@@ -442,6 +442,7 @@ export default function Dashboard() {
                     key={value}
                     type="button"
                     onClick={() => setSortOrder(value)}
+                    aria-pressed={sortOrder === value}
                     className="sort-btn rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0 focus-visible:outline-none"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
@@ -576,7 +577,8 @@ export default function Dashboard() {
                             key={plan.id}
                             type="button"
                             onClick={() => setNewPlan(plan.id)}
-                            className="rounded-2xl border px-5 py-4 text-left transition-all duration-200 relative hover:-translate-y-0.5"
+                            aria-checked={newPlan === plan.id}
+                            className="rounded-2xl border px-5 py-4 text-left transition-all duration-200 relative hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A373] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDFCF5]"
                             style={{
                               backgroundColor: isSelected
                                 ? 'rgba(212,163,115,0.08)'
