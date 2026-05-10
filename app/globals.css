@@ -464,6 +464,7 @@ body {
 
   .hero-ambient::after {
     animation: none !important;
+    opacity: 0 !important;
   }
 
   .animate-slide-in {
@@ -855,6 +856,9 @@ body {
 .photo-grid--1 { grid-template-columns: 1fr; }
 .photo-grid--2 { grid-template-columns: repeat(2, 1fr); }
 .photo-grid--3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 639px) {
+  .photo-grid--3 { grid-template-columns: repeat(2, 1fr); }
+}
 .photo-grid--4 { grid-template-columns: repeat(2, 1fr); }
 
 /* ─────────────────────────────────────────
