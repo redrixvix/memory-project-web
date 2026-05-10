@@ -279,6 +279,10 @@ export function DropZone({
   );
 }
 
+// ─── Shared Types ─────────────────────────────────────────────────────────────
+
+type UploadResult = { url: string; fileName: string };
+
 // ─── UploadThing Buttons ──────────────────────────────────────────────────────
 
 // Cached button class — generated once per browser session
@@ -305,6 +309,7 @@ interface UploadButtonProps {
 
 // UploadThing button component — lazy loaded client-side
 export function ImageUploader({ onUploadComplete, className }: UploadButtonProps) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- UploadThing doesn't export button component types
   const [UTButton, setUTButton] = useState<React.ComponentType<any> | null>(null);
 
   useEffect(() => {
@@ -353,10 +358,10 @@ export function ImageUploader({ onUploadComplete, className }: UploadButtonProps
     <UTButton
       endpoint="imageUploader"
       onUploadBegin={(fileName: string) => console.log(`[Upload] ${fileName}`)}
-      onClientUploadComplete={(res: any[]) => {
-        onUploadComplete?.(res.map((f: any) => ({ url: f.url, fileName: f.name })));
+      onClientUploadComplete={(res: UploadResult[]) => {
+        onUploadComplete?.(res);
       }}
-      onUploadError={(error: any) => console.error(`[Upload] error:`, error.message)}
+      onUploadError={(error: Error) => console.error(`[Upload] error:`, error.message)}
       appearance={{
         container: className,
         // CSS in globals.css handles the actual styling (including overriding bg-blue)
@@ -382,6 +387,7 @@ export function ImageUploader({ onUploadComplete, className }: UploadButtonProps
 }
 
 export function AudioUploader({ onUploadComplete, className }: UploadButtonProps) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- UploadThing doesn't export button component types
   const [UTButton, setUTButton] = useState<React.ComponentType<any> | null>(null);
 
   useEffect(() => {
@@ -430,10 +436,10 @@ export function AudioUploader({ onUploadComplete, className }: UploadButtonProps
     <UTButton
       endpoint="audioUploader"
       onUploadBegin={(fileName: string) => console.log(`[Audio] ${fileName}`)}
-      onClientUploadComplete={(res: any[]) => {
-        onUploadComplete?.(res.map((f: any) => ({ url: f.url, fileName: f.name })));
+      onClientUploadComplete={(res: UploadResult[]) => {
+        onUploadComplete?.(res);
       }}
-      onUploadError={(error: any) => console.error(`[Audio] error:`, error.message)}
+      onUploadError={(error: Error) => console.error(`[Audio] error:`, error.message)}
       appearance={{
         container: className,
         button: [
