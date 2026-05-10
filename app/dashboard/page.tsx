@@ -44,6 +44,7 @@ const BOOK_COLORS = [
   '#8B4513',
   '#556B2F',
   '#D2691E',
+  'rgba(210,105,30,0.75)',
 ];
 
 // Actual rgba values for inline style use (matches BOOK_COLORS index)
@@ -389,6 +390,7 @@ export default function Dashboard() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search your books..."
+                  aria-label="Search your books"
                   className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
                   style={{
                     backgroundColor: 'rgba(255,253,246,0.92)',
