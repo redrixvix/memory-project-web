@@ -291,7 +291,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
 
         {/* FAQ — interactive accordion */}
         <div className="mt-24 max-w-2xl mx-auto">
-          <h2 className="display-md text-center mb-12" style={{ color: 'var(--charcoal)' }}>Common questions</h2>
+          <h2 role="heading" aria-level={2} className="display-md text-center mb-12" style={{ color: 'var(--charcoal)' }}>Common questions</h2>
           <FaqAccordion
             items={[
               {
@@ -305,6 +305,10 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
               {
                 q: 'Can I switch plans later?',
                 a: 'Yes, you can upgrade at any time. You can also add photo storage à la carte without upgrading your whole plan.',
+              },
+              {
+                q: 'How do I get started?',
+                a: "It's free to start. Sign up in seconds, choose your first memory book, and begin answering guided prompts about the people and moments that matter most. Add photos or audio any time — or just write. When you're ready, we'll print a beautiful hardcover book to treasure.",
               },
             ]}
           />
