@@ -239,8 +239,8 @@ export default function UpgradeClient() {
                 aria-label="Select a book to upgrade"
                 value={selectedBookId}
                 onChange={(e) => updateSelectedBook(e.target.value, books)}
-                className="rounded-xl px-3 py-1.5 text-xs"
-                style={{ border: '1px solid rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)', outline: 'none' }}
+                className="rounded-xl px-3 py-1.5 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 transition-all"
+                style={{ border: '1px solid rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
               >
                 {books.map(b => (
                   <option key={b.id} value={b.id}>{b.title}</option>
