@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "smoke:visual": "node checks/visual-smoke-check.cjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1032.0",
