@@ -336,7 +336,7 @@ export default function SettingsPage() {
                       {/* Hover overlay */}
                       <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        className="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1"
                         style={{ backgroundColor: 'rgba(43,43,43,0.5)' }}
                         aria-label="Change profile photo"
                       >
@@ -350,7 +350,7 @@ export default function SettingsPage() {
                     <div className="relative group">
                       <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="w-20 h-20 rounded-full flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 hover:brightness-105"
+                        className="w-20 h-20 rounded-full flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1"
                         style={{
                           background: 'linear-gradient(135deg, rgba(212,163,115,0.18) 0%, rgba(204,213,174,0.18) 100%)',
                           border: '2px solid rgba(212,163,115,0.35)',
@@ -424,7 +424,7 @@ export default function SettingsPage() {
                   {profileImageUrl ? (
                     <button
                       onClick={() => setProfileImageUrl(null)}
-                      className="inline-flex items-center justify-center h-9 rounded-full px-4 text-xs font-semibold transition-all hover:brightness-95 active:scale-[0.97]"
+                      className="inline-flex items-center justify-center h-9 rounded-full px-4 text-xs font-semibold transition-all hover:brightness-95 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1"
                       style={{ color: '#6A3A2A', backgroundColor: 'rgba(180,80,60,0.10)', border: '1px solid rgba(180,80,60,0.20)' }}
                     >
                       <svg className="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -519,7 +519,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving || !name.trim() || name.trim() === user?.name}
-                  className="inline-flex items-center justify-center h-12 rounded-full px-8 text-sm font-semibold shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.97] hover:shadow-xl hover:shadow-[rgba(212,163,115,0.4)] hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center h-12 rounded-full px-8 text-sm font-semibold shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.97] hover:shadow-xl hover:shadow-[rgba(212,163,115,0.4)] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1"
                   style={{
                     backgroundColor: 'var(--bronze)',
                     color: 'var(--charcoal)',
@@ -691,7 +691,7 @@ export default function SettingsPage() {
                   </div>
                   <button
                     onClick={() => setShowPasswordForm(v => !v)}
-                    className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:opacity-80"
+                    className="inline-flex items-center justify-center h-9 rounded-full px-5 text-xs font-medium transition-all hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1"
                     style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.2)' }}
                   >
                     {showPasswordForm ? 'Cancel' : 'Change password'}
