@@ -273,9 +273,9 @@ export default function Home() {
       </section>
 
       {/* ── STATS ── */}
-      <section className="py-10 px-6 md:px-10 border-b" style={{ backgroundColor: 'var(--cornsilk)', borderColor: 'rgba(212,163,115,0.1)' }}>
+      <section className="py-10 px-6 md:px-10" style={{ borderBottom: '1px solid rgba(212,163,115,0.1)', backgroundColor: 'var(--cornsilk)' }}>
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-3 divide-x divide-y md:divide-y-0" style={{ border: '1px solid rgba(212,163,115,0.1)', borderRadius: 16, overflow: 'hidden' }}>
+          <div className="grid grid-cols-3 divide-x md:divide-y-0" style={{ border: '1px solid rgba(212,163,115,0.1)', borderRadius: 16, overflow: 'hidden' }}>
             {[
               { value: '12,000+', label: 'families preserving stories' },
               { value: '4.9★', label: 'average rating' },
@@ -603,7 +603,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Free */}
-            <div className="reveal">
+            <div className="reveal" role="article" aria-label="Free plan — $0 forever">
               <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.14)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
@@ -632,8 +632,9 @@ export default function Home() {
                   </ul>
                   <Link
                     href="/signup"
-                    className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80"
-                    style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.06)' }}
+                    className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2"
+                    style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.06)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
+                    aria-label="Start free plan"
                   >
                     Start your free book
                   </Link>
@@ -642,10 +643,10 @@ export default function Home() {
             </div>
 
             {/* 5GB — featured with papaya bg */}
-            <div className="reveal">
+            <div className="reveal" role="article" aria-label="5GB Storage plan — $50 for 5 years, most popular">
               <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 12px 48px rgba(212,163,115,0.22)' }}>
                 <div className="absolute -top-5 left-1/2 -translate-x-1/2">
-                  <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
+                  <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }} aria-label="Most popular plan">
                     Most Popular
                   </Badge>
                 </div>
@@ -671,8 +672,9 @@ export default function Home() {
                   </ul>
                   <Link
                     href="/signup"
-                    className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95"
-                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                    className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
+                    style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', ['--tw-ring-color' as string]: 'var(--charcoal)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
+                    aria-label="Upgrade to 5GB plan"
                   >
                     Upgrade
                   </Link>
@@ -681,7 +683,7 @@ export default function Home() {
             </div>
 
             {/* 15GB */}
-            <div className="reveal">
+            <div className="reveal" role="article" aria-label="15GB Storage plan — $100 for 5 years">
               <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>15GB Storage</p>
@@ -704,8 +706,9 @@ export default function Home() {
                   </ul>
                   <Link
                     href="/signup"
-                    className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80"
-                    style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
+                    className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2"
+                    style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
+                    aria-label="Upgrade to 15GB plan"
                   >
                     Upgrade
                   </Link>
