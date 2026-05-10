@@ -741,9 +741,36 @@ export default function Dashboard() {
             <h2 className="text-3xl font-medium tracking-tight mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
               Your library is empty
             </h2>
-            <p className="text-base max-w-sm mx-auto leading-relaxed mb-8 text-center" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
+            <p className="text-base max-w-sm mx-auto leading-relaxed mb-6 text-center" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
               Every family has stories worth preserving. Create your first book and start capturing the moments that matter.
             </p>
+            {/* Inspiration chips — spark ideas for what kind of book to create */}
+            <div className="flex flex-wrap justify-center gap-2.5 mb-8">
+              {[
+                { label: 'Our Family Vacation', title: 'Our Family Vacation' },
+                { label: 'A Year to Remember', title: 'A Year to Remember' },
+                { label: 'Grandma\'s Stories', title: 'Grandma\'s Stories' },
+              ].map(({ label, title }) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => { setNewTitle(title); setShowCreate(true); }}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-md active:scale-95"
+                  style={{
+                    backgroundColor: 'rgba(212,163,115,0.14)',
+                    color: '#4A3A2A',
+                    border: '1px solid rgba(212,163,115,0.30)',
+                    fontFamily: 'var(--font-sans)',
+                    boxShadow: '0 2px 8px rgba(212,163,115,0.10)',
+                  }}
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--bronze)' }}>
+                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                  </svg>
+                  {label}
+                </button>
+              ))}
+            </div>
             <Button
               onClick={() => setShowCreate(true)}
               type="button"
