@@ -310,8 +310,8 @@ export default function Home() {
               </p>
               <Link
                 href="/signup"
-                className="inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
-                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                className="cta-btn inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
               >
                 Start your free book
                 <svg className="w-4 h-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
