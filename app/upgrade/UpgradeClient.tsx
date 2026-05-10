@@ -309,7 +309,7 @@ export default function UpgradeClient() {
                 tabIndex={isCurrentPlan ? -1 : 0}
                 onClick={handleCardClick}
                 onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !isCurrentPlan) { e.preventDefault(); handleCardClick(); }}}
-                className="text-left rounded-2xl p-5 relative cursor-pointer plan-card"
+                className={`text-left rounded-2xl p-5 relative ${!isCurrentPlan ? 'cursor-pointer' : ''} plan-card`}
                 style={cardStyles}
                 aria-pressed={isSelected}
                 aria-disabled={isCurrentPlan ? true : undefined}
