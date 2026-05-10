@@ -19,6 +19,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy — Memory Project',
+    description: 'How Memory Project collects, uses, and protects your personal information. Your memories and data are yours — we never sell or share them.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function PrivacyPage() {

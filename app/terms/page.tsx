@@ -19,6 +19,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Terms of Service — Memory Project',
+    description: 'The terms and conditions for using Memory Project. By using our service, you agree to these terms.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function TermsPage() {
