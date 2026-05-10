@@ -331,6 +331,7 @@ export default function SettingsPage() {
                           height={80}
                           className="object-cover w-full h-full"
                           unoptimized
+                          loading="lazy"
                         />
                       </div>
                       {/* Hover overlay */}
@@ -471,30 +472,24 @@ export default function SettingsPage() {
 
               {/* Email (read-only — clearly non-editable) */}
               <div className="grid gap-2">
-                <Label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                <Label htmlFor="email-display" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                   Email address
-                  <div
-                    role="textbox"
-                    aria-readonly="true"
-                    tabIndex={0}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl mt-2"
-                    style={{
-                      backgroundColor: 'rgba(204,213,174,0.06)',
-                      border: '1px solid rgba(212,163,115,0.12)',
-                    }}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5A3A2A', marginTop: '1px', flexShrink: 0 }}>
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                    </svg>
-                    <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
-                      {user?.email}
-                    </p>
-                    <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.22)', color: '#4A3A2A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.4)' }}>
-                      read-only
-                    </span>
-                  </div>
                 </Label>
-                <p className="text-xs" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{
+                  backgroundColor: 'rgba(204,213,174,0.06)',
+                  border: '1px solid rgba(212,163,115,0.12)',
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5A3A2A', marginTop: '1px', flexShrink: 0 }}>
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                  <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
+                    {user?.email}
+                  </p>
+                  <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.22)', color: '#4A3A2A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.4)' }}>
+                    read-only
+                  </span>
+                </div>
+                <p id="email-help" className="text-xs" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
                   Contact support to change your email address
                 </p>
               </div>
