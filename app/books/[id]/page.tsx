@@ -928,7 +928,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               e.preventDefault();
                               setActiveMenu(activeMenu === memory.id ? null : memory.id);
                             }}
-                            className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                            className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                             style={{
                               backgroundColor: 'rgba(212,163,115,0.10)',
                               color: '#5A3A2A',
