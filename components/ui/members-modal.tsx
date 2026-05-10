@@ -34,7 +34,7 @@ const ROLE_COLORS: Record<string, string> = {
   answer_only: 'rgba(200,200,200,0.2)',
 };
 
-export function MembersModal({ bookId, onClose, currentUserId, currentUserRole }: MembersModalProps) {
+export function MembersModal({ bookId, onClose, currentUserId, currentUserRole: _currentUserRole }: MembersModalProps) {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -147,8 +147,9 @@ export function MembersModal({ bookId, onClose, currentUserId, currentUserRole }
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-70"
-            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A' }}
+            aria-label="Close members panel"
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A', '--tw-ring-color': 'var(--bronze)' } as React.CSSProperties}
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M18 6L6 18M6 6l12 12"/>
@@ -328,9 +329,9 @@ export function MembersModal({ bookId, onClose, currentUserId, currentUserRole }
                           <button
                             type="button"
                             onClick={() => { setEditingRole(member.user_id); setNewRole(member.role); }}
-                            className="w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:opacity-70"
-                            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A' }}
-                            title="Change role"
+                            aria-label="Change role"
+                            className="w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+                            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A', '--tw-ring-color': 'var(--bronze)' } as React.CSSProperties}
                           >
                             <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -341,9 +342,9 @@ export function MembersModal({ bookId, onClose, currentUserId, currentUserRole }
                             type="button"
                             onClick={() => handleRemove(member.user_id)}
                             disabled={removingId === member.user_id}
-                            className="w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:opacity-70"
-                            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: removingId === member.user_id ? 'rgba(0,0,0,0.3)' : '#c0392b' }}
-                            title="Remove member"
+                            aria-label="Remove member"
+                            className="w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-30"
+                            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: removingId === member.user_id ? 'rgba(0,0,0,0.3)' : '#c0392b', '--tw-ring-color': 'var(--bronze)' } as React.CSSProperties}
                           >
                             <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M18 6L6 18M6 6l12 12"/>
