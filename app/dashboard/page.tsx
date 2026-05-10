@@ -577,7 +577,7 @@ export default function Dashboard() {
                             key={plan.id}
                             type="button"
                             onClick={() => setNewPlan(plan.id)}
-                            aria-checked={newPlan === plan.id}
+                            aria-pressed={newPlan === plan.id}
                             className="rounded-2xl border px-5 py-4 text-left transition-all duration-200 relative hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A373] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDFCF5]"
                             style={{
                               backgroundColor: isSelected
