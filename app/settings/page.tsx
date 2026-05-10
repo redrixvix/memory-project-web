@@ -22,6 +22,8 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [name, setName] = useState('');
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const [nameError, setNameError] = useState('');
+  const [nameTouched, setNameTouched] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -63,7 +65,7 @@ export default function SettingsPage() {
   }, [router]);
 
   const handleSave = async () => {
-    if (!name.trim()) return;
+    if (!name.trim()) { setNameError('Please enter your name'); setNameTouched(true); return; }
     setSaving(true);
     setSaved(false);
     try {
@@ -418,6 +420,8 @@ export default function SettingsPage() {
                   accept="image/*"
                   className="hidden"
                   onChange={handleImageUpload}
+                  aria-label="Upload profile photo"
+                  aria-describedby={imageError ? 'image-error' : undefined}
                 />
 
                 {/* Avatar info */}
@@ -442,7 +446,10 @@ export default function SettingsPage() {
                   </p>
                 )}
                 {imageError && (
-                  <p className="text-xs mt-2" style={{ color: '#B91C1C' }}>{imageError}</p>
+                  <p id="image-error" role="alert" className="text-xs mt-2 flex items-center gap-1.5" style={{ color: '#B91C1C', fontFamily: 'var(--font-sans)' }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    {imageError}
+                  </p>
                 )}
               </div>
 
@@ -455,19 +462,27 @@ export default function SettingsPage() {
                   id="display-name"
                   type="text"
                   value={name}
-                  onChange={e => setName(e.target.value)}
+                  onChange={e => { setName(e.target.value); if (e.target.value.trim()) setNameError(''); }}
+                  onBlur={() => { if (!name.trim()) setNameError('Please enter your name'); setNameTouched(true); }}
                   aria-label="Display name"
+                  aria-invalid={nameTouched && !name.trim()}
+                  aria-describedby={nameError ? 'name-error' : undefined}
                   className="w-full rounded-xl px-4 py-3 text-base outline-none transition-all duration-200"
                   style={{
-                    border: '1.5px solid rgba(212,163,115,0.45)',
+                    border: nameTouched && !name.trim() ? '1.5px solid #C0392B' : '1.5px solid rgba(212,163,115,0.45)',
                     backgroundColor: '#FFFDF8',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-serif)',
+                    boxShadow: nameTouched && !name.trim() ? '0 0 0 3px rgba(192,57,43,0.12)' : 'none',
                   }}
                   placeholder="Your name"
-                  onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--bronze)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.20)'; e.currentTarget.style.outline = 'none'; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.45)'; e.currentTarget.style.boxShadow = 'none'; }}
                 />
+                {nameTouched && !name.trim() && (
+                  <p id="name-error" className="text-xs mt-1.5 flex items-center gap-1.5" style={{ color: '#C0392B', fontFamily: 'var(--font-sans)' }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Please enter your name
+                  </p>
+                )}
               </div>
 
               {/* Email (read-only — clearly non-editable) */}
@@ -812,12 +827,13 @@ export default function SettingsPage() {
             <div className="p-7">
               <button
                 onClick={handleLogout}
+                aria-label="Sign out of Memory Project"
                 className="inline-flex items-center justify-center h-11 rounded-full border px-7 text-sm font-medium transition-all hover:opacity-80 active:scale-[0.98] focus-visible:outline-none"
                 style={{ borderColor: 'rgba(180,80,60,0.35)', color: '#B4503C', backgroundColor: 'transparent', boxShadow: '0 0 0 2px transparent', '--tw-ring-color': 'rgba(180,80,60,0.5)' } as React.CSSProperties}
                 onFocus={e => { e.currentTarget.style.boxShadow = '0 0 0 3px rgba(180,80,60,0.45)'; }}
                 onBlur={e => { e.currentTarget.style.boxShadow = 'none'; }}
               >
-                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                   <polyline points="16 17 21 12 16 7"/>
                   <line x1="21" y1="12" x2="9" y2="12"/>
