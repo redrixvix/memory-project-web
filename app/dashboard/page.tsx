@@ -262,10 +262,13 @@ export default function Dashboard() {
           box-shadow: 0 0 0 3px rgba(212,163,115,0.30), 0 0 0 1px rgba(212,163,115,0.55);
           outline: none;
         }
-        .search-input:focus {
+        .search-input:focus-visible {
           border-color: rgba(212,163,115,0.65);
           box-shadow: 0 0 0 3px rgba(212,163,115,0.08), 0 2px 8px rgba(212,163,115,0.06);
           outline: none;
+        }
+        .fab-btn:focus-visible {
+          box-shadow: 0 0 0 3px rgba(212,163,115,0.50), 0 8px 32px rgba(212,163,115,0.35);
         }
       `}</style>
 
@@ -339,8 +342,8 @@ export default function Dashboard() {
 
           {/* Mobile hamburger */}
           <button
-            className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#5A3A2A' }}
+            className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#5A3A2A', ['--tw-ring-color' as string]: 'rgba(212,163,115,0.55)' }}
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open navigation menu"
           >
@@ -1027,7 +1030,7 @@ export default function Dashboard() {
         <button
           type="button"
           onClick={() => setShowCreate(true)}
-          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-110 active:scale-95 animate-fade-up hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          className="fab-btn fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-110 active:scale-95 animate-fade-up hover:shadow-2xl"
           style={{
             backgroundColor: 'var(--bronze)',
             color: 'var(--charcoal)',
