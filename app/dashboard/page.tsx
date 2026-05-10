@@ -470,9 +470,13 @@ export default function Dashboard() {
           >
             {/* Backdrop — darker scrim for better focus + contrast */}
             <div
-              className="absolute inset-0"
+              role="button"
+              tabIndex={0}
+              aria-label="Close modal"
+              className="absolute inset-0 cursor-pointer"
               style={{ backgroundColor: 'rgba(43,43,43,0.62)' }}
               onClick={() => { if (!creating) { setShowCreate(false); setCreateError(''); } }}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (!creating) { setShowCreate(false); setCreateError(''); } } }}
             />
 
             {/* Modal panel */}
