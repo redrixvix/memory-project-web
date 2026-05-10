@@ -113,7 +113,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
       </header>
 
       {/* ── BOOK PREVIEW ── */}
-      <main id="main-content" className="py-12 px-4">
+      <main id="main" className="py-12 px-4">
         <div className="max-w-2xl mx-auto">
 
           {/* Physical book mockup */}

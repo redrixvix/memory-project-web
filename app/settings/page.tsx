@@ -183,7 +183,7 @@ export default function SettingsPage() {
       </header>
 
       {/* ── MAIN ── */}
-      <main id="main-content" className="px-6 md:px-10 py-10 max-w-3xl mx-auto w-full">
+      <main id="main" className="px-6 md:px-10 py-10 max-w-3xl mx-auto w-full">
 
         {/* Page header */}
         <div className="mb-8">

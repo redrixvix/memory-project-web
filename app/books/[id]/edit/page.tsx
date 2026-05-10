@@ -864,7 +864,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         loggedIn={true}
       />
 
-      <main id="main-content" className="mx-auto w-full max-w-5xl px-5 py-4 md:px-10 md:py-6">
+      <main id="main" className="mx-auto w-full max-w-5xl px-5 py-4 md:px-10 md:py-6">
         <article
           className="relative overflow-hidden rounded-[2.25rem] border"
           style={{

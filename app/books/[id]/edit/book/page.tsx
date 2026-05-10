@@ -114,7 +114,7 @@ export default function EditBookPage({ params }: { params: Promise<{ id: string 
         </div>
       </header>
 
-      <main id="main-content" className="px-6 md:px-10 py-12 max-w-2xl mx-auto w-full">
+      <main id="main" className="px-6 md:px-10 py-12 max-w-2xl mx-auto w-full">
         <div className="mb-8">
           <p className="text-xs uppercase tracking-[0.18em] mb-2" style={{ color: 'var(--bronze)' }}>
             Book settings

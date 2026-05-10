@@ -163,7 +163,7 @@ export default function UpgradePage() {
         </div>
       </header>
 
-      <main id="main-content" className="px-6 md:px-10 py-8 max-w-4xl mx-auto w-full">
+      <main id="main" className="px-6 md:px-10 py-8 max-w-4xl mx-auto w-full">
 
         {/* Page header — compact */}
         <div className="text-center mb-5 sm:mb-7">
