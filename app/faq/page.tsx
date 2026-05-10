@@ -21,6 +21,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Frequently Asked Questions — Memory Project',
+    description: 'Answers to common questions about Memory Project — how it works, pricing, printing, family collaboration, and getting started.',
+    images: ['/og-image.png'],
+  },
 };
 
 const webSiteJsonLd = {

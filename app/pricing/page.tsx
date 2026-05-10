@@ -58,6 +58,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pricing — Memory Project',
+    description: 'Start free. Pay only for printing. Unlimited text memories forever, upgrade for photo storage and printed hardcover books from $99.',
+    images: ['/og-image.png'],
+  },
 };
 
 type PricingPageProps = {

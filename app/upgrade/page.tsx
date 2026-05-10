@@ -11,6 +11,13 @@ export const metadata: Metadata = {
       'Unlock unlimited photos, voice recordings, and lifetime printed heirlooms. Give your family stories the home they deserve.',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Upgrade Your Memory Book — Memory Project',
+    description:
+      'Unlock unlimited photos, voice recordings, and lifetime printed heirlooms. Give your family stories the home they deserve.',
+    images: ['/og-image.png'],
+  },
   robots: {
     index: false,
     follow: true,
