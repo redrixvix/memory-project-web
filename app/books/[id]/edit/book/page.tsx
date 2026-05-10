@@ -5,19 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { use } from 'react';
 
-interface Book {
-  id: number;
-  title: string;
-  description: string | null;
-  owner_id: number;
-  plan: string;
-  storage_tier: string;
-}
-
 export default function EditBookPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-  const [book, setBook] = useState<Book | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(true);
@@ -35,10 +25,9 @@ export default function EditBookPage({ params }: { params: Promise<{ id: string 
         }
         if (!res.ok) throw new Error('Failed to load');
         const data = await res.json();
-        setBook(data.book);
         setTitle(data.book.title || '');
         setDescription(data.book.description || '');
-      } catch (err) {
+      } catch {
         setError('Failed to load book');
       } finally {
         setLoading(false);
@@ -71,7 +60,7 @@ export default function EditBookPage({ params }: { params: Promise<{ id: string 
       setTimeout(() => {
         router.push(`/books/${id}`);
       }, 1200);
-    } catch (err) {
+    } catch {
       setError('Failed to save changes');
     } finally {
       setSaving(false);

@@ -55,7 +55,8 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
     setOrdering(true);
     try {
       const res = await fetch(`/api/books/${id}/order-print`, { method: 'POST' });
-      const data = await res.json();
+      if (!res.ok) throw new Error('Failed to order print');
+      void res.json();
       setOrderSuccess(true);
       setShowOrderModal(false);
       setTimeout(() => setOrderSuccess(false), 4000);
@@ -103,7 +104,7 @@ export default function PreviewBook({ params }: { params: Promise<{ id: string }
           <button
             onClick={handleOrderPrint}
             disabled={ordering || memories.length === 0}
-            className="inline-flex h-8 items-center justify-center rounded-full px-5 text-xs font-medium whitespace-nowrap transition-all duration-200 disabled:opacity-50 active:scale-95"
+            className="inline-flex h-11 items-center justify-center rounded-full px-5 text-xs font-medium whitespace-nowrap transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
             style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
           >
             {ordering ? 'Ordering...' : 'Order Print Copy'}
