@@ -81,6 +81,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [toastVisible, setToastVisible] = useState(false);
   // Delete confirm state
   const [deleteConfirm, setDeleteConfirm] = useState<{ memoryId: number } | null>(null);
+  // Delete loading state
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   // Memory sort order
   const [memorySort, setMemorySort] = useState<'newest' | 'oldest'>('newest');
   // Mobile nav state
@@ -155,7 +157,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   }, [id]);
 
   const handleDeleteMemory = async (memoryId: number) => {
+    setDeletingId(memoryId);
     const res = await fetch(`/api/memories/${memoryId}`, { method: 'DELETE' });
+    setDeletingId(null);
     if (res.ok) setMemories(memories.filter(m => m.id !== memoryId));
   };
 
@@ -281,10 +285,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   setToastVariant('default');
                   setToastVisible(true);
                 }}
-                className="flex-1 h-11 rounded-full text-sm font-medium transition-all duration-200 hover:opacity-80 active:scale-95"
+                disabled={deletingId !== null}
+                className="flex-1 h-11 rounded-full text-sm font-medium transition-all duration-200 hover:opacity-80 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
               >
-                Delete
+                {deletingId !== null ? 'Deleting…' : 'Delete'}
               </button>
             </div>
           </div>
