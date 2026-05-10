@@ -564,7 +564,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
         {/* Empty state — warm and inviting */}
         {memories.length === 0 ? (
-          <div className="text-center py-12 md:py-16 animate-fade-up">
+          <div aria-live="polite" role="status" className="text-center py-12 md:py-16 animate-fade-up">
             {/* Warm illustrated open-book icon */}
             <div className="inline-block mb-8 relative">
               <div
