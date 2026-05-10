@@ -90,6 +90,7 @@ export default function SignupClient() {
 
 function Signup() {
   const [name, setName] = useState('');
+  const [nameError, setNameError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -134,6 +135,7 @@ function Signup() {
 
   const handlePasswordSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!name.trim()) { setNameError('Please enter your name.'); return; }
     setPasswordLoading(true);
     setError('');
 
@@ -335,13 +337,24 @@ function Signup() {
                         type="text"
                         id="name"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => {
+                          setName(e.target.value);
+                          if (nameError && e.target.value.trim()) setNameError('');
+                        }}
+                        onBlur={(e) => { if (e.target.value && !e.target.value.trim()) setNameError('Please enter your name.'); }}
                         required
                         autoComplete="name"
                         placeholder="Ruth Henderson"
+                        aria-describedby="name-error"
+                        aria-invalid={nameError ? 'true' : undefined}
                         className="text-sm rounded-xl h-11"
-                        style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
+                        style={{ borderColor: nameError ? 'rgba(180,60,60,0.5)' : 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
                       />
+                      {nameError && (
+                        <p role="alert" id="name-error" className="text-xs mt-1" style={{ color: 'rgba(180,60,60,0.85)' }}>
+                          {nameError}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
