@@ -173,9 +173,69 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
-          <p className="text-sm" style={{ color: '#5A5A4A' }}>Loading...</p>
+        <div className="w-full max-w-3xl px-6">
+          {/* Settings loading skeleton — warm shimmer matching settings layout */}
+          <div className="mb-8">
+            <div className="h-4 w-20 rounded-lg mb-3 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+            <div className="h-9 w-40 rounded-xl skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.22)' }} />
+          </div>
+
+          {/* Profile section skeleton */}
+          <div className="rounded-3xl border overflow-hidden mb-6" style={{
+            backgroundColor: '#FDFCF5',
+            borderColor: 'rgba(212,163,115,0.18)',
+          }}>
+            <div className="h-1 w-full" style={{ backgroundColor: 'var(--bronze)' }} />
+            <div className="px-7 py-6 border-b" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
+                <div className="space-y-1.5">
+                  <div className="h-4 w-20 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                  <div className="h-3 w-36 rounded-md skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+                </div>
+              </div>
+            </div>
+            <div className="p-7 space-y-7">
+              {/* Avatar row */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                <div className="w-20 h-20 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                <div className="flex-1 space-y-2">
+                  <div className="h-9 w-40 rounded-xl skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
+                  <div className="h-10 w-full rounded-xl skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
+                </div>
+              </div>
+              {/* Name field */}
+              <div className="space-y-2">
+                <div className="h-4 w-12 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                <div className="h-12 w-full rounded-xl skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
+              </div>
+              {/* Email field */}
+              <div className="space-y-2">
+                <div className="h-4 w-24 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                <div className="h-12 w-full rounded-xl skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Security section skeleton */}
+          <div className="rounded-3xl border overflow-hidden" style={{
+            backgroundColor: '#FDFCF5',
+            borderColor: 'rgba(212,163,115,0.18)',
+          }}>
+            <div className="h-1 w-full" style={{ backgroundColor: 'var(--papaya)' }} />
+            <div className="px-7 py-6 border-b" style={{ borderColor: 'rgba(212,163,115,0.12)' }}>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
+                <div className="space-y-1.5">
+                  <div className="h-4 w-20 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                  <div className="h-3 w-36 rounded-md skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+                </div>
+              </div>
+            </div>
+            <div className="p-7">
+              <div className="h-10 w-32 rounded-xl skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+            </div>
+          </div>
         </div>
       </div>
     );

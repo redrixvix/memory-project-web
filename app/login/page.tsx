@@ -218,7 +218,7 @@ export default function Login() {
               {/* Passkey option — ghost/outlined style */}
               <button
                 type="button"
-                className="w-full h-9 rounded-xl text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[rgba(212,163,115,0.06)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-offset-2"
+                className="w-full h-11 rounded-xl text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[rgba(212,163,115,0.06)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{
                   color: '#6A6A5A',
                   border: '1px solid rgba(212,163,115,0.22)',
