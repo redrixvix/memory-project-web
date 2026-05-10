@@ -71,6 +71,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ name?: string; avatarUrl?: string } | null>(null);
   // Per-photo error state for graceful degradation in the grid
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   // Per-photo loaded state for shimmer placeholder
@@ -117,6 +118,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       if (data.membership) {
         setCurrentUserId(data.membership.user_id);
         setCurrentUserRole(data.membership.role);
+        // Also fetch current user details for owner attribution
+        const meRes = await fetch('/api/auth/me');
+        if (meRes.ok) {
+          const me = await meRes.json();
+          setCurrentUser({ name: me.user?.name, avatarUrl: me.user?.avatar_url });
+        }
       } else {
         // Fallback: fetch members list to find self
         const membersRes = await fetch(`/api/books/${id}/members`);
@@ -126,6 +133,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           const meRes = await fetch('/api/auth/me');
           if (meRes.ok) {
             const me = await meRes.json();
+            setCurrentUser({ name: me.user?.name, avatarUrl: me.user?.avatar_url });
             const self = (membersData.data || []).find((m: { user_id?: number }) => m.user_id === me.user?.id);
             if (self) {
               setCurrentUserId(self.user_id);
@@ -785,6 +793,17 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             />
                             <span className="text-xs" style={{ color: 'rgba(43,43,43,0.78)', fontFamily: 'var(--font-sans)' }}>
                               {memory.contributor_name}
+                            </span>
+                          </div>
+                        ) : currentUser ? (
+                          <div className="flex items-center gap-2">
+                            <Avatar
+                              name={currentUser.name ?? 'You'}
+                              imageUrl={currentUser.avatarUrl || null}
+                              size={24}
+                            />
+                            <span className="text-xs" style={{ color: 'rgba(43,43,43,0.78)', fontFamily: 'var(--font-sans)' }}>
+                              You
                             </span>
                           </div>
                         ) : null}
