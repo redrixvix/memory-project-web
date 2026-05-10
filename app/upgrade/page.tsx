@@ -135,11 +135,64 @@ export default function UpgradePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
-          <p className="text-sm" style={{ color: '#4A4A3A' }}>Loading...</p>
-        </div>
+      <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
+        {/* Top nav skeleton */}
+        <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
+          <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.22)' }} />
+              <div className="h-4 w-28 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+            </div>
+            <div className="h-4 w-24 rounded-md skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
+          </div>
+        </header>
+
+        <main className="px-6 md:px-10 py-8 max-w-4xl mx-auto w-full">
+          {/* Page header skeleton */}
+          <div className="text-center mb-5 sm:mb-7 space-y-2">
+            <div className="h-3 w-16 rounded-lg skeleton-pulse mx-auto" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+            <div className="h-7 w-56 rounded-xl skeleton-pulse mx-auto" style={{ backgroundColor: 'rgba(212,163,115,0.22)' }} />
+            <div className="h-4 w-72 rounded-lg skeleton-pulse mx-auto hidden sm:block" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
+          </div>
+
+          {/* Book product image skeleton — mobile only */}
+          <div
+            className="md:hidden rounded-2xl overflow-hidden mb-5"
+            style={{ height: '80px', backgroundColor: 'rgba(212,163,115,0.12)' }}
+          >
+            <div className="w-full h-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.10)' }} />
+          </div>
+
+          {/* Plan cards skeleton — 3 column grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="rounded-2xl p-5"
+                style={{ backgroundColor: '#FDF8EE', border: '1.5px solid rgba(212,163,115,0.25)' }}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="space-y-1.5">
+                    <div className="h-3 w-12 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                    <div className="h-6 w-16 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.22)' }} />
+                    <div className="h-5 w-20 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
+                  </div>
+                  <div className="w-6 h-6 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
+                </div>
+                <div style={{ height: 1, background: 'rgba(212,163,115,0.12)', marginBottom: 12 }} />
+                <div className="space-y-2 mb-5">
+                  {[0, 1, 2].map((j) => (
+                    <div key={j} className="flex items-start gap-2">
+                      <div className="w-3 h-3 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
+                      <div className="h-3 w-full rounded-md skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+                    </div>
+                  ))}
+                </div>
+                <div className="h-10 w-full rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
+              </div>
+            ))}
+          </div>
+        </main>
       </div>
     );
   }
