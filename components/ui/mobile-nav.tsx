@@ -221,8 +221,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
             <Link
               href="/signup"
               onClick={onClose}
-              className="flex h-11 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+              className="flex h-11 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
+              style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
             >
               Start free book
             </Link>
