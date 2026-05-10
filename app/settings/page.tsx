@@ -176,7 +176,7 @@ export default function SettingsPage() {
             </svg>
             <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
           </Link>
-          <Link href="/dashboard" className="nav-link text-sm" style={{ color: '#5A5A4A' }}>
+          <Link href="/dashboard" aria-label="Back to dashboard" className="nav-link text-sm" style={{ color: '#5A5A4A' }}>
             Back to dashboard
           </Link>
         </div>
@@ -376,26 +376,24 @@ export default function SettingsPage() {
                 <Label htmlFor="email-display" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                   Email address
                 </Label>
-                <div
-                  id="email-display"
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-default select-none"
-                  role="presentation"
-                  tabIndex={0}
-                  style={{
-                    backgroundColor: 'rgba(204,213,174,0.06)',
-                    border: '1px solid rgba(212,163,115,0.12)',
-                  }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5A3A2A', marginTop: '1px', flexShrink: 0 }}>
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                  </svg>
-                  <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
-                    {user?.email}
-                  </p>
-                  <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.22)', color: '#4A3A2A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.4)' }}>
-                    read-only
-                  </span>
-                </div>
+                <output
+                    id="email-display"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                    style={{
+                      backgroundColor: 'rgba(204,213,174,0.06)',
+                      border: '1px solid rgba(212,163,115,0.12)',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5A3A2A', marginTop: '1px', flexShrink: 0 }}>
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
+                      {user?.email}
+                    </p>
+                    <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.22)', color: '#4A3A2A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.4)' }}>
+                      read-only
+                    </span>
+                  </output>
                 <p className="text-xs" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
                   Contact support to change your email address
                 </p>
@@ -622,7 +620,7 @@ export default function SettingsPage() {
                         onFocus={e => { e.currentTarget.style.borderColor = 'var(--bronze)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.18)'; }}
                         onBlur={e => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.55)'; e.currentTarget.style.boxShadow = 'none'; }}
                       />
-                        <button type="button" onClick={() => setShowCurrentPassword(p => !p)} aria-label={showCurrentPassword ? 'Hide current password' : 'Show current password'} className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full hover:opacity-60 transition-opacity cursor-pointer" style={{ color: 'rgba(212,163,115,0.65)' }}>
+                        <button type="button" onClick={() => setShowCurrentPassword(p => !p)} aria-label={showCurrentPassword ? 'Hide current password' : 'Show current password'} className="absolute right-1 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full hover:opacity-60 transition-opacity cursor-pointer" style={{ color: 'rgba(212,163,115,0.65)' }}>
                           {showCurrentPassword ? (
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                           ) : (
@@ -635,7 +633,7 @@ export default function SettingsPage() {
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>New password</Label>
                       <div className="relative">
                         <Input type={showNewPassword ? 'text' : 'password'} value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="New password" className="h-9 rounded-lg text-sm pr-8" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} aria-invalid={!!passwordError} aria-describedby="password-error" onFocus={e => { e.currentTarget.style.borderColor = 'var(--bronze)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.18)'; }} onBlur={e => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.55)'; e.currentTarget.style.boxShadow = 'none'; }} />
-                        <button type="button" onClick={() => setShowNewPassword(p => !p)} aria-label={showNewPassword ? 'Hide new password' : 'Show new password'} className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full hover:opacity-60 transition-opacity cursor-pointer" style={{ color: 'rgba(212,163,115,0.65)' }}>
+                        <button type="button" onClick={() => setShowNewPassword(p => !p)} aria-label={showNewPassword ? 'Hide new password' : 'Show new password'} className="absolute right-1 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full hover:opacity-60 transition-opacity cursor-pointer" style={{ color: 'rgba(212,163,115,0.65)' }}>
                           {showNewPassword ? (
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                           ) : (
@@ -648,7 +646,7 @@ export default function SettingsPage() {
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>Confirm new password</Label>
                       <div className="relative">
                         <Input type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm new password" className="h-9 rounded-lg text-sm pr-8" style={{ borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} aria-invalid={!!passwordError} aria-describedby="password-error" onFocus={e => { e.currentTarget.style.borderColor = 'var(--bronze)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.18)'; }} onBlur={e => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.55)'; e.currentTarget.style.boxShadow = 'none'; }} />
-                        <button type="button" onClick={() => setShowConfirmPassword(p => !p)} aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'} className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full hover:opacity-60 transition-opacity cursor-pointer" style={{ color: 'rgba(212,163,115,0.65)' }}>
+                        <button type="button" onClick={() => setShowConfirmPassword(p => !p)} aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'} className="absolute right-1 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full hover:opacity-60 transition-opacity cursor-pointer" style={{ color: 'rgba(212,163,115,0.65)' }}>
                           {showConfirmPassword ? (
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                           ) : (
