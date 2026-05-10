@@ -152,7 +152,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
               </ul>
               <Link
                 href="/signup"
-                className="block text-center rounded-full py-3 text-sm font-semibold transition-all duration-200 hover:opacity-85 active:scale-[0.98] mt-auto min-h-[48px] flex items-center justify-center"
+                className="block text-center rounded-full py-3 text-sm font-semibold transition-all duration-200 hover:opacity-85 active:scale-[0.98] mt-auto min-h-[48px] flex items-center justify-center focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bronze)]"
                 style={{
                   border: '1.5px solid var(--bronze-55)',
                   color: 'var(--charcoal)',
@@ -206,7 +206,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
               </ul>
               <Link
                 href={upgradeHref}
-                className="block text-center rounded-full py-3 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95 mt-auto min-h-[48px] flex items-center justify-center"
+                className="block text-center rounded-full py-3 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95 mt-auto min-h-[48px] flex items-center justify-center focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bronze)]"
                 style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
               >
                 Upgrade
@@ -250,7 +250,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
               </ul>
               <Link
                 href={upgradeHref}
-                className="block text-center rounded-full py-3 text-sm font-semibold transition-all duration-200 hover:opacity-85 active:scale-[0.98] mt-auto min-h-[48px] flex items-center justify-center"
+                className="block text-center rounded-full py-3 text-sm font-semibold transition-all duration-200 hover:opacity-85 active:scale-[0.98] mt-auto min-h-[48px] flex items-center justify-center focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bronze)]"
                 style={{ backgroundColor: 'var(--bronze-22)', color: 'var(--charcoal)' }}
               >
                 Upgrade
