@@ -819,8 +819,9 @@ export default function Home() {
           </p>
           <Link
             href="/signup"
-            className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95"
-            style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+            className="inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
+            style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--papaya)' }}
+            aria-label="Start your free book"
           >
             Start your free book
           </Link>
@@ -892,8 +893,9 @@ export default function Home() {
               </p>
               <Link
                 href="/signup"
-                className="inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95 mb-4"
-                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
+                className="inline-flex h-11 items-center justify-center rounded-full px-7 text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95 mb-4 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--beige)' }}
+                aria-label="Create your book"
               >
                 Create your book
               </Link>
