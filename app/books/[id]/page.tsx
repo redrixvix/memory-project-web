@@ -338,8 +338,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             <button
               type="button"
               onClick={() => setShowMembersModal(true)}
-              className="header-action-btn hidden sm:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-90 active:scale-95"
-              style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)' }}
+              className="header-action-btn hidden sm:inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all duration-200 hover:brightness-90 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              style={{ borderColor: 'rgba(212,163,115,0.3)', color: 'var(--charcoal)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
             >
               Members
             </button>
@@ -665,7 +665,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         ) : (
           /* ── Memory list with lightbox ── */
-          <div className="space-y-5 md:space-y-7">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-7 md:items-start">
             {sortedMemories.map((memory, memoryIndex) => {
               const accentColor = ACCENT_COLORS[memoryIndex % ACCENT_COLORS.length];
               return (
