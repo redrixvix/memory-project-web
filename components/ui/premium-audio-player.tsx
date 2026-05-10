@@ -58,7 +58,7 @@ export function PremiumAudioPlayer({
         </span>
       {loadState === 'loading' && (
         <span style={{ color: '#7A6A60' }}>
-          We're pulling in the timing so this feels settled before playback.
+          We&apos;re pulling in the timing so this feels settled before playback.
         </span>
       )}
       {loadState === 'error' && (
@@ -142,6 +142,7 @@ export function PremiumAudioPlayer({
         src={src}
         controls
         preload="metadata"
+        aria-label="Audio player"
         onLoadedMetadata={(event) => {
           const nextDuration = Number.isFinite(event.currentTarget.duration)
             ? event.currentTarget.duration
