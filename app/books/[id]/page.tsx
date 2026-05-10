@@ -509,12 +509,15 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <button
                   type="button"
                   onClick={() => setMemorySort('newest')}
-                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
+                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
                   style={{
                     backgroundColor: memorySort === 'newest' ? 'var(--bronze)' : 'transparent',
                     color: memorySort === 'newest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
                     fontFamily: 'var(--font-sans)',
                     boxShadow: memorySort === 'newest' ? '0 2px 8px rgba(212,163,115,0.25)' : 'none',
+                    minHeight: '36px',
+                    ['--tw-ring-color' as string]: 'var(--bronze)',
+                    ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                   }}
                 >
                   New
@@ -522,12 +525,15 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 <button
                   type="button"
                   onClick={() => setMemorySort('oldest')}
-                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0"
+                  className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
                   style={{
                     backgroundColor: memorySort === 'oldest' ? 'var(--bronze)' : 'transparent',
                     color: memorySort === 'oldest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
                     fontFamily: 'var(--font-sans)',
                     boxShadow: memorySort === 'oldest' ? '0 2px 8px rgba(212,163,115,0.25)' : 'none',
+                    minHeight: '36px',
+                    ['--tw-ring-color' as string]: 'var(--bronze)',
+                    ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                   }}
                 >
                   Old
@@ -822,6 +828,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                       src={url}
                                       alt={`Memory photo ${photoIndex + 1}`}
                                       fill
+                                      loading="lazy"
                                       unoptimized={true}
                                       className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"
                                       onError={() => handlePhotoError(globalIndex)}
@@ -922,11 +929,13 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               e.preventDefault();
                               setActiveMenu(activeMenu === memory.id ? null : memory.id);
                             }}
-                            className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                            className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                             style={{
                               backgroundColor: 'rgba(212,163,115,0.10)',
                               color: '#5A3A2A',
-                              opacity: hoveredCard === memoryIndex ? 1 : 0,
+                              opacity: hoveredCard === memoryIndex || activeMenu === memory.id ? 1 : 0.4,
+                              ['--tw-ring-color' as string]: 'rgba(212,163,115,0.5)',
+                              ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                             }}
                             aria-label="Memory options"
                             aria-haspopup="menu"
