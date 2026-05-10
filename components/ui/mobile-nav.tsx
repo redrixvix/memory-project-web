@@ -135,8 +135,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
           <Link
             href="/"
             onClick={onClose}
-            className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-            style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
+            className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
+            style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
           >
             Home
           </Link>
@@ -145,24 +145,24 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
               <Link
                 href="/dashboard"
                 onClick={onClose}
-                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
               >
                 Dashboard
               </Link>
               <Link
                 href="/settings"
                 onClick={onClose}
-                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
               >
                 Settings
               </Link>
               <Link
                 href="/upgrade"
                 onClick={onClose}
-                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
               >
                 Upgrade plan
               </Link>
@@ -181,24 +181,24 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
               <Link
                 href="/#how-it-works"
                 onClick={onClose}
-                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
               >
                 How It Works
               </Link>
               <Link
                 href="/pricing"
                 onClick={onClose}
-                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
               >
                 Pricing
               </Link>
               <Link
                 href="/faq"
                 onClick={onClose}
-                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50"
-                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
               >
                 FAQ
               </Link>
@@ -206,8 +206,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
               <Link
                 href="/login"
                 onClick={onClose}
-                className="block px-4 py-4 rounded-xl text-sm transition-colors hover:bg-white/50"
-                style={{ color: '#6A6A5A', minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                className="block px-4 py-4 rounded-xl text-sm transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ color: '#6A6A5A', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
               >
                 Sign in
               </Link>

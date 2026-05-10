@@ -24,6 +24,7 @@ export default function SettingsPage() {
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [imageError, setImageError] = useState('');
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -101,24 +102,44 @@ export default function SettingsPage() {
     }
 
         setUploadingImage(true);
-    setImageError('');
+        setUploadProgress(0);
+        setImageError('');
 
     try {
-      // Upload profile image via multipart form to our API
+      // Upload profile image via XHR for real progress tracking
       const formData = new FormData();
       formData.append('file', file);
 
-      const uploadRes = await fetch('/api/user/profile-image', {
-        method: 'POST',
-        body: formData,
+      const publicUrl = await new Promise<string>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/user/profile-image');
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable) {
+            setUploadProgress(Math.round((e.loaded / e.total) * 90)); // cap at 90 until complete
+          }
+        });
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              setUploadProgress(100);
+              resolve(data.url as string);
+            } catch {
+              reject(new Error('Invalid response from server'));
+            }
+          } else {
+            try {
+              const err = JSON.parse(xhr.responseText);
+              reject(new Error(err.error || 'Upload failed'));
+            } catch {
+              reject(new Error(`Upload failed (status ${xhr.status})`));
+            }
+          }
+        });
+        xhr.addEventListener('error', () => reject(new Error('Network error during upload')));
+        xhr.addEventListener('abort', () => reject(new Error('Upload was cancelled')));
+        xhr.send(formData);
       });
-
-      if (!uploadRes.ok) {
-        const errData = await uploadRes.json().catch(() => ({}));
-        throw new Error(errData.error || 'Upload failed');
-      }
-
-      const { url: publicUrl } = await uploadRes.json();
 
       setProfileImageUrl(publicUrl);
 
@@ -304,10 +325,27 @@ export default function SettingsPage() {
                     </div>
                   )}
 
-                  {/* Upload loading state */}
+                  {/* Upload loading state — show progress ring */}
                   {uploadingImage && (
-                    <div className="absolute inset-0 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(254,250,224,0.8)' }}>
-                      <div className="w-6 h-6 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
+                    <div className="absolute inset-0 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(254,250,224,0.88)' }}>
+                      {/* SVG progress ring */}
+                      <svg
+                        width="40" height="40" viewBox="0 0 40 40" style={{ transform: 'rotate(-90deg)' }}
+                        aria-label={`Uploading profile photo: ${uploadProgress}% complete`}
+                        role="img"
+                      >
+                        {/* Track */}
+                        <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(212,163,115,0.18)" strokeWidth="3" />
+                        {/* Progress */}
+                        <circle
+                          cx="20" cy="20" r="16" fill="none"
+                          stroke="var(--bronze)" strokeWidth="3"
+                          strokeDasharray={`${2 * Math.PI * 16}`}
+                          strokeDashoffset={`${2 * Math.PI * 16 * (1 - uploadProgress / 100)}`}
+                          strokeLinecap="round"
+                          style={{ transition: 'stroke-dashoffset 0.2s ease' }}
+                        />
+                      </svg>
                     </div>
                   )}
                 </div>
