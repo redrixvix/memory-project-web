@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
@@ -101,12 +102,13 @@ function ImageCard({
               </span>
             </div>
           ) : (
-            <img
+            <Image
               src={item.previewUrl}
               alt={`Photo ${index + 1}`}
+              fill
               loading="lazy"
               className={cn(
-                "h-full w-full object-cover transition-opacity duration-300",
+                "object-cover transition-opacity duration-300",
                 isLoaded ? "opacity-100" : "opacity-0",
               )}
               onLoad={() => setIsLoaded(true)}
@@ -304,7 +306,6 @@ export function DropZone({
   }, []);
 
   const acceptsAudio = accept.toLowerCase().includes("audio");
-  const acceptsImages = accept.toLowerCase().includes("image");
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
