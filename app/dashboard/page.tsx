@@ -426,7 +426,7 @@ export default function Dashboard() {
                     key={value}
                     type="button"
                     onClick={() => setSortOrder(value)}
-                    className="rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0"
+                    className="rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 sort-btn-focus"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
                       color: sortOrder === value ? 'var(--charcoal)' : 'var(--charcoal)',

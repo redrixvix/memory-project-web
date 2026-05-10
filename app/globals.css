@@ -1086,6 +1086,15 @@ button:has(svg[data-saved="true"]) {
 }
 
 /* ─────────────────────────────────────────
+   Sort button focus — warm bronze ring + scale
+───────────────────────────────────────── */
+
+.sort-btn-focus:focus-visible {
+  box-shadow: 0 0 0 3px rgba(212,163,115,0.35);
+  transform: scale(1.05);
+}
+
+/* ─────────────────────────────────────────
    Drop cap for memory answer text — editorial journal feel
 ───────────────────────────────────────── */
 .memory-answer-text::first-letter {
