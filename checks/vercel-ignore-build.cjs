@@ -12,6 +12,7 @@
  *
  * To intentionally allow a Git-triggered deployment, include [deploy] in the
  * commit message after running the visual smoke check against a preview URL.
+ * This comment also serves as a harmless push test for the deployment guard.
  */
 
 const isGitDeployment = Boolean(process.env.VERCEL_GIT_COMMIT_SHA);
