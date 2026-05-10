@@ -253,6 +253,21 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
+      <style>{`
+        @keyframes shimmer {
+          0%, 100% { transform: translateX(-100%); }
+          50% { transform: translateX(100%); }
+        }
+        .sort-btn:focus-visible {
+          box-shadow: 0 0 0 3px rgba(212,163,115,0.30), 0 0 0 1px rgba(212,163,115,0.55);
+          outline: none;
+        }
+        .search-input:focus {
+          border-color: rgba(212,163,115,0.65);
+          box-shadow: 0 0 0 3px rgba(212,163,115,0.08), 0 2px 8px rgba(212,163,115,0.06);
+          outline: none;
+        }
+      `}</style>
 
       {/* ── TOP NAV ── */}
       <header className="sticky top-0 z-20 h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
@@ -391,15 +406,13 @@ export default function Dashboard() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search your books..."
                   aria-label="Search your books"
-                  className="w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
+                  className="search-input w-full h-11 pl-10 pr-4 rounded-2xl text-sm outline-none transition-all duration-200 bg-transparent placeholder:text-[#4A4A3A]"
                   style={{
                     backgroundColor: 'rgba(255,253,246,0.92)',
                     border: '1.5px solid rgba(212,163,115,0.30)',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-sans)',
                   }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.65)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.08), 0 2px 8px rgba(212,163,115,0.06)'; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.30)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.color = 'var(--charcoal)'; }}
                 />
                 {searchQuery && (
                   <button
@@ -828,16 +841,6 @@ export default function Dashboard() {
                               pointerEvents: 'none',
                             }} />
                           )}
-                          <style>{`
-                            @keyframes shimmer {
-                              0%, 100% { transform: translateX(-100%); }
-                              50% { transform: translateX(100%); }
-                            }
-                            .sort-btn:focus-visible {
-                              box-shadow: 0 0 0 3px rgba(212,163,115,0.30), 0 0 0 1px rgba(212,163,115,0.55);
-                              outline: none;
-                            }
-                          `}</style>
                           {/* Spine strip */}
                           <div style={{
                             position: 'absolute',
@@ -1024,11 +1027,12 @@ export default function Dashboard() {
         <button
           type="button"
           onClick={() => setShowCreate(true)}
-          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-110 active:scale-95 animate-fade-up hover:shadow-2xl"
+          className="fixed bottom-7 right-7 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:brightness-110 active:scale-95 animate-fade-up hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
           style={{
             backgroundColor: 'var(--bronze)',
             color: 'var(--charcoal)',
-            boxShadow: '0 8px 32px rgba(212,163,115,0.35), 0 0 0 0 rgba(212,163,115,0.4)',
+            boxShadow: '0 8px 32px rgba(212,163,115,0.35)',
+            ['--tw-ring-color' as string]: 'rgba(212,163,115,0.6)',
           }}
           aria-label="Create new book"
         >
