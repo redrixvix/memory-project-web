@@ -491,6 +491,13 @@ body {
   box-shadow: 0 12px 32px rgba(212,163,115,0.12);
 }
 
+/* Touch devices: tap triggers hover simulation but never "unhovers" — mirror hover on :active */
+.card-hover:active {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212,163,115,0.10);
+  transition-duration: 0.1s;
+}
+
 /* Keyboard focus-within for card-hover */
 .card-hover:focus-within {
   transform: translateY(-2px);
@@ -1036,6 +1043,8 @@ select.has-error:focus {
 
 .add-memory-btn:hover {
   filter: brightness(1.06);
+  box-shadow: 0 6px 24px rgba(212,163,115,0.45), 0 1px 3px rgba(212,163,115,0.20) !important;
+  transform: translateY(-1px);
 }
 
 .add-memory-btn:active {

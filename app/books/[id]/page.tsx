@@ -368,8 +368,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 boxShadow: '0 4px 16px rgba(212,163,115,0.45), 0 1px 3px rgba(212,163,115,0.20)',
                     border: '1px solid rgba(212,163,115,0.25)',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 6px 24px rgba(212,163,115,0.45)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 3px 14px rgba(212,163,115,0.30)'; e.currentTarget.style.transform = 'translateY(0)'; }}
             >
               <svg className="w-3.5 h-3.5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M12 5v14M5 12h14"/>
