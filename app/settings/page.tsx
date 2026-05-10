@@ -411,12 +411,13 @@ export default function SettingsPage() {
 
               {/* Email (read-only — clearly non-editable) */}
               <div className="grid gap-2">
-                <Label htmlFor="email-display" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                <Label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                   Email address
-                </Label>
-                <output
-                    id="email-display"
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                  <div
+                    role="textbox"
+                    aria-readonly="true"
+                    tabIndex={0}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl mt-2"
                     style={{
                       backgroundColor: 'rgba(204,213,174,0.06)',
                       border: '1px solid rgba(212,163,115,0.12)',
@@ -431,7 +432,8 @@ export default function SettingsPage() {
                     <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.22)', color: '#4A3A2A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.4)' }}>
                       read-only
                     </span>
-                  </output>
+                  </div>
+                </Label>
                 <p className="text-xs" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
                   Contact support to change your email address
                 </p>
