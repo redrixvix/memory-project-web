@@ -95,6 +95,7 @@ function Signup() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [code, setCode] = useState('');
   const [flowStep, setFlowStep] = useState<'entry' | 'magic_sent' | 'email_verification'>('entry');
   const [pendingAuthenticationToken, setPendingAuthenticationToken] = useState('');
@@ -136,6 +137,8 @@ function Signup() {
   const handlePasswordSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) { setNameError('Please enter your name.'); return; }
+    if (password.length < 8) { setPasswordError('Password must be at least 8 characters.'); return; }
+    setPasswordError('');
     setPasswordLoading(true);
     setError('');
 
@@ -386,13 +389,15 @@ function Signup() {
                           type={showPassword ? 'text' : 'password'}
                           id="password"
                           value={password}
-                          onChange={(e) => setPassword(e.target.value)}
+                          onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError(''); }}
+                          onBlur={(e) => { if (e.target.value && e.target.value.length < 8) setPasswordError('Password must be at least 8 characters.'); }}
                           required
                           autoComplete="new-password"
                           placeholder="Create a password"
                           aria-describedby="password-error"
+                          aria-invalid={passwordError ? 'true' : undefined}
                           className="text-sm rounded-xl h-11 pr-10"
-                          style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
+                          style={{ borderColor: passwordError ? 'rgba(180,60,60,0.5)' : 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
                         />
                         <button type="button" onClick={() => setShowPassword(p => !p)} aria-label={showPassword ? 'Hide password' : 'Show password'} aria-pressed={showPassword} className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-xl transition-all duration-200 hover:opacity-60 active:opacity-70 focus-visible:ring-2 focus-visible:ring-offset-1" style={{ color: 'rgba(212,163,115,0.65)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--papaya)' }}>
                           {showPassword ? (
@@ -419,6 +424,11 @@ function Signup() {
                           </div>
                         );
                       })()}
+                      {passwordError && (
+                        <p role="alert" id="password-error" className="text-xs mt-1" style={{ color: 'rgba(180,60,60,0.85)' }}>
+                          {passwordError}
+                        </p>
+                      )}
                     </div>
 
                     <Button
