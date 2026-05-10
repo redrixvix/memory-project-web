@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { MobileNav } from '@/components/ui/mobile-nav';
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,6 +66,7 @@ function Signup() {
   const [magicLoading, setMagicLoading] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get('invite_token');
 
@@ -204,12 +206,26 @@ function Signup() {
           className="w-full max-w-sm relative animate-fade-up"
         >
           {/* Mobile brand */}
-          <div className="flex items-center gap-2 mb-10 lg:hidden">
-            <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
-              <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
-              <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
-            </svg>
-            <span className="text-base font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
+          <div className="flex items-center justify-between mb-10 lg:hidden">
+            <div className="flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
+                <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
+                <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
+              </svg>
+              <span className="text-base font-medium" style={{ color: 'var(--charcoal)' }}>Memory Project</span>
+            </div>
+            <button
+              className="flex w-9 h-9 rounded-full items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+              style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#5A3A2A' }}
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open navigation menu"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav-signup"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 12h18M3 6h18M3 18h18"/>
+              </svg>
+            </button>
           </div>
 
           {/* Header */}
@@ -544,6 +560,9 @@ function Signup() {
           </p>
         </div>
       </div>
+
+      {/* Mobile nav drawer */}
+      <MobileNav id="mobile-nav-signup" isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={false} />
     </div>
   );
 }
