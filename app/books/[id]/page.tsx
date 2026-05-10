@@ -646,6 +646,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               return (
                 <div
                   key={memory.id}
+                  aria-label={`Chapter ${memoryIndex + 1}${memory.prompt_question ? `: ${memory.prompt_question}` : ''}${memory.answer_text ? `. ${memory.answer_text.slice(0, 60)}${memory.answer_text.length > 60 ? '…' : ''}` : ''}`}
                   className="animate-fade-up relative group/card"
                   style={{ animationDelay: `${memoryIndex * 0.07}s` }}
                 >
