@@ -5,6 +5,8 @@
  * This runs after `next build` and fails the build if the generated CSS is
  * missing critical Tailwind utilities. That prevents a Vercel Git build from
  * becoming production when CSS compilation silently drops layout classes.
+ *
+ * Git push test comment — Rixvix verifying Vercel Git CI build works.
  */
 
 const fs = require('fs');
