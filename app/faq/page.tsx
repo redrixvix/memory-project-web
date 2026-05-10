@@ -182,7 +182,7 @@ export default function FaqPage() {
         </header>
 
         {/* ── FAQ CONTENT ── */}
-        <main className="px-6 md:px-10 py-16 max-w-3xl mx-auto w-full">
+        <main id="main-content" className="px-6 md:px-10 py-16 max-w-3xl mx-auto w-full">
           <div className="text-center mb-16">
             <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>
               Got questions?

@@ -101,7 +101,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-20">
+      <main id="main-content" className="max-w-5xl mx-auto px-6 py-20">
         <div className="text-center mb-16">
           <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Pricing</p>
           <h1 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>

@@ -340,7 +340,7 @@ export default function Dashboard() {
       <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} />
 
       {/* ── MAIN CONTENT ── */}
-      <main className="px-6 md:px-10 pt-8 pb-10 max-w-5xl mx-auto w-full">
+      <main id="main-content" className="px-6 md:px-10 pt-8 pb-10 max-w-5xl mx-auto w-full">
 
         {/* Header row — compact, editorial */}
         <div className="mb-8 relative">

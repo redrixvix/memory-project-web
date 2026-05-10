@@ -51,7 +51,7 @@ export default function PrivacyPage() {
       </header>
 
       {/* ── CONTENT ── */}
-      <main className="px-6 md:px-10 py-16 max-w-3xl mx-auto w-full">
+      <main id="main-content" className="px-6 md:px-10 py-16 max-w-3xl mx-auto w-full">
         <div className="mb-12">
           <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Legal</p>
           <h1 className="display-md mb-4" style={{ color: 'var(--charcoal)' }}>
