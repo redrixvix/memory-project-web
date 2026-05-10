@@ -549,7 +549,7 @@ export default function Dashboard() {
                     <div className="grid gap-3">
                       {BOOK_PLAN_OPTIONS.map((plan) => {
                         const isSelected = newPlan === plan.id;
-                        const isRecommended = plan.id === 'premium';
+                        const isRecommended = plan.id === 'premium' || plan.id === 'plus';
                         return (
                           <button
                             key={plan.id}
@@ -560,7 +560,7 @@ export default function Dashboard() {
                               backgroundColor: isSelected
                                 ? 'rgba(212,163,115,0.08)'
                                 : isRecommended
-                                  ? 'linear-gradient(135deg, rgba(204,213,174,0.12) 0%, rgba(212,163,115,0.06) 100%)'
+                                  ? 'rgba(204,213,174,0.08)'
                                   : 'rgba(212,163,115,0.02)',
                               borderColor: isSelected ? 'var(--bronze)' : isRecommended ? 'rgba(204,213,174,0.45)' : 'rgba(212,163,115,0.2)',
                               borderWidth: isSelected || isRecommended ? '2px' : '1px',
