@@ -453,11 +453,14 @@ export default function Home() {
                 className={`reveal ${i === 0 ? 'md:col-span-7' : 'md:col-span-5'}`}
               >
                 <Card
+                  tabIndex={0}
+                  role="article"
+                  aria-label={`Memory: ${card.title}`}
                   className="relative overflow-hidden rounded-2xl card-hover"
                   style={
                     i === 0
-                      ? { backgroundColor: '#FDFCF5', boxShadow: '0 8px 32px rgba(212,163,115,0.1)', border: 'none', height: '100%' }
-                      : { backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 12px rgba(212,163,115,0.05)', height: '100%' }
+                      ? { backgroundColor: '#FDFCF5', boxShadow: '0 8px 32px rgba(212,163,115,0.1)', border: 'none', height: '100%', outline: 'none' }
+                      : { backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 12px rgba(212,163,115,0.05)', height: '100%', outline: 'none' }
                   }
                 >
                   {/* Top color bar */}

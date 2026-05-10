@@ -380,7 +380,6 @@ export default function SettingsPage() {
                   id="email-display"
                   className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-default select-none"
                   role="presentation"
-                  aria-readonly="true"
                   tabIndex={0}
                   style={{
                     backgroundColor: 'rgba(204,213,174,0.06)',
