@@ -73,6 +73,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   // Per-photo error state for graceful degradation in the grid
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  // Per-photo loaded state for shimmer placeholder
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   // Toast state
   const [toastMessage, setToastMessage] = useState('');
   const [toastVariant, setToastVariant] = useState<'default' | 'success' | 'error'>('default');
@@ -164,6 +166,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const handlePhotoError = (memoryId: number, photoIndex: number) => {
     const key = `${memoryId}-${photoIndex}`;
     setImageErrors(prev => ({ ...prev, [key]: true }));
+  };
+
+  const handleImageLoad = (memoryId: number, photoIndex: number) => {
+    const key = `${memoryId}-${photoIndex}`;
+    setLoadedImages(prev => ({ ...prev, [key]: true }));
   };
 
   const handlePhotoClick = (memoryId: number, photoIndex: number, url: string) => {
@@ -520,7 +527,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     color: memorySort === 'newest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
                     fontFamily: 'var(--font-sans)',
                     boxShadow: memorySort === 'newest' ? '0 2px 8px rgba(212,163,115,0.25)' : 'none',
-                    minHeight: '36px',
+                    minHeight: '44px',
                     ['--tw-ring-color' as string]: 'var(--bronze)',
                     ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                   }}
@@ -538,7 +545,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     color: memorySort === 'oldest' ? '#1A1A1A' : 'rgba(43,43,43,0.78)',
                     fontFamily: 'var(--font-sans)',
                     boxShadow: memorySort === 'oldest' ? '0 2px 8px rgba(212,163,115,0.25)' : 'none',
-                    minHeight: '36px',
+                    minHeight: '44px',
                     ['--tw-ring-color' as string]: 'var(--bronze)',
                     ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                   }}
@@ -794,6 +801,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                           {memory.photo_urls.map((url, photoIndex) => {
                             const errorKey = `${memory.id}-${photoIndex}`;
                             const hasError = !!imageErrors[errorKey];
+                            const isLoaded = !!loadedImages[errorKey];
                             return (
                               <div
                                 key={photoIndex}
@@ -832,6 +840,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                   </div>
                                 ) : (
                                   <>
+                                    {!isLoaded && (
+                                      <div
+                                        className="absolute inset-0 rounded-xl animate-shimmer z-10 pointer-events-none"
+                                        style={{ backgroundColor: 'rgba(212,163,115,0.08)' }}
+                                      />
+                                    )}
                                     <Image
                                       src={url}
                                       alt={`Memory photo ${photoIndex + 1}`}
@@ -840,6 +854,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                       unoptimized={true}
                                       className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"
                                       onError={() => handlePhotoError(memory.id, photoIndex)}
+                                      onLoad={() => handleImageLoad(memory.id, photoIndex)}
                                     />
                                     {/* Hover overlay with expand hint */}
                                     <button
