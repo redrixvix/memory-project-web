@@ -416,7 +416,7 @@ export default function Dashboard() {
                 )}
               </div>
               {/* Sort controls */}
-              <div className="flex items-center gap-1 rounded-2xl p-1.5 shrink-0" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)' }}>
+              <div className="flex items-center gap-1 rounded-2xl p-1.5 shrink-0 overflow-x-auto" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)', flexWrap: 'wrap' }}>
                 {([
                   { value: 'newest', label: 'Newest' },
                   { value: 'oldest', label: 'Oldest' },
@@ -834,7 +834,7 @@ export default function Dashboard() {
                               50% { transform: translateX(100%); }
                             }
                             .sort-btn:focus-visible {
-                              box-shadow: 0 0 0 3px rgba(212,163,115,0.35), 0 0 0 1px rgba(212,163,115,0.5) !important;
+                              box-shadow: 0 0 0 3px rgba(212,163,115,0.30), 0 0 0 1px rgba(212,163,115,0.55);
                               outline: none;
                             }
                           `}</style>
