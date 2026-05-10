@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface FaqItem {
   q: string;
@@ -14,16 +14,38 @@ interface FaqAccordionProps {
 
 export function FaqAccordion({ items, className = '' }: FaqAccordionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll-reveal: animate each item in as it enters the viewport
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    container.querySelectorAll('.faq-reveal').forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className={`space-y-3 ${className}`}>
+    <div ref={containerRef} className={`space-y-3 ${className}`}>
       {items.map((item, i) => {
         const isOpen = openIndex === i;
         return (
           <div
             key={i}
             className={[
-              'rounded-2xl border overflow-hidden transition-all duration-300',
+              'reveal rounded-2xl border overflow-hidden transition-all duration-300',
               isOpen
                 ? 'bg-[var(--bronze-04)] border-[var(--bronze-35)] shadow-[0_4px_20px_rgba(212,163,115,0.10),inset_0_0_0_1px_rgba(212,163,115,0.06)]'
                 : 'bg-[var(--card)] border-[var(--bronze-15)] shadow-[0_1px_6px_rgba(212,163,115,0.04)]',

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
 import BreadcrumbSchema from "@/components/breadcrumb-schema";
+import { FaqAccordion } from "@/components/ui/faq-accordion";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions",
@@ -85,57 +86,6 @@ const faqJsonLd = {
   ],
 };
 
-const faqs = [
-  {
-    q: 'How does Memory Project work?',
-    a: "Write your memories using guided prompts or freely, then optionally add photos and audio. When you're ready, print a beautiful hardcover book to keep and share with family.",
-  },
-  {
-    q: 'Is Memory Project really free?',
-    a: 'Yes. Writing unlimited text memories is free forever. You only pay if you want photo storage ($50/5yr for 5GB) or printed hardcover books (starting at $99).',
-  },
-  {
-    q: 'How long does it take to make a memory book?',
-    a: "Most families spend a few weeks writing at their own pace — one memory at a time. There's no deadline, no pressure. You can add to your book anytime, even after you've printed the first edition.",
-  },
-  {
-    q: "What's included in a printed book?",
-    a: 'Each book is a hardcover with archival-quality paper, smyth-sewn binding, and a fabric spine. Books start at 200+ pages and come in a custom printed dust jacket.',
-  },
-  {
-    q: 'Can my family contribute to a book?',
-    a: 'Yes! With our 5GB and 15GB plans, you can invite family members to add their own photos and memories to any entry. You remain the owner and control the final book.',
-  },
-  {
-    q: 'How do I print my book?',
-    a: 'When you have enough memories, go to your book dashboard and click "Order Print." We\'ll format your content beautifully, print it as a hardcover book, and ship it to your door. Production takes 2–4 weeks.',
-  },
-  {
-    q: 'Can I edit my book after printing?',
-    a: "Yes — your digital book is always editable. Printing a book doesn't lock in your content. You can print updated editions anytime, and your printed book stays as a snapshot of that moment.",
-  },
-  {
-    q: 'What writing prompts do you offer?',
-    a: "We offer hundreds of prompts across categories: childhood, family traditions, milestones, relationships, travel, food, lessons learned, and more. You can also write freely without any prompt at all.",
-  },
-  {
-    q: 'What if I want to delete my account?',
-    a: "You can delete your account and all data at any time from your settings. Text memories are deleted immediately. Photo and audio storage are deleted within 30 days. Printed books already in circulation won't be recalled.",
-  },
-  {
-    q: 'Can I use Memory Project on my phone?',
-    a: 'Yes. Memory Project works on any device with a web browser. We also have native iOS and Android apps available in the app stores.',
-  },
-  {
-    q: 'Who sees my memories?',
-    a: 'Only you, and anyone you explicitly invite to collaborate. Your memories are private by default. If you choose to print a book and give it as a gift, the recipient sees only the content in that printed copy.',
-  },
-  {
-    q: "What's the difference between the plans?",
-    a: 'The Free plan gives you unlimited text memories forever. The 5GB plan ($50/5yr) adds photo and audio storage, family collaboration, and printed books from $99. The 15GB plan ($100/5yr) adds more storage and priority support.',
-  },
-];
-
 export default function FaqPage() {
   return (
     <>
@@ -195,47 +145,58 @@ export default function FaqPage() {
             </h1>
           </div>
 
-          <div className="space-y-4">
-            {faqs.map((faq, i) => (
-              <details
-                key={i}
-                className="group rounded-2xl overflow-hidden"
-                style={{
-                  backgroundColor: 'var(--card)',
-                  border: '1px solid var(--bronze-12)',
-                  boxShadow: '0 2px 12px var(--bronze-06)',
-                }}
-              >
-                <summary
-                  className="flex items-center justify-between gap-4 px-7 py-5 cursor-pointer list-none select-none min-h-[56px]"
-                  style={{ color: 'var(--charcoal)' }}
-                >
-                  <span className="text-base font-medium">{faq.q}</span>
-                  <svg
-                    className="w-5 h-5 shrink-0 transition-transform duration-300 group-open:rotate-180"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    style={{ color: 'var(--bronze)' }}
-                    aria-hidden="true"
-                  >
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </summary>
-                <div
-                  className="px-7 pb-7 text-sm leading-relaxed border-t"
-                  style={{
-                    borderColor: 'var(--bronze-10)',
-                    color: 'var(--muted-foreground)',
-                    paddingTop: '1.25rem',
-                  }}
-                >
-                  {faq.a}
-                </div>
-              </details>
-            ))}
-          </div>
+          <FaqAccordion
+            items={[
+              {
+                q: 'How does Memory Project work?',
+                a: "Write your memories using guided prompts or freely, then optionally add photos and audio. When you're ready, print a beautiful hardcover book to keep and share with family.",
+              },
+              {
+                q: 'Is Memory Project really free?',
+                a: 'Yes. Writing unlimited text memories is free forever. You only pay if you want photo storage ($50/5yr for 5GB) or printed hardcover books (starting at $99).',
+              },
+              {
+                q: 'How long does it take to make a memory book?',
+                a: "Most families spend a few weeks writing at their own pace — one memory at a time. There's no deadline, no pressure. You can add to your book anytime, even after you've printed the first edition.",
+              },
+              {
+                q: "What's included in a printed book?",
+                a: 'Each book is a hardcover with archival-quality paper, smyth-sewn binding, and a fabric spine. Books start at 200+ pages and come in a custom printed dust jacket.',
+              },
+              {
+                q: 'Can my family contribute to a book?',
+                a: 'Yes! With our 5GB and 15GB plans, you can invite family members to add their own photos and memories to any entry. You remain the owner and control the final book.',
+              },
+              {
+                q: 'How do I print my book?',
+                a: 'When you have enough memories, go to your book dashboard and click "Order Print." We\'ll format your content beautifully, print it as a hardcover book, and ship it to your door. Production takes 2–4 weeks.',
+              },
+              {
+                q: 'Can I edit my book after printing?',
+                a: "Yes — your digital book is always editable. Printing a book doesn't lock in your content. You can print updated editions anytime, and your printed book stays as a snapshot of that moment.",
+              },
+              {
+                q: 'What writing prompts do you offer?',
+                a: "We offer hundreds of prompts across categories: childhood, family traditions, milestones, relationships, travel, food, lessons learned, and more. You can also write freely without any prompt at all.",
+              },
+              {
+                q: 'What if I want to delete my account?',
+                a: "You can delete your account and all data at any time from your settings. Text memories are deleted immediately. Photo and audio storage are deleted within 30 days. Printed books already in circulation won't be recalled.",
+              },
+              {
+                q: 'Can I use Memory Project on my phone?',
+                a: 'Yes. Memory Project works on any device with a web browser. We also have native iOS and Android apps available in the app stores.',
+              },
+              {
+                q: 'Who sees my memories?',
+                a: 'Only you, and anyone you explicitly invite to collaborate. Your memories are private by default. If you choose to print a book and give it as a gift, the recipient sees only the content in that printed copy.',
+              },
+              {
+                q: "What's the difference between the plans?",
+                a: 'The Free plan gives you unlimited text memories forever. The 5GB plan ($50/5yr) adds photo and audio storage, family collaboration, and printed books from $99. The 15GB plan ($100/5yr) adds more storage and priority support.',
+              },
+            ]}
+          />
 
           {/* CTA */}
           <div
