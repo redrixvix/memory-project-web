@@ -46,11 +46,6 @@ export async function POST(
       return NextResponse.json({ error: 'Book not found or not authorized' }, { status: 404 });
     }
 
-    const memories = await sql`
-      SELECT prompt_question, answer_text, photo_urls
-      FROM memories WHERE book_id = ${book.id} ORDER BY created_at ASC
-    `;
-
     const orderId = `MP-${Date.now()}`;
 
     return NextResponse.json({
