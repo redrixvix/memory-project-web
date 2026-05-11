@@ -454,10 +454,11 @@ function Signup() {
                     <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
                   </div>
 
-                  <form onSubmit={handleSubmit} className="pt-1">
+                  <div className="pt-1">
                     <button
-                      type="submit"
+                      type="button"
                       disabled={magicLoading}
+                      onClick={handleSubmit}
                       className="w-full h-9 rounded-full text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 hover:opacity-80"
                       style={{ color: '#7A7A6A', border: '1px solid rgba(212,163,115,0.2)', backgroundColor: 'transparent' }}
                     >
@@ -466,7 +467,7 @@ function Signup() {
                       </svg>
                       Or email me a magic link
                     </button>
-                  </form>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-5">
