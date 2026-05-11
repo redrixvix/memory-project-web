@@ -850,7 +850,7 @@ export default function HomeClient() {
               {/* Social icons */}
               <div className="flex gap-2.5">
                 {/* Instagram icon */}
-                <button type="button" aria-label="Memory Project on Instagram" className="nav-link w-11 h-11 rounded-full flex items-center justify-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} onClick={(e) => { e.preventDefault(); }}>
+                <button type="button" aria-label="Memory Project on Instagram" aria-disabled="true" tabIndex={-1} className="nav-link w-11 h-11 rounded-full flex items-center justify-center cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--charcoal)' }}>
                     <rect x="2" y="2" width="20" height="20" rx="5"/>
                     <circle cx="12" cy="12" r="4"/>
@@ -858,7 +858,7 @@ export default function HomeClient() {
                   </svg>
                 </button>
                 {/* Facebook icon */}
-                <button type="button" aria-label="Memory Project on Facebook" className="nav-link w-11 h-11 rounded-full flex items-center justify-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} onClick={(e) => { e.preventDefault(); }}>
+                <button type="button" aria-label="Memory Project on Facebook" aria-disabled="true" tabIndex={-1} className="nav-link w-11 h-11 rounded-full flex items-center justify-center cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--charcoal)' }}>
                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                   </svg>
