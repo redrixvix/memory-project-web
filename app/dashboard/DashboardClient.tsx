@@ -115,6 +115,7 @@ export default function DashboardClient() {
         if (userRes.status === 401) { router.push('/login'); return; }
         setLoggedIn(true);
         const userData = await userRes.json();
+        if (!userData.user) { router.push('/login'); return; }
         setUser({
           id: userData.user.id,
           name: userData.user.name,
