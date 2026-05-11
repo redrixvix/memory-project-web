@@ -58,7 +58,12 @@ export function Lightbox({ src, alt = '', onClose }: LightboxProps) {
       role="dialog"
       aria-modal="true"
       aria-label={alt || 'Image preview'}
+      aria-labelledby="lightbox-title"
     >
+      {/* Screen reader title */}
+      <span id="lightbox-title" className="sr-only">
+        {alt || 'Image preview'}
+      </span>
       {/* Image */}
       <div
         onClick={(e) => e.stopPropagation()}
