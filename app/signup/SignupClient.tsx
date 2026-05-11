@@ -281,16 +281,12 @@ function Signup() {
                 type="button"
                 onClick={handleGoogleLogin}
                 aria-label="Continue with Google"
-                className="w-full h-11 rounded-full text-sm font-semibold flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-95 hover:brightness-105 hover:shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bronze)]"
+                className="w-full h-11 rounded-full text-sm font-semibold flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-95 hover:brightness-105 hover:shadow-md signup-google-btn"
                 style={{
                   backgroundColor: 'var(--charcoal)',
                   color: 'var(--cornsilk)',
                   boxShadow: '0 4px 16px rgba(43,43,43,0.22)',
-                  ['--tw-ring-color' as string]: 'var(--bronze)',
-                  ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                 }}
-                onFocus={(e) => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(43,43,43,0.22), 0 0 0 3px rgba(212,163,115,0.35)'; }}
-                onBlur={(e) => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(43,43,43,0.22)'; }}
               >
                 <GoogleIcon />
                 Continue with Google
@@ -299,15 +295,11 @@ function Signup() {
               {/* Passkey — hidden behind a small tertiary link */}
               <button
                 type="button"
-                className="w-full h-11 rounded-full text-xs font-medium flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 mx-auto focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bronze)] cursor-pointer"
+                className="w-full h-11 rounded-full text-xs font-medium flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 mx-auto signup-passkey-btn"
                 style={{
                   color: '#7A7A6A',
                   backgroundColor: 'transparent',
-                  ['--tw-ring-color' as string]: 'var(--bronze)',
-                  ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                 }}
-                onFocus={(e) => { e.currentTarget.style.color = '#5A5A4A'; e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.08)'; }}
-                onBlur={(e) => { e.currentTarget.style.color = '#7A7A6A'; e.currentTarget.style.backgroundColor = 'transparent'; }}
                 onClick={() => window.location.href = '/api/auth/passkey?screen_hint=sign-up'}
               >
                 <KeyIcon />

@@ -577,6 +577,21 @@ body {
 }
 
 /* ─────────────────────────────────────────
+   Signup form — Google & Passkey button focus
+───────────────────────────────────────── */
+
+.signup-google-btn:focus-visible {
+  box-shadow: 0 4px 16px rgba(43,43,43,0.22), 0 0 0 3px rgba(212,163,115,0.35) !important;
+  outline: none;
+}
+
+.signup-passkey-btn:focus-visible {
+  outline: 2px solid var(--bronze);
+  outline-offset: 3px;
+  border-radius: 9999px;
+}
+
+/* ─────────────────────────────────────────
    UploadThing button overrides — kill the blue
    Target inline style attribute for maximum specificity
 ───────────────────────────────────────── */
