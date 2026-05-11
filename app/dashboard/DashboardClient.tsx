@@ -511,6 +511,8 @@ export default function DashboardClient() {
                       placeholder="Ruth's Life Story"
                       className="rounded-xl text-base w-full h-11"
                       style={{ borderColor: 'rgba(212,163,115,0.35)', backgroundColor: '#FFFDF8' }}
+                      aria-invalid={createError ? 'true' : undefined}
+                      aria-describedby={createError ? 'create-error' : undefined}
                     />
                     <p className="text-xs text-right" style={{ color: newTitle.length >= 100 ? '#B84A2A' : '#8A8A7A', fontFamily: 'var(--font-sans)' }}>
                       {newTitle.length}/100
@@ -632,12 +634,12 @@ export default function DashboardClient() {
                   </div>
 
                   {createError && (
-                    <div
+                    <p role="alert" id="create-error"
                       className="rounded-xl px-4 py-3 text-sm"
                       style={{ backgroundColor: 'rgba(212,163,115,0.1)', border: '1px solid rgba(212,163,115,0.25)', color: '#6B3A2A' }}
                     >
                       {createError}
-                    </div>
+                    </p>
                   )}
                 </form>
               </div>
