@@ -137,6 +137,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
             onClick={onClose}
             className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
+            onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.12)'; }}
+            onBlur={(e) => { e.currentTarget.style.backgroundColor = ''; }}
           >
             Home
           </Link>
@@ -147,6 +149,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
                 onClick={onClose}
                 className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
+                onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.12)'; }}
+                onBlur={(e) => { e.currentTarget.style.backgroundColor = ''; }}
               >
                 Dashboard
               </Link>
@@ -155,6 +159,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
                 onClick={onClose}
                 className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
+                onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.12)'; }}
+                onBlur={(e) => { e.currentTarget.style.backgroundColor = ''; }}
               >
                 Settings
               </Link>
@@ -163,6 +169,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
                 onClick={onClose}
                 className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
+                onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.12)'; }}
+                onBlur={(e) => { e.currentTarget.style.backgroundColor = ''; }}
               >
                 Upgrade plan
               </Link>
@@ -183,6 +191,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
                 onClick={onClose}
                 className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
+                onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.12)'; }}
+                onBlur={(e) => { e.currentTarget.style.backgroundColor = ''; }}
               >
                 How It Works
               </Link>
@@ -191,6 +201,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
                 onClick={onClose}
                 className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
+                onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.12)'; }}
+                onBlur={(e) => { e.currentTarget.style.backgroundColor = ''; }}
               >
                 Pricing
               </Link>
@@ -199,6 +211,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
                 onClick={onClose}
                 className="block px-4 py-4 rounded-xl text-sm font-medium transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{ color: 'var(--charcoal)', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
+                onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.12)'; }}
+                onBlur={(e) => { e.currentTarget.style.backgroundColor = ''; }}
               >
                 FAQ
               </Link>
@@ -208,6 +222,8 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
                 onClick={onClose}
                 className="block px-4 py-4 rounded-xl text-sm transition-colors hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-offset-2"
                 style={{ color: '#6A6A5A', minHeight: '48px', display: 'flex', alignItems: 'center', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
+                onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.12)'; }}
+                onBlur={(e) => { e.currentTarget.style.backgroundColor = ''; }}
               >
                 Sign in
               </Link>
