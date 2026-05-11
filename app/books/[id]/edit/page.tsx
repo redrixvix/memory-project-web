@@ -965,85 +965,16 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
                   )}
                 </div>
                 <div className="relative max-w-2xl">
-                  <div className="relative">
-                    <select
-                      value={promptLoadState === 'ready' || useCustomPrompt ? promptSelectValue : NO_PROMPT_VALUE}
-                      onChange={(e) => handlePromptSelectChange(e.target.value, { customPrompt, setCustomPrompt, setPrompt, setUseCustomPrompt })}
-                      disabled={promptLoadState === 'loading'}
-                      className="w-full appearance-none rounded-[1.15rem] border px-4 py-3.5 pr-12 text-sm md:text-[0.95rem] transition-colors outline-none"
-                      style={{
-                        borderColor: 'rgba(212,163,115,0.20)',
-                        backgroundColor: 'rgba(255,253,246,0.70)',
-                        color: 'var(--charcoal)',
-                        fontFamily: 'var(--font-sans)',
-                        boxShadow: '0 6px 16px rgba(212,163,115,0.05)',
-                      }}
-                      onFocus={e => {
-                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.45)';
-                        (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(212,163,115,0.10), 0 8px 20px rgba(212,163,115,0.07)';
-                      }}
-                      onBlur={e => {
-                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.20)';
-                        (e.target as HTMLElement).style.boxShadow = '0 6px 16px rgba(212,163,115,0.05)';
-                      }}
-                      onMouseEnter={e => {
-                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.40)';
-                        (e.target as HTMLElement).style.boxShadow = '0 4px 12px rgba(212,163,115,0.10)';
-                      }}
-                      onMouseLeave={e => {
-                        (e.target as HTMLElement).style.borderColor = 'rgba(212,163,115,0.20)';
-                        (e.target as HTMLElement).style.boxShadow = '0 6px 16px rgba(212,163,115,0.05)';
-                      }}
-                    >
-                      {promptLoadState === 'loading' && (
-                        <option value={NO_PROMPT_VALUE}>Loading prompts…</option>
-                      )}
-                      {promptLoadState !== 'loading' && (
-                        <>
-                          <option value={NO_PROMPT_VALUE}>Start writing freely</option>
-                          {promptLoadState === 'ready' && promptGroups.map((group) => (
-                            <optgroup key={group.category} label={group.category}>
-                              {group.prompts.map((promptOption) => (
-                                <option key={promptOption} value={promptOption}>
-                                  {promptOption}
-                                </option>
-                              ))}
-                            </optgroup>
-                          ))}
-                          <option value={CUSTOM_PROMPT_VALUE}>Write my own prompt…</option>
-                        </>
-                      )}
-                    </select>
-                    <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }}>
-                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--bronze)' }}>
-                          <path d="m6 9 6 6 6-6"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-
-                  {useCustomPrompt && (
-                    <div className="mt-4">
-                      <Label className="mb-2 block text-xs font-medium" style={{ color: '#7A6960', fontFamily: 'var(--font-sans)' }}>
-                        Custom prompt
-                      </Label>
-                      <Input
-                        value={customPrompt}
-                        onChange={(e) => {
-                          setCustomPrompt(e.target.value);
-                          setPrompt(e.target.value);
-                        }}
-                        placeholder="What would you like this memory to begin with?"
-                        className="h-11 rounded-[1rem] border px-4 text-sm focus-visible:ring-2 focus-visible:ring-[rgba(212,163,115,0.40)] focus-visible:border-[rgba(212,163,115,0.45)]"
-                        style={{
-                          borderColor: 'rgba(212,163,115,0.24)',
-                          backgroundColor: 'rgba(255,253,246,0.88)',
-                          boxShadow: '0 8px 20px rgba(212,163,115,0.05)',
-                        }}
-                      />
-                    </div>
-                  )}
+                  <PromptPicker
+                    promptGroups={promptGroups}
+                    promptLoadState={promptLoadState}
+                    selectedPrompt={useCustomPrompt ? CUSTOM_PROMPT_VALUE : prompt}
+                    customPromptValue={customPrompt}
+                    onSelect={(value) => handlePromptSelectChange(value, { customPrompt, setCustomPrompt, setPrompt, setUseCustomPrompt })}
+                    onCustomPromptChange={(val) => { setCustomPrompt(val); if (useCustomPrompt) setPrompt(val); }}
+                    useCustomPrompt={useCustomPrompt}
+                    onUseCustomPromptChange={setUseCustomPrompt}
+                  />
 
                   {(promptLoadState !== 'ready' || promptLoadMessage) && (
                     <div
@@ -1752,6 +1683,318 @@ function getImageValidationError(file: File): string | null {
   }
 
   return null;
+}
+
+type PromptPickerProps = {
+  promptGroups: MemoryPromptGroup[];
+  promptLoadState: PromptLoadState;
+  selectedPrompt: string;
+  customPromptValue: string;
+  onSelect: (value: string) => void;
+  onCustomPromptChange: (value: string) => void;
+  useCustomPrompt: boolean;
+  onUseCustomPromptChange: (value: boolean) => void;
+};
+
+function PromptPicker({
+  promptGroups,
+  promptLoadState,
+  selectedPrompt,
+  customPromptValue,
+  onSelect,
+  onCustomPromptChange,
+  useCustomPrompt,
+  onUseCustomPromptChange,
+}: PromptPickerProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState<number>(-1);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const allOptions = [
+    { type: 'freewrite' as const, label: 'Start writing freely', value: NO_PROMPT_VALUE },
+    ...promptGroups.flatMap((group) =>
+      group.prompts.map((p) => ({ type: 'prompt' as const, category: group.category, label: p, value: p }))
+    ),
+    { type: 'custom' as const, label: 'Write my own prompt…', value: CUSTOM_PROMPT_VALUE },
+  ];
+
+  const flatPromptOptions = allOptions.filter((o) => o.type !== 'freewrite' && o.type !== 'custom');
+
+  const handleSelect = (value: string) => {
+    if (value === CUSTOM_PROMPT_VALUE) {
+      onUseCustomPromptChange(true);
+      onSelect(CUSTOM_PROMPT_VALUE);
+    } else if (value === NO_PROMPT_VALUE) {
+      onUseCustomPromptChange(false);
+      onSelect('');
+    } else {
+      onUseCustomPromptChange(false);
+      onSelect(value);
+    }
+    setIsOpen(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isOpen) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        setIsOpen(true);
+        setFocusedIndex(0);
+        return;
+      }
+      return;
+    }
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setFocusedIndex((prev) => Math.min(prev + 1, allOptions.length - 1));
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setFocusedIndex((prev) => Math.max(prev - 1, 0));
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        if (focusedIndex >= 0 && focusedIndex < allOptions.length) {
+          handleSelect(allOptions[focusedIndex].value);
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        setIsOpen(false);
+        break;
+      case 'Tab':
+        setIsOpen(false);
+        break;
+    }
+  };
+
+  const handleClickOutside = (e: MouseEvent) => {
+    if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && focusedIndex >= 0 && listRef.current) {
+      const items = listRef.current.querySelectorAll('[data-prompt-option]');
+      (items[focusedIndex] as HTMLElement)?.focus();
+    }
+  }, [focusedIndex, isOpen]);
+
+  const triggerLabel =
+    selectedPrompt === CUSTOM_PROMPT_VALUE
+      ? customPromptValue || 'Write my own prompt…'
+      : selectedPrompt
+      ? selectedPrompt
+      : 'Choose a memory prompt…';
+
+  const showCustomInput = useCustomPrompt;
+
+  return (
+    <div ref={containerRef} className="relative">
+      {/* Trigger button */}
+      <button
+        type="button"
+        onClick={() => {
+          setIsOpen(!isOpen);
+          if (!isOpen) setFocusedIndex(0);
+        }}
+        onKeyDown={handleKeyDown}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-label="Memory prompt picker"
+        className="w-full flex items-center justify-between rounded-[1.15rem] border px-4 py-3.5 pr-12 text-sm md:text-[0.95rem] transition-colors outline-none focus-visible:outline-none"
+        style={{
+          borderColor: isOpen ? 'rgba(212,163,115,0.45)' : 'rgba(212,163,115,0.20)',
+          backgroundColor: 'rgba(255,253,246,0.70)',
+          color: selectedPrompt || isOpen ? 'var(--charcoal)' : '#7A6A5A',
+          fontFamily: 'var(--font-sans)',
+          boxShadow: isOpen
+            ? '0 0 0 3px rgba(212,163,115,0.15), 0 8px 20px rgba(212,163,115,0.08)'
+            : '0 6px 16px rgba(212,163,115,0.05)',
+        }}
+      >
+        <span className={selectedPrompt ? 'text-charcoal' : 'text-[#7A6A5A]'} style={{ textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {triggerLabel}
+        </span>
+      </button>
+
+      {/* Chevron icon */}
+      <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+        <div
+          className="w-4 h-4 rounded-full flex items-center justify-center transition-transform duration-200"
+          style={{
+            backgroundColor: 'rgba(212,163,115,0.15)',
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          }}
+        >
+          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--bronze)' }}>
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Dropdown panel */}
+      {isOpen && (
+        <div
+          ref={listRef}
+          role="listbox"
+          aria-label="Memory prompts"
+          className="absolute z-50 top-full left-0 right-0 mt-2 rounded-[1.25rem] border overflow-hidden"
+          style={{
+            backgroundColor: '#FDFCF5',
+            borderColor: 'rgba(212,163,115,0.22)',
+            boxShadow: '0 16px 48px rgba(212,163,115,0.18), 0 4px 16px rgba(212,163,115,0.08)',
+            maxHeight: '380px',
+            overflowY: 'auto',
+          }}
+        >
+          {promptLoadState === 'loading' ? (
+            <div className="px-4 py-6 text-sm text-center" style={{ color: '#7A6A5A', fontFamily: 'var(--font-sans)' }}>
+              Loading prompts…
+            </div>
+          ) : (
+            <>
+              {/* Freewrite option */}
+              <button
+                type="button"
+                data-prompt-option
+                role="option"
+                aria-selected={selectedPrompt === '' && !useCustomPrompt}
+                tabIndex={0}
+                onClick={() => handleSelect(NO_PROMPT_VALUE)}
+                onKeyDown={handleKeyDown}
+                className="w-full flex items-center gap-3 px-4 py-3.5 text-left text-sm transition-colors"
+                style={{
+                  color: '#4A4A3A',
+                  fontFamily: 'var(--font-sans)',
+                  backgroundColor: selectedPrompt === '' && !useCustomPrompt ? 'rgba(212,163,115,0.10)' : 'transparent',
+                  borderBottom: '1px solid rgba(212,163,115,0.10)',
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)', flexShrink: 0 }}>
+                  <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                </svg>
+                <span className="font-normal">Start writing freely</span>
+                {selectedPrompt === '' && !useCustomPrompt && (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)', marginLeft: 'auto' }}>
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                )}
+              </button>
+
+              {/* Prompt groups */}
+              {promptGroups.map((group) => (
+                <div key={group.category}>
+                  {/* Category header — not interactive, aria-readonly */}
+                  <div
+                    role="presentation"
+                    className="px-4 py-2 text-xs font-semibold uppercase tracking-wider"
+                    style={{ color: 'rgba(212,163,115,0.7)', fontFamily: 'var(--font-sans)', backgroundColor: 'rgba(212,163,115,0.06)' }}
+                  >
+                    {group.category}
+                  </div>
+                  {group.prompts.map((promptOption) => {
+                    const isSelected = selectedPrompt === promptOption && !useCustomPrompt;
+                    return (
+                      <button
+                        key={promptOption}
+                        type="button"
+                        data-prompt-option
+                        role="option"
+                        aria-selected={isSelected}
+                        tabIndex={0}
+                        onClick={() => handleSelect(promptOption)}
+                        onKeyDown={handleKeyDown}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
+                        style={{
+                          color: '#4A4A3A',
+                          fontFamily: 'var(--font-sans)',
+                          backgroundColor: isSelected ? 'rgba(212,163,115,0.12)' : 'transparent',
+                        }}
+                        onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.06)'; }}
+                        onMouseLeave={(e) => { if (!isSelected) e.currentTarget.style.backgroundColor = 'transparent'; }}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'rgba(212,163,115,0.5)', flexShrink: 0 }}>
+                          <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                          <path d="M2 17l10 5 10-5M2 12l10 5 10-5" />
+                        </svg>
+                        <span className="flex-1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{promptOption}</span>
+                        {isSelected && (
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)', flexShrink: 0 }}>
+                            <path d="M20 6L9 17l-5-5" />
+                          </svg>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+
+              {/* Custom prompt option */}
+              <button
+                type="button"
+                data-prompt-option
+                role="option"
+                aria-selected={useCustomPrompt}
+                tabIndex={0}
+                onClick={() => handleSelect(CUSTOM_PROMPT_VALUE)}
+                onKeyDown={handleKeyDown}
+                className="w-full flex items-center gap-3 px-4 py-3.5 text-left text-sm transition-colors"
+                style={{
+                  color: '#4A4A3A',
+                  fontFamily: 'var(--font-sans)',
+                  backgroundColor: useCustomPrompt ? 'rgba(212,163,115,0.12)' : 'transparent',
+                  borderTop: '1px solid rgba(212,163,115,0.10)',
+                }}
+                onMouseEnter={(e) => { if (!useCustomPrompt) e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.06)'; }}
+                onMouseLeave={(e) => { if (!useCustomPrompt) e.currentTarget.style.backgroundColor = 'transparent'; }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)', flexShrink: 0 }}>
+                  <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                </svg>
+                <span className="font-normal">Write my own prompt…</span>
+                {useCustomPrompt && (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--tea-green)', marginLeft: 'auto' }}>
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                )}
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Custom prompt input — shown inline below when selected */}
+      {showCustomInput && (
+        <div className="mt-3">
+          <Input
+            value={customPromptValue}
+            onChange={(e) => onCustomPromptChange(e.target.value)}
+            placeholder="What would you like this memory to begin with?"
+            className="h-11 rounded-[1rem] border px-4 text-sm"
+            style={{
+              borderColor: 'rgba(212,163,115,0.24)',
+              backgroundColor: 'rgba(255,253,246,0.88)',
+              boxShadow: '0 8px 20px rgba(212,163,115,0.05)',
+              fontFamily: 'var(--font-sans)',
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
 }
 
 function getAudioValidationError(file: File): string | null {
