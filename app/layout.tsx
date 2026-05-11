@@ -70,8 +70,8 @@ export const metadata: Metadata = {
     apple: [{ url: "/favicon.png" }],
   },
   referrer: 'origin-when-cross-origin',
-  viewport: { width: 'device-width', initialScale: 1, maximumScale: 5 },
-  other: { "theme-color": "#FEFAE0" },
+  viewport: { width: 'device-width', initialScale: 1, maximumScale: 1, userScalable: false },
+  other: { "theme-color": "#FDF8EE" },
 };
 
 export default function RootLayout({
