@@ -99,7 +99,6 @@ export default function DashboardClient() {
   const [createError, setCreateError] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
   const [showFab, setShowFab] = useState(false);
-  const [skeletonRow, setSkeletonRow] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
