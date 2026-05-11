@@ -105,7 +105,7 @@ export default function HomeClient() {
           </div>
 
           {/* Desktop Nav */}
-          <nav className="flex gap-7 items-center">
+          <nav aria-label="Site navigation" className="flex gap-7 items-center">
             {loggedIn ? (
               <Link href="/dashboard" aria-current="page" className="text-sm font-medium transition-colors" style={{ color: 'var(--charcoal)' }}>
                 Dashboard
@@ -610,8 +610,8 @@ export default function HomeClient() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Free */}
-            <div className="reveal" role="group" aria-label="Free plan — $0 forever">
-              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid var(--bronze-15)', boxShadow: '0 2px 16px var(--bronze-06)' }}>
+            <div className="reveal plan-card-spring" role="group" aria-label="Free plan — $0 forever" style={{ cursor: 'pointer' }}>
+              <Card className="p-7 rounded-2xl h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style={{ backgroundColor: '#FDFCF5', border: '1px solid var(--bronze-15)', boxShadow: '0 2px 16px var(--bronze-06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
                   <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$0</p>
@@ -650,8 +650,8 @@ export default function HomeClient() {
             </div>
 
             {/* 5GB — featured with papaya bg */}
-            <div className="reveal" role="group" aria-label="5GB Storage plan — $50 for 5 years, most popular">
-              <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 12px 48px var(--bronze-22)' }}>
+            <div className="reveal plan-card-spring" role="group" aria-label="5GB Storage plan — $50 for 5 years, most popular" style={{ cursor: 'pointer' }}>
+              <Card className="p-7 rounded-2xl h-full relative transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 12px 48px var(--bronze-22)' }}>
                 <div className="absolute -top-5 left-1/2 -translate-x-1/2">
                   <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
                     Most Popular
@@ -690,8 +690,8 @@ export default function HomeClient() {
             </div>
 
             {/* 15GB */}
-            <div className="reveal" role="group" aria-label="15GB Storage plan — $100 for 5 years">
-              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid var(--bronze-08)', boxShadow: '0 2px 16px var(--bronze-06)' }}>
+            <div className="reveal plan-card-spring" role="group" aria-label="15GB Storage plan — $100 for 5 years" style={{ cursor: 'pointer' }}>
+              <Card className="p-7 rounded-2xl h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style={{ backgroundColor: '#FDFCF5', border: '1px solid var(--bronze-08)', boxShadow: '0 2px 16px var(--bronze-06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>15GB Storage</p>
                   <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$100</p>
@@ -835,7 +835,7 @@ export default function HomeClient() {
       {/* ══════════════════════════════════════════
           TASK 6: PREMIUM FOOTER — 3-column
       ══════════════════════════════════════════ */}
-      <footer className="py-12 px-6 md:px-10" style={{ backgroundColor: 'var(--beige)', borderTop: '2px solid var(--bronze-20)' }}>
+      <footer role="contentinfo" className="py-12 px-6 md:px-10" style={{ backgroundColor: 'var(--beige)', borderTop: '2px solid var(--bronze-20)' }}>
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 mb-10">
             {/* Col 1: Logo + tagline + social */}
@@ -870,7 +870,7 @@ export default function HomeClient() {
             </div>
 
             {/* Col 2: Navigation */}
-            <div>
+            <nav aria-label="Footer navigation">
               <p className="label-caps mb-4" style={{ color: 'var(--bronze)' }}>Navigate</p>
               <ul className="space-y-2.5">
                 {[
@@ -887,7 +887,7 @@ export default function HomeClient() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </nav>
 
             {/* Col 3: CTA + email */}
             <div>
