@@ -935,6 +935,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               e.preventDefault();
                               setActiveMenu(activeMenu === memory.id ? null : memory.id);
                             }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setActiveMenu(activeMenu === memory.id ? null : memory.id);
+                              }
+                            }}
                             className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                             style={{
                               backgroundColor: 'rgba(212,163,115,0.10)',
@@ -945,6 +951,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             }}
                             aria-label="Memory options"
                             aria-haspopup="menu"
+                            aria-expanded={activeMenu === memory.id}
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                               <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
@@ -959,7 +966,14 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                 boxShadow: '0 12px 40px rgba(43,43,43,0.15), 0 4px 16px rgba(212,163,115,0.08)',
                               }}
                               role="menu"
+                              tabIndex={-1}
                               onClick={(e) => e.stopPropagation()}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Escape') {
+                                  e.stopPropagation();
+                                  setActiveMenu(null);
+                                }
+                              }}
                             >
                               <Link
                                 href={`/books/${id}/edit?memory=${memory.id}`}
