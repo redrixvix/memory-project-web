@@ -58,6 +58,7 @@ export function Avatar({ name, imageUrl, className, size, 'aria-label': ariaLabe
         alt={name}
         width={sizeValue}
         height={sizeValue}
+        loading="lazy"
         className={cn('rounded-full object-cover shrink-0', className)}
         unoptimized
         onError={() => setImgError(true)}
