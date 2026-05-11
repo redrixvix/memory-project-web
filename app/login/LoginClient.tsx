@@ -102,7 +102,7 @@ export default function LoginClient() {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ backgroundColor: 'var(--cornsilk)' }}>
+    <main id="main" className="min-h-screen flex" style={{ backgroundColor: 'var(--cornsilk)' }}>
 
       {/* ── LEFT EDITORIAL PANEL ── */}
       <div className="hidden lg:flex flex-col justify-center px-12 xl:px-20 w-1/2" style={{ backgroundColor: 'var(--beige)' }}>
@@ -444,6 +444,6 @@ export default function LoginClient() {
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
