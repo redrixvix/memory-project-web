@@ -11,7 +11,6 @@ import type { OurFileRouter } from '@/app/api/uploadthing/core';
 import { Button } from '@/components/ui/button';
 import { ImageGallery, type ImageGalleryItem, DropZone } from '@/components/image-gallery';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { normalizeBookPlan } from '@/lib/book-plan';
 import { flattenMemoryPrompts, getMemoryPromptGroups, isMemoryPromptGroups, type MemoryPromptGroup } from '@/lib/memory-prompts';
@@ -128,11 +127,6 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const hasErroredPhotos = photoItems.some((item) => item.status === 'error');
   const hasBlockingRecorderState = recorderState === 'requesting' || recorderState === 'recording' || recorderState === 'processing';
   const isSubmitDisabled = loading || !answer.trim() || hasUploadingPhotos || hasBlockingRecorderState;
-  const promptSelectValue = useCustomPrompt
-    ? CUSTOM_PROMPT_VALUE
-    : prompt
-      ? prompt
-      : NO_PROMPT_VALUE;
   const { startUpload: startImageUpload } = useUploadThing('imageUploader');
   const { startUpload: startAudioUpload } = useUploadThing('audioUploader');
   const currentAudioUrl = audioDraft?.uploadedUrl ?? null;
@@ -1718,8 +1712,6 @@ function PromptPicker({
     ),
     { type: 'custom' as const, label: 'Write my own prompt…', value: CUSTOM_PROMPT_VALUE },
   ];
-
-  const flatPromptOptions = allOptions.filter((o) => o.type !== 'freewrite' && o.type !== 'custom');
 
   const handleSelect = (value: string) => {
     if (value === CUSTOM_PROMPT_VALUE) {
