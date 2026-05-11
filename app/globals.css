@@ -543,6 +543,7 @@ body {
   outline: 2px solid var(--bronze);
   outline-offset: 3px;
   border-radius: 4px;
+  transition: outline-offset 0.15s ease;
 }
 
 /* Remove focus ring for mouse users */
