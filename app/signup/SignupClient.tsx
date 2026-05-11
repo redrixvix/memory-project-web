@@ -25,6 +25,18 @@ const KeyIcon = () => (
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+interface PasswordReqs {
+  minLength: boolean;
+  hasNumber: boolean;
+}
+
+function getPasswordReqs(pw: string): PasswordReqs {
+  return {
+    minLength: pw.length >= 8,
+    hasNumber: /\d/.test(pw),
+  };
+}
+
 function getPasswordStrength(pw: string): { level: 0 | 1 | 2 | 3; label: string; color: string } {
   if (!pw) return { level: 0, label: '', color: '' };
   const hasUpper = /[A-Z]/.test(pw);
@@ -409,6 +421,27 @@ function Signup() {
                         </button>
                       </div>
                       {password && (() => {
+                        const reqs = getPasswordReqs(password);
+                        const allMet = reqs.minLength && reqs.hasNumber;
+                        if (!allMet) {
+                          return (
+                            <ul className="mt-2 space-y-1" aria-label="Password requirements">
+                              {[
+                                { met: reqs.minLength, label: '8+ characters' },
+                                { met: reqs.hasNumber, label: 'At least 1 number' },
+                              ].map(({ met, label }) => (
+                                <li key={label} className="flex items-center gap-1.5 text-xs" style={{ color: met ? 'rgba(85,107,47,0.8)' : 'rgba(43,43,43,0.45)' }}>
+                                  {met ? (
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                  ) : (
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                  )}
+                                  {label}
+                                </li>
+                              ))}
+                            </ul>
+                          );
+                        }
                         const strength = getPasswordStrength(password);
                         return (
                           <div className="mt-2">
