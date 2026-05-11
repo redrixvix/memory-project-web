@@ -281,7 +281,7 @@ function Signup() {
                 type="button"
                 onClick={handleGoogleLogin}
                 aria-label="Continue with Google"
-                className="w-full h-11 rounded-full text-sm font-semibold flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-95 hover:brightness-105 hover:shadow-md focus-visible:ring-2 focus-visible:ring-offset-2"
+                className="w-full h-11 rounded-full text-sm font-semibold flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-95 hover:brightness-105 hover:shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bronze)]"
                 style={{
                   backgroundColor: 'var(--charcoal)',
                   color: 'var(--cornsilk)',
@@ -299,7 +299,7 @@ function Signup() {
               {/* Passkey — hidden behind a small tertiary link */}
               <button
                 type="button"
-                className="w-full h-11 rounded-full text-xs font-medium flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 mx-auto focus-visible:ring-2 focus-visible:ring-offset-2 cursor-pointer"
+                className="w-full h-11 rounded-full text-xs font-medium flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 mx-auto focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bronze)] cursor-pointer"
                 style={{
                   color: '#7A7A6A',
                   backgroundColor: 'transparent',
@@ -468,8 +468,8 @@ function Signup() {
                     <Button
                       type="submit"
                       disabled={passwordLoading}
-                      className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
-                      style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}
+                      className="w-full h-12 rounded-full text-sm font-medium transition-all duration-200 active:scale-95 focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-2"
+                      style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
                     >
                       {passwordLoading ? 'Creating account...' : 'Create account with password'}
                     </Button>
@@ -529,7 +529,7 @@ function Signup() {
                           setEmail('');
                           setError('');
                         }}
-                        className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
+                        className="w-full h-12 rounded-full text-sm font-medium transition-all duration-200 active:scale-95 focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-2"
                         style={{ border: '1.5px solid rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
                       >
                         Use a different email
@@ -603,7 +603,7 @@ function Signup() {
                             setVerifyLoading(false);
                           }
                         }}
-                        className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
+                        className="w-full h-12 rounded-full text-sm font-medium transition-all duration-200 active:scale-95 focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-2"
                         style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
                       >
                         {verifyLoading ? 'Verifying...' : 'Verify email and create account'}
@@ -617,7 +617,7 @@ function Signup() {
                           setCode('');
                           setError('');
                         }}
-                        className="w-full h-11 rounded-full text-sm font-medium transition-all duration-200 active:scale-95"
+                        className="w-full h-12 rounded-full text-sm font-medium transition-all duration-200 active:scale-95 focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-2"
                         style={{ border: '1.5px solid rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent' }}
                       >
                         Start over
