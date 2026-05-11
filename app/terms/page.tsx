@@ -40,7 +40,7 @@ export default function TermsPage() {
           background: 'rgba(254,250,224,0.92)',
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
-          borderColor: 'rgba(212,163,115,0.18)',
+          borderColor: 'var(--bronze-18)',
         }}
       >
         <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
@@ -143,7 +143,7 @@ export default function TermsPage() {
           className="mt-16 text-center rounded-2xl p-10"
           style={{
             backgroundColor: 'var(--papaya)',
-            border: '1px solid rgba(212,163,115,0.15)',
+            border: '1px solid var(--bronze-15)',
           }}
         >
           <h2 className="text-xl font-medium mb-3" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
