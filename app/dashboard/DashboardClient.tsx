@@ -38,7 +38,7 @@ const BOOK_COLORS = [
   'var(--bronze)',
   'var(--tea-green)',
   'var(--papaya)',
-  'rgba(139,90,43,0.82)',  // fixed: was rgba(212,163,115,0.5) — dark sienna replaces washed-out bronze
+  'rgba(139,90,43,0.82)',
   '#B8860B',
   '#6B8E23',
   '#8B4513',
@@ -47,17 +47,16 @@ const BOOK_COLORS = [
   'rgba(210,105,30,0.75)',
 ];
 
-// Actual rgba values for inline style use (matches BOOK_COLORS index)
 const BOOK_SPINE_COLORS = [
-  'rgba(212,163,115,0.85)', // bronze
-  'rgba(204,213,174,0.90)', // tea-green
-  'rgba(239,214,168,0.90)', // papaya
-  'rgba(139,90,43,0.92)',   // fixed: was 0.55 — dark sienna spine
-  'rgba(184,134,11,0.85)',  // dark gold
-  'rgba(107,142,35,0.85)',  // olive
-  'rgba(139,69,19,0.85)',   // sienna
-  'rgba(85,107,47,0.85)',   // dark olive
-  'rgba(210,105,30,0.85)', // chocolate
+  'rgba(212,163,115,0.85)',
+  'rgba(204,213,174,0.90)',
+  'rgba(239,214,168,0.90)',
+  'rgba(139,90,43,0.92)',
+  'rgba(184,134,11,0.85)',
+  'rgba(107,142,35,0.85)',
+  'rgba(139,69,19,0.85)',
+  'rgba(85,107,47,0.85)',
+  'rgba(210,105,30,0.85)',
 ];
 const BOOK_SPINE_HOVER_COLORS = [
   'rgba(212,163,115,1.0)',
@@ -75,30 +74,19 @@ function getPlanBadgeStyles(plan: string) {
   const normalizedPlan = normalizeBookPlan(plan);
 
   if (normalizedPlan === 'plus') {
-    return {
-      backgroundColor: '#2D4A35',
-      color: '#E8F0E5',
-    };
+    return { backgroundColor: '#2D4A35', color: '#E8F0E5' };
   }
-
   if (normalizedPlan === 'premium') {
-    return {
-      backgroundColor: 'var(--bronze)',
-      color: 'var(--charcoal)',
-    };
+    return { backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' };
   }
-
-  return {
-    backgroundColor: 'rgba(212,163,115,0.25)',
-    color: '#4A4A3A',
-  };
+  return { backgroundColor: 'rgba(212,163,115,0.25)', color: '#4A4A3A' };
 }
 
-export default function Dashboard() {
+export default function DashboardClient() {
   const router = useRouter();
   const [books, setBooks] = useState<Book[]>([]);
   const [user, setUser] = useState<User | null>(null);
-  const [loggedIn, setLoggedIn] = useState<boolean | null>(null); // null = checking auth
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -121,10 +109,8 @@ export default function Dashboard() {
           fetch('/api/auth/me'),
           fetch('/api/books'),
         ]);
-
         if (userRes.status === 401) { router.push('/login'); return; }
         setLoggedIn(true);
-
         const userData = await userRes.json();
         setUser({
           id: userData.user.id,
@@ -133,7 +119,6 @@ export default function Dashboard() {
           profileImageUrl: userData.user.profile_image_url || null,
           googleId: userData.user.google_id || null,
         });
-
         if (booksRes.status === 401) { router.push('/login'); return; }
         const booksData = await booksRes.json();
         setBooks(booksData.books || []);
@@ -144,21 +129,16 @@ export default function Dashboard() {
         setLoading(false);
       }
     }
-
     void fetchUserAndBooks();
   }, [router]);
 
-  // Show FAB when scrolling past the header section
   useEffect(() => {
-    const handleScroll = () => {
-      setShowFab(window.scrollY > 280);
-    };
+    const handleScroll = () => setShowFab(window.scrollY > 280);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Check initial position
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close modal on Escape
   useEffect(() => {
     if (!showCreate) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -170,8 +150,6 @@ export default function Dashboard() {
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   }, [showCreate, creating]);
-
-  // Reset to page 1 whenever the filtered list changes — derived safely during render
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -211,7 +189,6 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="w-full max-w-3xl px-6">
-          {/* Auth loading skeleton — warm shimmer that matches dashboard layout */}
           <div className="mb-10">
             <div className="h-9 w-56 rounded-xl mb-2 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.22)' }} />
             <div className="h-4 w-40 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
@@ -232,7 +209,6 @@ export default function Dashboard() {
     );
   }
 
-  // Filter books by search query
   const filteredBooks = searchQuery.trim()
     ? books.filter(book =>
         book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -272,10 +248,8 @@ export default function Dashboard() {
         }
       `}</style>
 
-      {/* ── TOP NAV ── */}
       <header className="sticky top-0 z-20 h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
-          {/* Left: Logo */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5 group">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 group-hover:scale-105" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
@@ -288,13 +262,11 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          {/* Center: Page indicator */}
           <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--bronze)' }} />
             <span className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Dashboard</span>
           </div>
 
-          {/* Right: User menu */}
           {user && (
             <Dropdown
               trigger={
@@ -340,7 +312,6 @@ export default function Dashboard() {
             </Dropdown>
           )}
 
-          {/* Mobile hamburger */}
           <button
             className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#5A3A2A', ['--tw-ring-color' as string]: 'rgba(212,163,115,0.55)' }}
@@ -354,15 +325,11 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Mobile nav drawer */}
       <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} />
 
-      {/* ── MAIN CONTENT ── */}
       <main id="main" className="px-6 md:px-10 pt-8 pb-10 max-w-5xl mx-auto w-full">
 
-        {/* Header row — compact, editorial */}
         <div className="mb-8 relative">
-          {/* Decorative warm accent — subtle top line */}
           <div
             className="absolute -top-2 left-0 right-0 h-px rounded-full overflow-hidden"
             style={{ background: 'linear-gradient(to right, transparent 0%, rgba(212,163,115,0.25) 20%, rgba(212,163,115,0.25) 80%, transparent 100%)' }}
@@ -393,7 +360,6 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Search + sort — only shown when books exist */}
           {books.length > 0 && (
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-4">
               <div className="relative flex-1" style={{
@@ -431,7 +397,6 @@ export default function Dashboard() {
                   </button>
                 )}
               </div>
-              {/* Sort controls */}
               <div className="flex items-center gap-1 rounded-2xl p-1.5 shrink-0 overflow-x-auto" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)', flexWrap: 'wrap' }}>
                 {([
                   { value: 'newest', label: 'Newest' },
@@ -446,7 +411,7 @@ export default function Dashboard() {
                     className="sort-btn rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0 focus-visible:outline-none"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
-                      color: sortOrder === value ? 'var(--charcoal)' : 'var(--charcoal)',
+                      color: 'var(--charcoal)',
                       fontFamily: 'var(--font-sans)',
                       minWidth: '56px',
                       fontWeight: '600',
@@ -461,7 +426,6 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* ── Create book modal ── */}
         {showCreate && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -469,7 +433,6 @@ export default function Dashboard() {
             aria-modal="true"
             aria-labelledby="create-book-title"
           >
-            {/* Backdrop — darker scrim for better focus + contrast */}
             <div
               role="button"
               tabIndex={0}
@@ -480,7 +443,6 @@ export default function Dashboard() {
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (!creating) { setShowCreate(false); setCreateError(''); } } }}
             />
 
-            {/* Modal panel */}
             <div
               className="relative w-full max-w-lg rounded-3xl overflow-hidden animate-fade-up flex flex-col"
               style={{
@@ -489,12 +451,9 @@ export default function Dashboard() {
                 boxShadow: '0 40px 100px rgba(43,43,43,0.22), 0 12px 40px rgba(212,163,115,0.12)',
               }}
             >
-              {/* Warm top bar */}
               <div className="h-1.5 w-full shrink-0" style={{ backgroundColor: 'var(--bronze)' }} />
 
-              {/* Scrollable content area */}
               <div className="p-6 overflow-y-auto flex-1 min-h-0">
-                {/* Header */}
                 <div className="flex items-start justify-between mb-5">
                   <div>
                     <h2 id="create-book-title" className="text-xl font-medium" style={{ fontFamily: 'var(--font-serif)', color: 'var(--charcoal)' }}>
@@ -518,7 +477,6 @@ export default function Dashboard() {
                 </div>
 
                 <form id="create-book-form" onSubmit={createBook} className="space-y-4">
-                  {/* Title */}
                   <div className="space-y-1.5">
                     <Label htmlFor="modal-title" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                       Book title <span style={{ color: 'var(--bronze)' }}>*</span>
@@ -540,7 +498,6 @@ export default function Dashboard() {
                     </p>
                   </div>
 
-                  {/* Description */}
                   <div className="space-y-1.5">
                     <Label htmlFor="modal-desc" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                       Description <span className="font-normal opacity-50">(optional)</span>
@@ -560,7 +517,6 @@ export default function Dashboard() {
                     </p>
                   </div>
 
-                  {/* Plan selection */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <Label className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
@@ -594,7 +550,6 @@ export default function Dashboard() {
                                   : '0 1px 4px rgba(212,163,115,0.06)',
                             }}
                           >
-                            {/* Recommended / popular badge */}
                             {(isRecommended) && (
                               <div
                                 className="absolute -top-2.5 left-4 px-2.5 py-0.5 rounded-full text-xs font-semibold"
@@ -609,7 +564,6 @@ export default function Dashboard() {
                               </div>
                             )}
 
-                            {/* Checkmark for selected */}
                             {isSelected && !isRecommended && (
                               <div className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bronze)' }}>
                                 <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ color: 'var(--charcoal)' }}>
@@ -658,7 +612,6 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  {/* Error */}
                   {createError && (
                     <div
                       className="rounded-xl px-4 py-3 text-sm"
@@ -670,7 +623,6 @@ export default function Dashboard() {
                 </form>
               </div>
 
-              {/* Sticky footer with actions */}
               <div className="shrink-0 px-6 py-5 border-t" style={{ borderColor: 'rgba(212,163,115,0.12)', backgroundColor: '#FDFCF5' }}>
                 <div className="flex gap-3">
                   {!creating && (
@@ -716,10 +668,8 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ── Empty state — editorial card style ── */}
         {books.length === 0 && !showCreate ? (
           <div className="flex flex-col items-center justify-center py-20 animate-fade-up">
-            {/* Elegant book illustration */}
             <div className="relative mb-10" style={{ width: 100, height: 130 }}>
               <div className="absolute inset-0 rounded-2xl" style={{
                 backgroundColor: '#FDFCF5',
@@ -746,7 +696,6 @@ export default function Dashboard() {
             <p className="text-base max-w-sm mx-auto leading-relaxed mb-6 text-center" style={{ color: '#3A3A2A', fontFamily: 'var(--font-sans)' }}>
               Every family has stories worth preserving. Create your first book and start capturing the moments that matter.
             </p>
-            {/* Inspiration chips — spark ideas for what kind of book to create */}
             <div className="flex flex-wrap justify-center gap-2.5 mb-8">
               {[
                 { label: 'Our Family Vacation', title: 'Our Family Vacation' },
@@ -789,7 +738,6 @@ export default function Dashboard() {
             </p>
           </div>
         ) : (
-          /* ── Book grid ── */
           <ul role="list" aria-label="Your memory books" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {paginatedBooks.map((book, i) => {
               const colorIdx = book.id % BOOK_COLORS.length;
@@ -830,13 +778,11 @@ export default function Dashboard() {
                         minHeight: '220px',
                       }}
                     >
-                      {/* Warm hover glow */}
-                      <div 
+                      <div
                         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
                         style={{ background: `radial-gradient(ellipse at 30% 50%, ${bookColor}12 0%, transparent 60%)` }}
                       />
 
-                      {/* Decorative corner flourish — top right */}
                       <div
                         className="absolute top-0 right-0 w-20 h-20 pointer-events-none overflow-hidden"
                       >
@@ -846,10 +792,7 @@ export default function Dashboard() {
                         />
                       </div>
 
-                      {/* Main content area — outer flex-col + min-height ensures footer always at same vertical position */}
                       <div className="relative flex flex-col justify-between min-h-[220px] p-6 pl-8">
-                        {/* Inner flex row: book illustration + text content */}
-                  {/* Book illustration with shimmer for premium plans */}
                         <div
                           className="shrink-0 group/book"
                           style={{
@@ -866,7 +809,6 @@ export default function Dashboard() {
                             transition: 'transform 0.3s ease',
                           }}
                         >
-                          {/* Subtle shimmer overlay for premium/plus plans */}
                           {book.plan !== 'free' && (
                             <div className="shimmer" style={{
                               position: 'absolute',
@@ -876,7 +818,6 @@ export default function Dashboard() {
                               pointerEvents: 'none',
                             }} />
                           )}
-                          {/* Spine strip */}
                           <div style={{
                             position: 'absolute',
                             left: 0, top: 0, bottom: 0,
@@ -884,7 +825,6 @@ export default function Dashboard() {
                             background: `linear-gradient(to bottom, ${bookColor}dd, ${bookColor}55)`,
                             borderRadius: '10px 0 0 10px',
                           }} />
-                          {/* Decorative cover lines */}
                           <div className="pt-4 px-3.5 pl-3 flex-1 flex flex-col justify-center">
                             <div style={{ height: 1.5, backgroundColor: 'rgba(212,163,115,0.30)', marginBottom: 8 }} />
                             {[1,2,3,4,5].map((_, li) => (
@@ -896,7 +836,6 @@ export default function Dashboard() {
                                 marginBottom: 4,
                               }} />
                             ))}
-                            {/* Title block */}
                             <div style={{
                               height: 4,
                               width: '80%',
@@ -907,9 +846,7 @@ export default function Dashboard() {
                           </div>
                         </div>
 
-                        {/* Right: Content */}
                         <div className="flex-1 min-w-0">
-                          {/* Plan badge */}
                           {book.plan && book.plan !== 'free' && (
                             <span
                               className="inline-block text-[10px] font-semibold px-2.5 py-0.5 rounded-full mb-2"
@@ -919,25 +856,20 @@ export default function Dashboard() {
                             </span>
                           )}
 
-                          {/* Title */}
                           <h3 className="text-xl font-medium leading-snug mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
                             {book.title}
                           </h3>
 
-                          {/* Description — only show when present */}
                           {book.description ? (
                             <p className="text-sm leading-relaxed line-clamp-2" style={{ color: '#2A2A1A', fontFamily: 'var(--font-serif)' }}>
                               {book.description}
                             </p>
                           ) : (
-                            /* Placeholder line keeps card height consistent when no description */
                             <div aria-hidden="true" className="text-sm leading-relaxed" style={{ color: '#2A2A1A', fontFamily: 'var(--font-serif)', opacity: 0 }}>
                               —
                             </div>
                           )}
 
-
-                          {/* Contributors — only show when multiple */}
                           {book.contributors && book.contributors.length > 1 && (
                             <div className="flex items-center gap-2 mt-3">
                               <div className="flex -space-x-1.5">
@@ -959,15 +891,14 @@ export default function Dashboard() {
                         </div>
                       </div>
 
-                      {/* Footer — elevated action strip for premium feel */}
                       <div className="px-6 pl-8 pb-5" style={{ marginTop: 'auto' }}>
                         <div
                           className="flex items-center justify-between gap-2 rounded-2xl px-4 py-2.5 transition-all duration-300 group-hover:gap-3 group-hover:bg-[rgba(212,163,115,0.06)]"
                           style={{ borderTop: '1px solid rgba(212,163,115,0.08)' }}
                         >
-                          <span 
+                          <span
                             className="text-xs font-semibold"
-                            style={{ 
+                            style={{
                               color: '#5A3A2A',
                               fontFamily: 'var(--font-sans)',
                               letterSpacing: '0.02em',
@@ -1050,7 +981,6 @@ export default function Dashboard() {
           )}
       </main>
 
-      {/* Floating Action Button - New Book (appears on scroll) */}
       {showFab && (
         <button
           type="button"
