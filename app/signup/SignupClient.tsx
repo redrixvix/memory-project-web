@@ -484,7 +484,7 @@ function Signup() {
                       type="button"
                       disabled={magicLoading}
                       onClick={handleSubmit}
-                      className="w-full h-9 rounded-full text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 hover:opacity-80"
+                      className="w-full h-11 rounded-full text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 hover:opacity-80"
                       style={{ color: '#7A7A6A', border: '1px solid rgba(212,163,115,0.2)', backgroundColor: 'transparent' }}
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>

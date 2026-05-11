@@ -7,6 +7,20 @@ import Image from 'next/image';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function getPasswordStrength(pw: string): { level: 0 | 1 | 2 | 3; label: string; color: string } {
+  if (!pw) return { level: 0, label: '', color: '' };
+  const hasUpper = /[A-Z]/.test(pw);
+  const hasLower = /[a-z]/.test(pw);
+  const hasDigit = /\d/.test(pw);
+  const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pw);
+  const variety = [hasUpper, hasLower, hasDigit, hasSpecial].filter(Boolean).length;
+  if (pw.length < 6 || variety === 0) return { level: 1, label: 'Weak', color: 'rgba(180,60,60,0.7)' };
+  if (pw.length < 10 || variety < 3) return { level: 2, label: 'Fair', color: 'rgba(184,134,11,0.75)' };
+  return { level: 3, label: 'Strong', color: 'rgba(85,107,47,0.8)' };
+}
+
 interface User {
   id: number;
   name: string;
@@ -765,7 +779,25 @@ export default function SettingsClient() {
                       <Label className="text-xs mb-1 block" style={{ color: 'var(--charcoal)' }}>New password</Label>
                       <div className="relative">
                         <Input type={showNewPassword ? 'text' : 'password'} value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="New password" className="h-9 rounded-lg text-sm pr-8" autoComplete="new-password" aria-invalid={!!passwordError} aria-describedby="password-error" style={passwordError ? { borderColor: '#C0392B', backgroundColor: '#FDFCF5', boxShadow: '0 0 0 3px rgba(192,57,43,0.12)' } : { borderColor: 'rgba(212,163,115,0.55)', backgroundColor: '#FDFCF5' }} onFocus={e => { e.currentTarget.style.borderColor = 'var(--bronze)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.18)'; }} onBlur={e => { e.currentTarget.style.borderColor = passwordError ? '#C0392B' : 'rgba(212,163,115,0.55)'; e.currentTarget.style.boxShadow = passwordError ? '0 0 0 3px rgba(192,57,43,0.12)' : 'none'; }} />
-                        <button type="button" onClick={() => setShowNewPassword(p => !p)} aria-label={showNewPassword ? 'Hide new password' : 'Show new password'} className="password-toggle absolute right-1 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full hover:opacity-60 transition-opacity cursor-pointer" style={{ color: 'rgba(212,163,115,0.65)' }}>
+                        <br />
+                        {newPassword && (() => {
+                          const strength = getPasswordStrength(newPassword);
+                          return (
+                            <div className="mt-1.5 mb-1">
+                              <div className="flex gap-1 mb-0.5">
+                                {[1, 2, 3].map((tier) => (
+                                  <div
+                                    key={tier}
+                                    className="h-1 flex-1 rounded-full transition-all duration-300"
+                                    style={{ backgroundColor: tier <= strength.level ? strength.color : 'rgba(212,163,115,0.15)' }}
+                                  />
+                                ))}
+                              </div>
+                              <p className="text-xs" style={{ color: strength.color }}>{strength.label}</p>
+                            </div>
+                          );
+                        })()}
+                        <button type="button" onClick={() => setShowNewPassword(p => !p)} aria-label={showNewPassword ? 'Hide new password' : 'Show new password'} className="password-toggle absolute right-1 top-6 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full hover:opacity-60 transition-opacity cursor-pointer" style={{ color: 'rgba(212,163,115,0.65)' }}>
                           {showNewPassword ? (
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                           ) : (
