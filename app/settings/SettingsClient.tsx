@@ -354,7 +354,7 @@ export default function SettingsClient() {
                           height={80}
                           className="object-cover w-full h-full"
                           unoptimized
-                          loading="lazy"
+                          priority
                         />
                       </div>
                       {/* Hover overlay */}
