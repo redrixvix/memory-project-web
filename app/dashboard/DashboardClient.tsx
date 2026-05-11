@@ -416,23 +416,30 @@ export default function DashboardClient() {
                   </button>
                 )}
               </div>
-              <div className="flex items-center gap-1 rounded-2xl p-1.5 shrink-0 overflow-x-auto" style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)', flexWrap: 'wrap' }}>
+              <div
+                role="group"
+                aria-label="Sort books by"
+                className="flex items-center gap-1 rounded-2xl p-1.5 shrink-0 overflow-x-auto"
+                style={{ backgroundColor: 'rgba(255,253,246,0.92)', border: '1px solid rgba(212,163,115,0.18)', flexWrap: 'wrap' }}
+              >
                 {([
-                  { value: 'newest', label: 'Newest' },
-                  { value: 'oldest', label: 'Oldest' },
-                  { value: 'alpha', label: 'A–Z' },
-                ] as const).map(({ value, label }) => (
+                  { value: 'newest', label: 'Newest', ariaLabel: 'Sort by newest' },
+                  { value: 'oldest', label: 'Oldest', ariaLabel: 'Sort by oldest' },
+                  { value: 'alpha', label: 'A–Z', ariaLabel: 'Sort alphabetically' },
+                ] as const).map(({ value, label, ariaLabel }) => (
                   <button
                     key={value}
                     type="button"
                     onClick={() => setSortOrder(value)}
                     aria-pressed={sortOrder === value}
-                    className="sort-btn rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 shrink-0 focus-visible:outline-none"
+                    aria-label={ariaLabel}
+                    className="sort-btn rounded-xl px-4 py-3 text-xs font-semibold transition-all duration-200 shrink-0 focus-visible:outline-none"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
                       color: 'var(--charcoal)',
                       fontFamily: 'var(--font-sans)',
                       minWidth: '56px',
+                      minHeight: '44px',
                       fontWeight: '600',
                       boxShadow: sortOrder === value ? '0 0 0 3px rgba(212,163,115,0.35)' : 'none',
                     }}
