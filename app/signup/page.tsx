@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Create Your Memory Book — Memory Project",
     description: "Start free. No credit card required. Write unlimited memories and print a beautiful hardcover book from $99.",
-    url: "https://web-redrixvixs-projects.vercel.app/signup",
+    url: "/signup",
     type: "website",
     images: [
       {
