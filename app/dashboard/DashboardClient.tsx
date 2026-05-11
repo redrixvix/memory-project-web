@@ -99,6 +99,7 @@ export default function DashboardClient() {
   const [createError, setCreateError] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'alpha'>('newest');
   const [showFab, setShowFab] = useState(false);
+  const [skeletonRow, setSkeletonRow] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -963,7 +964,7 @@ export default function DashboardClient() {
                 type="button"
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
+                className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[rgba(212,163,115,0.55)]"
                 style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
                 aria-label="Previous page"
               >
@@ -988,7 +989,7 @@ export default function DashboardClient() {
                     key={item}
                     type="button"
                     onClick={() => setCurrentPage(item as number)}
-                    className="w-11 h-11 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+                    className="w-11 h-11 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[rgba(212,163,115,0.55)]"
                     style={{
                       backgroundColor: currentPage === item ? 'var(--charcoal)' : 'rgba(212,163,115,0.10)',
                       color: currentPage === item ? 'var(--cornsilk)' : 'var(--charcoal)',
@@ -1005,7 +1006,7 @@ export default function DashboardClient() {
                 type="button"
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
+                className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[rgba(212,163,115,0.55)]"
                 style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
                 aria-label="Next page"
               >
