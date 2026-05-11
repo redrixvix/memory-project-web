@@ -9,7 +9,7 @@ import { Dropdown, DropdownItem, DropdownDivider } from '@/components/ui/dropdow
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
+import { BOOK_PLAN_OPTIONS, type BookPlan, getBookPlanLabel, normalizeBookPlan, planToStorageTier } from '@/lib/book-plan';
 import { MobileNav } from '@/components/ui/mobile-nav';
 
 interface Book {
@@ -23,6 +23,7 @@ interface Book {
   role: string;
   owner_name: string;
   _count?: { memories: number };
+  storage_used_bytes?: number;
   contributors?: {id: number, name: string, profile_image_url: string, google_id: string}[];
 }
 
@@ -867,6 +868,26 @@ export default function DashboardClient() {
                             >
                               {getBookPlanLabel(book.plan, book.storage_tier)}
                             </span>
+                          )}
+
+                          {book.storage_used_bytes != null && book.plan && book.plan !== 'free' && (
+                            (() => {
+                              const usedGB = book.storage_used_bytes / (1024 * 1024 * 1024);
+                              const tier = planToStorageTier(normalizeBookPlan(book.plan, book.storage_tier));
+                              const totalGB = tier === '15gb' ? 15 : 5;
+                              const pct = Math.min((usedGB / totalGB) * 100, 100);
+                              const usedStr = usedGB < 1 ? usedGB.toFixed(2) : `${usedGB.toFixed(1)} GB`;
+                              return (
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }}>
+                                    <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: 'var(--bronze)' }} />
+                                  </div>
+                                  <span className="text-[10px] shrink-0" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-sans)' }}>
+                                    {usedStr} / {totalGB}GB
+                                  </span>
+                                </div>
+                              );
+                            })()
                           )}
 
                           <h3 className="text-xl font-medium leading-snug mb-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
