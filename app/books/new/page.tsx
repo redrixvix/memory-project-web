@@ -1,33 +1,15 @@
-'use client';
+import type { Metadata } from 'next';
+import NewBookClient from './NewBookClient';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+export const metadata: Metadata = {
+  title: 'Create New Memory Book — Memory Project',
+  description: 'Start a new memory book for your family. Capture stories with text, photos, and audio — then print a beautiful hardcover keepsake.',
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function NewBookPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Redirect to dashboard where the create-book modal lives
-    router.replace('/dashboard');
-  }, [router]);
-
-  return (
-    <div
-      className="min-h-screen flex items-center justify-center"
-      style={{ backgroundColor: 'var(--cornsilk)' }}
-    >
-      <div className="flex flex-col items-center gap-3">
-        <div
-          className="w-8 h-8 rounded-full animate-spin"
-          style={{
-            border: '2px solid rgba(212,163,115,0.3)',
-            borderTopColor: 'var(--bronze)',
-          }}
-        />
-        <p className="text-sm" style={{ color: '#6A6A5A' }}>
-          Opening the book creator…
-        </p>
-      </div>
-    </div>
-  );
+  return <NewBookClient />;
 }

@@ -194,7 +194,7 @@ export default function LoginClient() {
           <Card className="p-7 rounded-2xl" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.18)', boxShadow: '0 2px 4px rgba(212,163,115,0.06), 0 8px 16px rgba(212,163,115,0.08), 0 24px 48px rgba(212,163,115,0.06)' }}>
             <CardContent className="pt-0 space-y-5">
 
-              {/* ── Google sign-in button — styled as a real button ── */}
+              {/* ── Google sign-in button ── */}
               <button
                 type="button"
                 onClick={handleGoogleLogin}
@@ -208,14 +208,12 @@ export default function LoginClient() {
                   ['--tw-ring-color' as string]: 'var(--bronze)',
                   ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                 }}
-                onFocus={(e) => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.10), 0 1px 2px rgba(0,0,0,0.04), 0 0 0 3px rgba(212,163,115,0.25)'; }}
-                onBlur={(e) => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(212,163,115,0.10), 0 1px 2px rgba(0,0,0,0.04)'; }}
               >
                 <GoogleIcon />
                 Continue with Google
               </button>
 
-              {/* Passkey option — ghost/outlined style */}
+              {/* Passkey option */}
               <button
                 type="button"
                 className="w-full h-11 rounded-xl text-xs font-medium flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[rgba(212,163,115,0.06)] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-offset-2"
@@ -226,8 +224,6 @@ export default function LoginClient() {
                   ['--tw-ring-color' as string]: 'var(--bronze)',
                   ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                 }}
-                onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.45)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(212,163,115,0.18)'; }}
-                onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(212,163,115,0.22)'; e.currentTarget.style.boxShadow = 'none'; }}
                 onClick={() => window.location.href = '/api/auth/passkey?screen_hint=sign-in'}
               >
                 <KeyIcon />
