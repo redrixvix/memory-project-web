@@ -633,12 +633,14 @@ export default function DashboardClient() {
                   </div>
 
                   {createError && (
-                    <p role="alert" id="create-error"
-                      className="rounded-xl px-4 py-3 text-sm"
-                      style={{ backgroundColor: 'rgba(212,163,115,0.1)', border: '1px solid rgba(212,163,115,0.25)', color: '#6B3A2A' }}
-                    >
-                      {createError}
-                    </p>
+                    <div role="alert" id="create-error" className="rounded-xl px-4 py-3 text-sm flex items-start gap-3" style={{ backgroundColor: 'rgba(184,74,42,0.08)', border: '1px solid rgba(184,74,42,0.20)', color: '#6B3A2A' }}>
+                      <svg className="w-4 h-4 mt-0.5 shrink-0" style={{ color: '#B84A2A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                      </svg>
+                      <span className="flex-1 leading-snug">{createError}</span>
+                    </div>
                   )}
                 </form>
               </div>
