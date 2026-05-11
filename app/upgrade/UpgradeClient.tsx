@@ -357,7 +357,7 @@ export default function UpgradeClient() {
               <div
                 key={plan.id}
                 role="radio"
-                tabIndex={isCurrentPlan ? -1 : isSelected ? 0 : -1}
+                tabIndex={isCurrentPlan ? -1 : 0}
                 onClick={handleCardClick}
                 onKeyDown={handleKeyDown}
                 className={`text-left rounded-2xl p-5 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${!isCurrentPlan ? 'cursor-pointer' : ''} plan-card`}
