@@ -26,8 +26,6 @@ export default function UpgradeClient() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hoveredPlanId, setHoveredPlanId] = useState<string | null>(null);
-  const [focusedPlanId, setFocusedPlanId] = useState<string | null>(null);
 
   const updateSelectedBook = (nextBookId: string, availableBooks: Book[]) => {
     setSelectedBookId(nextBookId);
@@ -220,6 +218,17 @@ export default function UpgradeClient() {
         .skip-link:focus {
           transform: translateY(0);
         }
+        .plan-card {
+          transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+        .plan-card:hover:not([aria-disabled="true"]) {
+          box-shadow: 0 8px 32px rgba(212,163,115,0.22);
+          transform: scale(1.01);
+        }
+        .plan-card:focus-within:not([aria-disabled="true"]) {
+          box-shadow: 0 8px 32px rgba(212,163,115,0.22);
+          transform: scale(1.01);
+        }
       `}</style>
 
       {/* ── TOP NAV ── */}
@@ -347,12 +356,6 @@ export default function UpgradeClient() {
                 }
               }
             };
-            const isHoverable = !isCurrentPlan && !isSelected;
-            const isHovered = isHoverable && (hoveredPlanId === plan.id || focusedPlanId === plan.id);
-            const hoverStyles = isHovered ? {
-              boxShadow: '0 8px 32px rgba(212,163,115,0.22)',
-              transform: 'scale(1.01)',
-            } : {};
             return (
               <div
                 key={plan.id}
@@ -361,11 +364,7 @@ export default function UpgradeClient() {
                 onClick={handleCardClick}
                 onKeyDown={handleKeyDown}
                 className={`text-left rounded-2xl p-5 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${!isCurrentPlan ? 'cursor-pointer' : ''} plan-card`}
-                style={{ ...cardStyles, ...hoverStyles, ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: '#FDF8EE' }}
-                onMouseEnter={() => setHoveredPlanId(plan.id)}
-                onMouseLeave={() => setHoveredPlanId(null)}
-                onFocus={() => setFocusedPlanId(plan.id)}
-                onBlur={() => setFocusedPlanId(null)}
+                style={{ ...cardStyles, ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: '#FDF8EE' }}
                 aria-checked={isSelected}
                 aria-disabled={isCurrentPlan ? true : undefined}
                 aria-label={plan.label + ' plan — ' + plan.price + (isCurrentPlan ? ', current plan' : isSelected ? ', selected' : '')}
