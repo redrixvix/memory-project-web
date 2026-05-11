@@ -324,7 +324,7 @@ export default function HomeClient() {
             <div
               className="reveal"
             >
-              <div className="relative" style={{ width: 210, height: 285 }} aria-hidden="true">
+              <div className="relative" style={{ width: 210, height: 285 }}>
                 {/* Warm layered shadow */}
                 <div style={{
                   position: 'absolute',
