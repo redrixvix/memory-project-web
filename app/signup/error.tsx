@@ -39,7 +39,7 @@ export default function SignupError({
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onClick={reset}
-            className="h-11 px-6 rounded-full text-sm font-medium transition-all duration-200 hover:opacity-80 active:scale-95"
+            className="h-11 px-6 rounded-full text-sm font-medium transition-all duration-200 hover:opacity-80 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bronze)]"
             style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' }}
           >
             Try again
