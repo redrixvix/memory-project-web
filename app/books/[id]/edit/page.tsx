@@ -91,6 +91,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [draftLoaded, setDraftLoaded] = useState(false);
+  const [formDataReady, setFormDataReady] = useState(false);
   const [photoItems, setPhotoItems] = useState<PhotoDraftItem[]>([]);
   const [mediaErrors, setMediaErrors] = useState<string[]>([]);
   const [audioDraft, setAudioDraft] = useState<AudioDraft | null>(null);
@@ -303,6 +304,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     } catch {}
     finally {
       setFetchingBook(false);
+      setFormDataReady(true);
     }
   }
 
@@ -327,12 +329,14 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
           setPromptGroups(fallbackGroups);
           setPromptLoadState('ready');
           setPromptLoadMessage('Using built-in prompts while the live prompt list refreshes.');
+          setFormDataReady(true);
           return;
         }
 
         setPromptGroups([]);
         setPromptLoadState('empty');
         setPromptLoadMessage('No guided prompts are available right now. You can still write freely.');
+        setFormDataReady(true);
         return;
       }
 
@@ -345,6 +349,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
         setPromptGroups(fallbackGroups);
         setPromptLoadState('ready');
         setPromptLoadMessage('Using built-in prompts while live prompts are temporarily unavailable.');
+        setFormDataReady(true);
         return;
       }
 
@@ -352,6 +357,7 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
       setPromptLoadState('error');
       setPromptLoadMessage(error instanceof Error ? error.message : 'Unable to load prompts right now.');
     }
+    setFormDataReady(true);
   }
 
   async function fetchMemory(memoryIdentifier: string) {
@@ -773,25 +779,58 @@ export default function EditMemory({ params }: { params: Promise<{ id: string }>
     }
   }, [answer, clearDraft, currentAudioUrl, flushRemovedUploads, hasBlockingRecorderState, hasUploadingPhotos, id, memoryId, prompt, router, startAudioUpload, uploadedPhotoUrls]);
 
-  if (fetchingMemory || fetchingBook || isCheckingAuth) {
+  if (fetchingMemory || fetchingBook || isCheckingAuth || !formDataReady) {
     return (
       <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
         <div className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b shrink-0" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
           <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-16 h-4 rounded-md animate-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
+              <div className="w-16 h-4 rounded-md skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
             </div>
           </div>
         </div>
-        <div className="flex-1 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 rounded-full animate-spin" style={{ border: '2px solid rgba(212,163,115,0.3)', borderTopColor: 'var(--bronze)' }} />
-            <p className="text-sm" style={{ color: '#6A6A5A' }}>Loading…</p>
+        <div className="flex-1 px-5 md:px-10 py-8">
+          <div className="max-w-5xl mx-auto space-y-8">
+            {/* Header skeleton */}
+            <div className="rounded-[1.5rem] border p-6" style={{ background: 'linear-gradient(180deg, rgba(253,252,245,0.97) 0%, rgba(250,237,205,0.72) 100%)', borderColor: 'rgba(212,163,115,0.22)' }}>
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <div className="h-6 w-24 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(204,213,174,0.12)' }} />
+              </div>
+              <div className="h-7 w-48 rounded-lg skeleton-pulse mb-4" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.15)' }} />
+                <div className="h-px flex-1 max-w-[3rem] rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+                <div className="w-7 h-7 rounded-full skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }} />
+              </div>
+            </div>
+            {/* Prompt picker skeleton */}
+            <div className="rounded-[1.5rem] border p-6" style={{ background: 'linear-gradient(180deg, rgba(253,252,245,0.97) 0%, rgba(250,237,205,0.72) 100%)', borderColor: 'rgba(212,163,115,0.22)' }}>
+              <div className="h-4 w-28 rounded-md skeleton-pulse mb-3" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+              <div className="h-12 w-full max-w-2xl rounded-[1.15rem] skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
+            </div>
+            {/* Textarea skeleton */}
+            <div className="rounded-[1.5rem] border p-6" style={{ background: 'linear-gradient(180deg, rgba(253,252,245,0.97) 0%, rgba(250,237,205,0.72) 100%)', borderColor: 'rgba(212,163,115,0.22)' }}>
+              <div className="h-[360px] rounded-[1.2rem] skeleton-pulse" style={{ backgroundColor: 'rgba(255,253,246,0.88)', boxShadow: '0 0 0 1.5px rgba(212,163,115,0.20), 0 2px 8px rgba(212,163,115,0.06)' }} />
+            </div>
+            {/* Media section skeleton */}
+            <div className="rounded-[1.5rem] border p-6" style={{ background: 'linear-gradient(180deg, rgba(253,252,245,0.97) 0%, rgba(250,237,205,0.72) 100%)', borderColor: 'rgba(212,163,115,0.22)' }}>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-8 h-8 rounded-xl skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+                <div>
+                  <div className="h-4 w-32 rounded-md skeleton-pulse mb-1" style={{ backgroundColor: 'rgba(212,163,115,0.1)' }} />
+                  <div className="h-3 w-48 rounded-md skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }} />
+                </div>
+              </div>
+              <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.95fr)]">
+                <div className="h-40 rounded-[1.4rem] skeleton-pulse" style={{ backgroundColor: 'rgba(250,237,205,0.28)', border: '1px solid rgba(212,163,115,0.16)' }} />
+                <div className="h-40 rounded-[1.4rem] skeleton-pulse" style={{ backgroundColor: 'rgba(255,253,246,0.72)', border: '1px solid rgba(212,163,115,0.16)' }} />
+              </div>
+            </div>
           </div>
         </div>
         <style>{`
-          @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-          .animate-pulse { animation: pulse 1.5s ease-in-out infinite; }
+          @keyframes shimmer { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+          .skeleton-pulse { animation: shimmer 1.8s ease-in-out infinite; }
         `}</style>
       </div>
     );
