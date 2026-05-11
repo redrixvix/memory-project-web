@@ -372,6 +372,7 @@ function Signup() {
                         autoComplete="email"
                         placeholder="ruth@example.com"
                         aria-describedby="email-error"
+                        aria-invalid={emailError ? 'true' : undefined}
                         className="text-sm rounded-xl h-11"
                         style={{ borderColor: emailError ? 'rgba(180,60,60,0.5)' : 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)' }}
                       />
