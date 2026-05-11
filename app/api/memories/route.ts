@@ -55,7 +55,9 @@ export async function POST(request: NextRequest) {
     const [book] = await sql`
       SELECT id FROM books
       WHERE id = ${book_id}
-      AND (owner_id = ${user.id} OR id IN (SELECT book_id FROM book_collaborators WHERE user_id = ${user.id}))
+      AND (owner_id = ${user.id}
+        OR id IN (SELECT book_id FROM book_members WHERE user_id = ${user.id})
+        OR id IN (SELECT book_id FROM book_collaborators WHERE user_id = ${user.id}))
     `;
 
     if (!book) {
@@ -101,7 +103,8 @@ export async function GET(request: NextRequest) {
       FROM memories m
       JOIN books b ON m.book_id = b.id
       LEFT JOIN book_collaborators bc ON b.id = bc.book_id AND bc.user_id = ${user.id}
-      WHERE m.book_id = ${bookId} AND (b.owner_id = ${user.id} OR bc.user_id = ${user.id})
+      LEFT JOIN book_members bm ON b.id = bm.book_id AND bm.user_id = ${user.id}
+      WHERE m.book_id = ${bookId} AND (b.owner_id = ${user.id} OR bc.user_id = ${user.id} OR bm.user_id = ${user.id})
       ORDER BY m.created_at ASC
     `;
 
