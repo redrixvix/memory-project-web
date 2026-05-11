@@ -162,6 +162,30 @@ export function applyAppCors(response: NextResponse) {
   response.headers.set('Access-Control-Allow-Credentials', 'true');
 }
 
+export async function getUserFromSession(request: NextRequest): Promise<LocalUserRecord | null> {
+  const sessionId = request.cookies.get('session')?.value;
+  if (!sessionId) return null;
+
+  const sessionIdHash = hashSessionId(sessionId);
+
+  const [session] = await sql<{ user_id: number; expires_at: Date }[]>`
+    SELECT user_id, expires_at
+    FROM auth_sessions
+    WHERE workos_session_id = ${sessionIdHash}
+  `;
+
+  if (!session) return null;
+  if (new Date(session.expires_at) < new Date()) return null;
+
+  const [user] = await sql<LocalUserRecord[]>`
+    SELECT id, email, name, invite_pending
+    FROM users
+    WHERE id = ${session.user_id}
+  `;
+
+  return user ?? null;
+}
+
 export async function completeAuth({
   workosUser,
   clearLegacyPassword,

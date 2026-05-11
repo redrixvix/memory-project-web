@@ -128,7 +128,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       } else if (data.current_user_role) {
         // Fallback for owners who have no membership entry
         setCurrentUserRole(data.current_user_role);
-        setCurrentUserId(data.current_user_id ?? currentUserId);
+        setCurrentUserId(data.current_user_id ?? null);
       } else {
         // Fallback: fetch members list to find self
         const membersRes = await fetch(`/api/books/${id}/members`);
@@ -154,7 +154,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     } finally {
       setLoading(false);
     }
-  }, [id, router]);
+  }, [id, router, currentUserId]);
 
   useEffect(() => {
     fetchBook(); // eslint-disable-line react-hooks/set-state-in-effect

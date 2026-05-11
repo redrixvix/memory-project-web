@@ -1,4 +1,6 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { getUserFromSession } from "@/lib/auth";
+import { ensureDatabaseReady } from "@/lib/db";
 
 const f = createUploadthing();
 
@@ -7,9 +9,13 @@ export const uploadRouter = {
   imageUploader: f({
     image: { maxFileSize: "4MB", maxFileCount: 10 },
   })
-    .middleware(() => {
-      // TODO: add auth check
-      return { userId: "anonymous" };
+    .middleware(async ({ req }) => {
+      await ensureDatabaseReady();
+      const user = await getUserFromSession(req);
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
+      return { userId: user.id.toString() };
     })
     .onUploadComplete(({ file }) => {
       return { url: file.ufsUrl, key: file.key, fileName: file.name };
@@ -19,8 +25,13 @@ export const uploadRouter = {
   audioUploader: f({
     audio: { maxFileSize: "16MB", maxFileCount: 1 },
   })
-    .middleware(() => {
-      return { userId: "anonymous" };
+    .middleware(async ({ req }) => {
+      await ensureDatabaseReady();
+      const user = await getUserFromSession(req);
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
+      return { userId: user.id.toString() };
     })
     .onUploadComplete(({ file }) => {
       return { url: file.ufsUrl, key: file.key, fileName: file.name };
