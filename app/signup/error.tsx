@@ -24,7 +24,7 @@ export default function SignupError({
       <div className="text-center max-w-sm">
         <div
           className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
-          style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}
+          style={{ backgroundColor: 'var(--bronze-12)' }}
         >
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--bronze)' }} aria-hidden="true">
             <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
@@ -47,7 +47,7 @@ export default function SignupError({
           <Link
             href="/"
             className="h-11 px-6 rounded-full text-sm font-medium border transition-all duration-200 hover:opacity-80 flex items-center justify-center"
-            style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)' }}
+            style={{ borderColor: 'var(--bronze-40)', color: 'var(--charcoal)' }}
           >
             Go home
           </Link>
