@@ -195,7 +195,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             <CardContent className="pt-10 flex flex-col flex-1">
               <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Premium</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$50</p>
-              <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>for 5 years</p>
+              <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>One-time payment · Lifetime access</p>
               <div style={{ height: 1, background: 'var(--bronze-30)', marginBottom: 32 }} />
               <ul className="space-y-3 mb-10 flex-1">
                 {[
@@ -240,7 +240,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             <CardContent className="pt-0 flex flex-col flex-1">
               <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Plus</p>
               <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$100</p>
-              <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>for 5 years</p>
+              <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>One-time payment · Lifetime access</p>
               <div style={{ height: 1, background: 'var(--bronze-25)', marginBottom: 32 }} />
               <ul className="space-y-3 mb-10 flex-1">
                 {[
