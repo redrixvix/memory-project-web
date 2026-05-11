@@ -190,16 +190,16 @@ export default function DashboardClient() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--cornsilk)' }}>
         <div className="w-full max-w-3xl px-6">
           <div className="mb-10">
-            <div className="h-9 w-56 rounded-xl mb-2 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.22)' }} />
-            <div className="h-4 w-40 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.14)' }} />
+            <div className="h-9 w-56 rounded-xl mb-2 skeleton-pulse" style={{ backgroundColor: 'var(--bronze-22)' }} />
+            <div className="h-4 w-40 rounded-lg skeleton-pulse" style={{ backgroundColor: 'var(--bronze-14)' }} />
           </div>
           <div className="space-y-4">
             {[1,2,3].map(i => (
-              <div key={i} className="rounded-2xl p-6 flex items-center gap-5" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.12)' }}>
-                <div className="w-12 h-18 rounded-xl shrink-0 skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.20)' }} />
+              <div key={i} className="rounded-2xl p-6 flex items-center gap-5" style={{ backgroundColor: '#FDFCF5', border: '1px solid var(--bronze-12)' }}>
+                <div className="w-12 h-18 rounded-xl shrink-0 skeleton-pulse" style={{ backgroundColor: 'var(--bronze-20)' }} />
                 <div className="flex-1 space-y-2.5">
-                  <div className="h-5 w-48 rounded-lg skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.18)' }} />
-                  <div className="h-3 w-32 rounded-md skeleton-pulse" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }} />
+                  <div className="h-5 w-48 rounded-lg skeleton-pulse" style={{ backgroundColor: 'var(--bronze-18)' }} />
+                  <div className="h-3 w-32 rounded-md skeleton-pulse" style={{ backgroundColor: 'var(--bronze-12)' }} />
                 </div>
               </div>
             ))}
@@ -431,8 +431,8 @@ export default function DashboardClient() {
                     key={value}
                     type="button"
                     onClick={() => setSortOrder(value)}
-                    aria-pressed={sortOrder === value}
                     aria-label={ariaLabel}
+                    aria-current={sortOrder === value ? 'true' : undefined}
                     className="sort-btn rounded-xl px-4 py-3 text-xs font-semibold transition-all duration-200 shrink-0 focus-visible:outline-none"
                     style={{
                       backgroundColor: sortOrder === value ? 'var(--bronze)' : 'rgba(212,163,115,0.12)',
