@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Pricing — Memory Project",
     description: "Start free. Pay only for printing. Unlimited text memories forever, upgrade for photo storage and printed hardcover books from $99.",
-    url: "https://web-redrixvixs-projects.vercel.app/pricing",
+    url: "/pricing",
     type: "website",
     images: [
       {

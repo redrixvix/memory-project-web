@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Sign In — Memory Project",
     description: "Sign in to your Memory Project account.",
-    url: "https://web-redrixvixs-projects.vercel.app/login",
+    url: "/login",
     type: "website",
     images: [
       {

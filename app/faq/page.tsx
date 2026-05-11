@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Frequently Asked Questions — Memory Project",
     description: "Answers to common questions about Memory Project — how it works, pricing, printing, family collaboration, and getting started.",
-    url: "https://web-redrixvixs-projects.vercel.app/faq",
+    url: "/faq",
     type: "website",
     images: [
       {
