@@ -79,7 +79,6 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
 
   return (
     <>
-      <style>{`.skip-link{position:fixed;top:0;left:0;z-index:9999;padding:.75rem 1.25rem;background:var(--bronze);color:var(--charcoal);font-weight:600;font-size:.875rem;border-radius:0 0 .5rem;transform:translateY(-100%);transition:transform .15s;text-decoration:none}.skip-link:focus{transform:translateY(0)}`}</style>
       <a href="#main" className="skip-link">Skip to main content</a>
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
       {/* Minimal header */}
