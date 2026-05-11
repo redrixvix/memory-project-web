@@ -127,7 +127,7 @@ function ImageCard({
           <button
             type="button"
             onClick={handleRemove}
-            className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+            className="absolute right-3 top-3 inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors"
             style={{
               backgroundColor: "rgba(254,250,224,0.92)",
               color: "var(--charcoal)",
@@ -290,7 +290,10 @@ export function DropZone({
 }: DropZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const isActive = isDragging || isHovering || isFocused;
 
   const handleDragOver = useCallback(
     (e: React.DragEvent) => {
@@ -349,6 +352,8 @@ export function DropZone({
       onDrop={handleDrop}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
       aria-label={dropZoneLabel}
       aria-disabled={disabled}
       className={cn(
@@ -357,18 +362,18 @@ export function DropZone({
         className,
       )}
       style={{
-        borderColor: isDragging
+        borderColor: isActive
           ? "rgba(212,163,115,0.6)"
           : isHovering
             ? "rgba(212,163,115,0.40)"
             : "rgba(212,163,115,0.18)",
-        backgroundColor: isDragging
+        backgroundColor: isActive
           ? "rgba(212,163,115,0.10)"
           : isHovering
             ? "rgba(250,237,205,0.50)"
             : "rgba(255,253,246,0.88)",
         minHeight: 148,
-        boxShadow: isDragging
+        boxShadow: isActive
           ? "0 18px 40px rgba(212,163,115,0.18), inset 0 1px 0 rgba(255,255,255,0.9)"
           : "0 1px 4px rgba(212,163,115,0.06), inset 0 1px 0 rgba(255,255,255,0.8)",
         transition: "all 300ms cubic-bezier(0.34, 1.56, 0.64, 1)",
@@ -411,12 +416,12 @@ export function DropZone({
           className={cn(
             "mb-4 flex items-center justify-center transition-all duration-400",
             isDragging && "scale-110 rotate-[-3deg]",
-            !isDragging && isHovering && "scale-105",
+            !isDragging && isActive && "scale-105",
           )}
           style={{
             width: 64,
             height: 64,
-            transform: isDragging ? "scale(1.12) rotate(-4deg)" : isHovering ? "scale(1.06)" : "scale(1)",
+            transform: isDragging ? "scale(1.12) rotate(-4deg)" : isActive ? "scale(1.06)" : "scale(1)",
           }}
         >
           {acceptsAudio ? (

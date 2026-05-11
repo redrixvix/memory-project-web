@@ -71,7 +71,7 @@ function ImageCard({
             <button
               type="button"
               onClick={handleRemove}
-              className="w-8 h-8 rounded-full flex items-center justify-center bg-white/90 hover:bg-white transition-colors"
+              className="w-11 h-11 rounded-full flex items-center justify-center bg-white/90 hover:bg-white transition-colors"
               aria-label="Remove photo"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: "var(--charcoal)" }}>
@@ -142,7 +142,10 @@ export function DropZone({
 }: DropZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const isActive = isDragging || isHovering || isFocused;
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -196,19 +199,21 @@ export function DropZone({
       onDrop={handleDrop}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
       aria-label="Upload photos"
       className={cn(
         "relative cursor-pointer rounded-2xl border-2 border-dashed transition-all duration-300 overflow-hidden",
         className,
         disabled && "opacity-40 cursor-not-allowed pointer-events-none",
-        isDragging
+        isActive
           ? "border-[var(--bronze)] scale-[1.01]"
           : isHovering
           ? "border-[var(--bronze)]/60"
           : "border-[rgba(212,163,115,0.25)]"
       )}
       style={{
-        backgroundColor: isDragging
+        backgroundColor: isActive
           ? "rgba(212,163,115,0.08)"
           : "rgba(250,237,205,0.4)",
         minHeight: 120,
@@ -235,7 +240,7 @@ export function DropZone({
         <div
           className={cn(
             "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300",
-            isDragging
+            isActive
               ? "bg-[var(--bronze)] scale-110"
               : "bg-[rgba(212,163,115,0.15)]"
           )}
@@ -250,7 +255,7 @@ export function DropZone({
             strokeWidth="1.8"
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{ color: isDragging ? "var(--cornsilk)" : "var(--bronze)" }}
+            style={{ color: isActive ? "var(--cornsilk)" : "var(--bronze)" }}
           >
             <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
             <circle cx="9" cy="9" r="2" />
@@ -262,11 +267,11 @@ export function DropZone({
           <p
             className="text-sm font-medium transition-colors duration-200"
             style={{
-              color: isDragging ? "var(--bronze)" : "var(--charcoal)",
+              color: isActive ? "var(--bronze)" : "var(--charcoal)",
               fontFamily: "var(--font-sans)",
             }}
           >
-            {isDragging ? "Drop photos here" : "Drag photos here"}
+            {isActive ? "Drop photos here" : "Drag photos here"}
           </p>
           <p
             className="text-xs mt-1"
