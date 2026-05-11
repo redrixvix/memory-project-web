@@ -832,6 +832,7 @@ export default function DashboardClient() {
                       <div className="relative flex flex-col justify-between min-h-[220px] p-6 pl-8">
                         <div
                           className="shrink-0 group/book"
+                          aria-label={`Cover for ${book.title}${book.plan && book.plan !== 'free' ? `, ${getBookPlanLabel(book.plan, book.storage_tier)}` : ''}`}
                           style={{
                             marginTop: 4,
                             width: 72,
