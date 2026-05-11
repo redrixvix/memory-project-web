@@ -508,7 +508,7 @@ export default function SettingsClient() {
 
               {/* Email (read-only — clearly non-editable) */}
               <div className="grid gap-2">
-                <Label htmlFor="email-display" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
+                <Label id="email-label" htmlFor="email-display" className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                   Email address
                 </Label>
                 <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{
@@ -518,7 +518,7 @@ export default function SettingsClient() {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5A3A2A', marginTop: '1px', flexShrink: 0 }}>
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
                   </svg>
-                  <output htmlFor="display-name" aria-live="polite" className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
+                  <output aria-labelledby="email-label" aria-live="polite" className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
                     {user?.email}
                   </output>
                   <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.22)', color: '#4A3A2A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.4)' }}>
