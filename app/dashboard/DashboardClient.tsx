@@ -48,9 +48,9 @@ const BOOK_COLORS = [
 ];
 
 const BOOK_SPINE_COLORS = [
-  'rgba(212,163,115,0.85)',
-  'rgba(204,213,174,0.90)',
-  'rgba(239,214,168,0.90)',
+  'oklch(from var(--bronze) l c h / 0.85)',
+  'oklch(from var(--tea-green) l c h / 0.90)',
+  'oklch(from var(--papaya) l c h / 0.90)',
   'rgba(139,90,43,0.92)',
   'rgba(184,134,11,0.85)',
   'rgba(107,142,35,0.85)',
@@ -59,9 +59,9 @@ const BOOK_SPINE_COLORS = [
   'rgba(210,105,30,0.85)',
 ];
 const BOOK_SPINE_HOVER_COLORS = [
-  'rgba(212,163,115,1.0)',
-  'rgba(204,213,174,1.0)',
-  'rgba(239,214,168,1.0)',
+  'oklch(from var(--bronze) l c h / 1)',
+  'oklch(from var(--tea-green) l c h / 1)',
+  'oklch(from var(--papaya) l c h / 1)',
   'rgba(212,163,115,0.75)',
   'rgba(184,134,11,1.0)',
   'rgba(107,142,35,1.0)',
