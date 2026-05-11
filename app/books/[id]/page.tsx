@@ -455,8 +455,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                 {currentUserRole === 'owner' && (
                   <Link
                     href={`/books/${book.id}/edit/book`}
-                    className="shrink-0 h-9 rounded-2xl flex items-center gap-2 px-4 text-xs font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
-                    style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: '#6A5A3A', border: '1px solid rgba(212,163,115,0.22)', fontFamily: 'var(--font-sans)', boxShadow: '0 2px 8px rgba(212,163,115,0.08)' }}
+                    className="shrink-0 h-9 rounded-2xl flex items-center gap-2 px-4 text-xs font-semibold transition-all duration-200 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    style={{ backgroundColor: 'rgba(212,163,115,0.14)', color: '#6A5A3A', border: '1px solid rgba(212,163,115,0.22)', fontFamily: 'var(--font-sans)', boxShadow: '0 2px 8px rgba(212,163,115,0.08)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
                     aria-label="Edit book details"
                     title="Edit book"
                   >
@@ -479,13 +479,15 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
               <div className="flex items-center shrink-0 hidden sm:flex">
                 <Link
                   href={`/books/${id}/edit`}
-                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95 hover:shadow-md"
+                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                   style={{
                     backgroundColor: 'var(--bronze)',
                     color: 'var(--charcoal)',
                     fontFamily: 'var(--font-sans)',
                     boxShadow: '0 4px 16px rgba(212,163,115,0.45), 0 1px 3px rgba(212,163,115,0.20)',
                     border: '1px solid rgba(212,163,115,0.25)',
+                    ['--tw-ring-color' as string]: 'var(--bronze)',
+                    ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                   }}
                 >
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
