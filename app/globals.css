@@ -1124,6 +1124,16 @@ select.has-error:focus {
 }
 
 /* ─────────────────────────────────────────
+   Password visibility toggle — CSS focus ring
+   Replaces inline onFocus/onBlur handlers
+───────────────────────────────────────── */
+
+.password-toggle:focus-visible {
+  box-shadow: 0 0 0 3px rgba(212,163,115,0.45);
+  outline: none;
+}
+
+/* ─────────────────────────────────────────
    Settings save button — satisfying success pulse
 ───────────────────────────────────────── */
 
