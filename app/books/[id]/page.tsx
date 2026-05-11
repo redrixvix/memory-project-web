@@ -13,6 +13,7 @@ import { Toast } from '@/components/ui/toast';
 import { MobileNav } from '@/components/ui/mobile-nav';
 import { MemorySearchFilter } from '@/components/ui/memory-search-filter';
 import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
+import BreadcrumbSchema from '@/components/breadcrumb-schema';
 
 interface Memory {
   id: number;
@@ -413,6 +414,38 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
       {/* ── MAIN ── */}
       <main className="px-6 md:px-10 py-5 md:py-7 max-w-5xl mx-auto w-full">
+
+        {/* Breadcrumb navigation — WCAG 2.1 SC 2.4.8 */}
+        {book && (
+          <>
+            <BreadcrumbSchema
+              items={[
+                { name: 'Books', href: '/dashboard' },
+                { name: book.title, href: `/books/${id}` },
+              ]}
+            />
+            <nav aria-label="Breadcrumb" className="mb-4">
+              <ol className="flex items-center gap-1.5 text-sm" style={{ fontFamily: 'var(--font-sans)' }}>
+                <li>
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-1 text-[rgba(43,43,43,0.55)] hover:text-[var(--bronze)] transition-colors rounded px-1.5 py-0.5 hover:bg-[rgba(212,163,115,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                      <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    Books
+                  </Link>
+                </li>
+                <li aria-hidden="true" className="text-[rgba(43,43,43,0.3)] text-xs font-light">/</li>
+                <li aria-current="page" className="text-[rgba(43,43,43,0.75)] font-medium truncate max-w-[200px] md:max-w-[320px]">
+                  {book.title}
+                </li>
+              </ol>
+            </nav>
+          </>
+        )}
 
         {/* Book hero — compact when empty, expanded when has memories */}
         <div
