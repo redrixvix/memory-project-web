@@ -79,7 +79,7 @@ function getPlanBadgeStyles(plan: string) {
   if (normalizedPlan === 'premium') {
     return { backgroundColor: 'var(--bronze)', color: 'var(--charcoal)' };
   }
-  return { backgroundColor: 'rgba(212,163,115,0.25)', color: '#4A4A3A' };
+  return { backgroundColor: 'var(--bronze-25)', color: '#4A4A3A' };
 }
 
 export default function DashboardClient() {
