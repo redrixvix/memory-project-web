@@ -117,7 +117,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             Start free. Pay only for printing.
           </p>
           <p className="text-sm mt-2" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-sans)' }}>
-            Join 12,000+ families preserving their stories
+            Join 50,000+ families preserving their stories
           </p>
         </div>
 
