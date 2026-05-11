@@ -124,6 +124,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           const me = await meRes.json();
           setCurrentUser({ name: me.user?.name, avatarUrl: me.user?.avatar_url });
         }
+      } else if (data.current_user_role) {
+        // Fallback for owners who have no membership entry
+        setCurrentUserRole(data.current_user_role);
+        setCurrentUserId(data.current_user_id ?? currentUserId);
       } else {
         // Fallback: fetch members list to find self
         const membersRes = await fetch(`/api/books/${id}/members`);
