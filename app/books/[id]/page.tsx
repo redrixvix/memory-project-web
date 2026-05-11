@@ -70,7 +70,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [showTopBtn, setShowTopBtn] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  // hoveredCard removed — card hover visuals now rely on CSS :hover (:focus-within via tabIndex)
+  // Previously caused per-hover React re-renders. Menu button opacity still driven by activeMenu state.
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<{ name?: string; avatarUrl?: string } | null>(null);
@@ -667,20 +668,12 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   />
                   <Card
                     className="rounded-2xl overflow-hidden relative transition-all duration-500 ease-out"
-                    onMouseEnter={() => setHoveredCard(memoryIndex)}
-                    onMouseLeave={() => setHoveredCard(null)}
-                    onFocus={() => setHoveredCard(memoryIndex)}
-                    onBlur={() => setHoveredCard(null)}
                     tabIndex={0}
                     style={{
                       backgroundColor: '#FDFCF5',
-                      border: hoveredCard === memoryIndex ? '1px solid rgba(212,163,115,0.18)' : '1px solid rgba(212,163,115,0.06)',
-                      boxShadow: hoveredCard === memoryIndex
-                        ? '0 16px 48px rgba(212,163,115,0.22), 0 8px 24px rgba(212,163,115,0.12), 0 1px 0 rgba(212,163,115,0.15) inset'
-                        : '0 4px 20px rgba(212,163,115,0.08), 0 1px 4px rgba(212,163,115,0.05)',
-                      backgroundImage: hoveredCard === memoryIndex
-                        ? 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.10) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.12) 0%, transparent 50%)'
-                        : 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.08) 0%, transparent 50%)',
+                      border: '1px solid rgba(212,163,115,0.06)',
+                      boxShadow: '0 4px 20px rgba(212,163,115,0.08), 0 1px 4px rgba(212,163,115,0.05)',
+                      backgroundImage: 'radial-gradient(ellipse at 20% 0%, rgba(212,163,115,0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(204,213,174,0.08) 0%, transparent 50%)',
                     }}
                   >
                     {/* Warm page-edge accent — left side with book spine feel */}
@@ -688,8 +681,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-2xl"
                       style={{ 
                         background: `linear-gradient(to bottom, ${accentColor}, ${accentColor}88 40%, ${accentColor}44 60%, transparent)`,
-                        boxShadow: hoveredCard === memoryIndex ? `4px 0 16px ${accentColor}33` : 'none',
-                        transition: 'box-shadow 0.4s ease',
                       }}
                     />
                     <CardContent className="pt-5 pb-5 px-5">
@@ -965,7 +956,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                       {/* Footer actions — elegant overflow menu, appears on hover */}
                       <div
                         className="flex items-center justify-end mt-4 pt-4 border-t transition-all duration-500"
-                        style={{ borderColor: hoveredCard === memoryIndex ? 'rgba(212,163,115,0.14)' : 'rgba(212,163,115,0.08)' }}
+                        style={{ borderColor: 'rgba(212,163,115,0.08)' }}
                       >
                         <div className="relative">
                           <button
@@ -985,7 +976,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             style={{
                               backgroundColor: 'rgba(212,163,115,0.10)',
                               color: '#5A3A2A',
-                              opacity: hoveredCard === memoryIndex || activeMenu === memory.id ? 1 : 0.4,
+                              opacity: activeMenu === memory.id ? 1 : 0.4,
                               ['--tw-ring-color' as string]: 'rgba(212,163,115,0.5)',
                               ['--tw-ring-offset-color' as string]: 'var(--cornsilk)',
                             }}
