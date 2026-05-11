@@ -245,25 +245,17 @@ export default function DashboardClient() {
           box-shadow: 0 0 0 3px rgba(212,163,115,0.08), 0 2px 8px rgba(212,163,115,0.06);
           outline: none;
         }
-        .fab-btn:focus-visible {
-          box-shadow: 0 0 0 3px rgba(212,163,115,0.50), 0 8px 32px rgba(212,163,115,0.35);
+        .book-card:hover,
+        .book-card:focus-within {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 32px rgba(212,163,115,0.18), 0 24px 60px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.08);
+          border-left-color: var(--spine-hover);
+        }
+        .book-card:hover .book-card-spine,
+        .book-card:focus-within .book-card-spine {
+          border-left-color: var(--spine-hover);
         }
         .skip-link {
-          position: fixed;
-          top: 0;
-          left: 0;
-          z-index: 9999;
-          padding: 0.75rem 1.25rem;
-          background: var(--bronze);
-          color: var(--charcoal);
-          font-weight: 600;
-          font-size: 0.875rem;
-          border-radius: 0 0 0.5rem;
-          transform: translateY(-100%);
-          transition: transform 0.15s;
-          text-decoration: none;
-        }
-        .skip-link:focus {
           transform: translateY(0);
         }
       `}</style>
@@ -784,35 +776,15 @@ export default function DashboardClient() {
                     aria-label={`${book.title} — ${book.contributors?.length ?? 0} ${(book.contributors?.length ?? 0) === 1 ? 'contributor' : 'contributors'}`}
                   >
                     <div
-                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 group-hover:-translate-y-2"
-                      onMouseEnter={(e) => {
-                        const card = e.currentTarget as HTMLElement;
-                        card.style.boxShadow = `0 8px 32px rgba(212,163,115,0.18), 0 24px 60px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.08)`;
-                        card.style.borderLeftColor = spineHoverColor;
-                      }}
-                      onMouseLeave={(e) => {
-                        const card = e.currentTarget as HTMLElement;
-                        card.style.boxShadow = '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)';
-                        card.style.borderLeftColor = spineColor;
-                      }}
-                      onFocus={(e) => {
-                        const card = e.currentTarget as HTMLElement;
-                        card.style.boxShadow = `0 8px 32px rgba(212,163,115,0.18), 0 24px 60px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.08)`;
-                        card.style.borderLeftColor = spineHoverColor;
-                      }}
-                      onBlur={(e) => {
-                        const card = e.currentTarget as HTMLElement;
-                        card.style.boxShadow = '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)';
-                        card.style.borderLeftColor = spineColor;
-                      }}
+                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300"
                       tabIndex={0}
                       style={{
                         backgroundColor: '#FEFCF4',
                         boxShadow: '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)',
                         border: '1px solid rgba(212,163,115,0.10)',
                         borderLeft: `4px solid ${spineColor}`,
-                        borderLeftColor: spineColor,
                         minHeight: '220px',
+                        ['--spine-hover' as string]: spineHoverColor,
                       }}
                     >
                       <div
