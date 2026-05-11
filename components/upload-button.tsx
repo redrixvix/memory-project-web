@@ -3,6 +3,7 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { Toast } from "@/components/ui/toast";
 
 // ─── ImageGallery ─────────────────────────────────────────────────────────────
 
@@ -311,6 +312,9 @@ interface UploadButtonProps {
 export function ImageUploader({ onUploadComplete, className }: UploadButtonProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- UploadThing doesn't export button component types
   const [UTButton, setUTButton] = useState<React.ComponentType<any> | null>(null);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastVariant, setToastVariant] = useState<'default' | 'success' | 'error'>('default');
+  const [toastVisible, setToastVisible] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -334,61 +338,78 @@ export function ImageUploader({ onUploadComplete, className }: UploadButtonProps
 
   if (!UTButton) {
     return (
-      <button
-        type="button"
-        disabled
-        className={cn(
-          "inline-flex h-10 items-center justify-center gap-2 rounded-xl px-5",
-          "text-sm font-medium transition-all duration-200 cursor-not-allowed opacity-60",
-          "bg-[var(--charcoal)] text-[var(--cornsilk)]",
-          className
-        )}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="17 8 12 3 7 8" />
-          <line x1="12" x2="12" y1="3" y2="15" />
-        </svg>
-        Add Photos
-      </button>
+      <>
+        <button
+          type="button"
+          disabled
+          className={cn(
+            "inline-flex h-10 items-center justify-center gap-2 rounded-xl px-5",
+            "text-sm font-medium transition-all duration-200 cursor-not-allowed opacity-60",
+            "bg-[var(--charcoal)] text-[var(--cornsilk)]",
+            className
+          )}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" x2="12" y1="3" y2="15" />
+          </svg>
+          Add Photos
+        </button>
+        <Toast message={toastMessage} visible={toastVisible} onDismiss={() => setToastVisible(false)} variant={toastVariant} />
+      </>
     );
   }
 
   return (
-    <UTButton
-      endpoint="imageUploader"
-      onUploadBegin={(fileName: string) => console.log(`[Upload] ${fileName}`)}
-      onClientUploadComplete={(res: UploadResult[]) => {
-        onUploadComplete?.(res);
-      }}
-      onUploadError={(error: Error) => console.error(`[Upload] error:`, error.message)}
-      appearance={{
-        container: className,
-        // CSS in globals.css handles the actual styling (including overriding bg-blue)
-        button: "ut-button",
-      }}
-      content={{
-        button: () => (
-          <span style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 500, fontSize: "0.875rem" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="17 8 12 3 7 8" />
-              <line x1="12" x2="12" y1="3" y2="15" />
-            </svg>
-            Add Photos
-          </span>
-        ),
-        allowedContent: () => (
-          <span style={{ fontSize: "0.75rem", opacity: 0.65, marginLeft: "4px" }}>up to 4MB</span>
-        ),
-      }}
-    />
+    <>
+      <UTButton
+        endpoint="imageUploader"
+        onUploadBegin={(fileName: string) => {
+          setToastMessage(`Uploading ${fileName}…`);
+          setToastVariant('default');
+          setToastVisible(true);
+        }}
+        onClientUploadComplete={(res: UploadResult[]) => {
+          onUploadComplete?.(res);
+        }}
+        onUploadError={(error: Error) => {
+          setToastMessage(`Upload failed: ${error.message}`);
+          setToastVariant('error');
+          setToastVisible(true);
+        }}
+        appearance={{
+          container: className,
+          // CSS in globals.css handles the actual styling (including overriding bg-blue)
+          button: "ut-button",
+        }}
+        content={{
+          button: () => (
+            <span style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 500, fontSize: "0.875rem" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" x2="12" y1="3" y2="15" />
+              </svg>
+              Add Photos
+            </span>
+          ),
+          allowedContent: () => (
+            <span style={{ fontSize: "0.75rem", opacity: 0.65, marginLeft: "4px" }}>up to 4MB</span>
+          ),
+        }}
+      />
+      <Toast message={toastMessage} visible={toastVisible} onDismiss={() => setToastVisible(false)} variant={toastVariant} />
+    </>
   );
 }
 
 export function AudioUploader({ onUploadComplete, className }: UploadButtonProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- UploadThing doesn't export button component types
   const [UTButton, setUTButton] = useState<React.ComponentType<any> | null>(null);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastVariant, setToastVariant] = useState<'default' | 'success' | 'error'>('default');
+  const [toastVisible, setToastVisible] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -412,56 +433,70 @@ export function AudioUploader({ onUploadComplete, className }: UploadButtonProps
 
   if (!UTButton) {
     return (
-      <button
-        type="button"
-        disabled
-        className={cn(
-          "inline-flex h-10 items-center justify-center gap-2 rounded-xl px-5",
-          "text-sm font-medium transition-all duration-200 cursor-not-allowed opacity-60",
-          "border bg-transparent border-[rgba(212,163,115,0.4)] text-[var(--charcoal)]",
-          className
-        )}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-          <line x1="12" x2="12" y1="19" y2="22" />
-        </svg>
-        Add Audio
-      </button>
+      <>
+        <button
+          type="button"
+          disabled
+          className={cn(
+            "inline-flex h-10 items-center justify-center gap-2 rounded-xl px-5",
+            "text-sm font-medium transition-all duration-200 cursor-not-allowed opacity-60",
+            "border bg-transparent border-[rgba(212,163,115,0.4)] text-[var(--charcoal)]",
+            className
+          )}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" x2="12" y1="19" y2="22" />
+          </svg>
+          Add Audio
+        </button>
+        <Toast message={toastMessage} visible={toastVisible} onDismiss={() => setToastVisible(false)} variant={toastVariant} />
+      </>
     );
   }
 
   return (
-    <UTButton
-      endpoint="audioUploader"
-      onUploadBegin={(fileName: string) => console.log(`[Audio] ${fileName}`)}
-      onClientUploadComplete={(res: UploadResult[]) => {
-        onUploadComplete?.(res);
-      }}
-      onUploadError={(error: Error) => console.error(`[Audio] error:`, error.message)}
-      appearance={{
-        container: className,
-        button: [
-          "ut-button",
-          "audio-btn",
-        ].join(" "),
-      }}
-      content={{
-        button: () => (
-          <span style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 500, fontSize: "0.875rem" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-              <line x1="12" x2="12" y1="19" y2="22" />
-            </svg>
-            Add Audio
-          </span>
-        ),
-        allowedContent: () => (
-          <span style={{ fontSize: "0.75rem", opacity: 0.65, marginLeft: "4px" }}>up to 16MB</span>
-        ),
-      }}
-    />
+    <>
+      <UTButton
+        endpoint="audioUploader"
+        onUploadBegin={(fileName: string) => {
+          setToastMessage(`Uploading ${fileName}…`);
+          setToastVariant('default');
+          setToastVisible(true);
+        }}
+        onClientUploadComplete={(res: UploadResult[]) => {
+          onUploadComplete?.(res);
+        }}
+        onUploadError={(error: Error) => {
+          setToastMessage(`Upload failed: ${error.message}`);
+          setToastVariant('error');
+          setToastVisible(true);
+        }}
+        appearance={{
+          container: className,
+          button: [
+            "ut-button",
+            "audio-btn",
+          ].join(" "),
+        }}
+        content={{
+          button: () => (
+            <span style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 500, fontSize: "0.875rem" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" x2="12" y1="19" y2="22" />
+              </svg>
+              Add Audio
+            </span>
+          ),
+          allowedContent: () => (
+            <span style={{ fontSize: "0.75rem", opacity: 0.65, marginLeft: "4px" }}>up to 16MB</span>
+          ),
+        }}
+      />
+      <Toast message={toastMessage} visible={toastVisible} onDismiss={() => setToastVisible(false)} variant={toastVariant} />
+    </>
   );
 }
