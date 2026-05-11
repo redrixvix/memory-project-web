@@ -16,7 +16,7 @@ export default function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
     '@type': 'ListItem' as const,
     position: index + 1,
     name: item.name,
-    item: `https://web-redrixvixs-projects.vercel.app${item.href}`,
+    item: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://memoryproject.com'}${item.href}`,
   }));
 
   const jsonLd = {
