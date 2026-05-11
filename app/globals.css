@@ -1164,3 +1164,14 @@ button:has(svg[data-saved="true"]) {
   font-family: var(--font-serif);
   text-shadow: 1px 1px 0 rgba(212,163,115,0.15);
 }
+
+/* ─────────────────────────────────────────
+   Dropdown menu item hover (replaces JS handlers)
+───────────────────────────────────────── */
+.menu-item-hover:hover {
+  background-color: rgba(212,163,115,0.10);
+}
+
+.delete-item:hover {
+  background-color: rgba(176,112,112,0.08);
+}

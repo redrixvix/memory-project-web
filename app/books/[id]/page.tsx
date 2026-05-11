@@ -1008,10 +1008,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                             >
                               <Link
                                 href={`/books/${id}/edit?memory=${memory.id}`}
-                                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
+                                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] menu-item-hover edit-item"
                                 style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
-                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.10)'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                                 role="menuitem"
                               >
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--bronze)' }}>
@@ -1027,10 +1025,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                   setActiveMenu(null);
                                   setDeleteConfirm({ memoryId: memory.id });
                                 }}
-                                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
+                                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] menu-item-hover delete-item"
                                 style={{ color: '#B07070', fontFamily: 'var(--font-sans)' }}
-                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(176,112,112,0.08)'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                                 role="menuitem"
                               >
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#B07070' }}>
