@@ -531,6 +531,8 @@ export default function HomeClient() {
               <div
                 key={i}
                 className="card-hover reveal"
+                role="article"
+                aria-label={`${t.name} from ${t.city}`}
               >
                 <Card
                   className="rounded-2xl p-7 h-full relative"
@@ -548,12 +550,12 @@ export default function HomeClient() {
                       lineHeight: 0.75,
                       userSelect: 'none',
                       pointerEvents: 'none',
-                    }}>&ldquo;</div>
+                    }} aria-hidden="true">&ldquo;</div>
 
                     {/* Stars */}
-                    <div className="flex gap-0.5 mb-5 pt-5">
+                    <div className="flex gap-0.5 mb-5 pt-5" aria-label="5 out of 5 stars">
                       {[1, 2, 3, 4, 5].map((_, si) => (
-                        <svg key={si} width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--bronze)' }}>
+                        <svg key={si} width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--bronze)' }} aria-hidden="true">
                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
                       ))}
@@ -571,6 +573,7 @@ export default function HomeClient() {
                       <div
                         className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0"
                         style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                        aria-hidden="true"
                       >
                         {t.initials}
                       </div>
@@ -875,7 +878,7 @@ export default function HomeClient() {
                   { href: '/signup', label: 'Get Started' },
                 ].map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="nav-link text-sm" style={{ color: 'var(--muted-foreground)' }}>
+                    <Link href={link.href} className="nav-link text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2" style={{ color: 'var(--muted-foreground)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--beige)' }}>
                       {link.label}
                     </Link>
                   </li>
