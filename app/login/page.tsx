@@ -9,11 +9,20 @@ export const metadata: Metadata = {
     description: "Sign in to your Memory Project account.",
     url: "https://web-redrixvixs-projects.vercel.app/login",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Memory Project — sign in to your memory book",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Sign In — Memory Project",
     description: "Sign in to your Memory Project account.",
+    images: ["/og-image.png"],
   },
 };
 
