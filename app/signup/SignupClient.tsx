@@ -547,9 +547,9 @@ function Signup() {
                           </svg>
                           <div>
                             <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>Verify your email</p>
-                            <p className="text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>
+                            <div id="code-helper" className="text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>
                               Enter the 6-digit code we sent to <strong>{email}</strong> to finish creating your account.
-                            </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -563,6 +563,7 @@ function Signup() {
                           onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                           autoComplete="one-time-code"
                           placeholder="123456"
+                          inputMode="numeric" pattern="[0-9]*" aria-label="6-digit verification code" aria-describedby="code-helper"
                           className="text-sm rounded-xl h-12 text-center"
                           style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: 'var(--papaya)', fontSize: '1.25rem', letterSpacing: '0.2em' }}
                         />

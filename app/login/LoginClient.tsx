@@ -359,11 +359,11 @@ export default function LoginClient() {
                         <p className="text-sm font-medium" style={{ color: 'var(--charcoal)' }}>
                           {codeFlow === 'email_verification' ? `Verification code sent to ${email}` : `Code sent to ${email}`}
                         </p>
-                        <p className="text-xs mt-1" style={{ color: '#6A6A5A' }}>
+                        <div id="code-helper" className="text-xs mt-1" style={{ color: '#6A6A5A' }}>
                           {codeFlow === 'email_verification'
                             ? 'Enter the 6-digit verification code from your email to finish signing in.'
                             : 'Enter the 6-digit code from your email to sign in.'}
-                        </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -374,6 +374,7 @@ export default function LoginClient() {
                       type="text" id="code" value={code}
                       onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                       autoComplete="one-time-code" placeholder="123456"
+                      inputMode="numeric" pattern="[0-9]*" aria-label="6-digit verification code" aria-describedby="code-helper"
                       className="text-sm rounded-xl h-12 text-center"
                       style={{ borderColor: 'rgba(212,163,115,0.3)', backgroundColor: '#FFFDF8', fontSize: '1.25rem', letterSpacing: '0.2em' }}
                     />
