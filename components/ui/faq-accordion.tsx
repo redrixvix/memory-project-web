@@ -55,9 +55,8 @@ export function FaqAccordion({ items, className = '' }: FaqAccordionProps) {
             <button
               type="button"
               onClick={() => setOpenIndex(isOpen ? null : i)}
-              aria-label={item.q}
               aria-expanded={isOpen}
-              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left group min-h-[44px]"
+              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left group min-h-[44px] cursor-pointer"
             >
               <span
                 className="text-base font-medium transition-colors duration-200"
