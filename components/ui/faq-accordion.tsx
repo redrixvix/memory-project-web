@@ -55,8 +55,12 @@ export function FaqAccordion({ items, className = '' }: FaqAccordionProps) {
             <button
               type="button"
               onClick={() => setOpenIndex(isOpen ? null : i)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenIndex(isOpen ? null : i); } }}
               aria-expanded={isOpen}
-              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left group min-h-[44px] cursor-pointer"
+              aria-controls={`faq-answer-${i}`}
+              id={`faq-question-${i}`}
+              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left group min-h-[44px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-2"
+              tabIndex={0}
             >
               <span
                 className="text-base font-medium transition-colors duration-200"
@@ -92,6 +96,9 @@ export function FaqAccordion({ items, className = '' }: FaqAccordionProps) {
 
             {/* Answer — layout-reflow-free grid transition */}
             <div
+              id={`faq-answer-${i}`}
+              role="region"
+              aria-labelledby={`faq-question-${i}`}
               style={{
                 display: 'grid',
                 gridTemplateRows: isOpen ? '1fr' : '0fr',
