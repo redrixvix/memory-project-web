@@ -12,7 +12,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Toast } from '@/components/ui/toast';
 import { MobileNav } from '@/components/ui/mobile-nav';
 import { MemorySearchFilter } from '@/components/ui/memory-search-filter';
-import { getBookPlanLabel, normalizeBookPlan } from '@/lib/book-plan';
+import { getBookPlanLabel, normalizeBookPlan, planToStorageTier } from '@/lib/book-plan';
 import BreadcrumbSchema from '@/components/breadcrumb-schema';
 
 interface Memory {
@@ -34,6 +34,7 @@ interface Book {
   storage_tier: string;
   plan: string;
   owner_name: string;
+  storage_used_bytes?: number;
 }
 
 const ACCENT_COLORS = ['var(--bronze)', 'var(--tea-green)', 'var(--papaya)'];
@@ -498,6 +499,25 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                   <span className="text-xs font-semibold px-3 py-1 rounded-full shrink-0" style={getPlanBadgeStyles(book.plan)}>
                     {getBookPlanLabel(book.plan, book.storage_tier)}
                   </span>
+                )}
+                {book.storage_used_bytes != null && book.plan && book.plan !== 'free' && (
+                  (() => {
+                    const usedGB = book.storage_used_bytes / (1024 * 1024 * 1024);
+                    const tier = planToStorageTier(normalizeBookPlan(book.plan, book.storage_tier));
+                    const totalGB = tier === '15gb' ? 15 : 5;
+                    const pct = Math.min((usedGB / totalGB) * 100, 100);
+                    const usedStr = usedGB < 1 ? usedGB.toFixed(2) : `${usedGB.toFixed(1)} GB`;
+                    return (
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-1 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }}>
+                          <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: 'var(--bronze)' }} />
+                        </div>
+                        <span className="text-[10px] shrink-0" style={{ color: 'var(--muted-foreground)', fontFamily: 'var(--font-sans)' }}>
+                          {usedStr} / {totalGB}GB
+                        </span>
+                      </div>
+                    );
+                  })()
                 )}
                 {currentUserRole === 'owner' && (
                   <Link
