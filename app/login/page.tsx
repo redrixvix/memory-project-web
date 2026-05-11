@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     url: "https://web-redrixvixs-projects.vercel.app/login",
     type: "website",
   },
+  twitter: {
+    card: "summary",
+    title: "Sign In — Memory Project",
+    description: "Sign in to your Memory Project account.",
+  },
 };
 
 export default function LoginPage() {

@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     url: "https://web-redrixvixs-projects.vercel.app/signup",
     type: "website",
   },
+  twitter: {
+    card: "summary",
+    title: "Create Your Memory Book — Free Forever",
+    description: "Start your free memory book today. Unlimited text memories — no credit card required.",
+  },
 };
 
 export default function SignupPage() {
