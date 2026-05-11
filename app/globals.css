@@ -495,7 +495,7 @@ body {
 
   .hero-ambient::after {
     animation: none !important;
-    opacity: 0 !important;
+    opacity: 1 !important;
   }
 
   .animate-slide-in {

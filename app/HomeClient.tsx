@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -17,6 +17,7 @@ export default function HomeClient() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleScroll = useCallback(() => setScrolled(window.scrollY > 40), []);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   const observeReveal = useCallback(() => {
     const observer = new IntersectionObserver(
@@ -133,12 +134,14 @@ export default function HomeClient() {
 
           {/* Mobile hamburger */}
           <button
+            ref={hamburgerRef}
             className="flex sm:hidden w-12 h-12 rounded-full items-center justify-center transition-colors hover:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{ backgroundColor: 'var(--bronze-10)', color: 'var(--charcoal)' }}
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open navigation menu"
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-nav"
+            aria-haspopup="menu"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 12h18M3 6h18M3 18h18"/>
@@ -148,7 +151,7 @@ export default function HomeClient() {
       </header>
 
       {/* Mobile nav drawer */}
-      <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} id="mobile-nav" />
+      <MobileNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} loggedIn={loggedIn === true} id="mobile-nav" triggerRef={hamburgerRef} />
 
       {/* ══════════════════════════════════════════
           TASK 1: HERO REDESIGN — 60/40 split

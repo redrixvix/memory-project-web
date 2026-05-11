@@ -11,9 +11,10 @@ interface MobileNavProps {
   onClose: () => void;
   loggedIn: boolean;
   id?: string;
+  triggerRef?: React.RefObject<HTMLElement | null>;
 }
 
-export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
+export function MobileNav({ isOpen, onClose, loggedIn, id, triggerRef }: MobileNavProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const focusableElementsRef = useRef<Element[]>([]);
@@ -46,7 +47,11 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
       el.removeAttribute('tabindex');
     });
     focusableElementsRef.current = [];
-  }, []);
+    // Return focus to the hamburger button that opened the drawer
+    if (triggerRef?.current) {
+      triggerRef.current.focus();
+    }
+  }, [triggerRef]);
 
   useEffect(() => {
     if (isOpen) {
