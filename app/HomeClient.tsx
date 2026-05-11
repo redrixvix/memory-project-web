@@ -607,7 +607,7 @@ export default function HomeClient() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Free */}
-            <div className="reveal" role="article" aria-label="Free plan — $0 forever">
+            <div className="reveal" role="group" aria-label="Free plan — $0 forever">
               <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.14)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
@@ -647,10 +647,10 @@ export default function HomeClient() {
             </div>
 
             {/* 5GB — featured with papaya bg */}
-            <div className="reveal" role="article" aria-label="5GB Storage plan — $50 for 5 years, most popular">
+            <div className="reveal" role="group" aria-label="5GB Storage plan — $50 for 5 years, most popular">
               <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 12px 48px rgba(212,163,115,0.22)' }}>
                 <div className="absolute -top-5 left-1/2 -translate-x-1/2">
-                  <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }} aria-label="Most popular plan">
+                  <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
                     Most Popular
                   </Badge>
                 </div>
@@ -687,7 +687,7 @@ export default function HomeClient() {
             </div>
 
             {/* 15GB */}
-            <div className="reveal" role="article" aria-label="15GB Storage plan — $100 for 5 years">
+            <div className="reveal" role="group" aria-label="15GB Storage plan — $100 for 5 years">
               <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>15GB Storage</p>
