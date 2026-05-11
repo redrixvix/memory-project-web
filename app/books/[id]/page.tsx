@@ -154,7 +154,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
     } finally {
       setLoading(false);
     }
-  }, [id, router, currentUserId]);
+  }, [id, router]);
 
   useEffect(() => {
     fetchBook(); // eslint-disable-line react-hooks/set-state-in-effect
