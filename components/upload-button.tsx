@@ -192,6 +192,8 @@ export function DropZone({
     <div
       role="button"
       tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled}
+      aria-busy={isDragging}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       onDragOver={handleDragOver}
