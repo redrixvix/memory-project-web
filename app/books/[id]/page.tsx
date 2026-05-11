@@ -669,6 +669,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                     className="rounded-2xl overflow-hidden relative transition-all duration-500 ease-out"
                     onMouseEnter={() => setHoveredCard(memoryIndex)}
                     onMouseLeave={() => setHoveredCard(null)}
+                    onFocus={() => setHoveredCard(memoryIndex)}
+                    onBlur={() => setHoveredCard(null)}
+                    tabIndex={0}
                     style={{
                       backgroundColor: '#FDFCF5',
                       border: hoveredCard === memoryIndex ? '1px solid rgba(212,163,115,0.18)' : '1px solid rgba(212,163,115,0.06)',
