@@ -362,6 +362,7 @@ export default function DashboardClient() {
               <Button
                 onClick={() => setShowCreate(true)}
                 type="button"
+                aria-label="Create new memory book"
                 className="rounded-full shrink-0 h-11 px-6 text-sm font-semibold transition-all duration-300 active:scale-95 hover:brightness-110 hover:shadow-lg hover:shadow-[rgba(212,163,115,0.3)] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A373] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgba(254,250,224,0.85)]"
                 style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', boxShadow: '0 4px 20px rgba(212,163,115,0.25)' }}
               >
