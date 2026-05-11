@@ -89,7 +89,7 @@ export default function HomeClient() {
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
         style={scrolled
-          ? { background: 'rgba(254,250,224,0.90)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderBottom: '1px solid rgba(212,163,115,0.15)', boxShadow: '0 2px 24px rgba(212,163,115,0.06)' }
+          ? { background: 'rgba(254,250,224,0.90)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderBottom: '1px solid var(--bronze-15)', boxShadow: '0 2px 24px var(--bronze-06)' }
           : { background: 'transparent' }
         }
       >
@@ -134,7 +134,7 @@ export default function HomeClient() {
           {/* Mobile hamburger */}
           <button
             className="flex sm:hidden w-12 h-12 rounded-full items-center justify-center transition-colors hover:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-            style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
+            style={{ backgroundColor: 'var(--bronze-10)', color: 'var(--charcoal)' }}
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open navigation menu"
             aria-expanded={mobileMenuOpen}
@@ -246,7 +246,7 @@ export default function HomeClient() {
       </main>
 
       {/* ── TRUST BAR ── */}
-      <section className="py-5 px-6 md:px-10 border-y" style={{ backgroundColor: 'var(--beige)', borderColor: 'rgba(212,163,115,0.12)' }}>
+      <section className="py-5 px-6 md:px-10 border-y" style={{ backgroundColor: 'var(--beige)', borderColor: 'var(--bronze-12)' }}>
         <div className="max-w-4xl mx-auto">
           {/* Bronze rule top */}
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.3), transparent)', marginBottom: 14 }} />
@@ -273,15 +273,15 @@ export default function HomeClient() {
       </section>
 
       {/* ── STATS ── */}
-      <section className="py-10 px-6 md:px-10" style={{ borderBottom: '1px solid rgba(212,163,115,0.1)', backgroundColor: 'var(--cornsilk)' }}>
+      <section className="py-10 px-6 md:px-10" style={{ borderBottom: '1px solid var(--bronze-10)', backgroundColor: 'var(--cornsilk)' }}>
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-3 divide-x md:divide-y-0" style={{ border: '1px solid rgba(212,163,115,0.1)', borderRadius: 16, overflow: 'hidden' }}>
+          <div className="grid grid-cols-3 divide-x md:divide-y-0" style={{ border: '1px solid var(--bronze-10)', borderRadius: 16, overflow: 'hidden' }}>
             {[
               { value: '50,000+', label: 'families preserving stories' },
               { value: '4.9★', label: 'average rating' },
               { value: '40+', label: 'countries shipped to' },
             ].map((stat, i) => (
-              <div key={i} className="text-center py-6 px-4" style={{ backgroundColor: i === 1 ? 'rgba(212,163,115,0.05)' : 'transparent' }}>
+              <div key={i} className="text-center py-6 px-4" style={{ backgroundColor: i === 1 ? 'var(--bronze-06)' : 'transparent' }}>
                 <p className="text-2xl font-medium mb-1" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>{stat.value}</p>
                 <p className="text-xs leading-relaxed" style={{ color: '#6A6A5A', fontFamily: 'var(--font-sans)' }}>{stat.label}</p>
               </div>
@@ -361,7 +361,7 @@ export default function HomeClient() {
                     borderRadius: '14px 0 0 14px',
                   }}>
                     {[0.2, 0.4, 0.6, 0.8].map((pct, j) => (
-                      <div key={j} style={{ position: 'absolute', left: 0, right: 0, top: `${pct * 100}%`, height: 2, backgroundColor: 'rgba(212,163,115,0.18)', transform: 'translateY(-50%)' }} />
+                      <div key={j} style={{ position: 'absolute', left: 0, right: 0, top: `${pct * 100}%`, height: 2, backgroundColor: 'var(--bronze-18)', transform: 'translateY(-50%)' }} />
                     ))}
                   </div>
 
@@ -372,7 +372,7 @@ export default function HomeClient() {
                     top: 10,
                     bottom: 10,
                     width: 6,
-                    background: 'repeating-linear-gradient(to bottom, rgba(212,163,115,0.1) 0px, rgba(212,163,115,0.1) 1px, transparent 1px, transparent 4px)',
+                    background: 'repeating-linear-gradient(to bottom, var(--bronze-10) 0px, var(--bronze-10) 1px, transparent 1px, transparent 4px)',
                     borderRadius: '0 14px 14px 0',
                   }} />
 
@@ -396,22 +396,22 @@ export default function HomeClient() {
 
                     {/* Divider */}
                     <div className="flex items-center gap-2 my-5">
-                      <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(212,163,115,0.2)' }} />
+                      <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--bronze-20)' }} />
                       <svg width="10" height="10" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)', opacity: 0.45 }}>
                         <path d="M11 2C11 2 3 7 3 13C3 17.4 6.6 20 11 20C15.4 20 19 17.4 19 13C19 7 11 2 11 2Z" fill="currentColor" fillOpacity="0.5"/>
                         <path d="M11 8C11 8 6 11 6 14.5C6 16.99 8.24 18.5 11 18.5C13.76 18.5 16 16.99 16 14.5C16 11 11 8 11 8Z" fill="currentColor"/>
                       </svg>
-                      <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(212,163,115,0.2)' }} />
+                      <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--bronze-20)' }} />
                     </div>
 
                     {/* Content lines */}
                     <div className="space-y-2.5 mb-auto">
                       {[
-                        { w: 85, c: 'rgba(212,163,115,0.22)' },
-                        { w: 100, c: 'rgba(212,163,115,0.18)' },
+                        { w: 85, c: 'var(--bronze-22)' },
+                        { w: 100, c: 'var(--bronze-18)' },
                         { w: 70, c: 'rgba(204,213,174,0.35)' },
                         { w: 90, c: 'rgba(212,163,115,0.16)' },
-                        { w: 55, c: 'rgba(212,163,115,0.2)' },
+                        { w: 55, c: 'var(--bronze-20)' },
                       ].map((line, j) => (
                         <div key={j} style={{ width: `${line.w}%`, height: 2.5, backgroundColor: line.c, borderRadius: 3 }} />
                       ))}
@@ -420,7 +420,7 @@ export default function HomeClient() {
                     {/* Photo strip */}
                     <div className="flex gap-1.5 mt-5">
                       {[0, 1, 2].map(i => (
-                        <div key={i} className="flex-1 rounded-lg overflow-hidden" style={{ height: 38, backgroundColor: 'rgba(212,163,115,0.08)' }}>
+                        <div key={i} className="flex-1 rounded-lg overflow-hidden" style={{ height: 38, backgroundColor: 'var(--bronze-08)' }}>
                           <div style={{ width: '100%', height: '100%', background: `linear-gradient(135deg, rgba(212,163,115,${0.04 + i*0.02}) 0%, rgba(204,213,174,${0.06 + i*0.03}) 100%)` }} />
                         </div>
                       ))}
@@ -458,8 +458,8 @@ export default function HomeClient() {
                   className="block rounded-2xl card-hover focus-visible:ring-2 focus-visible:ring-offset-2"
                   style={
                     i === 0
-                      ? { backgroundColor: '#FDFCF5', boxShadow: '0 8px 32px rgba(212,163,115,0.1)', border: 'none', height: '100%', textDecoration: 'none' }
-                      : { backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 12px rgba(212,163,115,0.05)', height: '100%', textDecoration: 'none' }
+                      ? { backgroundColor: '#FDFCF5', boxShadow: '0 8px 32px var(--bronze-10)', border: 'none', height: '100%', textDecoration: 'none' }
+                      : { backgroundColor: '#FDFCF5', border: '1px solid var(--bronze-08)', boxShadow: '0 2px 12px var(--bronze-06)', height: '100%', textDecoration: 'none' }
                   }
                 >
                   {/* Top color bar */}
@@ -536,7 +536,7 @@ export default function HomeClient() {
               >
                 <Card
                   className="rounded-2xl p-7 h-full relative"
-                  style={{ backgroundColor: '#FDFCF5', boxShadow: '0 4px 24px rgba(212,163,115,0.08)', border: 'none' }}
+                  style={{ backgroundColor: '#FDFCF5', boxShadow: '0 4px 24px var(--bronze-08)', border: 'none' }}
                 >
                   <CardContent className="pt-0">
                     {/* Large faded quote mark */}
@@ -544,7 +544,7 @@ export default function HomeClient() {
                       position: 'absolute',
                       top: 10,
                       left: 20,
-                      color: 'rgba(212,163,115,0.15)',
+                      color: 'var(--bronze-15)',
                       fontFamily: 'Georgia, serif',
                       fontSize: '5.5rem',
                       lineHeight: 0.75,
@@ -572,7 +572,7 @@ export default function HomeClient() {
                     <div className="flex items-center gap-3">
                       <div
                         className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0"
-                        style={{ backgroundColor: 'rgba(212,163,115,0.18)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
+                        style={{ backgroundColor: 'var(--bronze-18)', color: 'var(--charcoal)', fontFamily: 'var(--font-sans)' }}
                         aria-hidden="true"
                       >
                         {t.initials}
@@ -608,7 +608,7 @@ export default function HomeClient() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Free */}
             <div className="reveal" role="group" aria-label="Free plan — $0 forever">
-              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.14)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
+              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid var(--bronze-15)', boxShadow: '0 2px 16px var(--bronze-06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>Free</p>
                   <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$0</p>
@@ -637,7 +637,7 @@ export default function HomeClient() {
                   <Link
                     href="/signup"
                     className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80 hover:shadow-md focus-visible:ring-2 focus-visible:ring-offset-2"
-                    style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.06)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
+                    style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', backgroundColor: 'var(--bronze-06)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
                     aria-label="Start free plan"
                   >
                     Start your free book
@@ -648,7 +648,7 @@ export default function HomeClient() {
 
             {/* 5GB — featured with papaya bg */}
             <div className="reveal" role="group" aria-label="5GB Storage plan — $50 for 5 years, most popular">
-              <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 12px 48px rgba(212,163,115,0.22)' }}>
+              <Card className="p-7 rounded-2xl h-full relative" style={{ backgroundColor: 'var(--papaya)', border: '2px solid var(--bronze)', boxShadow: '0 12px 48px var(--bronze-22)' }}>
                 <div className="absolute -top-5 left-1/2 -translate-x-1/2">
                   <Badge className="h-7 px-4 py-1 rounded-full font-semibold text-xs shadow-md" style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)' }}>
                     Most Popular
@@ -688,7 +688,7 @@ export default function HomeClient() {
 
             {/* 15GB */}
             <div className="reveal" role="group" aria-label="15GB Storage plan — $100 for 5 years">
-              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.08)', boxShadow: '0 2px 16px rgba(212,163,115,0.06)' }}>
+              <Card className="p-7 rounded-2xl h-full" style={{ backgroundColor: '#FDFCF5', border: '1px solid var(--bronze-08)', boxShadow: '0 2px 16px var(--bronze-06)' }}>
                 <CardContent className="pt-0">
                   <p className="label-caps mb-3" style={{ color: 'var(--bronze)' }}>15GB Storage</p>
                   <p className="text-4xl font-medium mb-1" style={{ color: 'var(--charcoal)' }}>$100</p>
@@ -780,18 +780,18 @@ export default function HomeClient() {
                   {/* Mobile vertical connector between steps */}
                   {i < 2 && (
                     <div className="sm:hidden flex flex-col items-center">
-                      <div className="w-0.5 h-8 rounded-full" style={{ background: 'linear-gradient(to bottom, rgba(212,163,115,0.4), rgba(212,163,115,0.1))' }} />
+                      <div className="w-0.5 h-8 rounded-full" style={{ background: 'linear-gradient(to bottom, rgba(212,163,115,0.4), var(--bronze-10))' }} />
                     </div>
                   )}
                   {/* Desktop horizontal connector between steps */}
                   {i < 2 && (
                     <div className="hidden sm:flex items-center justify-center flex-1" style={{ marginTop: -28 }}>
-                      <div className="w-full h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.3), rgba(212,163,115,0.08), rgba(212,163,115,0.3))' }} />
+                      <div className="w-full h-px" style={{ background: 'linear-gradient(to right, rgba(212,163,115,0.3), var(--bronze-08), rgba(212,163,115,0.3))' }} />
                     </div>
                   )}
                 </div>
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(212,163,115,0.08)' }} aria-hidden="true">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--bronze-08)' }} aria-hidden="true">
                     {step.icon}
                   </div>
                   <h3 className="text-xl font-medium pt-2" style={{ color: 'var(--charcoal)', fontFamily: 'var(--font-serif)' }}>
@@ -832,7 +832,7 @@ export default function HomeClient() {
       {/* ══════════════════════════════════════════
           TASK 6: PREMIUM FOOTER — 3-column
       ══════════════════════════════════════════ */}
-      <footer className="py-12 px-6 md:px-10" style={{ backgroundColor: 'var(--beige)', borderTop: '2px solid rgba(212,163,115,0.2)' }}>
+      <footer className="py-12 px-6 md:px-10" style={{ backgroundColor: 'var(--beige)', borderTop: '2px solid var(--bronze-20)' }}>
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 mb-10">
             {/* Col 1: Logo + tagline + social */}
@@ -850,7 +850,7 @@ export default function HomeClient() {
               {/* Social icons */}
               <div className="flex gap-2.5">
                 {/* Instagram icon */}
-                <button type="button" aria-label="Memory Project on Instagram" aria-disabled="true" tabIndex={-1} className="nav-link w-11 h-11 rounded-full flex items-center justify-center cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <button type="button" aria-label="Memory Project on Instagram" aria-disabled="true" tabIndex={-1} className="nav-link w-11 h-11 rounded-full flex items-center justify-center cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1" style={{ backgroundColor: 'var(--bronze-12)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ color: 'var(--charcoal)' }}>
                     <rect x="2" y="2" width="20" height="20" rx="5"/>
                     <circle cx="12" cy="12" r="4"/>
@@ -858,7 +858,7 @@ export default function HomeClient() {
                   </svg>
                 </button>
                 {/* Facebook icon */}
-                <button type="button" aria-label="Memory Project on Facebook" aria-disabled="true" tabIndex={-1} className="nav-link w-11 h-11 rounded-full flex items-center justify-center cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1" style={{ backgroundColor: 'rgba(212,163,115,0.12)' }}>
+                <button type="button" aria-label="Memory Project on Facebook" aria-disabled="true" tabIndex={-1} className="nav-link w-11 h-11 rounded-full flex items-center justify-center cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1" style={{ backgroundColor: 'var(--bronze-12)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--charcoal)' }}>
                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                   </svg>
@@ -910,7 +910,7 @@ export default function HomeClient() {
           </div>
 
           {/* Bottom bar */}
-          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(212,163,115,0.2), transparent)', marginBottom: 24 }} />
+          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, var(--bronze-20), transparent)', marginBottom: 24 }} />
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
             <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
               © {new Date().getFullYear()} Memory Project · Made with love for families
