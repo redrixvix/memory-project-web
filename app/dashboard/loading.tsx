@@ -11,11 +11,11 @@ export default function Loading() {
         <div className="mb-10">
           <div
             className="h-9 w-56 rounded-xl mb-2 skeleton-pulse"
-            style={{ backgroundColor: 'rgba(212,163,115,0.22)' }}
+            style={{ backgroundColor: 'var(--bronze-22)' }}
           />
           <div
             className="h-4 w-40 rounded-lg skeleton-pulse"
-            style={{ backgroundColor: 'rgba(212,163,115,0.14)' }}
+            style={{ backgroundColor: 'var(--bronze-15)' }}
           />
         </div>
 
@@ -25,25 +25,25 @@ export default function Loading() {
             <div
               key={i}
               className="rounded-2xl p-6 flex items-center gap-5 skeleton-pulse"
-              style={{ backgroundColor: '#FDFCF5', border: '1px solid rgba(212,163,115,0.12)' }}
+              style={{ backgroundColor: '#FDFCF5', border: '1px solid var(--bronze-12)' }}
             >
               {/* Book spine placeholder */}
               <div
                 className="w-12 h-18 rounded-xl shrink-0"
-                style={{ backgroundColor: 'rgba(212,163,115,0.20)' }}
+                style={{ backgroundColor: 'var(--bronze-20)' }}
               />
               <div className="flex-1 space-y-2.5">
                 <div
                   className="h-5 w-40 rounded-md"
-                  style={{ backgroundColor: 'rgba(212,163,115,0.18)' }}
+                  style={{ backgroundColor: 'var(--bronze-18)' }}
                 />
                 <div
                   className="h-3.5 w-64 rounded-md"
-                  style={{ backgroundColor: 'rgba(212,163,115,0.10)' }}
+                  style={{ backgroundColor: 'var(--bronze-10)' }}
                 />
                 <div
                   className="h-3 w-24 rounded-md"
-                  style={{ backgroundColor: 'rgba(212,163,115,0.10)' }}
+                  style={{ backgroundColor: 'var(--bronze-10)' }}
                 />
               </div>
             </div>
