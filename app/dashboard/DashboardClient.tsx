@@ -452,14 +452,12 @@ export default function DashboardClient() {
             aria-modal="true"
             aria-labelledby="create-book-title"
           >
-            <div
-              role="button"
-              tabIndex={0}
+            <button
+              type="button"
               aria-label="Close modal"
               className="absolute inset-0 cursor-pointer"
               style={{ backgroundColor: 'rgba(43,43,43,0.62)' }}
               onClick={() => { if (!creating) { setShowCreate(false); setCreateError(''); } }}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (!creating) { setShowCreate(false); setCreateError(''); } } }}
             />
 
             <div
