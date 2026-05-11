@@ -332,7 +332,7 @@ export default function DashboardClient() {
           )}
 
           <button
-            className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            className="flex sm:hidden w-11 h-11 rounded-full items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{ backgroundColor: 'rgba(212,163,115,0.15)', color: '#5A3A2A', ['--tw-ring-color' as string]: 'rgba(212,163,115,0.55)' }}
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open navigation menu"

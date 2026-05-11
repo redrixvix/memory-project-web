@@ -378,7 +378,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
             <button
               type="button"
               onClick={() => setMobileNavOpen(true)}
-              className="flex sm:hidden w-9 h-9 rounded-full items-center justify-center transition-colors hover:opacity-70"
+              className="flex sm:hidden w-11 h-11 rounded-full items-center justify-center transition-colors hover:opacity-70"
               style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: 'var(--charcoal)' }}
               aria-label="Open navigation menu"
             >
