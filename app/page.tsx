@@ -11,10 +11,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: '/og-image.png',
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: 'Memory Project — capture the stories that matter',
+        alt: "Memory Project — capture the stories that matter",
       },
     ],
   },
