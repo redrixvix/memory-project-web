@@ -9,6 +9,7 @@ interface AvatarProps {
   imageUrl?: string | null;
   className?: string;
   size?: number;
+  'aria-label'?: string;
 }
 
 function getInitials(name: string): string {
@@ -40,7 +41,7 @@ function getAvatarColor(name: string): { bg: string; text: string } {
   return PALETTE[index];
 }
 
-export function Avatar({ name, imageUrl, className, size }: AvatarProps) {
+export function Avatar({ name, imageUrl, className, size, 'aria-label': ariaLabel }: AvatarProps) {
   const [imgError, setImgError] = useState(false);
 
   const initials = getInitials(name);
@@ -79,6 +80,8 @@ export function Avatar({ name, imageUrl, className, size }: AvatarProps) {
 
   return (
     <div
+      role="img"
+      aria-label={ariaLabel ?? name}
       className={cn(
         'rounded-full flex items-center justify-center font-medium select-none shrink-0',
         className

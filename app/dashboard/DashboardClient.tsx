@@ -880,6 +880,7 @@ export default function DashboardClient() {
                                     imageUrl={c.profile_image_url}
                                     className="ring-2 ring-[#FEFCF4]"
                                     size={22}
+                                    aria-label={c.name || 'Contributor'}
                                   />
                                 ))}
                               </div>
