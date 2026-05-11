@@ -325,16 +325,17 @@ export default function LoginClient() {
                     <div className="flex-1 h-px" style={{ backgroundColor: 'rgba(212,163,115,0.2)' }} />
                   </div>
 
-                  <form onSubmit={handleSubmit}>
+                  <div>
                     <Button
-                      type="submit"
+                      type="button"
                       disabled={magicLoading}
                       className="w-full h-12 rounded-xl text-sm font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
                       style={{ backgroundColor: 'transparent', color: 'var(--charcoal)', border: '1px solid rgba(212,163,115,0.35)', fontFamily: 'var(--font-sans)' }}
+                      onClick={handleSubmit}
                     >
                       {magicLoading ? 'Sending...' : 'Send email code instead'}
                     </Button>
-                  </form>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-5">
