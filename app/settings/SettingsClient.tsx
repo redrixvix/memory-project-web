@@ -484,6 +484,7 @@ export default function SettingsClient() {
                   value={name}
                   onChange={e => { setName(e.target.value); if (e.target.value.trim()) setNameError(''); }}
                   onBlur={() => { if (!name.trim()) setNameError('Please enter your name'); setNameTouched(true); }}
+                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleSave(); } }}
                   aria-label="Display name"
                   aria-invalid={nameTouched && !name.trim()}
                   aria-describedby={nameError ? 'name-error' : undefined}
@@ -517,9 +518,9 @@ export default function SettingsClient() {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#5A3A2A', marginTop: '1px', flexShrink: 0 }}>
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
                   </svg>
-                  <p className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
+                  <output htmlFor="display-name" aria-live="polite" className="text-sm flex-1" style={{ color: '#5A5A4A', fontFamily: 'var(--font-serif)' }}>
                     {user?.email}
-                  </p>
+                  </output>
                   <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'rgba(212,163,115,0.22)', color: '#4A3A2A', fontFamily: 'var(--font-sans)', border: '1px solid rgba(212,163,115,0.4)' }}>
                     read-only
                   </span>
@@ -548,7 +549,7 @@ export default function SettingsClient() {
                 )}
                 <button
                   onClick={handleSave}
-                  disabled={saving || !name.trim() || name.trim() === user?.name}
+                  disabled={saving || !name.trim()}
                   className="inline-flex items-center justify-center h-12 rounded-full px-8 text-sm font-semibold shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 active:scale-[0.97] hover:shadow-xl hover:shadow-[rgba(212,163,115,0.4)] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-1"
                   style={{
                     backgroundColor: 'var(--bronze)',
