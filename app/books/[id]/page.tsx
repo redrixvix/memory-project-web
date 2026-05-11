@@ -950,6 +950,10 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                               <audio
                                 src={memory.audio_url}
                                 controls
+                                preload="metadata"
+                                aria-label={memory.prompt_question
+                                  ? `Voice note: ${memory.prompt_question}`
+                                  : `Voice note: ${memory.answer_text.slice(0, 60)}${memory.answer_text.length > 60 ? '…' : ''}`}
                                 className="w-full rounded-xl audio-player"
                                 style={{ height: '40px', borderRadius: '10px' }}
                               />
