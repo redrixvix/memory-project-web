@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 
-export default function DashboardError({
+export default function NewBookError({
   error,
   reset,
 }: {
@@ -11,7 +11,7 @@ export default function DashboardError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('[Dashboard Error]', error);
+    console.error('[NewBook Error]', error);
   }, [error]);
 
   return (
@@ -32,7 +32,7 @@ export default function DashboardError({
           Something went wrong
         </h2>
         <p className="text-sm mb-8" style={{ color: 'var(--muted-foreground)' }}>
-          We couldn&apos;t load your dashboard right now. This has been logged and we&apos;ll look into it.
+          We couldn&apos;t load the book creator right now. This has been logged and we&apos;ll look into it.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
