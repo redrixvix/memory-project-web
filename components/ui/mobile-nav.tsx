@@ -131,7 +131,7 @@ export function MobileNav({ isOpen, onClose, loggedIn, id }: MobileNavProps) {
         </div>
 
         {/* Nav links */}
-        <nav className="flex-1 px-4 py-6 space-y-1">
+        <nav aria-label="Site navigation" className="flex-1 px-4 py-6 space-y-1">
           <Link
             href="/"
             onClick={onClose}
