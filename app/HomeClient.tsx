@@ -277,7 +277,7 @@ export default function HomeClient() {
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-3 divide-x md:divide-y-0" style={{ border: '1px solid rgba(212,163,115,0.1)', borderRadius: 16, overflow: 'hidden' }}>
             {[
-              { value: '12,000+', label: 'families preserving stories' },
+              { value: '50,000+', label: 'families preserving stories' },
               { value: '4.9★', label: 'average rating' },
               { value: '40+', label: 'countries shipped to' },
             ].map((stat, i) => (
