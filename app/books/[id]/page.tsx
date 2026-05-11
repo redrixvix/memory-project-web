@@ -827,7 +827,11 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
                                     )}
                                     <Image
                                       src={url}
-                                      alt={`Memory photo ${photoIndex + 1}`}
+                                      alt={memory.prompt_question
+  ? memory.prompt_question
+  : memory.answer_text
+    ? `Memory photo ${photoIndex + 1}: ${memory.answer_text.slice(0, 80)}`
+    : `Memory photo ${photoIndex + 1}`}
                                       fill
                                       loading="lazy"
                                       unoptimized={true}
