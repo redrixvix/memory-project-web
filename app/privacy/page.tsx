@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Privacy Policy — Memory Project',
     description: 'How Memory Project collects, uses, and protects your personal information. Your memories and data are yours — we never sell or share them.',
-    url: 'https://web-redrixvixs-projects.vercel.app/privacy',
+    url: '/privacy',
     type: 'website',
     images: [
       {

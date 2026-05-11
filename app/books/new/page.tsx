@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Create New Memory Book — Memory Project',
     description: 'Start a new memory book for your family. Capture stories with text, photos, and audio — then print a beautiful hardcover keepsake.',
-    url: 'https://web-redrixvixs-projects.vercel.app/books/new',
+    url: '/books/new',
     type: 'website',
     images: [{ url: '/og-image.png', width: 1200, height: 630 }],
   },

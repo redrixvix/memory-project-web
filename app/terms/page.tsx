@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Terms of Service — Memory Project',
     description: 'The terms and conditions for using Memory Project. By using our service, you agree to these terms.',
-    url: 'https://web-redrixvixs-projects.vercel.app/terms',
+    url: '/terms',
     type: 'website',
     images: [
       {

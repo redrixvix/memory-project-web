@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Capture the Stories That Matter — Memory Project",
     description: "Unlimited text memories — free forever. Photos, audio, and beautifully printed hardcover books from $99.",
-    url: "https://web-redrixvixs-projects.vercel.app/",
+    url: '/',
     type: "website",
     images: [
       {
