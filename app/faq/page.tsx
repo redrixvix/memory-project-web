@@ -92,9 +92,13 @@ const faqJsonLd = {
   ],
 };
 
+const skipLinkStyle = `.skip-link{position:fixed;top:0;left:0;z-index:9999;padding:.75rem 1.25rem;background:var(--bronze);color:var(--charcoal);font-weight:600;font-size:.875rem;border-radius:0 0 .5rem;transform:translateY(-100%);transition:transform .15s;text-decoration:none}.skip-link:focus{transform:translateY(0)}`;
+
 export default function FaqPage() {
   return (
     <>
+      <style>{skipLinkStyle}</style>
+      <a href="#main" className="skip-link">Skip to main content</a>
       <Script
         id="website-schema"
         type="application/ld+json"
@@ -105,12 +109,10 @@ export default function FaqPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <BreadcrumbSchema items={[{ name: 'FAQ', href: '/faq' }]} />
-
-      <div
-        className="min-h-screen"
-        style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}
-      >
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}
+    >
         {/* ── HEADER ── */}
         <header
           className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b"
@@ -175,7 +177,7 @@ export default function FaqPage() {
               },
               {
                 q: 'How do I print my book?',
-                a: 'When you have enough memories, go to your book dashboard and click "Order Print." We\'ll format your content beautifully, print it as a hardcover book, and ship it to your door. Production takes 2–4 weeks.',
+                a: "When you have enough memories, go to your book dashboard and click \"Order Print.\" We'll format your content beautifully, print it as a hardcover book, and ship it to your door. Production takes 2–4 weeks.",
               },
               {
                 q: 'Can I edit my book after printing?',
@@ -229,6 +231,7 @@ export default function FaqPage() {
           </div>
         </main>
       </div>
+      <BreadcrumbSchema items={[{ name: 'FAQ', href: '/faq' }]} />
     </>
   );
 }

@@ -76,6 +76,8 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<{ name?: string; avatarUrl?: string } | null>(null);
   // Per-photo error state for graceful degradation in the grid
+
+  const skipLinkStyle = `.skip-link{position:fixed;top:0;left:0;z-index:9999;padding:.75rem 1.25rem;background:var(--bronze);color:var(--charcoal);font-weight:600;font-size:.875rem;border-radius:0 0 .5rem;transform:translateY(-100%);transition:transform .15s;text-decoration:none}.skip-link:focus{transform:translateY(0)}`;
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   // Per-photo loaded state for shimmer placeholder
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
@@ -192,6 +194,9 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
 
   if (loading) {
     return (
+      <>
+        <style>{skipLinkStyle}</style>
+        <a href="#main" className="skip-link">Skip to main content</a>
       <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
         <div className="max-w-5xl mx-auto px-6 py-12">
           {/* Header skeleton */}
@@ -222,12 +227,16 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           </div>
         </div>
               </div>
+              </>
     );
   }
 
   if (!book) return null;
 
   return (
+    <>
+      <style>{skipLinkStyle}</style>
+      <a href="#main" className="skip-link">Skip to main content</a>
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
 
       {/* Lightbox */}
@@ -1089,5 +1098,6 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
         />
       )}
     </div>
+    </>
   );
 }
