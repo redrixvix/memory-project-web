@@ -775,21 +775,30 @@ export default function DashboardClient() {
                     href={`/books/${book.id}`}
                     className="block h-full group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A373] focus-visible:ring-offset-2"
                     aria-label={`${book.title} — ${book.contributors?.length ?? 0} ${(book.contributors?.length ?? 0) === 1 ? 'contributor' : 'contributors'}`}
-                    onMouseEnter={(e) => {
-                      const card = e.currentTarget.querySelector('.book-card') as HTMLElement | null;
-                      if (!card) return;
-                      card.style.boxShadow = `0 8px 32px rgba(212,163,115,0.18), 0 24px 60px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.08)`;
-                      card.style.borderLeft = `4px solid ${spineHoverColor}`;
-                    }}
-                    onMouseLeave={(e) => {
-                      const card = e.currentTarget.querySelector('.book-card') as HTMLElement | null;
-                      if (!card) return;
-                      card.style.boxShadow = '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)';
-                      card.style.borderLeft = `4px solid ${spineColor}`;
-                    }}
                   >
                     <div
-                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 group/card hover:-translate-y-2"
+                      className="book-card relative h-full rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 group-hover:-translate-y-2"
+                      onMouseEnter={(e) => {
+                        const card = e.currentTarget as HTMLElement;
+                        card.style.boxShadow = `0 8px 32px rgba(212,163,115,0.18), 0 24px 60px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.08)`;
+                        card.style.borderLeftColor = spineHoverColor;
+                      }}
+                      onMouseLeave={(e) => {
+                        const card = e.currentTarget as HTMLElement;
+                        card.style.boxShadow = '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)';
+                        card.style.borderLeftColor = spineColor;
+                      }}
+                      onFocus={(e) => {
+                        const card = e.currentTarget as HTMLElement;
+                        card.style.boxShadow = `0 8px 32px rgba(212,163,115,0.18), 0 24px 60px rgba(212,163,115,0.14), inset 0 0 0 1px rgba(212,163,115,0.08)`;
+                        card.style.borderLeftColor = spineHoverColor;
+                      }}
+                      onBlur={(e) => {
+                        const card = e.currentTarget as HTMLElement;
+                        card.style.boxShadow = '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)';
+                        card.style.borderLeftColor = spineColor;
+                      }}
+                      tabIndex={0}
                       style={{
                         backgroundColor: '#FEFCF4',
                         boxShadow: '0 2px 8px rgba(212,163,115,0.06), 0 8px 32px rgba(212,163,115,0.08)',
@@ -949,7 +958,7 @@ export default function DashboardClient() {
                 type="button"
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
+                className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
                 style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
                 aria-label="Previous page"
               >
@@ -968,13 +977,13 @@ export default function DashboardClient() {
                 return acc;
               }, []).map((item, idx) =>
                 item === '…' ? (
-                  <span key={`ellipsis-${idx}`} className="w-9 h-9 flex items-center justify-center text-sm" style={{ color: 'var(--charcoal)' }}>…</span>
+                  <span key={`ellipsis-${idx}`} className="w-11 h-11 flex items-center justify-center text-sm" style={{ color: 'var(--charcoal)' }}>…</span>
                 ) : (
                   <button
                     key={item}
                     type="button"
                     onClick={() => setCurrentPage(item as number)}
-                    className="w-9 h-9 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+                    className="w-11 h-11 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95"
                     style={{
                       backgroundColor: currentPage === item ? 'var(--charcoal)' : 'rgba(212,163,115,0.10)',
                       color: currentPage === item ? 'var(--cornsilk)' : 'var(--charcoal)',
@@ -991,7 +1000,7 @@ export default function DashboardClient() {
                 type="button"
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
+                className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-35 hover:scale-105 active:scale-95"
                 style={{ backgroundColor: 'rgba(212,163,115,0.12)', color: 'var(--charcoal)' }}
                 aria-label="Next page"
               >
