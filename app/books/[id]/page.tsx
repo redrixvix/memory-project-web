@@ -147,8 +147,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
           }
         }
       }
-    } catch (err) {
-      console.error('Failed to fetch book', err);
+    } catch {
       setToastMessage('Failed to load book. Please refresh.');
       setToastVariant('error');
       setToastVisible(true);
