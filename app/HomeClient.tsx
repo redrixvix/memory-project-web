@@ -111,15 +111,15 @@ export default function HomeClient() {
               </Link>
             ) : (
               <>
-                <Link href="/#how-it-works" className="nav-link text-sm hidden sm:block transition-opacity hover:opacity-80" style={{ color: 'var(--muted-foreground)' }}>How It Works</Link>
+                <Link href="/#how-it-works" className="nav-link text-sm hidden sm:block transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-2 rounded-sm" style={{ color: 'var(--muted-foreground)' }}>How It Works</Link>
                 <Link
-                href="/pricing"
-                className="nav-link text-sm hidden sm:block transition-opacity hover:opacity-80"
-                style={{ color: 'var(--muted-foreground)' }}
-              >
-                Pricing
-              </Link>
-                <Link href="/login" className="nav-link text-sm hidden sm:block transition-opacity hover:opacity-80" style={{ color: 'var(--muted-foreground)' }}>Sign in</Link>
+                  href="/pricing"
+                  className="nav-link text-sm hidden sm:block transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-2 rounded-sm"
+                  style={{ color: 'var(--muted-foreground)' }}
+                >
+                  Pricing
+                </Link>
+                <Link href="/login" className="nav-link text-sm hidden sm:block transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-2 rounded-sm" style={{ color: 'var(--muted-foreground)' }}>Sign in</Link>
                 <Link
                   href="/signup"
                   className="inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95"
@@ -190,7 +190,7 @@ export default function HomeClient() {
               <Link
                 href="/signup"
                 aria-label="Start your free book"
-                className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 shadow-sm"
+                className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold whitespace-nowrap transition-all duration-200 hover:opacity-90 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 shadow-sm hover:shadow-lg hover:shadow-black/10 hover:scale-105"
                 style={{ backgroundColor: 'var(--charcoal)', color: 'var(--cornsilk)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
               >
                 Start your free book
@@ -198,7 +198,7 @@ export default function HomeClient() {
               <Link
                 href="/pricing"
                 aria-label="View pricing"
-                className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap border transition-all duration-200 hover:opacity-80 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
+                className="cta-btn inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-medium whitespace-nowrap border transition-all duration-200 hover:opacity-80 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 hover:shadow-md hover:shadow-black/5 hover:border-[rgba(212,163,115,0.7)]"
                 style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', borderWidth: '1.5px', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
               >
                 View pricing
@@ -636,7 +636,7 @@ export default function HomeClient() {
                   </ul>
                   <Link
                     href="/signup"
-                    className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2"
+                    className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80 hover:shadow-md focus-visible:ring-2 focus-visible:ring-offset-2"
                     style={{ borderColor: 'rgba(212,163,115,0.5)', color: 'var(--charcoal)', backgroundColor: 'rgba(212,163,115,0.06)', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
                     aria-label="Start free plan"
                   >
@@ -676,7 +676,7 @@ export default function HomeClient() {
                   </ul>
                   <Link
                     href="/signup"
-                    className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
+                    className="block text-center rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-90 hover:shadow-lg active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
                     style={{ backgroundColor: 'var(--bronze)', color: 'var(--charcoal)', ['--tw-ring-color' as string]: 'var(--charcoal)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
                     aria-label="Upgrade to 5GB plan"
                   >
@@ -710,7 +710,7 @@ export default function HomeClient() {
                   </ul>
                   <Link
                     href="/signup"
-                    className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2"
+                    className="block text-center border-2 rounded-full py-2.5 text-sm font-semibold transition-all duration-200 hover:opacity-80 hover:shadow-md focus-visible:ring-2 focus-visible:ring-offset-2"
                     style={{ borderColor: 'rgba(212,163,115,0.4)', color: 'var(--charcoal)', backgroundColor: 'transparent', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'var(--cornsilk)' }}
                     aria-label="Upgrade to 15GB plan"
                   >
