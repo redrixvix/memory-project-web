@@ -416,7 +416,6 @@ export default function SettingsClient() {
                       <svg
                         width="40" height="40" viewBox="0 0 40 40" style={{ transform: 'rotate(-90deg)' }}
                         aria-label={`Uploading profile photo: ${uploadProgress}% complete`}
-                        role="img"
                       >
                         {/* Track */}
                         <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(212,163,115,0.18)" strokeWidth="3" />
