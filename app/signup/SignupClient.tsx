@@ -287,7 +287,7 @@ function Signup() {
               {/* Passkey — hidden behind a small tertiary link */}
               <button
                 type="button"
-                className="w-full h-11 rounded-full text-xs font-medium flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 mx-auto focus-visible:ring-2 focus-visible:ring-offset-2"
+                className="w-full h-11 rounded-full text-xs font-medium flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 mx-auto focus-visible:ring-2 focus-visible:ring-offset-2 cursor-pointer"
                 style={{
                   color: '#7A7A6A',
                   backgroundColor: 'transparent',

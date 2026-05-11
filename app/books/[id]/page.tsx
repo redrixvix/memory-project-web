@@ -413,7 +413,7 @@ export default function BookDetail({ params }: { params: Promise<{ id: string }>
       </header>
 
       {/* ── MAIN ── */}
-      <main className="px-6 md:px-10 py-5 md:py-7 max-w-5xl mx-auto w-full">
+      <main id="main" className="px-6 md:px-10 py-5 md:py-7 max-w-5xl mx-auto w-full">
 
         {/* Breadcrumb navigation — WCAG 2.1 SC 2.4.8 */}
         {book && (

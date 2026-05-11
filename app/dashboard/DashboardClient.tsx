@@ -246,9 +246,28 @@ export default function DashboardClient() {
         .fab-btn:focus-visible {
           box-shadow: 0 0 0 3px rgba(212,163,115,0.50), 0 8px 32px rgba(212,163,115,0.35);
         }
+        .skip-link {
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 9999;
+          padding: 0.75rem 1.25rem;
+          background: var(--bronze);
+          color: var(--charcoal);
+          font-weight: 600;
+          font-size: 0.875rem;
+          border-radius: 0 0 0.5rem;
+          transform: translateY(-100%);
+          transition: transform 0.15s;
+          text-decoration: none;
+        }
+        .skip-link:focus {
+          transform: translateY(0);
+        }
       `}</style>
-
+      {/* ── TOP NAV ── */}
       <header className="sticky top-0 z-20 h-14 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.94)', backdropFilter: 'blur(20px)', borderColor: 'rgba(212,163,115,0.15)' }}>
+        <a href="#main" className="skip-link">Skip to main content</a>
         <div className="flex items-center justify-between w-full max-w-5xl mx-auto">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5 group">

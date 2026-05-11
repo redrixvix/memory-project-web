@@ -201,9 +201,30 @@ export default function UpgradeClient() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--cornsilk)', fontFamily: 'var(--font-serif)' }}>
+      <style>{`
+        .skip-link {
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 9999;
+          padding: 0.75rem 1.25rem;
+          background: var(--bronze);
+          color: var(--charcoal);
+          font-weight: 600;
+          font-size: 0.875rem;
+          border-radius: 0 0 0.5rem;
+          transform: translateY(-100%);
+          transition: transform 0.15s;
+          text-decoration: none;
+        }
+        .skip-link:focus {
+          transform: translateY(0);
+        }
+      `}</style>
 
       {/* ── TOP NAV ── */}
       <header className="sticky top-0 z-20 h-16 flex items-center px-6 md:px-10 border-b" style={{ background: 'rgba(254,250,224,0.92)', backdropFilter: 'blur(16px)', borderColor: 'rgba(212,163,115,0.18)' }}>
+        <a href="#main" className="skip-link">Skip to main content</a>
         <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
           <Link href="/dashboard" className="flex items-center gap-2">
             <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ color: 'var(--bronze)' }}>
