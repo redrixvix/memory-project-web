@@ -123,7 +123,7 @@ export function MobileNav({ isOpen, onClose, loggedIn, id, triggerRef }: MobileN
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:opacity-70 focus-visible:ring-2 focus-visible:ring-offset-2"
+            className="w-11 h-11 rounded-full flex items-center justify-center transition-colors hover:opacity-70 focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{ backgroundColor: 'rgba(212,163,115,0.1)', color: '#6A6A5A', ['--tw-ring-color' as string]: 'var(--bronze)', ['--tw-ring-offset-color' as string]: 'rgba(254,250,224,0.96)' }}
             onFocus={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.22)'; }}
             onBlur={(e) => { e.currentTarget.style.backgroundColor = 'rgba(212,163,115,0.1)'; }}
